@@ -6,4 +6,11 @@ de la Universidad Politécnica de Madrid.
 
 Los miembros de este grupo son:
 	
-	· @lruizr
+	· Castaño Burgos, Alberto (acburgos)
+	· Herranz Fernández, David (dh1118)
+	· Lizcano Casas, David 
+	· Lopera Martínez, Ana Isabel (ailopera)
+	· López Gómez, Genoveva
+	· Madridejos Zamorano, Enrique (EnriqueMZ)
+	· Ruiz Ruiz, Luis (lruizr)
+
