@@ -1,0 +1,16 @@
+application: example-project-13
+version: 1
+runtime: python27
+threadsafe: true
+api_version: 1
+
+handlers:
+# Endpoints handlers
+- url: /_ah/spi/.*
+  script: polymer_bricks_api.APPLICATION
+
+libraries:
+- name: pycrypto
+  version: latest
+- name: endpoints
+  version: latest
