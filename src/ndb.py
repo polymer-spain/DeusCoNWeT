@@ -33,7 +33,7 @@ class Release(ndb.Model):
   zipball_url = ndb.StringProperty()
   tarball_url = ndb.StringProperty()
 
-class Autor(ndb.Model):
+class User(ndb.Model):
   login = ndb.StringProperty()
   user_id = ndb.IntegerProperty()
   html_url = ndb.StringProperty()
