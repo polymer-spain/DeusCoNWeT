@@ -45,7 +45,7 @@ class Repo(ndb.Model):
   name_repo = ndb.StringProperty()
   # ComponentID for the repo. It's the id for the repo managed by polymer_bricks
   full_name_id = ndb.StringProperty() # Format: ":author_:repo"
-  owner = ndb.StructuredProperty(User)
+  owner = ndb.StructuredProperty(Autor)
   html_url = ndb.StringProperty()
   description = ndb.StringProperty()
   stars = ndb.IntegerProperty()
