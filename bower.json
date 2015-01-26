@@ -1,6 +1,6 @@
 {
-  "name": "polymer-generated-app",
-  "version": "0.0.0",
+  "name": "polymer-bricks",
+  "version": "0.0.1",
   "dependencies": {
 		"polymer": "Polymer/polymer#master",
     "core-elements": "Polymer/core-elements",
