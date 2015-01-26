@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="styles/search.css">
+
+<div id="views" ng-init="init()">
+
+	<paper-tabs nobar id="tabs" selected="name" self-end >
+		<paper-tab  ng-click="changeList('name')" name="name">
+			NOMBRE
+			<core-icon icon="arrow-drop-down" ng-show="orderBy=='des' && sortBy=='name'"></core-icon>
+			<core-icon icon="arrow-drop-up" ng-show="orderBy=='asc' && sortBy=='name'"></core-icon>
+		</paper-tab>
+		<paper-tab  ng-click="changeList('stars')" name="favorites">
+			MÁS POPULARES
+			<core-icon icon="arrow-drop-down" ng-show="orderBy=='des' && sortBy=='stars'"></core-icon>
+			<core-icon icon="arrow-drop-up" ng-show="orderBy=='asc' && sortBy=='stars'"></core-icon>
+		</paper-tab>
+		<paper-tab  ng-click="changeList('popular')" name="rated">
+			MEJOR VALORADOS
+			<core-icon icon="arrow-drop-down" ng-show="orderBy=='des' && sortBy=='popular'"></core-icon>
+			<core-icon icon="arrow-drop-up" ng-show="orderBy=='asc' && sortBy=='popular'"></core-icon>
+		</paper-tab>
+	</paper-tabs><br/>
+
+	<!-- lista de componentes-->
+	<div id="lista" >
+		<div  ng-controller="HomeCtrl" ng-repeat="component in webComponents | filter:query  as results">
+			<paper-shadow class="elementosLista" ng-click="changeView('components/{{component.componentId}}')" ng-mouseover="changeZ($event,3)" ng-mouseout="changeZ($event,1)"animated=true>
+				<span class="name">{{component.name}}</span>
+
+				<div>
+					<i class="fa fa-star"></i>
+					<span>&nbsp;{{component.nStars}}&emsp;</span>
+					<i class="fa fa-code-fork"></i>
+					<span>&nbsp;{{component.nForks}}</span><br/>
+				</div>
+
+				<span class="author">{{component.author}}</span>
+				<div horizontal center layout style="padding-top: 6px">
+					<star-rate flex value="{{component.starRate}}" readOnly></star-rate>
+
+				</div>
+				<hr/>
+				<p class="description">{{component.description}}</p>
+			</paper-shadow>
+		</div>
+		<span ng-if="results.length==0">No results found...</span>
+	</div>
+</div>
