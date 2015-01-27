@@ -1,5 +1,5 @@
 """ Copyright 2014 Luis Ruiz Ruiz
-	  Copyright 2014 Ana Isabel Lopera Martínez
+	  Copyright 2014 Ana Isabel Lopera Martinez
 	  Copyright 2014 Miguel Ortega Moreno
     Copyright 2014 Juan Francisco Salamanca Carmona
 
@@ -16,6 +16,7 @@
    limitations under the License.
 """
 
+from google.appengine.ext import ndb
 """NDB Instances """
 class Tag(ndb.Model):
   name_tag = ndb.StringProperty()

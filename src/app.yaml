@@ -5,12 +5,10 @@ threadsafe: true
 api_version: 1
 
 handlers:
-# Endpoints handlers
-- url: /_ah/spi/.*
-  script: polymer_bricks_api.APPLICATION
+# Route handlers
+- url: /.*
+  script: manejador_pb.app
 
 libraries:
-- name: pycrypto
-  version: latest
-- name: endpoints
+- name: webapp2
   version: latest
