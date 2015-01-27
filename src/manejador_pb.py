@@ -40,7 +40,7 @@ class ComponentListHandler(webapp2.RequestHandler):
     sortBy = self.request.get("sortBy", default_value = "stars")
     query = self.request.get("query", default_value = "null")
     orderBy = self.request.get("orderBy", default_value = "desc")
-    
+    self.response.write('GET ComponentList')
 
   #POST Method
   #Uploads a component
@@ -69,9 +69,7 @@ class ComponentHandler(webapp2.RequestHandler):
     user = self.request.get("user", default_value = "null")
     componentId = self.request.path
     print "DEBUG: PATH queried " + componentId
-    
-
-    self.response.out.write('Hello world')
+    self.response.write("Hello world!")
 
 
   # POST Method
