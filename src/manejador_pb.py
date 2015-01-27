@@ -40,7 +40,16 @@ class ComponentListHandler(webapp2.RequestHandler):
     sortBy = self.request.get("sortBy", default_value = "stars")
     query = self.request.get("query", default_value = "null")
     orderBy = self.request.get("orderBy", default_value = "desc")
-    self.response.write('GET ComponentList')
+    response = [{'componentId': "ailopera_pruebaAPI",
+      'name' : "pruebaAPI",
+      'author' : "ailopera",
+      'description' : "Mega awesome component!",
+      'nStars' : 7,
+      'starRate' : 0,
+      'nForks' : 14,
+      'userRating' : 3.5
+    }]
+    self.response.write(response)
 
   #POST Method
   #Uploads a component
@@ -58,7 +67,7 @@ class ComponentHandler(webapp2.RequestHandler):
   """
 
   # GET Method
-  def get(self):
+  def get(self, component_id):
     """ Gets the info about a component or
     gets a filtered list of the components stored in the system
     Keyword arguments: 
@@ -69,22 +78,21 @@ class ComponentHandler(webapp2.RequestHandler):
     user = self.request.get("user", default_value = "null")
     componentId = self.request.path
     print "DEBUG: PATH queried " + componentId
-    self.response.write("Hello world!")
-    # Returns the component queried
     
+    # Returns the component queried
     #component = ndb.Repo.query(Repo.full_name_id == component_id).get()
     # TODO: Renders the page
-    response = {'componentId': component.full_name_id,
-    'name' : component.name_repo,
-    'author' : component.owner,
-    'description' : component.description,
-    'nStars' : component.stars,
-    'starRate' : 0,
-    'nForks' : component.forks,
-    'userRating' : 0
-    }
+    #response = {'componentId': component.full_name_id,
+    #'name' : component.name_repo,
+    #'author' : component.owner,
+    #'description' : component.description,
+    #'nStars' : component.stars,
+    #'starRate' : 0,
+    #'nForks' : component.forks,
+    #'userRating' : 0
+    #}
 
-    self.response.out.write(response)
+    self.response.out.write("GET Component " + component_id)
 
 
   # POST Method
@@ -101,6 +109,6 @@ class ComponentHandler(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/components', ComponentListHandler),
-    ('/components/*', ComponentHandler)
+    (r'/components', ComponentListHandler),
+    (r'/components/(\w+)', ComponentHandler)
 ], debug=True)

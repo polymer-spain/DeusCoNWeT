@@ -6,7 +6,12 @@ api_version: 1
 
 handlers:
 # Route handlers
-- url: /.*
+- url: /favicon\.ico
+  static_files: ../favicon.ico
+  upload: favicon\.ico
+- url: /app
+  static_dir: ../static/views 
+- url: .*
   script: manejador_pb.app
 
 libraries:
