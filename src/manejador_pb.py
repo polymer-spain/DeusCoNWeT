@@ -1,5 +1,6 @@
+# -*- coding: utf8 -*-
 """ Copyright 2015 Luis Ruiz Ruiz
-	Copyright 2015 Ana Isabel Lopera Martínez
+	Copyright 2015 Ana Isabel Lopera Martinez
 	Copyright 2015 Miguel Ortega Moreno
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-# -*- coding: utf8 -*-
+
 import webapp2
 import ndb
 import re
@@ -64,13 +65,13 @@ class ComponentHandler(webapp2.RequestHandler):
       self -- info about the request build by webapp2
     """
     # Get the params in the request
-    componentId = self.request.get("componentId", default_value = "null")
+    #componentId = self.request.get("componentId", default_value = "null")
     user = self.request.get("user", default_value = "null")
-    if  not componentId == "null":
-      # Returns the component queried
-      component = ndb.Repo.query(Repo.full_name_id == idComponent).get()
-      # TODO: Renders the page
+    componentId = self.request.path
+    print "DEBUG: PATH queried " + componentId
+    
 
+    self.response.out.write('Hello world')
 
 
   # POST Method
@@ -88,5 +89,5 @@ class ComponentHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/components', ComponentListHandler),
-    ('/components/(/S)', ComponentHandler)
+    ('/components/*', ComponentHandler)
 ], debug=True)
