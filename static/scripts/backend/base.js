@@ -102,11 +102,11 @@ google.appengine.api.polymerBricks.getComponent = function (component) {
 	gapi.client.polymerbricks.components.getComponent({'idComponent' : component}).execute(
 		function (resp) {
 			var scope = angular.element(document.getElementById('views')).scope();
-			console.log("Llamada a get component");
+			scope.component = resp;
+
 			scope.$apply(function () {
 				scope.component = resp;
 				localStorage.setItem('component',JSON.stringify(resp));
-				console.log(resp);
 			});
 			return resp;
 		});

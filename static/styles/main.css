@@ -118,26 +118,6 @@ star-rate {
 	cursor: pointer;
 }
 
-.views.ng-enter,
-.views.ng-leave {
-	-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	transition: all 1s ease;
-}
-.views.ng-enter {
-	opacity: 0;
-}
-.views.ng-enter-active {
-	opacity: 1;
-}
-.views.ng-leave {
-	opacity: 1;
-}
-.views.ng-leave-active {
-	opacity: 0;
-}
-
 .copyright {
 	color: inherit;
 	background-color: inherit;	

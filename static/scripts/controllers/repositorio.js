@@ -24,6 +24,7 @@ angular.module('PolymerBricks')
 			google.appengine.api.polymerBricks.getComponent($routeParams.componentID,$scope.userId());
 		}
 	};
+
 	if ($scope.$parent.user.id !== undefined) {
 		document.querySelector('#rate').setAttribute('readOnly',false);	
 	} else {
@@ -35,6 +36,8 @@ angular.module('PolymerBricks')
 
 		if ($scope.userId()) {
 			google.appengine.api.polymerBricks.rateComponent($scope.component.componentId,$scope.valorado,$scope.userId());
+
+
 			$scope.mostrarValorado=true;
 			$timeout(function () {
 				$scope.mostrarValorado = false;
