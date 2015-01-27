@@ -70,6 +70,21 @@ class ComponentHandler(webapp2.RequestHandler):
     componentId = self.request.path
     print "DEBUG: PATH queried " + componentId
     self.response.write("Hello world!")
+    # Returns the component queried
+    
+    #component = ndb.Repo.query(Repo.full_name_id == component_id).get()
+    # TODO: Renders the page
+    response = {'componentId': component.full_name_id,
+    'name' : component.name_repo,
+    'author' : component.owner,
+    'description' : component.description,
+    'nStars' : component.stars,
+    'starRate' : 0,
+    'nForks' : component.forks,
+    'userRating' : 0
+    }
+
+    self.response.out.write(response)
 
 
   # POST Method
