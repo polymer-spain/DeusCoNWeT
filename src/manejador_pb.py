@@ -17,12 +17,41 @@
 """
 
 import webapp2
-import ndb
-import re
+import re, string, json
+# Local imports
+from ndb import Tag, Release, Autor, Repo, UserRating 
+import cliente_gitHub
+
+
+class ComponentInfo:
+  """ 
+  Class that defines a reduced set of properties about a component
+  (Repo entity) stored
+  Attributes:
+    componentId -- Id of the component stored
+    name -- name of the component
+    author -- author of the component
+    description -- description about the component
+    nStars -- stars of the component in GitHub
+    starRate -- average rating of the component in the application
+    nForks -- forks of the component in GitHub
+    userRating -- rate of the user logged about the component in the application 
+    
+  """
+  def __init__(self, componentId, name, author, description, nStars, starRate, nForks, userRating):
+    self.componentId = componentId
+    self.name = name
+    self.author = author
+    self.description = description
+    self.nStars = nStars
+    self.starRate = starRate
+    self.nForks = nForks
+    self.userRating = userRating
 
 class ComponentListHandler(webapp2.RequestHandler):
   """
-  Class that defines the component list resource
+  Class that defines the component list resource.
+  It acts as the handler of the /components resource
 
   Methods:
   get -- Gets a filtered list of the components stored in the system  
@@ -36,9 +65,9 @@ class ComponentListHandler(webapp2.RequestHandler):
       self -- info about the request build by webapp2
     """
     # Get the params in the request
-    user = self.request.get("user", default_value = "null")
+    user = self.request.get("user", default_value = "none")
     sortBy = self.request.get("sortBy", default_value = "stars")
-    query = self.request.get("query", default_value = "null")
+    query = self.request.get("query", default_value = "none")
     orderBy = self.request.get("orderBy", default_value = "desc")
     response = [{'componentId': "ailopera_pruebaAPI",
       'name' : "pruebaAPI",
@@ -49,18 +78,127 @@ class ComponentListHandler(webapp2.RequestHandler):
       'nForks' : 14,
       'userRating' : 3.5
     }]
-    self.response.write(response)
+    self.response.write(json.dumps(response))
 
   #POST Method
-  #Uploads a component
   def post(self):
-    pass
+    """ Uploads a component. The component is stored in the Datastore of the application
+    Keyword arguments: 
+      self -- info about the request build by webapp2
+    """
+    url = self.request.get("url", default_value="none")
+    user = self.request.get("user", default_value="none")
 
+    component = True
+    path = url.split("/")
+    basePath = "/repos/" + path[len(path)-2] + "/" + path[len(path)-1]
+    repoId = ""
+    repo_owner = ""
 
+    #Open connection to the API endpoint
+    cliente_gitHub.openConnection(basePath)
+
+    # Set available request, in order to get statistics about the request consumed in the upload operation
+    availableRequest = cliente_gitHub.getRateLimitRemaining("core")
+
+    # Get repo info
+    repoDetails = cliente_gitHub.getRepoInfo()
+
+    # Check if the call to GitHub returned the details about the repo required 
+    # (if not, the url doesn't correspond to a repo, or the cliente_gitHub encountered
+    # an error while doing the call to the GitHub API) 
+    if repoDetails == None:
+      component = False
+    else:
+      # Set the repoId and repo_owner
+      repoId = repoDetails["id"]
+      repo_owner = repoDetails["owner"]["login"] 
+    
+    # Get the languages of the repo
+    languages = cliente_gitHub.getRepoLanguages()
+    languagesList = []
+    for key, value in languages.iteritems():
+      languagesList.append(key)
+
+    # If the url given corresponds to a web component, 
+    # the metadata about it is stored and it is sent the number of
+    # stars of the repo to Google Analytics
+    if component:
+      # Also check if the component was uploaded previously
+      if not (Repo.query(Repo.full_name == repoDetails['full_name']).count()) == 0:
+        #raise ComponentAlreadyStoredException("The component had been stored")
+        #TODO build the response
+        self.response.set_status(403)
+      else:
+        # Get the Repo tags
+        tagsList = cliente_gitHub.getTags(True)
+
+        # Gets the commit details asociated to every tag
+        # CommitList contains the commits related to all tags in tagsList
+        commitList = cliente_gitHub.getCommitsTags(tagsList)
+
+        #Adds the releases to the repo 
+        releases = cliente_gitHub.getReleases()
+
+        # Gets the user details
+        userDetails = cliente_gitHub.getUserDetails(repo_owner) 
+    
+        # Stores the info about the repo in the datastore
+        repo_full_name = repoDetails["full_name"].replace("/","_")
+        lowerCaseFullName = string.lower(repo_full_name)
+        #TODO: See if we have to set full_name_hash:
+        #      full_name_hash = generateRepoHash(repo_full_name)
+        name_lower_case = string.lower(repoDetails["name"])
+        repo = Repo(full_name=repoDetails["full_name"], repo_id=repoId, name_repo=repoDetails["name"], 
+          owner=Autor(login=userDetails["login"], user_id=userDetails["id"], html_url=userDetails["html_url"],
+          followers=userDetails["followers"]), html_url=repoDetails["html_url"], description=repoDetails["description"],
+          stars=repoDetails["stargazers_count"], forks=repoDetails["forks_count"], reputation=0.0, languages=languagesList,
+          full_name_id=repo_full_name, repo_hash="", reputation_sum=0, ratingsCount=0, name_repo_lower_case=lowerCaseFullName)
+        repo_key = repo.put()
+
+        # The repo is yet stored. Now, it is necessary to update it with the remaining information
+        list_tag = []
+        list_release = []
+        for tag, commit in zip(tagsList,commitList):
+          aux_tag = Tag(name_tag=tag["name"], date_tag=commit["date"], author=commit["author"], zipball_url=tag["zipball_url"], tarball_url=tag["tarball_url"])
+          list_tag.append(aux_tag)
+
+        repo = repo_key.get()
+        for release in releases:
+          aux_release = Release(tag_name=release["tag_name"], html_url=release["html_url"], name_release=release["name"], description=release["body"], 
+           publish_date=release["published_at"], zipball_url=release["zipball_url"], tarball_url=release["tarball_url"])
+          list_release.append(aux_release)
+
+        # Now, we store them in the Datastore
+        repo = repo_key.get()
+        repo.tags = list_tag
+        repo.releases = list_release
+        repo.put()
+
+      # The component has been uploaded succesfully
+      print "LOG_INFO: Component uploaded succesfully"
+      #TODO Build the response
+      self.response.set_status(200)
+
+    # If the uri doesn't correspond to a component, return an error status
+    else:
+      #TODO Build the response
+      self.response.set_status(404)
+
+    # Gets statistics about the request to gihtub consumed in the upload operation
+    remainingRequests = cliente_gitHub.getRateLimitRemaining("core")
+    requestConsumed = availableRequest - remainingRequests
+    print "LOG_INFO: Requests to Github endpoint remaining: " + str(remainingRequests)
+    print "LOG_INFO: Requests to Github endpoint consumed: " + str(requestConsumed)   + '\n'
+
+    # Close the connection with github endpoint
+    cliente_gitHub.closeConnection()
+    
+    
 class ComponentHandler(webapp2.RequestHandler):
   """
   Class that defines the component resource
-
+  It acts as the handler of the /components/{component_id} resource
   Methods:
   get -- Gets the info about a component 
   put -- Adds a rating about a component  
@@ -109,6 +247,6 @@ class ComponentHandler(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    (r'/components', ComponentListHandler),
-    (r'/components/(\w+)', ComponentHandler)
+    (r'/componentes', ComponentListHandler),
+    (r'/componentes/(\w+)', ComponentHandler)
 ], debug=True)

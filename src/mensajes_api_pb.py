@@ -1,5 +1,5 @@
 """ Copyright 2014 Luis Ruiz Ruiz
-	Copyright 2014 Ana Isabel Lopera Martínez
+	Copyright 2014 Ana Isabel Lopera Martinez
 	Copyright 2014 Miguel Ortega Moreno
 
    Licensed under the Apache License, Version 2.0 (the "License");

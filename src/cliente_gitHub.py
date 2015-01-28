@@ -1,5 +1,5 @@
 """ Copyright 2014 Luis Ruiz Ruiz
-	Copyright 2014 Ana Isabel Lopera Martínez
+	Copyright 2014 Ana Isabel Lopera Martinez
 	Copyright 2014 Miguel Ortega Moreno
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +48,7 @@ def getRepoInfo():
     print "Limit Rate exceded (Request: GET repository)"
     return None
   elif response.status == 404:
-    print "La URL dada no corresponde a un repositorio válido o el repositorio es privado"
+    print "La URL dada no corresponde a un repositorio valido o el repositorio es privado"
     return None
   repoDetails = json.loads(response.read())
   return repoDetails
