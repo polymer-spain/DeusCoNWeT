@@ -7,7 +7,7 @@ headers = {'Content-type': 'application/x-www-form-urlencoded',
 for line in f:
 	params = urllib.urlencode({'url': line,
 							'user': '102386634694700574028'})
-	connection.request("POST", '/subir', params, headers)
+	connection.request("POST", '/componentes', params, headers)
 	resp = connection.getresponse()
 	response = resp.read()
 	print response
