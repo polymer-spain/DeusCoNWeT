@@ -13,4 +13,5 @@ Los miembros de este grupo son:
 	· López Gómez, Genoveva
 	· Madridejos Zamorano, Enrique (EnriqueMZ)
 	· Ruiz Ruiz, Luis (lruizr)
+	· Salamanca Carmona, Juan Francisco (JuanFryS)
 
