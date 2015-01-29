@@ -18,6 +18,7 @@
 
 import webapp2
 import re, string, json
+from google.appengine.ext import ndb
 # Local imports
 from ndb import Tag, Release, Autor, Repo, UserRating 
 import cliente_gitHub
@@ -197,43 +198,73 @@ class ComponentHandler(webapp2.RequestHandler):
     gets a filtered list of the components stored in the system
     Keyword arguments: 
       self -- info about the request build by webapp2
+      component_id -- path url directory corresponding to the component id
     """
-    # Get the params in the request
+    # Get the request params
     #componentId = self.request.get("componentId", default_value = "null")
     user = self.request.get("user", default_value = "null")
     componentId = self.request.path
     print "DEBUG: PATH queried " + componentId
     
     # Returns the component queried
-    #component = ndb.Repo.query(Repo.full_name_id == component_id).get()
-    # TODO: Renders the page
-    #response = {'componentId': component.full_name_id,
-    #'name' : component.name_repo,
-    #'author' : component.owner,
-    #'description' : component.description,
-    #'nStars' : component.stars,
-    #'starRate' : 0,
-    #'nForks' : component.forks,
-    #'userRating' : 0
-    #}
-
-    self.response.out.write("GET Component " + component_id)
+    component = Repo.query(Repo.full_name_id == component_id).get()
+    print component
+    if component == None: 
+      self.response.set_status(404)
+    else:
+      # Builds the response
+      response = {
+        'componentId': component.full_name_id,
+        'name' : component.name_repo,
+        'author' : component.owner.login,
+        'description' : component.description,
+        'nStars' : component.stars,
+        'starRate' : component.reputation,
+        'nForks' : component.forks,
+        'userRating' : 0
+      }
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
 
 
   # POST Method
-  def post(self):
+  def post(self, component_id):
     """ - Add a rating about a component
     Keyword arguments: 
       self -- info about the request build by webapp2
+      component_id -- path url directory corresponding to the component id
     """
-    componentId = self.request.get("componentId", default_value = "null")
+    # Get the request params
     user = self.request.get("user", default_value = "null")
     rate = self.request.get("rate", default_value = 0)
-
+    # Check if the components exists. If not, return
+    repo = Repo.query(Repo.full_name_id  == component_id).get()
+    if not repo == None:
+      storedRating = UserRating.query(ndb.AND(UserRating.google_user_id == user,
+      UserRating.repo_full_name_id == component_id)).get()
+      if storedRating == None:
+        # Create the new rating
+        newRating = UserRating(google_user_id = user,
+          repo_full_name_id = repo.full_name_id,repo_hash = repo.repo_hash,
+          rating_value= rate)
+        newRating.put()
+        #Recalculate the reputation of the repo
+        repo.reputation_sum = repo.reputation_sum + userRating 
+        repo.ratingsCount = repo.ratingsCount + 1
+        repo.reputation = float(repo.reputation_sum / repo.ratingsCount)
+        repo.put()
+        print "DEBUG: Creado usuario. Almacenada reputacion"
+      else:
+        # The User had rated the component previously
+        # raise RateNotUpdatedException("The user had rated the component previously")
+        self.response.set_status(403)
+    else:
+        # raise NotFoundException("Component not found in Datastore")
+        self.response.set_status(404)
 
 
 
 app = webapp2.WSGIApplication([
     (r'/componentes', ComponentListHandler),
-    (r'/componentes/(\w+)', ComponentHandler)
+    (r'/componentes/(.*)', ComponentHandler)
 ], debug=True)
