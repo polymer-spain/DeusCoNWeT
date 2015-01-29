@@ -22,32 +22,6 @@ import re, string, json
 from ndb import Tag, Release, Autor, Repo, UserRating 
 import cliente_gitHub
 
-
-class ComponentInfo:
-  """ 
-  Class that defines a reduced set of properties about a component
-  (Repo entity) stored
-  Attributes:
-    componentId -- Id of the component stored
-    name -- name of the component
-    author -- author of the component
-    description -- description about the component
-    nStars -- stars of the component in GitHub
-    starRate -- average rating of the component in the application
-    nForks -- forks of the component in GitHub
-    userRating -- rate of the user logged about the component in the application 
-    
-  """
-  def __init__(self, componentId, name, author, description, nStars, starRate, nForks, userRating):
-    self.componentId = componentId
-    self.name = name
-    self.author = author
-    self.description = description
-    self.nStars = nStars
-    self.starRate = starRate
-    self.nForks = nForks
-    self.userRating = userRating
-
 class ComponentListHandler(webapp2.RequestHandler):
   """
   Class that defines the component list resource.
@@ -79,7 +53,6 @@ class ComponentListHandler(webapp2.RequestHandler):
         componentRating = UserRating.query(UserRating.google_user_id == user).get()
         if not componentRating == None:
           rating = componentRating.rating_value
-        print componentRating
       component = {
         "componentId":  item.full_name_id,
         "name": item.name_repo,
