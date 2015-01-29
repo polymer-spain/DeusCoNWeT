@@ -69,10 +69,30 @@ class ComponentListHandler(webapp2.RequestHandler):
     sortBy = self.request.get("sortBy", default_value = "stars")
     query = self.request.get("query", default_value = "none")
     orderBy = self.request.get("orderBy", default_value = "desc")
+    # Get all the components stored in the Datastore
     results = Repo.query().fetch()
-    self.response.write(json.dumps(results))
-
-
+    # Build the response
+    componentList = []
+    for item in results:
+      rating = 0
+      if not user == "none":
+        componentRating = UserRating.query(UserRating.google_user_id == user).get()
+        if not componentRating == None:
+          rating = componentRating.rating_value
+        print componentRating
+      component = {
+        "componentId":  item.full_name_id,
+        "name": item.name_repo,
+        "author": item.owner.login,
+        "description": item.description,
+        "nStars": item.stars,
+        "starRate": item.reputation,
+        "nForks": item.forks,
+        "userRating": rating
+      }
+      componentList.append(component)
+    self.response.content_type = 'application/json'
+    self.response.write(json.dumps(componentList))
 
   #POST Method
   def post(self):
