@@ -69,16 +69,10 @@ class ComponentListHandler(webapp2.RequestHandler):
     sortBy = self.request.get("sortBy", default_value = "stars")
     query = self.request.get("query", default_value = "none")
     orderBy = self.request.get("orderBy", default_value = "desc")
-    response = [{'componentId': "ailopera_pruebaAPI",
-      'name' : "pruebaAPI",
-      'author' : "ailopera",
-      'description' : "Mega awesome component!",
-      'nStars' : 7,
-      'starRate' : 0,
-      'nForks' : 14,
-      'userRating' : 3.5
-    }]
-    self.response.write(json.dumps(response))
+    results = Repo.query().fetch()
+    self.response.write(json.dumps(results))
+
+
 
   #POST Method
   def post(self):
