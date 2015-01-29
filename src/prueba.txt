@@ -1,0 +1,5 @@
+https://github.com/Mortega5/star-rate
+https://github.com/GoDisco/ngFacebook
+https://github.com/lepture/github-cards
+https://github.com/yefim/meteor-linkedin
+https://github.com/osahyoun/instagram-search
