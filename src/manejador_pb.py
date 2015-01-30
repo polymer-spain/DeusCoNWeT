@@ -51,7 +51,8 @@ class ComponentListHandler(webapp2.RequestHandler):
     for item in results:
       rating = 0
       if not user == "none":
-        componentRating = UserRating.query(UserRating.google_user_id == user).get()
+        componentRating = UserRating.query(ndb.AND(UserRating.google_user_id == user, 
+          UserRating.repo_full_name_id == item.full_name_id)).get()
         if not componentRating == None:
           rating = componentRating.rating_value
       component = {
@@ -102,11 +103,11 @@ class ComponentListHandler(webapp2.RequestHandler):
       repoId = repoDetails["id"]
       repo_owner = repoDetails["owner"]["login"] 
     
-    # Get the languages of the repo
-    languages = cliente_gitHub.getRepoLanguages()
-    languagesList = []
-    for key, value in languages.iteritems():
-      languagesList.append(key)
+      # Get the languages of the repo
+      languages = cliente_gitHub.getRepoLanguages()
+      languagesList = []
+      for key, value in languages.iteritems():
+        languagesList.append(key)
 
     # If the url given corresponds to a web component, 
     # the metadata about it is stored and it is sent the number of
@@ -163,10 +164,10 @@ class ComponentListHandler(webapp2.RequestHandler):
         repo.releases = list_release
         repo.put()
 
-      # The component has been uploaded succesfully
-      print "LOG_INFO: Component uploaded succesfully"
-      #TODO Build the response
-      self.response.set_status(200)
+        # The component has been uploaded succesfully
+        print "LOG_INFO: Component uploaded succesfully"
+        #TODO Build the response
+        self.response.set_status(200)
 
     # If the uri doesn't correspond to a component, return an error status
     else:
@@ -208,10 +209,16 @@ class ComponentHandler(webapp2.RequestHandler):
     
     # Returns the component queried
     component = Repo.query(Repo.full_name_id == component_id).get()
-    print component
     if component == None: 
       self.response.set_status(404)
     else:
+      # Get the user rating (userRating field in the response)
+      rating = 0
+      if not user == "none":
+        componentRating = UserRating.query(ndb.AND(UserRating.google_user_id == user,
+          UserRating.repo_full_name_id == component.full_name_id)).get()
+        if not componentRating == None:
+          rating = componentRating.rating_value
       # Builds the response
       response = {
         'componentId': component.full_name_id,
@@ -221,7 +228,7 @@ class ComponentHandler(webapp2.RequestHandler):
         'nStars' : component.stars,
         'starRate' : component.reputation,
         'nForks' : component.forks,
-        'userRating' : 0
+        'userRating' : rating
       }
       self.response.content_type = 'application/json'
       self.response.write(json.dumps(response))
@@ -236,7 +243,7 @@ class ComponentHandler(webapp2.RequestHandler):
     """
     # Get the request params
     user = self.request.get("user", default_value = "null")
-    rate = self.request.get("rate", default_value = 0)
+    rate = float(self.request.get("rate", default_value = 0.0))
     # Check if the components exists. If not, return
     repo = Repo.query(Repo.full_name_id  == component_id).get()
     if not repo == None:
@@ -249,7 +256,7 @@ class ComponentHandler(webapp2.RequestHandler):
           rating_value= rate)
         newRating.put()
         #Recalculate the reputation of the repo
-        repo.reputation_sum = repo.reputation_sum + userRating 
+        repo.reputation_sum = repo.reputation_sum + rate 
         repo.ratingsCount = repo.ratingsCount + 1
         repo.reputation = float(repo.reputation_sum / repo.ratingsCount)
         repo.put()
