@@ -7,7 +7,6 @@
     "paper-elements": "Polymer/paper-elements",
 		"star-rate": "",
     "angularjs": "~1.2.25",
-    "google-signin": "~0.1.0",
     "ng-polymer-elements": "~0.1.0",
     "angular-route": "~1.2.25",
     "angular-touch": "~1.2.25",
