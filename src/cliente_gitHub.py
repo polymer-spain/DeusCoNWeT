@@ -50,7 +50,13 @@ def getRepoInfo():
   elif response.status == 404:
     print "La URL dada no corresponde a un repositorio valido o el repositorio es privado"
     return None
-  repoDetails = json.loads(response.read())
+  elif not response.status == 200:
+    print "ERROR: El servidor de github devolvio un status de error: " + str(response.status)
+    return None
+
+  aux = response.read()
+  print "RESPUESTA: " + str(response.status)
+  repoDetails = json.loads(aux)
   return repoDetails
 
 #Gets the languages of a given repo
