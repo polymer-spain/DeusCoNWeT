@@ -1,0 +1,10 @@
+indexes:
+
+- kind: Repo
+  properties:
+  - name: stars
+  - name: description
+  - name: name_repo
+  - name: owner.login
+  - name: reputation
+  - name: name_repo_lower_case

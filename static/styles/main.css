@@ -1,0 +1,137 @@
+body,html {
+	height: 100%;
+}
+html{
+	min-width: 1024px;
+
+}
+body {
+	margin: 0;
+	font-family: 'Lora', Trebuched;
+	background-color: #E9E9E9;
+}
+
+/*}*/
+.wrapper {
+	min-height:100%; /* gives layout 100% height */
+	margin:0; /* centers #wrapper */
+	background:#CCC;
+}
+a:link,a:visited{
+	text-decoration: none;
+	color: inherit;
+}
+
+.search{
+	font-size: 60%;
+	margin:0px;
+	vertical-align: bottom;
+	padding-bottom: 15px;
+}
+
+.search /deep/ .focused-underline
+{
+	/* line color when the input is unfocused */
+	background-color: white;
+}
+.search /deep/ ::-webkit-input-placeholder {
+	/* platform specific rules for placeholder text */
+	color: inherit;
+}
+.search /deep/ ::-moz-placeholder {
+	color: inherit;
+}
+.search /deep/ :-ms-input-placeholder {
+	color: inherit;
+}
+
+.views {
+	width: 50%;
+	margin: 0 auto;
+	padding: 125px 5% 10% 5%;
+	background-color: transparent;
+	background: transparent;
+}
+
+.titulo {
+	font-size: 130%;
+	font-style: italic;
+}
+paper-button {
+	font-size: 60%;	
+}
+paper-button:hover {
+	background: #448AFF;
+	color: white;
+}
+
+.pieContenido {
+	background-color: #303F9F;
+	font-size: 18px;
+	color: white;
+
+}
+
+.logo {
+	height: inherit;
+	width: auto;
+	cursor: pointer;
+}
+
+.footer{
+	height: 150px;
+	margin-top:-151px; /* -80px sucks it back in & auto centers it */
+}
+
+star-rate {
+	color: orange;
+	stroke: red;
+	stroke-width: 0.4px;
+}
+.g-signin{
+	padding: 10px 0px 10px 0px;
+}
+
+.g-signout {
+	background-color: #666;
+	box-shadow: 2px 2px 1px #111;
+	padding: 0px;
+}
+.g-signout::shadow core-icon > div{
+	border-radius: 100%;
+}
+.g-signout::shadow  #icon{
+	width: 30px;
+	height: 30px;
+}
+.g-signout {
+	border-radius: 100%;	
+}
+.g-signout:hover{
+	box-shadow: 3px 3px 5px #111; 
+}
+#userName {
+	font-size: 65%	
+}
+#userName:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.copyright {
+	color: inherit;
+	background-color: inherit;	
+}
+#header {
+	position:fixed;
+	width: 100%;
+	z-index: 1;
+	top: 0px;
+}
+core-toolbar {
+	background-color: #303F9F;
+	color: white;
+}
+#login {
+	margin-top: 8px;
+}

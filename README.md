@@ -5,7 +5,7 @@ Grupo de trabajo de la Escuela Técnica Superior de Ingenieros Informáticos
 de la Universidad Politécnica de Madrid. 
 
 Los miembros de este grupo son:
-	
+	· Arato, Razvan
 	· Castaño Burgos, Alberto (acburgos)
 	· Herranz Fernández, David (dh1118)
 	· Lizcano Casas, David 
@@ -13,4 +13,5 @@ Los miembros de este grupo son:
 	· López Gómez, Genoveva
 	· Madridejos Zamorano, Enrique (EnriqueMZ)
 	· Ruiz Ruiz, Luis (lruizr)
+	· Salamanca Carmona, Juan Francisco (JuanFryS)
 
