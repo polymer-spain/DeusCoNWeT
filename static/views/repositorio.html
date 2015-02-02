@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="../styles/repositorio.css">
+<link rel="stylesheet" href="styles/repositorio.css">
 
 
 
@@ -25,7 +25,7 @@
         <span class="description">{{component.description}}</span>
         <hr/>
         <p>Tu valoración</p>
-        <star-rate class="stars" varlue="{{component.userRating}}" ng-click="valorar()" id="rate"></star-rate><br/>
+        <star-rate class="stars" value="{{component.userRating}}" ng-click="valorar()" id="rate"></star-rate><br/>
         <span class="animate-show" ng-show="mostrarValorado">Ha valorado con un {{valorado}}.</span>
       </div>
     </div>

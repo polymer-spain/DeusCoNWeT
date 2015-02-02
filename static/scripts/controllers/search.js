@@ -34,9 +34,9 @@ angular.module('PolymerBricks')
 	};
 	$scope.init = function (){
 		var callback = function(response) {
-			console.log(response);	
+
 			$scope.$apply(function() {
-				$scope.webComponents = response;	
+				$scope.webComponents = response;
 			}
 						 )};
 		getAllComponents($scope.orderBy,$scope.sortBy,callback);

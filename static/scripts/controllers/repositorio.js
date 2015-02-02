@@ -20,31 +20,34 @@ angular.module('PolymerBricks')
 
 	$scope.init = function ()
 	{
-		if (apisToLoad === 0){
-			google.appengine.api.polymerBricks.getComponent($routeParams.componentID,$scope.userId());
-		}
+		var callback = function(respuesta){
+
+			$scope.$apply(function() {
+				$scope.component = respuesta;
+			});
+		};
+		$timeout(function() {
+			getComponent($routeParams.componentID,$scope.userId(),callback);
+		},1000);
 	};
 
 	if ($scope.$parent.user.id !== undefined) {
 		document.querySelector('#rate').setAttribute('readOnly',false);	
-	} else {
-		document.querySelector('#rate').setAttribute('readOnly',true);	
-	}
+	} 
 
 	$scope.valorar = function () {
 		$scope.valorado = document.querySelector('#rate').value;
 
 		if ($scope.userId()) {
-			google.appengine.api.polymerBricks.rateComponent($scope.component.componentId,$scope.valorado,$scope.userId());
+			var callback = function(){
 
-
+			}
+			rateComponent($scope.component.componentId,$scope.valorado,$scope.userId(),callback);
 			$scope.mostrarValorado=true;
 			$timeout(function () {
 				$scope.mostrarValorado = false;
 			},3000);
-
 		} else {
-
 			document.querySelector('#toast').show();
 		}
 
