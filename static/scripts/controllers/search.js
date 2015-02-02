@@ -17,7 +17,7 @@ angular.module('PolymerBricks')
 
 	$scope.setSort = function (sortBy) {
 		$scope.sortBy=sortBy;
-		google.appengine.api.polymerBricks.getAllComponents($scope.orderBy,$scope.sortBy);
+		getAllComponent($scope.orderBy,$scope.sortBy);
 	};
 
 	$scope.setOrder = function () {
@@ -33,9 +33,13 @@ angular.module('PolymerBricks')
 		$scope.setSort(sortBy);
 	};
 	$scope.init = function (){
-		if (apisToLoad === 0){
-			google.appengine.api.polymerBricks.getAllComponents($scope.orderBy,$scope.sortBy);
-		}else {}
+		var callback = function(response) {
+
+			$scope.$apply(function() {
+				$scope.webComponents = response;
+			}
+						 )};
+		getAllComponents($scope.orderBy,$scope.sortBy,callback);
 	};
 
 	$scope.respuesta = '';

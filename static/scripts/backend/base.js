@@ -1,138 +1,63 @@
-'use strict';
-/**
-	 * @fileoverview
-	 * Provides methods for the polymerBricks Endpoints sample UI and interaction with the
-	 * polymerBricks Endpoints API.
-	 */
 
-/** google global namespace for Google projects. */
-var google = google || [];
-var apisToLoad = 1;// must match number of calls to gapi.client.load()
-/** appengine namespace for Google Developer Relations projects. */
-google.appengine = google.appengine || {};
+/* Llamadas a las api*/
+var base = "http://localhost:8080/";
 
-/** samples namespace for App Engine sample code. */
-google.appengine.api = google.appengine.api || {};
+// Peticion de todos los componentes ordenados //
+var getAllComponents = function(orderBy,sortBy,callback) {
+	xhr = new XMLHttpRequest();
+	var url = base + "componentes";
+	xhr.open("GET", url, true);
 
-/** polymerBricks namespace for this sample. */
-google.appengine.api.polymerBricks = google.appengine.api.polymerBricks || {};
-/**
-	 * Client ID of the application (from the APIs Console).
-	 * @type {string}
-	 */
-google.appengine.api.polymerBricks.CLIENT_ID =
-	'example-project-13';
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			if (callback != undefined) {
+				eval(callback(JSON.parse(xhr.responseText)));
+			}
+		}
+	}
+	xhr.send();
+}
 
-/**
-	 * Scopes used by the application.
-	 * @type {string}
-	 */
-google.appengine.api.polymerBricks.SCOPES =
-	'https://www.googleapis.com/auth/userinfo.email';
-/**
-	 * Whether or not the user is signed in.
-	 * @type {boolean}
-	 */
-google.appengine.api.polymerBricks.signedIn = false;
 
-/**
-	 * Initializes the application.
-	 * @param {string} apiRoot Root of the API's path.
-	 */
-google.appengine.api.polymerBricks.init = function (apiRoot) {
-	// Loads the OAuth and helloworld APIs asynchronously, and triggers 
-	// when they have completed.
+// Peticion de un componentes
 
-	var callback = function () {
-		if (--apisToLoad === 0) {
+var getComponent = function(id_componente,usuario,callback) {
+	xhr = new XMLHttpRequest();
+	
+	if (usuario != undefined) {
+		var params = "?user="+usuario;
+	}
+	var url = base + "componentes/"+id_componente+params;
 
-			var scope = angular.element(document.getElementById('views')).scope();
-			scope.init();
+	xhr.open("GET",url,true);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState ==  4) {
+			if (callback != undefined) {
+				eval(callback(JSON.parse(xhr.responseText)));	
+			};
 		}
 	};
-
-	gapi.client.load('polymerbricks', 'v1.1', callback, apiRoot);
-};
-
-google.appengine.api.polymerBricks.getAllComponentsLimit = function (orderBy,sortBy,limit) {
-	document.getElementById('tabs').style.cursor = 'wait';
-	gapi.client.polymerbricks.components.getAllComponents({'orderBy' : orderBy,'sortBy': sortBy,'limit':limit}).execute(
-		function(resp) {
-
-			var scope = angular.element(document.getElementById('lista')).scope();
-			scope.$apply(function () {
-				scope.webComponents = resp.items;
-				localStorage.setItem('components',JSON.stringify(resp.items));
-			});
-			document.getElementById('tabs').style.cursor = 'default';
-		});
-};
-
-google.appengine.api.polymerBricks.getAllComponents = function (orderBy,sortBy) {
-	document.getElementById('tabs').style.cursor = 'wait';
-	gapi.client.polymerbricks.components.getAllComponents({'orderBy' : orderBy,'sortBy': sortBy}).execute(
-		function(resp) {
-
-			var scope = angular.element(document.getElementById('views')).scope();
-			scope.$apply(function () {
-				scope.webComponents = resp.items;
-				localStorage.setItem('components',JSON.stringify(resp.items));
-			});
-			document.getElementById('tabs').style.cursor = 'default';
-		});
-};
-
-google.appengine.api.polymerBricks.uploadComponent = function (URL) {
-	gapi.client.polymerbricks.components.uploadComponent({'url' : URL}).execute (
-		function(resp) {
-			var scope = angular.element(document.getElementById('inputC')).scope();
-			if (resp.status_code === undefined){
-				if (resp.code === 404) {
-					scope.loadModal(404);
-				} else {
-					scope.loadModal(403);
-				}
-			} else  {
-				scope.loadModal(201);
-			}
-		});
-};
-
-google.appengine.api.polymerBricks.getComponent = function (component) {
-	gapi.client.polymerbricks.components.getComponent({'idComponent' : component}).execute(
-		function (resp) {
-			var scope = angular.element(document.getElementById('views')).scope();
-			console.log("Llamada a get component");
-			scope.$apply(function () {
-				scope.component = resp;
-				localStorage.setItem('component',JSON.stringify(resp));
-				console.log(resp);
-			});
-			return resp;
-		});
+	xhr.send();
 }
-google.appengine.api.polymerBricks.rateComponent = function (idComponent, rate) {
-	gapi.client.polymerbricks.components.rateComponent({'idComponent': idComponent,'rate': rate}).execute(function () {
-	})
-	google.appengine.api.polymerBricks.getComponent = function (component,userId) {
-		gapi.client.polymerbricks.components.getComponent({'idComponent' : component,'user': userId}).execute(
-			function (resp) {
-				var scope = angular.element(document.getElementById('views')).scope();
-				scope.$apply(function () {
-					scope.component = resp;
-					document.querySelector('#rate').value = resp.userRating;
 
-					localStorage.setItem('component',JSON.stringify(resp));
-				});
-				return resp;
-			});
-	};
-	google.appengine.api.polymerBricks.rateComponent = function (idComponent, rate, UserId) {
-		gapi.client.polymerbricks.components.rateComponent({'idComponent': idComponent,'rate': rate,'user': UserId}).execute(function () {
-		});
+// Valorar un componente 
 
+var rateComponent = function(id_componente,valoracion,usuario,callback) {
+	var xhr = new XMLHttpRequest();
+
+	var params="?rate="+valoracion+"\&user="+usuario;
+	var url = base + "componentes/"+id_componente+params;
+
+	xhr.open("POST",url,true);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			if (callback != undefined) {
+				eval(callback);		
+			};
+		}
 	};
-};
+	xhr.send();
+}
 
 var onSignInCallback = function(authResult) {
 	gapi.client.load('plus','v1').then(function() {
@@ -185,7 +110,7 @@ var disconnect =  function() {
 	};
 
 	var url = 'https://accounts.google.com/o/oauth2/revoke?token=' +
-			gapi.auth.getToken().access_token;
+		gapi.auth.getToken().access_token;
 	jsonp(url,callback);
 };
 

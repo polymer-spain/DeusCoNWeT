@@ -22,12 +22,13 @@ angular.module('PolymerBricks')
 	} else {
 		$scope.webComponents = [];	
 	}
+	
 	$scope.changeView = $scope.$parent.changeView;
 
 
 	$scope.setSort = function (sortBy) {
 		$scope.sortBy=sortBy;
-		google.appengine.api.polymerBricks.getAllComponentsLimit($scope.orderBy,$scope.sortBy,3);
+		getAllComponent($scope.orderBy,$scope.sortBy);
 	};
 
 	$scope.setOrder = function () {
@@ -45,9 +46,10 @@ angular.module('PolymerBricks')
 	};
 	$scope.init = function ()
 	{
-/*		if (apisToLoad === 0){
-			google.appengine.api.polymerBricks.getAllComponentsLimit($scope.orderBy,$scope.sortBy,3);
-		}*/
+		var callback = function(respunesta){
+			console.log(respuesta);
+		}
+			getAllComponent($scope.orderBy,$scope.sortBy,callback);
 	};
 
 	$scope.respuesta = '';

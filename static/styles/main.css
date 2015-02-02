@@ -17,7 +17,7 @@ body {
 	margin:0; /* centers #wrapper */
 	background:#CCC;
 }
-a:visited{
+a:link,a:visited{
 	text-decoration: none;
 	color: inherit;
 }
@@ -66,10 +66,10 @@ paper-button:hover {
 }
 
 .pieContenido {
-	margin-top: 10px;
+	background-color: #303F9F;
 	font-size: 18px;
 	color: white;
-	background-color: #303F9F;
+
 }
 
 .logo {
@@ -79,8 +79,8 @@ paper-button:hover {
 }
 
 .footer{
-	height: 125px;
-	margin-top:-125px; /* -80px sucks it back in & auto centers it */
+	height: 150px;
+	margin-top:-151px; /* -80px sucks it back in & auto centers it */
 }
 
 star-rate {
@@ -116,26 +116,6 @@ star-rate {
 #userName:hover {
 	text-decoration: underline;
 	cursor: pointer;
-}
-
-.views.ng-enter,
-.views.ng-leave {
-	-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	transition: all 1s ease;
-}
-.views.ng-enter {
-	opacity: 0;
-}
-.views.ng-enter-active {
-	opacity: 1;
-}
-.views.ng-leave {
-	opacity: 1;
-}
-.views.ng-leave-active {
-	opacity: 0;
 }
 
 .copyright {

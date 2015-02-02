@@ -2,7 +2,7 @@
 
 
 
-<div ng-controller="ComponentCtrl" id="views" ng-init="init()" class="main">
+<div ng-controller="ComponentCtrl" id="views"  ng-init="init()" class="main">
 
   <div horizontal center-justified layout>
     <div flex two>
@@ -25,14 +25,9 @@
         <span class="description">{{component.description}}</span>
         <hr/>
         <p>Tu valoración</p>
-        <star-rate class="stars" varlue="{{component.userRating}}" ng-click="valorar()" id="rate"></star-rate><br/>
+        <star-rate class="stars" value="{{component.userRating}}" ng-click="valorar()" id="rate"></star-rate><br/>
         <span class="animate-show" ng-show="mostrarValorado">Ha valorado con un {{valorado}}.</span>
       </div>
-    </div>
-
-    <div flex three vertical center-justified 
-     layout class="demo">
-      <iframe class="demoC" src="http://centauro.ls.fi.upm.es/bower_components/star-rate/demo.html"></iframe>
     </div>
   </div>
 </div>

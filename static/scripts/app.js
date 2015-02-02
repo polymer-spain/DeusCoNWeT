@@ -46,25 +46,13 @@
 		.when('/profile/:userId', {
 			templateUrl: 'views/profile.html',
 			controller: 'ProfileCtrl'
-		})
-		/*    .when('/sandbox',{
-      templateUrl: 'views/sandbox.html',
-      controller: 'SandboxCtrl'
-    })*/
-
-		;
-		/* .otherwise({
-      redirectTo: '/'
-    });*/
-
-		/* $locationProvider.html5Mode(true);*/
+		});
 	});
 
 	document.addEventListener('polymer-ready', function() {
 		// Perform some behaviour
-		//angular.bootstrap(wrap(document),['PolymerBricks']);
-		console.log('Polymer is ready to rock!');
+
 	});
 	// wrap document so it plays nice with other libraries
-	// http://www.polymer-project.org/platform/shadow-dom.html#wrappers
+
 })(wrap(document));
