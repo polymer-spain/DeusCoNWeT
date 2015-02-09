@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
+#!/usr/bin/env python
 """ Copyright 2015 Luis Ruiz Ruiz
-	Copyright 2015 Ana Isabel Lopera Martinez
-	Copyright 2015 Miguel Ortega Moreno
+  Copyright 2015 Ana Isabel Lopera Martinez
+  Copyright 2015 Miguel Ortega Moreno
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,6 +16,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from __future__ import absolute_import
 
 import webapp2
 import re, string, json
@@ -22,6 +24,12 @@ from google.appengine.ext import ndb
 # Local imports
 from ndb import Tag, Release, Autor, Repo, UserRating 
 import cliente_gitHub
+
+
+import sys
+sys.path.insert(1, 'lib')
+
+from lib import tweepy
 
 class ComponentListHandler(webapp2.RequestHandler):
   """
@@ -270,8 +278,33 @@ class ComponentHandler(webapp2.RequestHandler):
         self.response.set_status(404)
 
 
+class OAuthTwitterHandler(webapp2.RequestHandler):
+  """
+  Class that defines the component resource
+  It acts as the handler of the /components/{component_id} resource
+  Methods:
+  get -- Gets the info about a component 
+  put -- Adds a rating about a component  
+  """
+
+  def get(self):
+    """ - Add a rating about a component
+    Keyword arguments: 
+      self -- info about the request build by webapp2
+      component_id -- path url directory corresponding to the component id
+    """
+
+    auth = tweepy.OAuthHandler("tuprQMrGCdGyz7QDVKdemEWXl", "byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm")
+    auth.set_access_token(access_token, access_token_secret)
+
+    api = tweepy.API(auth)
+
+    public_tweets = api.home_timeline()
+    for tweet in public_tweets:
+      print tweet.text
 
 app = webapp2.WSGIApplication([
     (r'/componentes', ComponentListHandler),
-    (r'/componentes/(.*)', ComponentHandler)
+    (r'/componentes/(.*)', ComponentHandler),
+    (r'/oauth/twitter', OAuthTwitterHandler)
 ], debug=True)
