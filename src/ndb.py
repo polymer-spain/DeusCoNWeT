@@ -98,3 +98,8 @@ class UserRating(ndb.Model):
   repo_full_name_id = ndb.StringProperty()
   repo_hash = ndb.StringProperty()
   rating_value = ndb.FloatProperty()
+
+# Entidad Grupo
+class Grupo(ndb.Model):
+  nombre = ndb.StringProperty()
+  lista_Usuarios = ndb.StringProperty(repeated = True)
