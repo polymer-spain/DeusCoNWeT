@@ -16,7 +16,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from __future__ import absolute_import
 
 import webapp2
 import re, string, json
@@ -25,11 +24,11 @@ from google.appengine.ext import ndb
 from ndb import Tag, Release, Autor, Repo, UserRating 
 import cliente_gitHub
 
-
+# Imports for twitter
 import sys
-sys.path.insert(1, 'lib')
+sys.path.insert(1, 'lib/')
+import oauth
 
-from lib import tweepy
 
 class ComponentListHandler(webapp2.RequestHandler):
   """
@@ -293,15 +292,22 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
       self -- info about the request build by webapp2
       component_id -- path url directory corresponding to the component id
     """
+    action = self.request.get("action", default_value="request_token")
+    consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
+    consumer_secret = 'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
+    request_token_url = 'https://api.twitter.com/oauth/request_token'
+    base_authorization_url = 'https://api.twitter.com/oauth/authorize'
 
-    auth = tweepy.OAuthHandler("tuprQMrGCdGyz7QDVKdemEWXl", "byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm")
-    auth.set_access_token(access_token, access_token_secret)
+    client = oauth.TwitterClient(consumer_key, consumer_secret, "http://localhost:8080/oauth/twitter?action=authorization")
+    if action == "request_token":
+      return self.redirect(client.get_authorization_url())
+    elif action == "authorization":
+      auth_token = self.request.get("oauth_token")
+      auth_verifier = self.request.get("oauth_verifier")
+      user_info = client.get_user_info(auth_token, auth_verifier=auth_verifier)
+      return self.response.out.write(user_info)
 
-    api = tweepy.API(auth)
 
-    public_tweets = api.home_timeline()
-    for tweet in public_tweets:
-      print tweet.text
 
 app = webapp2.WSGIApplication([
     (r'/componentes', ComponentListHandler),
