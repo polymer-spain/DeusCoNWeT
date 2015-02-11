@@ -298,12 +298,12 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
     request_token_url = 'https://api.twitter.com/oauth/request_token'
     base_authorization_url = 'https://api.twitter.com/oauth/authorize'
 
-    client = oauth.TwitterClient(consumer_key, consumer_secret, "http://localhost:8080/oauth/twitter?action=authorization")
+    client = oauth.TwitterClient(consumer_key, consumer_secret, "http://localhost:4544/oauth/twitter?action=authorization")
     if action == "request_token":
       return self.redirect(client.get_authorization_url())
     elif action == "authorization":
       auth_token = self.request.get("oauth_token")
-      auth_verifier = self.request.get("oauth_verifier")
+      auth_verifier = self.request.get("oauht_verifier")
       user_info = client.get_user_info(auth_token, auth_verifier=auth_verifier)
       return self.response.out.write(user_info)
 
