@@ -103,3 +103,4 @@ class UserRating(ndb.Model):
 class Grupo(ndb.Model):
   nombre = ndb.StringProperty()
   lista_Usuarios = ndb.StringProperty(repeated = True)
+  descripcion = ndb.StringProperty()
