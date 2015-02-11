@@ -301,7 +301,7 @@ class UserListHandler(webapp2.RequestHandler):
       user = Usuario.query(Usuario.email == email).get()
       if user == None:
         # Creates the new user
-        newUser = Usuario(nombre = name, identificador = name , email = email, lista_Redes = [], lista_grupos = [])
+        newUser = Usuario(nombre = name, identificador = name , email = email, lista_Redes = [], lista_Grupos = [])
         self.response.status(200)
       else:
         # Returns a Not Modified status
