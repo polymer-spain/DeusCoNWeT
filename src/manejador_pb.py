@@ -339,7 +339,7 @@ class UserHandler(webapp2.RequestHandler):
         'user_id' : user.identificador,
         'email' : user.email,
         'network_list' : user.lista_Redes,
-        'group_list' : user.lista_grupos 
+        'group_list' : user.lista_Grupos 
       }
       self.response.content_type = 'application/json'
       self.response.write(json.dumps(response))
