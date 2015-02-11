@@ -105,3 +105,4 @@ class Usuario(ndb.Model):
   identificador = ndb.StringProperty()
   email = ndb.StringProperty()
   lista_Redes = ndb.StringProperty(repeated = True)
+  lista_grupos = ndb.StringProperty(repeated = True)
