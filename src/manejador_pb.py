@@ -303,9 +303,10 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
       return self.redirect(client.get_authorization_url())
     elif action == "authorization":
       auth_token = self.request.get("oauth_token")
-      auth_verifier = self.request.get("oauht_verifier")
+      auth_verifier = self.request.get("oauth_verifier")
       user_info = client.get_user_info(auth_token, auth_verifier=auth_verifier)
-      return self.response.out.write(user_info)
+      # return self.response.out.write(user_info) # Return user info?
+      self.response.set_status(200)
 
 
 
