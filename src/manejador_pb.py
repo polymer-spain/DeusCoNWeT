@@ -296,20 +296,21 @@ class UserListHandler(webapp2.RequestHandler):
     """
     name = self.request.get("name", default_value = "None")
     email = self.request.get("email", default_value = "None")
-    if not name == "None" or not email == "None":
+    if not name == "None" and not email == "None":
       # Checks if the user was previously stored
       user = Usuario.query(Usuario.email == email).get()
       if user == None:
         # Creates the new user
         newUser = Usuario(nombre = name, identificador = name , email = email, lista_Redes = [], lista_Grupos = [])
-        self.response.status(200)
+        newUser.put()
+        self.response.set_status(200)
       else:
         # Returns a Not Modified status
-        self.response.status(304)
+        self.response.set_status(304)
 
     else: 
       # Returns a Bad Request status
-      self.response.status(400)
+      self.response.set_status(400)
 
 
 class UserHandler(webapp2.RequestHandler):
