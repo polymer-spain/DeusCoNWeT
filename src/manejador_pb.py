@@ -20,7 +20,7 @@ import webapp2
 import re, string, json
 from google.appengine.ext import ndb
 # Local imports
-from ndb import Tag, Release, Autor, Repo, UserRating 
+from ndb import Tag, Release, Autor, Repo, UserRating , Usuario, Grupo
 import cliente_gitHub
 
 class ComponentListHandler(webapp2.RequestHandler):
@@ -115,9 +115,8 @@ class ComponentListHandler(webapp2.RequestHandler):
     if component:
       # Also check if the component was uploaded previously
       if not (Repo.query(Repo.full_name == repoDetails['full_name']).count()) == 0:
-        #raise ComponentAlreadyStoredException("The component had been stored")
-        #TODO build the response
-        self.response.set_status(403)
+        # Returns Not Modified Status 
+        self.response.set_status(304)
       else:
         # Get the Repo tags
         tagsList = cliente_gitHub.getTags(True)
@@ -205,7 +204,6 @@ class ComponentHandler(webapp2.RequestHandler):
     #componentId = self.request.get("componentId", default_value = "null")
     user = self.request.get("user", default_value = "null")
     componentId = self.request.path
-    print "DEBUG: PATH queried " + componentId
     
     # Returns the component queried
     component = Repo.query(Repo.full_name_id == component_id).get()
@@ -260,18 +258,98 @@ class ComponentHandler(webapp2.RequestHandler):
         repo.ratingsCount = repo.ratingsCount + 1
         repo.reputation = float(repo.reputation_sum / repo.ratingsCount)
         repo.put()
-        print "DEBUG: Creado usuario. Almacenada reputacion"
+        print "DEBUG: Creada tupla de valoracion de usuario. Almacenada reputacion"
       else:
         # The User had rated the component previously
-        # raise RateNotUpdatedException("The user had rated the component previously")
-        self.response.set_status(403)
+        self.response.set_status(304)
     else:
         # raise NotFoundException("Component not found in Datastore")
         self.response.set_status(404)
 
 
+class UserListHandler(webapp2.RequestHandler):
+  """
+  Class that defines the user resource
+  It acts as the handler of the /usuarios/{user_id} resource
+  Methods:
+  get -- Returns a list of all the users stored in the system
+  post -- Adds a new user to the system
+  """
+
+  # GET Method
+  def get(self):
+    """ Returns a list of all the users stored in the system
+    Keyword arguments: 
+      self -- info about the request build by webapp2
+    """
+    results = Usuario.query().fetch()
+
+    self.response.content_type = 'application/json'
+    self.response.write(json.dumps(results))
+
+
+  # POST Method
+  def post(self):
+    """ Adds a new user to the system
+    Keyword arguments: 
+      self -- info about the request build by webapp2
+    """
+    name = self.request.get("name", default_value = "None")
+    email = self.request.get("email", default_value = "None")
+    if not name == "None" and not email == "None":
+      # Checks if the user was previously stored
+      user = Usuario.query(Usuario.email == email).get()
+      if user == None:
+        # Creates the new user
+        newUser = Usuario(nombre = name, identificador = name , email = email, lista_Redes = [], lista_Grupos = [])
+        newUser.put()
+        self.response.set_status(200)
+      else:
+        # Returns a Not Modified status
+        self.response.set_status(304)
+
+    else: 
+      # Returns a Bad Request status
+      self.response.set_status(400)
+
+
+class UserHandler(webapp2.RequestHandler):
+  """
+  Class that defines the user resource
+  It acts as the handler of the /usuarios/{user_id} resource
+  Methods:
+  get -- Gets the info about a user  
+  """
+
+    
+  # GET Method
+  def get(self, user_id):
+    """ Gets the info about an user
+    Keyword arguments: 
+      self -- info about the request build by webapp2
+      user_id -- id of the user 
+    """
+    # Returns the component queried
+    user = Usuario.query(Usuario.identificador == user_id).get()
+    if user == None: 
+      self.response.set_status(404)
+    else:
+      # Builds the response
+      response = {
+        'name': user.nombre,
+        'user_id' : user.identificador,
+        'email' : user.email,
+        'network_list' : user.lista_Redes,
+        'group_list' : user.lista_Grupos 
+      }
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
+
+
 
 app = webapp2.WSGIApplication([
     (r'/componentes', ComponentListHandler),
-    (r'/componentes/(.*)', ComponentHandler)
+    (r'/usuarios', UserListHandler),
+    (r'/componentes/(.*)', ComponentHandler),
+    (r'/usuarios/(.*)', UserHandler),
 ], debug=True)
