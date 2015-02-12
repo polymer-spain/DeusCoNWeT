@@ -28,7 +28,7 @@ params = urllib.urlencode({})
 # "Authorization": "token 4b844fda635ed7e58460a1c65252df7090c38438"
 headers = {"Accept": "application/vnd.github.v3+json",
 "User-Agent": "PolymerBricks-App",
-"Authorization": "token 80b8fa6a66d6a4400aa0b0072e1f8b591362d002"}
+"Authorization": "token TOKEN_GITHUB"}
 
 # Opens the connection to the GitHub API endpoint
 def openConnection(basePathRepo):
