@@ -18,7 +18,7 @@
 """
 
 import webapp2
-import re, string, json
+import re, string, json, httplib, urllib
 from google.appengine.ext import ndb
 # Local imports
 from ndb import Tag, Release, Autor, Repo, UserRating 
@@ -279,18 +279,12 @@ class ComponentHandler(webapp2.RequestHandler):
 
 class OAuthTwitterHandler(webapp2.RequestHandler):
   """
-  Class that defines the component resource
-  It acts as the handler of the /components/{component_id} resource
-  Methods:
-  get -- Gets the info about a component 
-  put -- Adds a rating about a component  
+   
   """
 
   def get(self):
-    """ - Add a rating about a component
-    Keyword arguments: 
-      self -- info about the request build by webapp2
-      component_id -- path url directory corresponding to the component id
+    """ 
+
     """
     action = self.request.get("action", default_value="request_token")
     consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
@@ -308,10 +302,57 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
       # return self.response.out.write(user_info) # Return user info?
       self.response.set_status(200)
 
+class OAuthGithubHandler(webapp2.RequestHandler):
+  """
+  Class that will act as the handler to ask for the access_token to the GitHub API
+  """
 
+  def get(self):
+    """ Defines the flow of the process to get an access_token to use the Github API"""
+
+    url = 'github.com'
+    authorize_url = '/oauth/authorize'
+    access_token_url = '/oauth/access_token'
+    client_id = '1f21e4d820abd2cb5a7a'
+    client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
+
+    """ Firstly, we ask for the code we will exchange for the access_token """
+    connection = httplib.HTTPSConnection(url)
+    params = urllib.urlencode({'client_id': client_id})
+    headers = {
+              "Accept": "application/vnd.github.v3+json",
+              "User-Agent": "github-login",
+              "Authorization": "token f2da3d1103042894713e2862d836e09c9bb6991c"
+    }
+
+    connection.request("GET", authorize_url, params, headers)
+
+    response = connection.getresponse()
+    data = response.read()
+
+    code = json.loads(data).get('code');
+    connection.close()
+
+    """ Now, we have to exchange the code we get in the first step to get the access token """
+
+    connection_token = httplib.HTTPSConnection(url)
+
+    params_token = urllib.urlencode({'client_id': client_id,
+                                    'client_secret': client_secret,
+                                    'code': code})
+
+    connection_token.request("POST", access_token_url, params_token, headers)
+
+    response_token = connection_token.getresponse()
+    data_token = response_token.read()
+    access_token = json.loads(data_token).get('access_token')
+    connection_token.close()
+
+    return self.response.out.write(access_token)
 
 app = webapp2.WSGIApplication([
     (r'/componentes', ComponentListHandler),
     (r'/componentes/(.*)', ComponentHandler),
-    (r'/oauth/twitter', OAuthTwitterHandler)
+    (r'/oauth/twitter', OAuthTwitterHandler),
+    (r'/oauth/github', OAuthGithubHandler)
 ], debug=True)
