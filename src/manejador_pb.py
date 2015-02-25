@@ -279,12 +279,18 @@ class ComponentHandler(webapp2.RequestHandler):
 
 class OAuthTwitterHandler(webapp2.RequestHandler):
   """
-   
+  Class that defines the component resource
+  It acts as the handler of the /components/{component_id} resource
+  Methods:
+  get -- Gets the info about a component 
+  put -- Adds a rating about a component  
   """
 
   def get(self):
-    """ 
-
+    """ - Add a rating about a component
+    Keyword arguments: 
+      self -- info about the request build by webapp2
+      component_id -- path url directory corresponding to the component id
     """
     action = self.request.get("action", default_value="request_token")
     consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
@@ -292,14 +298,18 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
     request_token_url = 'https://api.twitter.com/oauth/request_token'
     base_authorization_url = 'https://api.twitter.com/oauth/authorize'
 
-    client = oauth.TwitterClient(consumer_key, consumer_secret, "http://localhost:4544/oauth/twitter?action=authorization")
+    client = oauth.TwitterClient(consumer_key, consumer_secret, "http://cool-poly-lab.appspot.com/oauth/twitter?action=authorization")
     if action == "request_token":
-      return self.redirect(client.get_authorization_url())
+      self.response.content_type = 'application/json'
+      response = {'oauth_url': client.get_authorization_url()}
+      self.response.write(json.dumps(response))
     elif action == "authorization":
       auth_token = self.request.get("oauth_token")
-      auth_verifier = self.request.get("oauht_verifier")
+      auth_verifier = self.request.get("oauth_verifier")
       user_info = client.get_user_info(auth_token, auth_verifier=auth_verifier)
-      return self.response.out.write(user_info)
+      # return self.response.out.write(user_info) # Return user info?
+      self.response.set_status(200)
+
 
 class OAuthGithubHandler(webapp2.RequestHandler):
   """
