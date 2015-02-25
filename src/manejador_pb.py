@@ -334,18 +334,18 @@ class OAuthGithubHandler(webapp2.RequestHandler):
 
     """ Now, we have to exchange the code we get in the first step to get the access token """
 
-    connection_token = httplib.HTTPSConnection(url)
+    #connection_token = httplib.HTTPSConnection(url)
 
     params_token = urllib.urlencode({'client_id': client_id,
                                     'client_secret': client_secret,
                                     'code': code})
 
-    connection_token.request("POST", access_token_url, params_token, headers)
+    connection.request("POST", access_token_url, params_token, headers)
 
     response_token = connection_token.getresponse()
     data_token = response_token.read()
     access_token = json.loads(data_token).get('access_token')
-    connection_token.close()
+    connection.close()
 
     return self.response.out.write(access_token)
 
