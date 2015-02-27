@@ -1,0 +1,4 @@
+name=lomaranis&email=lomaranis@example.com
+name=Harry%20Potter&email=HPotter@example.com
+name=Ron%20Weasley&email=RWeasley@example.com
+name=Hermione%20Granger&email=HGranger@example.com
