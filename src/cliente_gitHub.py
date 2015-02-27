@@ -28,7 +28,7 @@ params = urllib.urlencode({})
 # "Authorization": "token 4b844fda635ed7e58460a1c65252df7090c38438"
 headers = {"Accept": "application/vnd.github.v3+json",
 "User-Agent": "PolymerBricks-App",
-"Authorization": "token f2da3d1103042894713e2862d836e09c9bb6991c"}
+"Authorization": "token TOKEN_GITHUB"}
 
 # Opens the connection to the GitHub API endpoint
 def openConnection(basePathRepo):
@@ -55,7 +55,6 @@ def getRepoInfo():
     return None
 
   aux = response.read()
-  print "RESPUESTA: " + str(response.status)
   repoDetails = json.loads(aux)
   return repoDetails
 
@@ -97,7 +96,6 @@ def getCommitsTags(tagsList):
 def getCommitDetails(commit_sha):
   requestPath = basePath + '/commits/' + commit_sha
   connection.request("GET", requestPath, params, headers)
-  print requestPath
   response = connection.getresponse()
   if response.status == 403:
     print "Limit Rate exceded (Request: GET commit of a repository)"
@@ -174,7 +172,6 @@ def paginateResults(linkHeader):
     # Check if the last page has been reached
     if linkList[0] == lastLink:
       lastPage = True
-    print lastPage
   return resultsList
 
 
