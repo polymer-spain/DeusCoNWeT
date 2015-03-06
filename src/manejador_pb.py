@@ -279,18 +279,16 @@ class ComponentHandler(webapp2.RequestHandler):
 
 class OAuthTwitterHandler(webapp2.RequestHandler):
   """
-  Class that defines the component resource
-  It acts as the handler of the /components/{component_id} resource
+  Class that handles the Oauth Twitter Flow
   Methods:
-  get -- Gets the info about a component 
-  put -- Adds a rating about a component  
+  get -- gets the Twitter access_token for a user authenticated via web 
   """
 
   def get(self):
-    """ - Add a rating about a component
+    """ - Gets the Twitter access_token for a user authenticated via web and
+    stores it in the database
     Keyword arguments: 
       self -- info about the request build by webapp2
-      component_id -- path url directory corresponding to the component id
     """
     action = self.request.get("action", default_value="request_token")
     consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
@@ -359,9 +357,36 @@ class OAuthGithubHandler(webapp2.RequestHandler):
 
     return self.response.out.write(access_token)
 
+class OauthLinkedinHandler(webapp2.RequestHandler):
+  
+  def get(self):
+    pass
+
+  def post(self):
+    pass
+
+class OAuthInstagramHandler(webapp2.RequestHandler):
+  
+  def get(self):
+    pass
+
+  def post(self):
+    pass
+
+class OauthFacebookHandler(webapp2.RequestHandler):
+  
+  def get(self):
+    pass
+
+  def post(self):
+    pass
+
 app = webapp2.WSGIApplication([
     (r'/componentes', ComponentListHandler),
     (r'/componentes/(.*)', ComponentHandler),
     (r'/oauth/twitter', OAuthTwitterHandler),
-    (r'/oauth/github', OAuthGithubHandler)
+    (r'/oauth/github', OAuthGithubHandler),
+    (r'/oauth/Linkedin', OauthLinkedinHandler),
+    (r'/oauth/Instagram', OAuthInstagramHandler),
+    (r'/oauth/Facebook', OauthFacebookHandler)
 ], debug=True)
