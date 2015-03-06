@@ -328,7 +328,6 @@ class UserHandler(webapp2.RequestHandler):
   Methods:
   get -- Gets the info about a user  
   """
-
     
   # GET Method
   def get(self, user_id):
@@ -420,10 +419,40 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
 class OAuthGithubHandler(webapp2.RequestHandler):
   """
   Class that will act as the handler to ask for the access_token to the GitHub API
+  Method:
+  get -- Returns the Github access_token for a user authenticated
+  post -- Defines the flow of the process to get an access_token to use the Github API 
   """
 
+  # GET Method
   def get(self):
-    """ Defines the flow of the process to get an access_token to use the Github API"""
+    """ - Returns the Github access_token for a user authenticated
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
+      
+    username = self.request.get("username", default_value="None")
+    if not user == None:
+      user_details = Token.query(Token.nombre_usuario == username)
+      if not user_details == None:
+        response {
+          'username': user_details.nombre_usuario,
+          'id_github': user_details.id_git,
+          'token_github': user_details.token_git
+        }
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
+
+
+  # POST Method
+  def post(self):
+    """ Defines the flow of the process to get an access_token to use the Github API
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
 
     url = 'github.com'
     authorize_url = '/oauth/authorize'
@@ -463,6 +492,7 @@ class OAuthGithubHandler(webapp2.RequestHandler):
     access_token = json.loads(data_token).get('access_token')
     connection.close()
 
+    # TODO: Almacenamos el access token en la base de datos
     return self.response.out.write(access_token)
 
 
