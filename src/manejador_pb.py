@@ -352,6 +352,7 @@ class UserHandler(webapp2.RequestHandler):
       self.response.content_type = 'application/json'
       self.response.write(json.dumps(response))
 
+
 class OAuthTwitterHandler(webapp2.RequestHandler):
   """
   Class that handles the Oauth Twitter Flow
@@ -432,6 +433,7 @@ class OAuthGithubHandler(webapp2.RequestHandler):
 
     return self.response.out.write(access_token)
 
+
 class OauthLinkedinHandler(webapp2.RequestHandler):
   
   def get(self):
@@ -439,6 +441,7 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
 
   def post(self):
     pass
+
 
 class OAuthInstagramHandler(webapp2.RequestHandler):
   
@@ -448,6 +451,7 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
   def post(self):
     pass
 
+
 class OauthFacebookHandler(webapp2.RequestHandler):
   
   def get(self):
@@ -455,6 +459,7 @@ class OauthFacebookHandler(webapp2.RequestHandler):
 
   def post(self):
     pass
+
 
 app = webapp2.WSGIApplication([
     (r'/componentes', ComponentListHandler),
