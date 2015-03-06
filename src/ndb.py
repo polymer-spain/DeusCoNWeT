@@ -127,12 +127,29 @@ class RedSocial(ndb.Model):
   url_fb_seg = ndb.StringProperty()
   # Faltan las uris del resto de apis a consultar
 
-  #Actualiza el número de seguidores y siguiendo de cada red red social 
-  def actualizaTwitter_sig(self):
-    # Hay que usar el token de Twitter para acceder a la API 
+  # #Actualiza el número de seguidores y siguiendo de cada red red social 
+  # def actualizaTwitter_sig(self):
+  #   # Hay que usar el token de Twitter para acceder a la API 
 
-  def actualizaTwitter_seg(self):
-    # Hay que usar el token de Twitter para acceder a la API 
+  # def actualizaTwitter_seg(self):
+  #   # Hay que usar el token de Twitter para acceder a la API 
 
-  def actualizaFacebook_sig(self):
-    # Hay que usar el token de Facebook para acceder a la API
+  # def actualizaFacebook_sig(self):
+  #   # Hay que usar el token de Facebook para acceder a la API
+
+class Token(ndb.Model):
+  nombre_usuario = ndb.StringProperty()
+  id_fb = ndb.StringProperty()
+  token_fb = ndb.StringProperty()
+  id_tw = ndb.StringProperty()
+  token_tw = ndb.StringProperty()
+  id_sof = ndb.StringProperty()
+  token_sof = ndb.StringProperty()
+  id_li = ndb.StringProperty()
+  token_li = ndb.StringProperty()
+  id_ins = ndb.StringProperty()
+  token_ins = ndb.StringProperty()
+  id_git = ndb.StringProperty()
+  token_git = ndb.StringProperty()
+  id_google = ndb.StringProperty()
+  token_google = ndb.StringProperty()

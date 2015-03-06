@@ -3,6 +3,7 @@
 """ Copyright 2015 Luis Ruiz Ruiz
   Copyright 2015 Ana Isabel Lopera Martinez
   Copyright 2015 Miguel Ortega Moreno
+  Copyright 2015 Juan Francisco Salamanca
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
