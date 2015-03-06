@@ -18,51 +18,52 @@
 
 from google.appengine.ext import ndb
 """NDB Instances """
-class Tag(ndb.Model):
-  name_tag = ndb.StringProperty()
-  date_tag = ndb.StringProperty()
-  author = ndb.StringProperty()
-  zipball_url = ndb.StringProperty()
-  tarball_url = ndb.StringProperty()
+# class Tag(ndb.Model):
+#   name_tag = ndb.StringProperty()
+#   date_tag = ndb.StringProperty()
+#   author = ndb.StringProperty()
+#   zipball_url = ndb.StringProperty()
+#   tarball_url = ndb.StringProperty()
 
-class Release(ndb.Model):
-  tag_name = ndb.StringProperty()
-  html_url = ndb.StringProperty()
-  name_release = ndb.StringProperty()
-  description = ndb.TextProperty()
-  publish_date = ndb.StringProperty()
-  zipball_url = ndb.StringProperty()
-  tarball_url = ndb.StringProperty()
+# class Release(ndb.Model):
+#   tag_name = ndb.StringProperty()
+#   html_url = ndb.StringProperty()
+#   name_release = ndb.StringProperty()
+#   description = ndb.TextProperty()
+#   publish_date = ndb.StringProperty()
+#   zipball_url = ndb.StringProperty()
+#   tarball_url = ndb.StringProperty()
 
 class Autor(ndb.Model):
   login = ndb.StringProperty()
   user_id = ndb.IntegerProperty()
   html_url = ndb.StringProperty()
   followers = ndb.IntegerProperty()
+  following = ndb.IntegerProperty()
 
-class Repo(ndb.Model):
+class Componente(ndb.Model):
   full_name = ndb.StringProperty() # Format: ":author/:repo"
   repo_id = ndb.IntegerProperty() # Id of the repo in Github
   name_repo = ndb.StringProperty()
   # ComponentID for the repo. It's the id for the repo managed by polymer_bricks
   full_name_id = ndb.StringProperty() # Format: ":author_:repo"
-  owner = ndb.StructuredProperty(Autor)
+  autor = ndb.StructuredProperty(Autor)
   html_url = ndb.StringProperty()
   description = ndb.StringProperty()
   stars = ndb.IntegerProperty()
   forks = ndb.IntegerProperty()
   languages = ndb.StringProperty(repeated=True)
-  tags = ndb.StructuredProperty(Tag, repeated=True)
-  releases = ndb.StructuredProperty(Release, repeated=True)  
+  #tags = ndb.StructuredProperty(Tag, repeated=True)
+  #releases = ndb.StructuredProperty(Release, repeated=True)  
   # Reputation related fields
   reputation = ndb.FloatProperty()
   ratingsCount = ndb.IntegerProperty()
   reputation_sum = ndb.FloatProperty()
   # SHA-256 string that identifies the repo 
-  repo_hash = ndb.StringProperty()
+  #repo_hash = ndb.StringProperty()
   # Lowercased names in order to obtain a properly ordering in ndb queries
-  name_repo_lower_case = ndb.StringProperty()
-  full_name_repo_lower_case = ndb.StringProperty()
+  #name_repo_lower_case = ndb.StringProperty()
+  #full_name_repo_lower_case = ndb.StringProperty()
 
   #Returns the rounded value corresponding to the reputation of the repo
   def roundReputation(self):
@@ -77,21 +78,21 @@ class Repo(ndb.Model):
       roundRep = float(int(roundRep) + 1)
     return roundRep
 
-  """Methods to generate RPC Messages returned by Polymer Bricks API"""
-  # type: basic/detailed
-  def toRPCMessage(self, type):
-    if type=="basic":
-      # We set the user rating to 0, then we will set the proper value (in getUserRating)
-      return ComponentBasicInfo(name=self.name_repo, author=self.owner.login
-                ,description=self.description, nStars=self.stars,
-                starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0, 
-                componentId=self.full_name_id)
-    elif type=="detailed":
-      # We set the user rating to 0, then we will set the proper value (in getUserRating)
-      return ComponentDetails(name=self.name_repo, author=self.owner.login
-                ,description=self.description, nStars=self.stars,
-                starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
-                componentId=self.full_name_id)
+  # """Methods to generate RPC Messages returned by Polymer Bricks API"""
+  # # type: basic/detailed
+  # def toRPCMessage(self, type):
+  #   if type=="basic":
+  #     # We set the user rating to 0, then we will set the proper value (in getUserRating)
+  #     return ComponentBasicInfo(name=self.name_repo, author=self.owner.login
+  #               ,description=self.description, nStars=self.stars,
+  #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0, 
+  #               componentId=self.full_name_id)
+  #   elif type=="detailed":
+  #     # We set the user rating to 0, then we will set the proper value (in getUserRating)
+  #     return ComponentDetails(name=self.name_repo, author=self.owner.login
+  #               ,description=self.description, nStars=self.stars,
+  #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
+  #               componentId=self.full_name_id)
 
 class UserRating(ndb.Model):
   google_user_id = ndb.StringProperty()
@@ -114,3 +115,24 @@ class Usuario(ndb.Model):
   lista_Redes = ndb.StringProperty(repeated = True)
   lista_Grupos = ndb.StringProperty(repeated = True)
 
+# Entidad RedSocial
+class RedSocial(ndb.Model):
+  nombre_rs = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty()
+  siguiendo = ndb.IntegerProperty()
+  seguidores = ndb.IntegerProperty()
+  url_tw_sig = ndb.StringProperty()
+  url_tw_seg = ndb.StringProperty()
+  url_fb_sig = ndb.StringProperty()
+  url_fb_seg = ndb.StringProperty()
+  # Faltan las uris del resto de apis a consultar
+
+  #Actualiza el número de seguidores y siguiendo de cada red red social 
+  def actualizaTwitter_sig(self):
+    # Hay que usar el token de Twitter para acceder a la API 
+
+  def actualizaTwitter_seg(self):
+    # Hay que usar el token de Twitter para acceder a la API 
+
+  def actualizaFacebook_sig(self):
+    # Hay que usar el token de Facebook para acceder a la API
