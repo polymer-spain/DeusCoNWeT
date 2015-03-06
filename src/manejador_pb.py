@@ -22,7 +22,7 @@ import webapp2
 import re, string, json, httplib, urllib
 from google.appengine.ext import ndb
 # Local imports
-from ndb import Tag, Release, Autor, Repo, UserRating , Usuario, Grupo
+from ndb import Tag, Release, Autor, Repo, UserRating , Usuario, Grupo, Token
 import cliente_gitHub
 
 # Imports for twitter
@@ -358,10 +358,34 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
   """
   Class that handles the Oauth Twitter Flow
   Methods:
-  get -- gets the Twitter access_token for a user authenticated via web 
+  get -- Returns the Twitter access_token for a user authenticated
+  post -- Gets the Twitter access_token for a user authenticated via web  
   """
 
+  # GET Method
   def get(self):
+    """ - Returns the Twitter access_token for a user authenticated
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
+      
+    username = self.request.get("username", default_value="None")
+    if not user == None:
+      user_details = Token.query(Token.nombre_usuario == username)
+      if not user_details == None:
+        response {
+          'username': user_details.nombre_usuario,
+          'id_twitter': user_details.id_tw,
+          'token_twitter': user_details.token_tw
+        }
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
+
+  # POST Method
+  def post(self):
     """ - Gets the Twitter access_token for a user authenticated via web and
     stores it in the database
     Keyword arguments: 
@@ -383,6 +407,13 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
       auth_verifier = self.request.get("oauth_verifier")
       user_info = client.get_user_info(auth_token, auth_verifier=auth_verifier)
       # return self.response.out.write(user_info) # Return user info?
+
+      # We store the user id and token into a Token Entity
+      stored_user = Token.query(Token.id_tw == user_info.token)
+      if not stored_user == None:
+        user_token = Token(nombre_usuario=user_info.username , id_tw=str(user_info.token), token_tw=user_info.secret)
+        user_token.put()
+      
       self.response.set_status(200)
 
 
