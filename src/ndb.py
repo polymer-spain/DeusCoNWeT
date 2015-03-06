@@ -95,30 +95,50 @@ class Componente(ndb.Model):
   #               componentId=self.full_name_id)
 
 class UserRating(ndb.Model):
-  google_user_id = ndb.StringProperty()
-  repo_full_name_id = ndb.StringProperty()
-  repo_hash = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty()
+  # google_user_id = ndb.StringProperty()
+  full_name_id = ndb.StringProperty()
   rating_value = ndb.FloatProperty()
 
 
 # Entidad Grupo
 class Grupo(ndb.Model):
-  nombre = ndb.StringProperty()
+  nombre_grupo = ndb.StringProperty()
   lista_Usuarios = ndb.StringProperty(repeated = True)
   descripcion = ndb.StringProperty()
 
 # Entidad usuario
 class Usuario(ndb.Model):
-  nombre = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty()
   identificador = ndb.StringProperty()
   email = ndb.StringProperty()
+  telefono = ndb.IntegerProperty()
+  descripcion = ndb.TextProperty()
   lista_Redes = ndb.StringProperty(repeated = True)
   lista_Grupos = ndb.StringProperty(repeated = True)
 
-# Entidad RedSocial
-class RedSocial(ndb.Model):
-  nombre_rs = ndb.StringProperty()
+# Entidad Token
+class Token(ndb.Model):
   nombre_usuario = ndb.StringProperty()
+  id_fb = ndb.StringProperty()
+  token_fb = ndb.StringProperty()
+  id_tw = ndb.StringProperty()
+  token_tw = ndb.StringProperty()
+  id_sof = ndb.StringProperty()
+  token_sof = ndb.StringProperty()
+  id_li = ndb.StringProperty()
+  token_li = ndb.StringProperty()
+  id_ins = ndb.StringProperty()
+  token_ins = ndb.StringProperty()
+  id_git = ndb.StringProperty()
+  token_git = ndb.StringProperty()
+  id_google = ndb.StringProperty()
+  token_google = ndb.StringProperty()
+
+# Entidad UsuarioSocial
+class UsuarioSocial(ndb.Model):
+  nombre_usuario = ndb.StringProperty()
+  nombre_rs = ndb.StringProperty()
   siguiendo = ndb.IntegerProperty()
   seguidores = ndb.IntegerProperty()
   url_tw_sig = ndb.StringProperty()
@@ -137,19 +157,13 @@ class RedSocial(ndb.Model):
   # def actualizaFacebook_sig(self):
   #   # Hay que usar el token de Facebook para acceder a la API
 
-class Token(ndb.Model):
+#Entidad Tarjeta
+class Tarjeta(ndb.Model):
   nombre_usuario = ndb.StringProperty()
-  id_fb = ndb.StringProperty()
-  token_fb = ndb.StringProperty()
-  id_tw = ndb.StringProperty()
-  token_tw = ndb.StringProperty()
-  id_sof = ndb.StringProperty()
-  token_sof = ndb.StringProperty()
-  id_li = ndb.StringProperty()
-  token_li = ndb.StringProperty()
-  id_ins = ndb.StringProperty()
-  token_ins = ndb.StringProperty()
-  id_git = ndb.StringProperty()
-  token_git = ndb.StringProperty()
-  id_google = ndb.StringProperty()
-  token_google = ndb.StringProperty()
+  nombre_tw = ndb.StringProperty()
+  nombre_fb = ndb.StringProperty()
+  nombre_sof = ndb.StringProperty()
+  nombre_li = ndb.StringProperty()
+  nombre_ins = ndb.StringProperty()
+  nombre_git = ndb.StringProperty()
+  nombre_google = ndb.StringProperty()
