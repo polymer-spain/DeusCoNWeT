@@ -369,10 +369,10 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
     """
       
     username = self.request.get("username", default_value="None")
-    if not user == None:
+    if not username == None:
       user_details = Token.query(Token.nombre_usuario == username)
       if not user_details == None:
-        response {
+        response = {
           'username': user_details.nombre_usuario,
           'id_twitter': user_details.id_tw,
           'token_twitter': user_details.token_tw
@@ -432,10 +432,10 @@ class OAuthGithubHandler(webapp2.RequestHandler):
     """
       
     username = self.request.get("username", default_value="None")
-    if not user == None:
+    if not username == None:
       user_details = Token.query(Token.nombre_usuario == username)
       if not user_details == None:
-        response {
+        response = {
           'username': user_details.nombre_usuario,
           'id_github': user_details.id_git,
           'token_github': user_details.token_git
@@ -498,8 +498,27 @@ class OAuthGithubHandler(webapp2.RequestHandler):
 
 class OauthLinkedinHandler(webapp2.RequestHandler):
   
+  # GET Method
   def get(self):
-    pass
+    """ - Returns the Github access_token for a user authenticated
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
+      
+    username = self.request.get("username", default_value="None")
+    if not username == None:
+      user_details = Token.query(Token.nombre_usuario == username)
+      if not user_details == None:
+        response = {
+          'id_li': user_details.id_git,
+          'token_li': user_details.token_git
+        }
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
+
 
   def post(self):
     pass
@@ -507,8 +526,26 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
 
 class OAuthInstagramHandler(webapp2.RequestHandler):
   
+  # GET Method
   def get(self):
-    pass
+    """ - Returns the Github access_token for a user authenticated
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
+      
+    username = self.request.get("username", default_value="None")
+    if not username == None:
+      user_details = Token.query(Token.nombre_usuario == username)
+      if not user_details == None:
+        response = {
+          'id_ins': user_details.id_git,
+          'token_ins': user_details.token_git
+        }
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
 
   def post(self):
     pass
@@ -521,6 +558,25 @@ class OauthFacebookHandler(webapp2.RequestHandler):
 
   def post(self):
     pass
+
+
+class OauthStackOverflowHandler(webapp2.RequestHandler):
+  
+  def get(self):
+    pass
+
+  def post(self):
+    pass
+
+
+class OauthGooglePlusHandler(webapp2.RequestHandler):
+  
+  def get(self):
+    pass
+
+  def post(self):
+    pass
+
 
 
 app = webapp2.WSGIApplication([
