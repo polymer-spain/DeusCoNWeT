@@ -4,8 +4,8 @@ body,html {
   margin:0;
   color:whitesmoke;
   font-family: 'Lora';
-    /* Opcion 2*/
-/*  background: rgba(188, 100, 55, 0.44);*/
+  /* Opcion 2*/
+  /*  background: rgba(188, 100, 55, 0.44);*/
   background-color: rgba(135, 139, 237, 0.18);
 }
 html {
@@ -68,13 +68,14 @@ body[oscuro=true] {
   position:absolute;
   top:0;
   left:0;
+  right:0;
+  bottom:0;
   width:40%;
   border-radius:15px;
   height:40%;
   padding:2%;
   padding-top:0%;
-  margin-top:15%;
-  margin-left:30%;
+  margin: auto;
   color:brown;
   background-color:whitesmoke;
   background:solid;

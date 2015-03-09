@@ -46,7 +46,7 @@ Element providing solution to no problem in particular.
 			var patron = "authToken"+"=([^&#]*)";
 			var exp = new RegExp(patron);
 			var acToken = exp.exec(url)[1];
-			document.querySelector('linkedin-logged').fire('linkedin-logged',{token:acToken,redSocial:'linkedin'});
+			document.querySelector('linkedin-login').fire('linkedin-logged',{token:acToken,redSocial:'linkedin',userId:data.id});
 		}
 
 		//Handle an error response from the API call

@@ -115,7 +115,7 @@ limitations under the License.
 							var url =   win.document.URL;
 							var patron = "access_token"+"=([^&#]*)";
 							var exp = new RegExp(patron);
-							back.acToken = exp.exec(url)[1];
+							back.acToken = exp.exec(url)[1];0
 							back.fire('google-logged',{token: back.acToken,redSocial:'google+'});
 							back.$.button.className="disconnect";
 							back.textLogin='Log out';
