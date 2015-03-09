@@ -1,137 +1,94 @@
+
 body,html {
-	height: 100%;
+  height: 100%;
+  margin:0;
+  color:whitesmoke;
+  font-family: 'Lora';
+    /* Opcion 2*/
+/*  background: rgba(188, 100, 55, 0.44);*/
+  background-color: rgba(135, 139, 237, 0.18);
 }
-html{
-	min-width: 1024px;
-
-}
-body {
-	margin: 0;
-	font-family: 'Lora', Trebuched;
-	background-color: #E9E9E9;
-}
-
-/*}*/
-.wrapper {
-	min-height:100%; /* gives layout 100% height */
-	margin:0; /* centers #wrapper */
-	background:#CCC;
-}
-a:link,a:visited{
-	text-decoration: none;
-	color: inherit;
+html {
+  /* Opcion 1 */
+  background-image: url('../images/background.jpg');
+  /* Opcion 2*/
+  /*
+  background: rgba(188, 100, 55, 0.44);
+  background-image: url('http://wallpaperciv.com/wp-content/uploads/2014/06/Social-Media-Wallpaper-Free-Download.jpg');*/
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
-.search{
-	font-size: 60%;
-	margin:0px;
-	vertical-align: bottom;
-	padding-bottom: 15px;
+core-toolbar {
+  background-color: transparent;
+  padding: 2% 10%;
+  color:antiquewhite;
 }
-
-.search /deep/ .focused-underline
-{
-	/* line color when the input is unfocused */
-	background-color: white;
-}
-.search /deep/ ::-webkit-input-placeholder {
-	/* platform specific rules for placeholder text */
-	color: inherit;
-}
-.search /deep/ ::-moz-placeholder {
-	color: inherit;
-}
-.search /deep/ :-ms-input-placeholder {
-	color: inherit;
-}
-
-.views {
-	width: 50%;
-	margin: 0 auto;
-	padding: 125px 5% 10% 5%;
-	background-color: transparent;
-	background: transparent;
-}
-
-.titulo {
-	font-size: 130%;
-	font-style: italic;
+.logo {
+  height: 120%;
 }
 paper-button {
-	font-size: 60%;	
+  font-size: 0.8em;
 }
-paper-button:hover {
-	background: #448AFF;
-	color: white;
+.search{
+  border-radius: 100%;
+  width:38px;
+  height:38px;
+  background-color: #B71C1C;
 }
-
-.pieContenido {
-	background-color: #303F9F;
-	font-size: 18px;
-	color: white;
-
+.content {
+  margin: 5% 15% 0% 15%;
+  padding: 1% 5% 2% 5%;
+  font-size: 1.2em;
+  border-radius: 5%;
+  background: -moz-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 100%); /* FF3.6+ */
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0.7)), color-stop(100%,rgba(0,0,0,0.15))); /* Chrome,Safari4+ */
+  background: -webkit-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.7) 0%,rgba(135, 139, 237, 0.0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.15) 100%); /* Opera 12+ */
+  background: -ms-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.15) 100%); /* IE10+ */
+  background: radial-gradient(ellipse at center,  rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.15) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#26000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
-
-.logo {
-	height: inherit;
-	width: auto;
-	cursor: pointer;
+body[oscuro=true] {
+  background-color:black;
+  opacity: 0.7;
 }
-
-.footer{
-	height: 150px;
-	margin-top:-151px; /* -80px sucks it back in & auto centers it */
+.signin-status {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top:  -12%;
+  margin-left: -%;
+  background-color:aqua;
+  height: 40%;
+  width: 40%;
 }
-
-star-rate {
-	color: orange;
-	stroke: red;
-	stroke-width: 0.4px;
+.popup {
+  display: inline-block;
+  position:absolute;
+  top:0;
+  left:0;
+  width:40%;
+  border-radius:15px;
+  height:40%;
+  padding:2%;
+  padding-top:0%;
+  margin-top:15%;
+  margin-left:30%;
+  color:brown;
+  background-color:whitesmoke;
+  background:solid;
+  height: 300px;
+  width: 400px;
 }
-.g-signin{
-	padding: 10px 0px 10px 0px;
+.shadow {
+  position:absolute;
+  top:0;
+  right:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
 }
-
-.g-signout {
-	background-color: #666;
-	box-shadow: 2px 2px 1px #111;
-	padding: 0px;
-}
-.g-signout::shadow core-icon > div{
-	border-radius: 100%;
-}
-.g-signout::shadow  #icon{
-	width: 30px;
-	height: 30px;
-}
-.g-signout {
-	border-radius: 100%;	
-}
-.g-signout:hover{
-	box-shadow: 3px 3px 5px #111; 
-}
-#userName {
-	font-size: 65%	
-}
-#userName:hover {
-	text-decoration: underline;
-	cursor: pointer;
-}
-
-.copyright {
-	color: inherit;
-	background-color: inherit;	
-}
-#header {
-	position:fixed;
-	width: 100%;
-	z-index: 1;
-	top: 0px;
-}
-core-toolbar {
-	background-color: #303F9F;
-	color: white;
-}
-#login {
-	margin-top: 8px;
+.button-login {
+  margin-top: 15px;
 }

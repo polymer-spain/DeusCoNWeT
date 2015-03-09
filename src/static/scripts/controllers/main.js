@@ -10,32 +10,30 @@
  */
 
 angular.module('PolymerBricks')
-.controller('MainCtrl', function ($scope,$location,$timeout) {
+	.controller('MainCtrl', function ($scope,$location,$timeout) {
+	/* Funcion de retorno de log in*/
+	$scope.logged = function(e){
+		console.log(e.detail);
+		$scope.$apply(function(){
+			$scope.hidePopup();
+		});
+	};
+	/* Escuhas de los botones*/
+	document.querySelector('body').addEventListener('google-logged',$scope.logged);
+	document.querySelector('body').addEventListener('linkedin-logged',$scope.logged);
+	document.querySelector('body').addEventListener('github-logged',$scope.logged);
+	document.querySelector('body').addEventListener('instagram-logged',$scope.logged);
+	document.querySelector('body').addEventListener('twitter-logged',$scope.logged);
+	document.querySelector('body').addEventListener('facebook-logged',$scope.logged);
+	document.querySelector('body').addEventListener('sof-logged',$scope.logged);
 
+	$scope.popup = false;
 
-	$scope.buscar=false;
-	$scope.changeView = function(view){
-		if (view === 'profile/'){
-			view=view + $scope.user.id.toString();
-		}
-		$location.path(view); // path not hash
+	$scope.showPopup = function(){
+		$scope.popup = true;
 	};
-	$scope.logueado=false;
-	$scope.profile = 'hola';
-	$scope.user = $scope.user || [];
-	$scope.init = function (){
-		/*google.appengine.api.polymerBricks.getAllComponentsLimit('asc','name',3);*/
+	$scope.hidePopup = function(){
+		$scope.popup = false;
 	};
-	
-	$scope.showOn = function () {
-		 $timeout(function() {
-    			document.querySelector('#search').focus();
-			 		$scope.changeView('search');
-        });
-	};
-	$scope.showOff = function (e) {
-		if (e.target.value === '') {
-				$scope.buscar=false;	
-		}
-	};
+
 });
