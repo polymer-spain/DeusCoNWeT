@@ -95,7 +95,7 @@ class Componente(ndb.Model):
   #               componentId=self.full_name_id)
 
 class UserRating(ndb.Model):
-  nombre_usuario = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
   # google_user_id = ndb.StringProperty()
   full_name_id = ndb.StringProperty()
   rating_value = ndb.FloatProperty()
@@ -109,7 +109,8 @@ class Grupo(ndb.Model):
 
 # Entidad usuario
 class Usuario(ndb.Model):
-  nombre_usuario = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
+  username = ndb.StringProperty() # Este es el 
   identificador = ndb.StringProperty()
   email = ndb.StringProperty()
   telefono = ndb.IntegerProperty()
@@ -119,7 +120,7 @@ class Usuario(ndb.Model):
 
 # Entidad Token
 class Token(ndb.Model):
-  nombre_usuario = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
   id_fb = ndb.StringProperty()
   token_fb = ndb.StringProperty()
   id_tw = ndb.StringProperty()
@@ -137,7 +138,7 @@ class Token(ndb.Model):
 
 # Entidad UsuarioSocial
 class UsuarioSocial(ndb.Model):
-  nombre_usuario = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
   nombre_rs = ndb.StringProperty()
   siguiendo = ndb.IntegerProperty()
   seguidores = ndb.IntegerProperty()
@@ -159,7 +160,7 @@ class UsuarioSocial(ndb.Model):
 
 #Entidad Tarjeta
 class Tarjeta(ndb.Model):
-  nombre_usuario = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
   nombre_tw = ndb.StringProperty()
   nombre_fb = ndb.StringProperty()
   nombre_sof = ndb.StringProperty()
@@ -167,3 +168,5 @@ class Tarjeta(ndb.Model):
   nombre_ins = ndb.StringProperty()
   nombre_git = ndb.StringProperty()
   nombre_google = ndb.StringProperty()
+
+# Definición de métodos para insertar, obtener o actualizar datos de la base de datos
