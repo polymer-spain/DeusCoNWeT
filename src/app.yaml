@@ -9,10 +9,12 @@ handlers:
 - url: /favicon\.ico
   static_files: ../favicon.ico
   upload: favicon\.ico
-- url: /app
-  static_dir: static 
+- url: .html
+  script: static
 - url: .*
   script: manejador_pb.app
+
+
 
 libraries:
 - name: webapp2

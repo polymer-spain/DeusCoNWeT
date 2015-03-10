@@ -8,8 +8,8 @@
     <style>
     </style>
     <core-ajax
-               id="githubcode" url="http://example-project-13.appspot.com/oauth/github"
-               method="GET"
+               id="githubcode" url="http://example-project-13.appspot.com/api/oauth/github"
+               method="POST"
                params='{
                        "action": "request_token",
                        "code": "{{code}}"
@@ -39,7 +39,7 @@
         var url = 'https://github.com/login/oauth/authorize?';
         url += 'scope='+this.scope;
         url+='&client_id='+this.client_id;
-        url+='&redirect_uri='+'http://example-project-13.appspot.com/app/index.html';
+        url+='&redirect_uri='+'http://example-project-13.appspot.com/index.html';
         // Guardamos en una variable el scope de la ventana principal
         var back = this;
         // Abrimos la ventana para que se realice la autenticacion
