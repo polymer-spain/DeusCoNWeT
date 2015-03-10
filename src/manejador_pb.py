@@ -22,7 +22,7 @@ import webapp2
 import re, string, json, httplib, urllib
 from google.appengine.ext import ndb
 # Local imports
-from ndb import Tag, Release, Autor, Repo, UserRating , Usuario, Grupo, Token
+from ndb import Autor, UserRating , Usuario, Grupo, Token
 import cliente_gitHub
 
 # Imports for twitter
@@ -370,7 +370,7 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
       
     username = self.request.get("username", default_value="None")
     if not username == None:
-      user_details = Token.query(Token.nombre_usuario == username)
+      user_details = Token.query(Token.nombre_usuario == username).get()
       if not user_details == None:
         response = {
           'username': user_details.nombre_usuario,
@@ -433,7 +433,7 @@ class OAuthGithubHandler(webapp2.RequestHandler):
       
     username = self.request.get("username", default_value="None")
     if not username == None:
-      user_details = Token.query(Token.nombre_usuario == username)
+      user_details = Token.query(Token.nombre_usuario == username).get()
       if not user_details == None:
         response = {
           'username': user_details.nombre_usuario,
@@ -507,7 +507,7 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
       
     username = self.request.get("username", default_value="None")
     if not username == None:
-      user_details = Token.query(Token.nombre_usuario == username)
+      user_details = Token.query(Token.nombre_usuario == username).get()
       if not user_details == None:
         response = {
           'id_li': user_details.id_git,
@@ -535,7 +535,7 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
       
     username = self.request.get("username", default_value="None")
     if not username == None:
-      user_details = Token.query(Token.nombre_usuario == username)
+      user_details = Token.query(Token.nombre_usuario == username).get()
       if not user_details == None:
         response = {
           'id_ins': user_details.id_git,
@@ -578,7 +578,6 @@ class OauthGooglePlusHandler(webapp2.RequestHandler):
     pass
 
 
-
 app = webapp2.WSGIApplication([
     (r'/componentes', ComponentListHandler),
     (r'/componentes/(.*)', ComponentHandler),
@@ -586,5 +585,7 @@ app = webapp2.WSGIApplication([
     (r'/oauth/github', OAuthGithubHandler),
     (r'/oauth/Linkedin', OauthLinkedinHandler),
     (r'/oauth/Instagram', OAuthInstagramHandler),
-    (r'/oauth/Facebook', OauthFacebookHandler)
+    (r'/oauth/Facebook', OauthFacebookHandler),
+    (r'/oauth/StackOverflow', OauthStackOverflowHandler),
+    (r'/oauth/GooglePlus', OauthGooglePlusHandler)
 ], debug=True)
