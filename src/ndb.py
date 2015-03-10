@@ -148,25 +148,61 @@ class UsuarioSocial(ndb.Model):
   url_fb_seg = ndb.StringProperty()
   # Faltan las uris del resto de apis a consultar
 
-  # #Actualiza el número de seguidores y siguiendo de cada red red social 
-  # def actualizaTwitter_sig(self):
-  #   # Hay que usar el token de Twitter para acceder a la API 
-
-  # def actualizaTwitter_seg(self):
-  #   # Hay que usar el token de Twitter para acceder a la API 
-
-  # def actualizaFacebook_sig(self):
-  #   # Hay que usar el token de Facebook para acceder a la API
-
 #Entidad Tarjeta
 class Tarjeta(ndb.Model):
   nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
-  nombre_tw = ndb.StringProperty()
-  nombre_fb = ndb.StringProperty()
-  nombre_sof = ndb.StringProperty()
-  nombre_li = ndb.StringProperty()
-  nombre_ins = ndb.StringProperty()
-  nombre_git = ndb.StringProperty()
-  nombre_google = ndb.StringProperty()
+  id_tw = ndb.StringProperty()
+  id_fb = ndb.StringProperty()
+  id_sof = ndb.StringProperty()
+  id_li = ndb.StringProperty()
+  id_ins = ndb.StringProperty()
+  id_git = ndb.StringProperty()
+  id_google = ndb.StringProperty()
 
 # Definición de métodos para insertar, obtener o actualizar datos de la base de datos
+
+def getToken(self, nombre_usuario, rs):
+  tokens = Token.query(Token.nombre_usuario=nombre_usuario).get()
+  token = ''
+  if rs == "facebook":
+    token = tokens.token_fb
+  elif rs == "twitter":
+    token = tokens.token_tw
+  elif rs == "stack-overflow":
+    token = tokens.token_sof
+  elif rs == "linkedin":
+    token = tokens.token_li
+  elif rs == "instagram":
+    token = tokens.token_ins
+  elif rs == "github":
+    token = tokens.token_git
+  elif rs == "google":
+    token = tokens.token_google
+  else:
+    print "La red social solicitada no esta contemplada"
+  return token
+
+def getNombreRS(self, nombre_usuario, rs):
+  tarjetas = Tarjeta.query(Tarjeta.nombre_usuario=nombre_usuario).get()
+  identificador = ''
+  if rs == "facebook":
+    identificador = tarjetas.id_fb
+  elif rs == "twitter":
+    identificador = tarjetas.id_tw
+  elif rs == "stack-overflow":
+    identificador = tarjetas.id_sof
+  elif rs == "linkedin":
+    identificador = tarjetas.id_li
+  elif rs == "instagram":
+    identificador = tarjetas.id_ins
+  elif rs == "github":
+    identificador = tarjetas.id_git
+  elif rs == "google":
+    identificador = tarjetas.id_google
+  else:
+    print "La red social solicitada no esta contemplada"
+  return identificador
+
+# def buscaUsuario(self, nombre_usuario):
+#   users = Usuario.query(Usuario.nombre_usuario=nombre_usuario).get()
+#   
