@@ -489,10 +489,13 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
   # GET Method
   def get(self):
     """ Handles the calls related to Twitter Tokens. 
-    - Gets the Twitter access_token for a user authenticated via web and
-    stores it in the database. Returns the Twitter access_token for a user authenticated
+    Depending on the 'action' param, performs different actions:
+      - 'action':request_token. Gets the Twitter access_token for a user authenticated via web and
+         stores it in the database. 
+      - 'action':access_token. Returns the Twitter access_token for a user authenticated.
+      - 'action':authorization. Manages the callback from Twitter in the Twitter oauth flow.
     Keyword arguments: 
-    self -- info about the request build by webapp2
+      self -- info about the request build by webapp2
     """
     action = self.request.get('action', default_value='None')
     username = self.request.get('username', default_value='None')
@@ -509,8 +512,6 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
             'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
             )
     
-    print "ACTION: " + action
-    
     if action == 'request_token':
       self.response.content_type = 'application/json'
       response = {'oauth_url': client.get_authorization_url()}
@@ -523,11 +524,11 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
               auth_verifier=auth_verifier)
 
       # We store the user id and token into a Token Entity
-      stored_user = Token.query(Token.id_tw == user_info.token).get()
+      stored_user = Token.query(Token.id_tw == user_info["token"]).get()
       if stored_user == None:
-        user_token = Token(nombre_usuario=user_info.username,
-                           id_tw=str(user_info.token),
-                           token_tw=user_info.secret)
+        user_token = Token(nombre_usuario=user_info["username"],
+                           id_tw=str(user_info["token"]),
+                           token_tw=user_info["secret"])
         user_token.put()
       self.response.set_status(200)
       
@@ -543,6 +544,8 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
           self.response.set_status(200)
         else:
           self.response.set_status(404)
+    else:
+      self.response.set_status(400)
 
 class OAuthGithubHandler(webapp2.RequestHandler):
 
