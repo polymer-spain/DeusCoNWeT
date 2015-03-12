@@ -480,84 +480,73 @@ class UserHandler(webapp2.RequestHandler):
 
 class OAuthTwitterHandler(webapp2.RequestHandler):
 
-    """
+  """
   Class that handles the Oauth Twitter Flow
   Methods:
   get -- Returns the Twitter access_token for a user authenticated
-  post -- Gets the Twitter access_token for a user authenticated via web  
   """
 
   # GET Method
-
-    def get(self):
-        """ - Returns the Twitter access_token for a user authenticated
+  def get(self):
+    """ Handles the calls related to Twitter Tokens. 
+    - Gets the Twitter access_token for a user authenticated via web and
+    stores it in the database. Returns the Twitter access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
+    action = self.request.get('action', default_value='None')
+    username = self.request.get('username', default_value='None')
+    
+    consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
+    consumer_secret = \
+        'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
+    request_token_url = \
+        'https://api.twitter.com/oauth/request_token'
+    base_authorization_url = \
+        'https://api.twitter.com/oauth/authorize'
 
-        username = self.request.get('username', default_value='None')
-        if not username == None:
-            user_details = Token.query(Token.nombre_usuario
-                    == username).get()
-            if not user_details == None:
-                response = {'username': user_details.nombre_usuario,
-                            'id_twitter': user_details.id_tw,
-                            'token_twitter': user_details.token_tw}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
-            else:
-                self.response.set_status(404)
-
-  # POST Method
-
-    def post(self):
-        """ - Gets the Twitter access_token for a user authenticated via web and
-    stores it in the database
-    Keyword arguments: 
-    self -- info about the request build by webapp2
-    """
-
-        action = self.request.get('action',
-                                  default_value='request_token')
-        consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
-        consumer_secret = \
-            'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
-        request_token_url = \
-            'https://api.twitter.com/oauth/request_token'
-        base_authorization_url = \
-            'https://api.twitter.com/oauth/authorize'
-
-        client = oauth.TwitterClient(consumer_key, consumer_secret,
-                'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
-                )
-        if action == 'request_token':
-            self.response.content_type = 'application/json'
-            response = {'oauth_url': client.get_authorization_url()}
-            self.response.write(json.dumps(response))
-        elif action == 'authorization':
-            auth_token = self.request.get('oauth_token')
-            auth_verifier = self.request.get('oauth_verifier')
-            user_info = client.get_user_info(auth_token,
-                    auth_verifier=auth_verifier)
-
-      # return self.response.out.write(user_info) # Return user info?
+    client = oauth.TwitterClient(consumer_key, consumer_secret,
+            'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
+            )
+    
+    print "ACTION: " + action
+    
+    if action == 'request_token':
+      self.response.content_type = 'application/json'
+      response = {'oauth_url': client.get_authorization_url()}
+      self.response.write(json.dumps(response))
+    
+    elif action == 'authorization':
+      auth_token = self.request.get('oauth_token')
+      auth_verifier = self.request.get('oauth_verifier')
+      user_info = client.get_user_info(auth_token,
+              auth_verifier=auth_verifier)
 
       # We store the user id and token into a Token Entity
-
-            stored_user = Token.query(Token.id_tw == user_info.token)
-            if not stored_user == None:
-                user_token = Token(nombre_usuario=user_info.username,
-                                   id_tw=str(user_info.token),
-                                   token_tw=user_info.secret)
-                user_token.put()
-
-                self.response.set_status(200)
-
+      stored_user = Token.query(Token.id_tw == user_info.token).get()
+      if stored_user == None:
+        user_token = Token(nombre_usuario=user_info.username,
+                           id_tw=str(user_info.token),
+                           token_tw=user_info.secret)
+        user_token.put()
+      self.response.set_status(200)
+      
+    if action == 'access_token' and not username == None:
+        user_details = Token.query(Token.nombre_usuario
+                == username).get()
+        if not user_details == None:
+          response = {'username': user_details.nombre_usuario,
+                      'id_twitter': user_details.id_tw,
+                      'token_twitter': user_details.token_tw}
+          self.response.content_type = 'application/json'
+          self.response.write(json.dumps(response))
+          self.response.set_status(200)
+        else:
+          self.response.set_status(404)
 
 class OAuthGithubHandler(webapp2.RequestHandler):
 
-    """
+  """
   Class that will act as the handler to ask for the access_token to the GitHub API
   Method:
   get -- Returns the Github access_token for a user authenticated
@@ -565,126 +554,117 @@ class OAuthGithubHandler(webapp2.RequestHandler):
   """
 
   # GET Method
-
-    def get(self):
-        """ - Returns the Github access_token for a user authenticated
+  def get(self):
+    """ - Returns the Github access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
 
-        username = self.request.get('username', default_value='None')
-        if not username == None:
-            user_details = Token.query(Token.nombre_usuario
-                    == username).get()
-            if not user_details == None:
-                response = {'username': user_details.nombre_usuario,
-                            'id_github': user_details.id_git,
-                            'token_github': user_details.token_git}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
-            else:
-                self.response.set_status(404)
+    username = self.request.get('username', default_value='None')
+    if not username == None:
+      user_details = Token.query(Token.nombre_usuario == username).get()
+      if not user_details == None:
+        response = {'username': user_details.nombre_usuario,
+                    'id_github': user_details.id_git,
+                    'token_github': user_details.token_git}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
 
   # POST Method
+  def post(self):
+    """ Defines the flow of the process to get an access_token to use the Github API
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
 
-    def post(self):
-      """ Defines the flow of the process to get an access_token to use the Github API
-      Keyword arguments: 
-      self -- info about the request build by webapp2
-      """
+    action = self.request.get("action", default_value="request_code")
+    url = 'github.com'
+    authorize_url = 'http://github-login-lab.appspot.com/oauth/github?action=request_token'
+    access_token_url = '/login/oauth/access_token'
+    client_id = '1f21e4d820abd2cb5a7a'
+    client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
+    access_token = ''
 
-      action = self.request.get("action", default_value="request_code")
-      url = 'github.com'
-      authorize_url = 'http://github-login-lab.appspot.com/oauth/github?action=request_token'
-      access_token_url = '/login/oauth/access_token'
-      client_id = '1f21e4d820abd2cb5a7a'
-      client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
-      access_token = ''
+    """ Firstly, we ask for the code we will exchange for the access_token """
+    connection = httplib.HTTPSConnection(url)
+    if action == "request_token":
+      """ Now, we have to exchange the code we get in the first step to get the access token """
+      # Cogemos el codigo de la peticion
+      code = self.request.get('code')
+      # Indicamos los parametros de la peticion a github
+      params_token = urllib.urlencode({'client_id': client_id,
+                                  'client_secret': client_secret,
+                                  'code': code})
+      # Realizamos la peticion en la conexion
+      connection.request("POST", access_token_url, params_token)
+      # Cogemos la respuesta de la peticion y realizamos un split
+      # para coger el valor del token
+      response_token = connection.getresponse()
+      data_token = response_token.read()
+      access_token = data_token.split("&")
+      access_token = access_token[0].split("=")[1]
 
-      """ Firstly, we ask for the code we will exchange for the access_token """
-      connection = httplib.HTTPSConnection(url)
-      if action == "request_token":
-        """ Now, we have to exchange the code we get in the first step to get the access token """
-        # Cogemos el codigo de la peticion
-        code = self.request.get('code')
-        # Indicamos los parametros de la peticion a github
-        params_token = urllib.urlencode({'client_id': client_id,
-                                    'client_secret': client_secret,
-                                    'code': code})
-        # Realizamos la peticion en la conexion
-        connection.request("POST", access_token_url, params_token)
-        # Cogemos la respuesta de la peticion y realizamos un split
-        # para coger el valor del token
-        response_token = connection.getresponse()
-        data_token = response_token.read()
-        access_token = data_token.split("&")
-        access_token = access_token[0].split("=")[1]
-
-        # Gestion de la respuesta de webapp
-        self.response.content_type = 'application/json'
-        response = '{"token": "'+access_token+'"}'
-        self.response.write(response)
-        connection.close()
-        self.response.set_status(200)
+      # Gestion de la respuesta de webapp
+      self.response.content_type = 'application/json'
+      response = '{"token": "'+access_token+'"}'
+      self.response.write(response)
+      connection.close()
+      self.response.set_status(200)
 
 
 class OauthLinkedinHandler(webapp2.RequestHandler):
 
   # GET Method
-
-    def get(self):
-        """ - Returns the Github access_token for a user authenticated
+  def get(self):
+    """ - Returns the Github access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
-
-        username = self.request.get('username', default_value='None')
-        if not username == None:
-            user_details = Token.query(Token.nombre_usuario
-                    == username).get()
-            if not user_details == None:
-                response = {'id_li': user_details.id_git,
-                            'token_li': user_details.token_git}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
-            else:
-                self.response.set_status(404)
+    username = self.request.get('username', default_value='None')
+    if not username == None:
+      user_details = Token.query(Token.nombre_usuario == username).get()
+      if not user_details == None:
+        response = {'id_li': user_details.id_git,
+                    'token_li': user_details.token_git}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
 
   # POST Method
-
-    def post(self):
-        pass
+  def post(self):
+    pass
 
 
 class OAuthInstagramHandler(webapp2.RequestHandler):
 
   # GET Method
-
-    def get(self):
-        """ - Returns the Github access_token for a user authenticated
+  def get(self):
+    """ - Returns the Github access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
 
-        username = self.request.get('username', default_value='None')
-        if not username == None:
-            user_details = Token.query(Token.nombre_usuario
-                    == username).get()
-            if not user_details == None:
-                response = {'id_ins': user_details.id_git,
-                            'token_ins': user_details.token_git}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
-            else:
-                self.response.set_status(404)
+    username = self.request.get('username', default_value='None')
+    if not username == None:
+        user_details = Token.query(Token.nombre_usuario
+                == username).get()
+        if not user_details == None:
+            response = {'id_ins': user_details.id_git,
+                        'token_ins': user_details.token_git}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(200)
+        else:
+            self.response.set_status(404)
 
   # POST Method
-
     def post(self):
-        pass
+      pass
 
 
 class OauthFacebookHandler(webapp2.RequestHandler):
