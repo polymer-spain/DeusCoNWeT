@@ -59,7 +59,7 @@ Polymer({
        * @default ''
        */
        access_token: '',
-
+       userId:'',
       /**
        * The `login` method opens a window to instagram authorization page to
        * complete the login process. Called when when is pressed the InstagramButton
@@ -82,7 +82,10 @@ Polymer({
               var patron = "access_token"+"=([^&#]*)";
               var exp = new RegExp(patron);
               back.access_token = exp.exec(url)[1];
-              back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram'});
+              var splited = back.access_token.split('.');
+              back.userId = splited[0];
+          
+              back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram',userId:back.userId});
               win.close();
             }
           }catch(e){

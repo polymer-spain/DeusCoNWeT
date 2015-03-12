@@ -8,7 +8,7 @@
  * Controller of the pruebaApp
  */
 angular.module('PolymerBricks')
-.controller('HomeCtrl', function ($scope,$http,$modal) {
+.controller('landingCtrl', function ($scope,$http,$modal) {
 	'use strict';
 
 });

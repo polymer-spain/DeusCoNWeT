@@ -24,27 +24,27 @@
 
 		$routeProvider
 		.when('/', {
-			templateUrl: 'views/home.html',
+			templateUrl: 'views/landingPage.html',
+			controller: 'landingCtrl'
+		})
+		.when('/user/:userId', {
+			templateUrl: 'views/user-home.html',
 			controller: 'HomeCtrl'
 		})
-		.when('/about', {
-			templateUrl: 'views/about.html',
-			controller: 'AboutCtrl'
-		})
 		.when('/sandbox', {
-			templateUrl: 'views/sandbox.html',
+			templateUrl: 'static/views/sandbox.html',
 			controller: 'SandboxCtrl'
 		})
 		.when('/components/:componentID',{
-			templateUrl: 'views/repositorio.html',
+			templateUrl: 'static/views/repositorio.html',
 			controller: 'ComponentCtrl'
 		})
 		.when('/search',{
-			templateUrl: 'views/search.html',
+			templateUrl: 'static/views/search.html',
 			controller: 'SearchCtrl'
 		})
 		.when('/profile/:userId', {
-			templateUrl: 'views/profile.html',
+			templateUrl: 'static/views/profile.html',
 			controller: 'ProfileCtrl'
 		});
 	});
