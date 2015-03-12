@@ -161,23 +161,23 @@ class Tarjeta(ndb.Model):
 
 # Definición de métodos para insertar, obtener o actualizar datos de la base de datos
 
-def getToken(self, nombre_usuario, rs):
-  tokens = Token.query(Token.nombre_usuario=nombre_usuario).get()
+def getToken(self, ide, rs):
+  tokens = Token.query()
   token = ''
   if rs == "facebook":
-    token = tokens.token_fb
+    token = tokens.filter(Token.id_fb==ide).get().token_fb
   elif rs == "twitter":
-    token = tokens.token_tw
+    token = tokens.filter(Token.id_tw==ide).get().token_tw
   elif rs == "stack-overflow":
-    token = tokens.token_sof
+    token = tokens.filter(Token.id_sof==ide).get().token_sof
   elif rs == "linkedin":
-    token = tokens.token_li
+    token = tokens.filter(Token.id_li==ide).get().token_li
   elif rs == "instagram":
-    token = tokens.token_ins
+    token = tokens.filter(Token.id_ins==ide).get().token_ins
   elif rs == "github":
-    token = tokens.token_git
+    token = tokens.filter(Token.id_git==ide).get().token_git
   elif rs == "google":
-    token = tokens.token_google
+    token = tokens.filter(Token.id_google==ide).get().token_google
   else:
     print "La red social solicitada no esta contemplada"
   return token
@@ -205,4 +205,5 @@ def getNombreRS(self, nombre_usuario, rs):
 
 # def buscaUsuario(self, nombre_usuario):
 #   users = Usuario.query(Usuario.nombre_usuario=nombre_usuario).get()
-#   
+
+def nuevoToken(self, nombre_usuario, token, rs):
