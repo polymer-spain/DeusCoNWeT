@@ -11,8 +11,19 @@ handlers:
   upload: favicon\.ico
 - url: /api/.*
   script: manejador_pb.app
+
+- url: /user/.*
+  static_files: static/index.html
+  upload: index\.html
+  
 - url: /
-  static_dir: static
+  static_files: static/index.html
+  upload: index\.html
+  
+- url: /
+  static_dir: static 
+
+
 libraries:
 - name: webapp2
   version: latest
