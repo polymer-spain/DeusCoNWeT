@@ -9,14 +9,15 @@ handlers:
 - url: /favicon\.ico
   static_files: ../favicon.ico
   upload: favicon\.ico
+
+- url: /
+  static_files: static/index.html
+  upload: index\.html
+
 - url: /api/.*
   script: manejador_pb.app
 
 - url: /user/.*
-  static_files: static/index.html
-  upload: index\.html
-  
-- url: /
   static_files: static/index.html
   upload: index\.html
   
