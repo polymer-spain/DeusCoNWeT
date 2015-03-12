@@ -28,8 +28,8 @@
 			controller: 'landingCtrl'
 		})
 		.when('/user/:userId', {
-			templateUrl: 'views/user-home.html',
-			controller: 'HomeCtrl'
+			templateUrl: 'views/userHome.html',
+			controller: 'userHomeCtrl'
 		})
 		.when('/sandbox', {
 			templateUrl: 'static/views/sandbox.html',

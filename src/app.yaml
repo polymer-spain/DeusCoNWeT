@@ -12,10 +12,7 @@ handlers:
 - url: /api/.*
   script: manejador_pb.app
 - url: /
-  static_dir: static 
-
-
-
+  static_dir: static
 libraries:
 - name: webapp2
   version: latest
