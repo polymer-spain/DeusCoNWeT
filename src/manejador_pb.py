@@ -512,6 +512,10 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
             'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
             )
     
+    headers = self.request.headers
+    for key, value in headers:
+      print "HEADER: " + key + " " + value 
+
     if action == 'request_token':
       self.response.content_type = 'application/json'
       response = {'oauth_url': client.get_authorization_url()}
