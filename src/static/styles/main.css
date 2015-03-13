@@ -24,3 +24,8 @@ paper-button {
   height:38px;
   background-color: #B71C1C;
 }
+
+.view {
+   position:relative;
+   height: 80%;
+}
