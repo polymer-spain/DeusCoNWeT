@@ -109,9 +109,7 @@ class Grupo(ndb.Model):
 
 # Entidad usuario
 class Usuario(ndb.Model):
-  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
-  username = ndb.StringProperty() # Este es el 
-  identificador = ndb.StringProperty()
+  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo 
   email = ndb.StringProperty()
   telefono = ndb.IntegerProperty()
   descripcion = ndb.TextProperty()
@@ -120,7 +118,7 @@ class Usuario(ndb.Model):
 
 # Entidad Token
 class Token(ndb.Model):
-  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
+  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo
   id_fb = ndb.StringProperty()
   token_fb = ndb.StringProperty()
   id_tw = ndb.StringProperty()
@@ -138,7 +136,7 @@ class Token(ndb.Model):
 
 # Entidad UsuarioSocial
 class UsuarioSocial(ndb.Model):
-  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
+  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo
   nombre_rs = ndb.StringProperty()
   siguiendo = ndb.IntegerProperty()
   seguidores = ndb.IntegerProperty()
@@ -150,7 +148,7 @@ class UsuarioSocial(ndb.Model):
 
 #Entidad Tarjeta
 class Tarjeta(ndb.Model):
-  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
+  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo
   id_tw = ndb.StringProperty()
   id_fb = ndb.StringProperty()
   id_sof = ndb.StringProperty()
@@ -206,4 +204,14 @@ def getNombreRS(self, nombre_usuario, rs):
 # def buscaUsuario(self, nombre_usuario):
 #   users = Usuario.query(Usuario.nombre_usuario=nombre_usuario).get()
 
-def nuevoToken(self, nombre_usuario, token, rs):
+def insertaUsuario(self, nombre_usuario, datos=None):
+  usuario = Usuario(nombre_usuario=nombre_usuario)
+  if not datos == None:
+    if datos.email:
+      usuario.email = datos.email
+    if datos.telefono:
+      usuario.telefono = datos.telefono
+    if datos.descripcion:
+      usuario.descripcion = datos.descripcion
+
+  usuario.put()
