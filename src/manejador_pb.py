@@ -499,41 +499,43 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
       self -- info about the request build by webapp2
     """
 
-        action = self.request.get('action', default_value='None')
-        username = self.request.get('username', default_value='None')
+    action = self.request.get('action', default_value='None')
+    username = self.request.get('username', default_value='None')
 
-        consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
-        consumer_secret = \
-            'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
-        request_token_url = \
-            'https://api.twitter.com/oauth/request_token'
-        base_authorization_url = \
-            'https://api.twitter.com/oauth/authorize'
+    consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
+    consumer_secret = \
+        'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
+    request_token_url = 'https://api.twitter.com/oauth/request_token'
+    base_authorization_url = 'https://api.twitter.com/oauth/authorize'
 
-        client = oauth.TwitterClient(consumer_key, consumer_secret,
-                'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
-                )
+    client = oauth.TwitterClient(consumer_key, consumer_secret,
+                                 'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
+                                 )
 
-        if action == 'request_token':
-            self.response.content_type = 'application/json'
-            response = {'oauth_url': client.get_authorization_url()}
-            self.response.write(json.dumps(response))
-        elif action == 'authorization':
+    headers = self.request.headers
+    for (key, value) in headers:
+        print 'HEADER: ' + key + ' ' + value
 
-            auth_token = self.request.get('oauth_token')
-            auth_verifier = self.request.get('oauth_verifier')
-            user_info = client.get_user_info(auth_token,
-                    auth_verifier=auth_verifier)
+    if action == 'request_token':
+        self.response.content_type = 'application/json'
+        response = {'oauth_url': client.get_authorization_url()}
+        self.response.write(json.dumps(response))
+    elif action == 'authorization':
+
+        auth_token = self.request.get('oauth_token')
+        auth_verifier = self.request.get('oauth_verifier')
+        user_info = client.get_user_info(auth_token,
+                auth_verifier=auth_verifier)
 
       # We store the user id and token into a Token Entity
 
-            stored_user = Token.query(Token.id_tw == user_info['token'
-                    ]).get()
-            if stored_user == None:
-                user_token = Token(nombre_usuario=user_info['username'
-                                   ], id_tw=str(user_info['token']),
-                                   token_tw=user_info['secret'])
-                user_token.put()
+        stored_user = Token.query(Token.id_tw == user_info['token'
+                                  ]).get()
+        if stored_user == None:
+            user_token = Token(nombre_usuario=user_info['username'],
+                               id_tw=str(user_info['token']),
+                               token_tw=user_info['secret'])
+            user_token.put()
             self.response.set_status(200)
 
         if action == 'access_token' and not username == None:
