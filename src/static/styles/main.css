@@ -7,10 +7,15 @@ body,html {
   /* Opcion 2*/
   /*  background: rgba(188, 100, 55, 0.44);*/
 }
+.view {
+  margin-left: 15%;
+  margin-right: 15%;  
+}
 core-toolbar {
   background-color: transparent;
   padding: 2% 10%;
   color:antiquewhite;
+
 }
 .logo {
   height: 120%;
@@ -25,7 +30,3 @@ paper-button {
   background-color: #B71C1C;
 }
 
-.view {
-   position:relative;
-   height: 80%;
-}
