@@ -643,8 +643,22 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
         self.response.set_status(404)
 
   # POST Method
-  def post(self):
-    pass
+  def post(self):    
+    # Gets the data from the request form
+    access_token = request.POST["access_token"]
+    token_id = request.POST["token_id"]
+
+    #Checks if the username was stored previously
+    stored_credentails = Token.query(Token.token_li == token_id).get()
+    if stored_credentials == None:
+      #Stores the credentials in a Token Entity
+      # TODO: Generate a valid username for a new user in the user_credentials
+      user_credentials = Token(id_li=token_ins, token_li=access_token)
+      user_credentials.put()
+      self.response.set_status(201)
+    else:
+      self.response.set_status(200)
+
 
 
 class OAuthInstagramHandler(webapp2.RequestHandler):
