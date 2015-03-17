@@ -638,35 +638,48 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
     self -- info about the request build by webapp2
     """
     username = self.request.get('username', default_value='None')
-    if not username == None:
-        user_details = Token.query(Token.nombre_usuario
-                == username).get()
-        if not user_details == None:
-            response = {'id_li': user_details.id_git,
-                        'token_li': user_details.token_git}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(200)
-        else:
-            self.response.set_status(404)
+    if not username == 'None':
+      user_details = Token.query(Token.nombre_usuario
+              == username).get()
+      if not user_details == None:
+        response = {'id_li': user_details.id_git,
+                    'token_li': user_details.token_git}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
+    else:
+      self.response.set_status(400)
 
   # POST Method
   def post(self):    
     # Gets the data from the request form
-    access_token = request.POST["access_token"]
-    token_id = request.POST["token_id"]
+    access_token = self.request.POST["access_token"]
+    token_id = self.request.POST["token_id"]
 
     #Checks if the username was stored previously
-    stored_credentails = Token.query(Token.token_li == token_id).get()
+    stored_credentials = Token.query(Token.id_li == token_id).get()
     if stored_credentials == None:
-      #Stores the credentials in a Token Entity
+      # Stores the credentials in a Token Entity
       # TODO: Generate a valid username for a new user in the user_credentials
-      user_credentials = Token(id_li=token_ins, token_li=access_token)
+      user_credentials = Token(id_li=token_id, token_li=access_token)
       user_credentials.put()
+      # TODO: Return the username owner of the keys
+      response = {'username': user_credentials.nombre_usuario}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
       self.response.set_status(201)
     else:
+      # We store the new set of credentials
+      stored_credentials.id_li = token_id
+      stored_credentials.token_li = access_token
+      stored_credentials.put()
+      # TODO: Return the username owner of the keys
+      response = {'username': stored_credentials.nombre_usuario}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
       self.response.set_status(200)
-
 
 class OAuthInstagramHandler(webapp2.RequestHandler):
 
@@ -720,10 +733,39 @@ class OauthFacebookHandler(webapp2.RequestHandler):
 class OauthStackOverflowHandler(webapp2.RequestHandler):
 
   def get(self):
-    pass
+    """ - Returns the StackOverflow access_token for a user authenticated
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
+
+    username = self.request.get('username', default_value='None')
+    if not username == None:
+      user_details = Token.query(Token.nombre_usuario
+        == username).get()
+      if not user_details == None:
+        response = {'id_google': user_details.id_git,
+        'token_google': user_details.token_git}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
 
   def post(self):
-    pass
+    # Gets the data from the request form
+    access_token = request.POST["access_token"]
+    token_id = request.POST["token_id"]
+
+    #Checks if the username was stored previously
+    stored_credentails = Token.query(Token.token_ins == token_id).get()
+    if stored_credentials == None:
+      #Stores the credentials in a Token Entity
+      # TODO: Generate a valid username for a new user in the user_credentials
+      user_credentials = Token(id_google=token_ins, token_google=access_token)
+      user_credentials.put()
+      self.response.set_status(201)
+    else:
+      self.response.set_status(200)
 
 
 class OauthGooglePlusHandler(webapp2.RequestHandler):
@@ -739,17 +781,16 @@ class OauthGooglePlusHandler(webapp2.RequestHandler):
         user_details = Token.query(Token.nombre_usuario
                 == username).get()
         if not user_details == None:
-            response = {'id_google': user_details.id_git,
-                        'token_google': user_details.token_git}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(200)
+          response = {'id_google': user_details.id_git,
+                      'token_google': user_details.token_git}
+          self.response.content_type = 'application/json'
+          self.response.write(json.dumps(response))
+          self.response.set_status(200)
         else:
             self.response.set_status(404)
 
   # POST Method
   def post(self):
-    
     # Gets the data from the request form
     access_token = request.POST["access_token"]
     token_id = request.POST["token_id"]
