@@ -17,6 +17,7 @@
 """
 
 from google.appengine.ext import ndb
+import json
 """NDB Instances """
 # class Tag(ndb.Model):
 #   name_tag = ndb.StringProperty()
@@ -201,11 +202,22 @@ def getNombreRS(self, nombre_usuario, rs):
     print "La red social solicitada no esta contemplada"
   return identificador
 
-# def buscaUsuario(self, nombre_usuario):
-#   users = Usuario.query(Usuario.nombre_usuario=nombre_usuario).get()
+ def buscaUsuario(self, nombre_usuario):
+  user = Usuario.query(Usuario.nombre_usuario=nombre_usuario).get()
+  usuario = {"nombre_usuario": user.nombre_usuario,
+              "email": user.email,
+              "telefono": user.telefono,
+              "descripcion": user.descripcion,
+              "grupos": user.lista_Grupos,
+              "redes": user.lista_Redes}
+  usuario = json.dumps(usuario)
+  return usuario
 
 def insertaUsuario(self, nombre_usuario, datos=None):
-  usuario = Usuario(nombre_usuario=nombre_usuario)
+  if nombre_usuario == None:
+    return "Error. El campo nombre usuario es obligatorio"
+  else:
+    usuario = Usuario(nombre_usuario=nombre_usuario)
   if not datos == None:
     if datos.email:
       usuario.email = datos.email
@@ -215,3 +227,32 @@ def insertaUsuario(self, nombre_usuario, datos=None):
       usuario.descripcion = datos.descripcion
 
   usuario.put()
+
+def actualizaUsuario(self, nombre_usuario, datos):
+  usuario = Usuario.query(nombre_usuario==nombre_usuario).get()
+  if datos.email:
+    usuario.email = datos.email
+  if datos.telefono:
+    usuario.telefono = datos.telefono
+  if datos.descripcion:
+    usuario.descripcion = datos.descripcion
+
+  usuario.put()
+
+def insertaToken(self, nombre_usuario, rs, token, id_usuario):
+  token = Token.query(nombre_usuario==nombre_usuario).get()
+  if rs == "facebook":
+    token.token_fb = token
+    token.id_fb = id_usuario
+
+def insertaGrupo(self, nombre_usuario, grupos=None):
+  usuario = Usuario.query(nombre_usuario=nombre_usuario).get()
+  if not grupos == None:
+    for grupo in grupos:
+      usuario.lista_Grupos = usuario.lista_Grupos.append(grupo)
+
+def insertaRed(self, nombre_usuario, redes=None):
+  usuario = Usuario.query(nombre_usuario==nombre_usuario).get()
+  if not redes == None:
+    for red in redes:
+      usuario.lista_Redes == usuario.lista_Redes.append(red)
