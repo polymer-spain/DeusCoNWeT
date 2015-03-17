@@ -31,13 +31,9 @@
       templateUrl: 'views/userHome.html',
       controller: 'userHomeCtrl'
     })
-      .when('/sandbox', {
-      templateUrl: 'static/views/sandbox.html',
-      controller: 'SandboxCtrl'
-    })
-      .when('/components/:componentID',{
-      templateUrl: 'static/views/repositorio.html',
-      controller: 'ComponentCtrl'
+      .when('/formulario', {
+      templateUrl: 'views/formulario.html',
+      controller: 'FormularioCtrl'
     })
       .when('/search',{
       templateUrl: 'static/views/search.html',
