@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 """ Copyright 2014 Luis Ruiz Ruiz
 	  Copyright 2014 Ana Isabel Lopera Martinez
 	  Copyright 2014 Miguel Ortega Moreno

@@ -642,8 +642,8 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
       user_details = Token.query(Token.nombre_usuario
               == username).get()
       if not user_details == None:
-        response = {'id_li': user_details.id_git,
-                    'token_li': user_details.token_git}
+        response = {'token_id': user_details.id_li,
+                    'access_token': user_details.token_li}
         self.response.content_type = 'application/json'
         self.response.write(json.dumps(response))
         self.response.set_status(200)
@@ -655,31 +655,37 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
   # POST Method
   def post(self):    
     # Gets the data from the request form
-    access_token = self.request.POST["access_token"]
-    token_id = self.request.POST["token_id"]
+    try:
+      access_token = self.request.POST["access_token"]
+      token_id = self.request.POST["token_id"]
 
-    #Checks if the username was stored previously
-    stored_credentials = Token.query(Token.id_li == token_id).get()
-    if stored_credentials == None:
-      # Stores the credentials in a Token Entity
-      # TODO: Generate a valid username for a new user in the user_credentials
-      user_credentials = Token(id_li=token_id, token_li=access_token)
-      user_credentials.put()
-      # TODO: Return the username owner of the keys
-      response = {'username': user_credentials.nombre_usuario}
+      #Checks if the username was stored previously
+      stored_credentials = Token.query(Token.id_li == token_id).get()
+      if stored_credentials == None:
+        # Stores the credentials in a Token Entity
+        # TODO: Generate a valid username for a new user in the user_credentials
+        user_credentials = Token(id_li=token_id, token_li=access_token)
+        user_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': user_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(201)
+      else:
+        # We store the new set of credentials
+        stored_credentials.id_li = token_id
+        stored_credentials.token_li = access_token
+        stored_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': stored_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+    except:
+      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
       self.response.content_type = 'application/json'
       self.response.write(json.dumps(response))
-      self.response.set_status(201)
-    else:
-      # We store the new set of credentials
-      stored_credentials.id_li = token_id
-      stored_credentials.token_li = access_token
-      stored_credentials.put()
-      # TODO: Return the username owner of the keys
-      response = {'username': stored_credentials.nombre_usuario}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(200)
+      self.response.set_status(400)
 
 class OAuthInstagramHandler(webapp2.RequestHandler):
 
@@ -689,122 +695,231 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
-
     username = self.request.get('username', default_value='None')
-    if not username == None:
+    if not username == 'None':
       user_details = Token.query(Token.nombre_usuario
-        == username).get()
+              == username).get()
       if not user_details == None:
-        response = {'id_ins': user_details.id_git,
-        'token_ins': user_details.token_git}
+        response = {'token_id': user_details.id_ins,
+                    'access_token': user_details.token_ins}
         self.response.content_type = 'application/json'
         self.response.write(json.dumps(response))
         self.response.set_status(200)
       else:
         self.response.set_status(404)
+    else:
+      self.response.set_status(400)
 
   # POST Method
-  def post(self):
+  def post(self):    
     # Gets the data from the request form
-    access_token = request.POST["access_token"]
-    token_id = request.POST["token_id"]
-
-    #Checks if the username was stored previously
-    stored_credentails = Token.query(Token.token_ins == token_id).get()
-    if stored_credentials == None:
-      #Stores the credentials in a Token Entity
-      # TODO: Generate a valid username for a new user in the user_credentials
-      user_credentials = Token(id_ins=token_ins, token_ins=access_token)
-      user_credentials.put()
-      self.response.set_status(201)
-    else:
-      self.response.set_status(200)
+    try:
+      access_token = self.request.POST["access_token"]
+      token_id = self.request.POST["token_id"]
+    
+      #Checks if the username was stored previously
+      stored_credentials = Token.query(Token.id_ins == token_id).get()
+      if stored_credentials == None:
+        # Stores the credentials in a Token Entity
+        # TODO: Generate a valid username for a new user in the user_credentials
+        user_credentials = Token(id_ins=token_id, token_ins=access_token)
+        user_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': user_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(201)
+      else:
+        # We store the new set of credentials
+        stored_credentials.id_ins = token_id
+        stored_credentials.token_ins = access_token
+        stored_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': stored_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+    except:
+      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
+      self.response.set_status(400)
 
 
 class OauthFacebookHandler(webapp2.RequestHandler):
 
+  # GET Method
   def get(self):
-    pass
-
-  def post(self):
-    pass
-
-
-class OauthStackOverflowHandler(webapp2.RequestHandler):
-
-  def get(self):
-    """ - Returns the StackOverflow access_token for a user authenticated
+    """ - Returns the Github access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
-
     username = self.request.get('username', default_value='None')
-    if not username == None:
+    if not username == 'None':
       user_details = Token.query(Token.nombre_usuario
-        == username).get()
+              == username).get()
       if not user_details == None:
-        response = {'id_google': user_details.id_git,
-        'token_google': user_details.token_git}
+        response = {'token_id': user_details.id_fb,
+                    'access_token': user_details.token_fb}
         self.response.content_type = 'application/json'
         self.response.write(json.dumps(response))
         self.response.set_status(200)
       else:
         self.response.set_status(404)
-
-  def post(self):
-    # Gets the data from the request form
-    access_token = request.POST["access_token"]
-    token_id = request.POST["token_id"]
-
-    #Checks if the username was stored previously
-    stored_credentails = Token.query(Token.token_ins == token_id).get()
-    if stored_credentials == None:
-      #Stores the credentials in a Token Entity
-      # TODO: Generate a valid username for a new user in the user_credentials
-      user_credentials = Token(id_google=token_ins, token_google=access_token)
-      user_credentials.put()
-      self.response.set_status(201)
     else:
-      self.response.set_status(200)
+      self.response.set_status(400)
+
+  # POST Method
+  def post(self):    
+    # Gets the data from the request form
+    try:
+      access_token = self.request.POST["access_token"]
+      token_id = self.request.POST["token_id"]
+    
+      #Checks if the username was stored previously
+      stored_credentials = Token.query(Token.id_fb == token_id).get()
+      if stored_credentials == None:
+        # Stores the credentials in a Token Entity
+        # TODO: Generate a valid username for a new user in the user_credentials
+        user_credentials = Token(id_fb=token_id, token_fb=access_token)
+        user_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': user_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(201)
+      else:
+        # We store the new set of credentials
+        stored_credentials.id_fb = token_id
+        stored_credentials.token_fb = access_token
+        stored_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': stored_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+    except:
+      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
+      self.response.set_status(400)
 
 
-class OauthGooglePlusHandler(webapp2.RequestHandler):
-
+class OauthStackOverflowHandler(webapp2.RequestHandler):
   # GET Method
   def get(self):
-    """ - Returns the GooglePlus access_token for a user authenticated
+    """ - Returns the Github access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
     username = self.request.get('username', default_value='None')
-    if not username == None:
-        user_details = Token.query(Token.nombre_usuario
-                == username).get()
-        if not user_details == None:
-          response = {'id_google': user_details.id_git,
-                      'token_google': user_details.token_git}
-          self.response.content_type = 'application/json'
-          self.response.write(json.dumps(response))
-          self.response.set_status(200)
-        else:
-            self.response.set_status(404)
+    if not username == 'None':
+      user_details = Token.query(Token.nombre_usuario
+              == username).get()
+      if not user_details == None:
+        response = {'token_id': user_details.id_sof,
+                    'access_token': user_details.token_sof}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
+    else:
+      self.response.set_status(400)
 
   # POST Method
-  def post(self):
+  def post(self):    
     # Gets the data from the request form
-    access_token = request.POST["access_token"]
-    token_id = request.POST["token_id"]
+    try:
+      access_token = self.request.POST["access_token"]
+      token_id = self.request.POST["token_id"]
+    
+      #Checks if the username was stored previously
+      stored_credentials = Token.query(Token.id_sof == token_id).get()
+      if stored_credentials == None:
+        # Stores the credentials in a Token Entity
+        # TODO: Generate a valid username for a new user in the user_credentials
+        user_credentials = Token(id_sof=token_id, token_sof=access_token)
+        user_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': user_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(201)
+      else:
+        # We store the new set of credentials
+        stored_credentials.id_sof = token_id
+        stored_credentials.token_sof = access_token
+        stored_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': stored_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+    except:
+      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
+      self.response.set_status(400)
 
-    #Checks if the username was stored previously
-    stored_credentails = Token.query(Token.token_ins == token_id).get()
-    if stored_credentials == None:
-      #Stores the credentials in a Token Entity
-      # TODO: Generate a valid username for a new user in the user_credentials
-      user_credentials = Token(id_google=token_ins, token_google=access_token)
-      user_credentials.put()
-      self.response.set_status(201)
+
+class OauthGooglePlusHandler(webapp2.RequestHandler):
+  # GET Method
+  def get(self):
+    """ - Returns the Github access_token for a user authenticated
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
+    username = self.request.get('username', default_value='None')
+    if not username == 'None':
+      user_details = Token.query(Token.nombre_usuario
+              == username).get()
+      if not user_details == None:
+        response = {'token_id': user_details.id_google,
+                    'access_token': user_details.token_google}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+      else:
+        self.response.set_status(404)
     else:
-      self.response.set_status(200)
+      self.response.set_status(400)
+
+  # POST Method
+  def post(self):    
+    # Gets the data from the request form
+    try:
+      access_token = self.request.POST["access_token"]
+      token_id = self.request.POST["token_id"]
+    
+      #Checks if the username was stored previously
+      stored_credentials = Token.query(Token.id_google == token_id).get()
+      if stored_credentials == None:
+        # Stores the credentials in a Token Entity
+        # TODO: Generate a valid username for a new user in the user_credentials
+        user_credentials = Token(id_google=token_id, token_google=access_token)
+        user_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': user_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(201)
+      else:
+        # We store the new set of credentials
+        stored_credentials.id_google = token_id
+        stored_credentials.token_google = access_token
+        stored_credentials.put()
+        # TODO: Return the username owner of the keys
+        response = {'username': stored_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
+    except:
+      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
+      self.response.set_status(400)
+
 
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
