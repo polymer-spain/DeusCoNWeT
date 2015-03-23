@@ -517,6 +517,7 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
       self.response.write(json.dumps(response))
 
     elif action == 'authorization':
+      print "HOST: " + self.request.host
       auth_token = self.request.get('oauth_token')
       auth_verifier = self.request.get('oauth_verifier')
       user_info = client.get_user_info(auth_token,
