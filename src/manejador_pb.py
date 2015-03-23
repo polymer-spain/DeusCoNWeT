@@ -517,7 +517,7 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
       self.response.write(json.dumps(response))
 
     elif action == 'authorization':
-      print "HOST: " + self.request.host
+      # print "HOST: " + self.request.host
       auth_token = self.request.get('oauth_token')
       auth_verifier = self.request.get('oauth_verifier')
       user_info = client.get_user_info(auth_token,
@@ -629,6 +629,36 @@ class OAuthGithubHandler(webapp2.RequestHandler):
       connection.close()
       self.response.set_status(200)
 
+      # Obtenemos los detalles del usuario autenticado
+      connectionAPI = httplib.HTTPSConnection('api.github.com')
+      headers = {"Accept": "application/vnd.github.v3+json",
+        "User-Agent": "PolymerBricks-App",
+        "Authorization": "token ca2bf4a939c31bd9e5ba06142fa017b74f5ddcc7"}
+      connectionAPI.request('GET', '/user', params_token, headers)
+      response = connectionAPI.getresponse()
+      user_details = json.loads(response.read())
+      
+      # Almacenamos el par id usuario/token autenticado
+      stored_credentials = Token.query(Token.id_git == str(user_details["id"])).get()
+      if stored_credentials == None:
+        # Almacena las credenciales en una entidad Token
+        #TODO: Generar un id de usuario valido
+        user_credentials = Token(id_git = str(user_details['id']), token_git = access_token)
+        user_credentials.put()
+        response = {'username': user_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(201)
+      else:
+        # Almacenamos el access token recibido
+        stored_credentials.id_git = str(user_details['id'])
+        stored_credentials.token_git = access_token
+        stored_credentials.put()
+        #TODO: devolver el propietario de las claves
+        response = {'username': stored_credentials.nombre_usuario}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(200)
 
 class OauthLinkedinHandler(webapp2.RequestHandler):
 
