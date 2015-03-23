@@ -96,7 +96,6 @@ class Componente(ndb.Model):
   #               componentId=self.full_name_id)
 
 class UserRating(ndb.Model):
-  nombre_usuario = ndb.StringProperty() # Valor creado por nosotros mismos al detectar un usuario nuevo
   # google_user_id = ndb.StringProperty()
   full_name_id = ndb.StringProperty()
   rating_value = ndb.FloatProperty()
@@ -105,21 +104,10 @@ class UserRating(ndb.Model):
 # Entidad Grupo
 class Grupo(ndb.Model):
   nombre_grupo = ndb.StringProperty()
-  lista_Usuarios = ndb.StringProperty(repeated = True)
+  lista_Usuarios = ndb.StringProperty(repeated=True)
   descripcion = ndb.StringProperty()
-
-# Entidad usuario
-class Usuario(ndb.Model):
-  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo 
-  email = ndb.StringProperty()
-  telefono = ndb.IntegerProperty()
-  descripcion = ndb.TextProperty()
-  lista_Redes = ndb.StringProperty(repeated = True)
-  lista_Grupos = ndb.StringProperty(repeated = True)
-
 # Entidad Token
 class Token(ndb.Model):
-  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo
   id_fb = ndb.StringProperty()
   token_fb = ndb.StringProperty()
   id_tw = ndb.StringProperty()
@@ -137,38 +125,52 @@ class Token(ndb.Model):
 
 # Entidad UsuarioSocial
 class UsuarioSocial(ndb.Model):
-  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo
   nombre_rs = ndb.StringProperty()
   siguiendo = ndb.IntegerProperty()
   seguidores = ndb.IntegerProperty()
-  url_tw_sig = ndb.StringProperty()
-  url_tw_seg = ndb.StringProperty()
-  url_fb_sig = ndb.StringProperty()
-  url_fb_seg = ndb.StringProperty()
+  url_sig = ndb.StringProperty()
+  url_seg = ndb.StringProperty()
   # Faltan las uris del resto de apis a consultar
 
-#Entidad Tarjeta
-class Tarjeta(ndb.Model):
-  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo
-  id_tw = ndb.StringProperty()
-  id_fb = ndb.StringProperty()
-  id_sof = ndb.StringProperty()
-  id_li = ndb.StringProperty()
-  id_ins = ndb.StringProperty()
-  id_git = ndb.StringProperty()
-  id_google = ndb.StringProperty()
+# #Entidad Tarjeta
+# class Tarjeta(ndb.Model):
+#   id_tw = ndb.StringProperty()
+#   id_fb = ndb.StringProperty()
+#   id_sof = ndb.StringProperty()
+#   id_li = ndb.StringProperty()
+#   id_ins = ndb.StringProperty()
+#   id_git = ndb.StringProperty()
+#   id_google = ndb.StringProperty()
+
+# Entidad usuario
+class Usuario(ndb.Model):
+  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo 
+  email = ndb.StringProperty()
+  telefono = ndb.IntegerProperty()
+  descripcion = ndb.TextProperty()
+  lista_Redes = ndb.StringProperty(Grupo, repeated=True)
+  lista_Grupos = ndb.StringProperty(UsuarioSocial, repeated=True)
+  valoracion = ndb.StructuredProperty(UserRating, repeated=True)
+  token = ndb.StructuredProperty(Token)
+  #tarjeta = ndb.StructuredProperty(Tarjeta)
+
+
 
 # Definición de métodos para insertar, obtener o actualizar datos de la base de datos
 
 def getToken(self, ide, rs):
-  tokens = Token.query()
-  token = ''
   if rs == "facebook":
-    token = tokens.filter(Token.id_fb==ide).get().token_fb
+    token = Token(id_fb=ide)
+    user = Usuario.query(Usuario.token == token).get()
+    res = user.token_fb
   elif rs == "twitter":
-    token = tokens.filter(Token.id_tw==ide).get().token_tw
+    token = Token(id_tw=ide)
+    user = Usuario.query(Usuario.token == token).get()
+    res = user.token_tw
   elif rs == "stack-overflow":
-    token = tokens.filter(Token.id_sof==ide).get().token_sof
+    token = Token(id_sof=ide)
+    user = Usuario.query(Usuario.token == token).get()
+    res = user.token_sof
   elif rs == "linkedin":
     token = tokens.filter(Token.id_li==ide).get().token_li
   elif rs == "instagram":
@@ -179,7 +181,7 @@ def getToken(self, ide, rs):
     token = tokens.filter(Token.id_google==ide).get().token_google
   else:
     print "La red social solicitada no esta contemplada"
-  return token
+  return res
 
 def getNombreRS(self, nombre_usuario, rs):
   tarjetas = Tarjeta.query(Tarjeta.nombre_usuario=nombre_usuario).get()
@@ -213,6 +215,7 @@ def getNombreRS(self, nombre_usuario, rs):
   usuario = json.dumps(usuario)
   return usuario
 
+@ndb.transactional
 def insertaUsuario(self, nombre_usuario, datos=None):
   if nombre_usuario == None:
     return "Error. El campo nombre usuario es obligatorio"
@@ -226,7 +229,13 @@ def insertaUsuario(self, nombre_usuario, datos=None):
     if datos.descripcion:
       usuario.descripcion = datos.descripcion
 
-  usuario.put()
+  user_key = usuario.put()
+
+  user_aux = user_key.get()
+  user_aux.nombre_usuario = user_key
+  user_aux.put()
+
+  return user_key
 
 def actualizaUsuario(self, nombre_usuario, datos):
   usuario = Usuario.query(nombre_usuario==nombre_usuario).get()
@@ -250,6 +259,8 @@ def insertaGrupo(self, nombre_usuario, grupos=None):
   if not grupos == None:
     for grupo in grupos:
       usuario.lista_Grupos = usuario.lista_Grupos.append(grupo)
+  else:
+    return "No se especifica ningun grupo que añadir"
 
 def insertaRed(self, nombre_usuario, redes=None):
   usuario = Usuario.query(nombre_usuario==nombre_usuario).get()
