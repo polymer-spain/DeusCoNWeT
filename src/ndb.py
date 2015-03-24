@@ -151,7 +151,7 @@ class Usuario(ndb.Model):
   lista_Redes = ndb.StringProperty(Grupo, repeated=True)
   lista_Grupos = ndb.StringProperty(UsuarioSocial, repeated=True)
   valoracion = ndb.StructuredProperty(UserRating, repeated=True)
-  componentes = ndb.StructuredProperty(Componente, repeated=True)
+  #componentes = ndb.StructuredProperty(Componente, repeated=True)
   token = ndb.StructuredProperty(Token)
   #tarjeta = ndb.StructuredProperty(Tarjeta)
 
@@ -246,28 +246,40 @@ def actualizaUsuario(self, nombre_usuario, datos):
 
   usuario.put()
 
-def insertaToken(self, nombre_usuario, rs, token, id_usuario):
+def insertaToken(self, nombre_usuario, rs, token):
   user = Usuario.query(nombre_usuario==nombre_usuario).get()
   if rs == "facebook":
     user.token_fb = token
-    user.id_fb = id_usuario
   elif rs == "twitter":
     user.token_tw = token
-    user.id_tw = id_usuario
   elif rs == "instagram":
     user.token_ins = token
-    user.id_ins = id_usuario
   elif rs == "github":
     user.token_git = token
-    user.id_git = id_usuario
   elif rs == "stack-overflow":
     user.token_sof = token
-    user.id_sof = id_usuario
   elif rs == "linkedin":
     user.token_li = token
-    user.id_li = id_usuario
   elif rs == "google":
     user.token_google = token
+
+  user.put()
+
+def insertaIdRS(self, nombre_usuario, rs, id_usuario):
+  user = Usuario.query(Usuario.nombre_usuario==nombre_usuario).get()
+  if rs == "facebook":
+    user.id_fb = id_usuario
+  elif rs == "twitter":
+    user.id_tw = id_usuario
+  elif rs == "instagram":
+    user.id_ins = id_usuario
+  elif rs == "github":
+    user.id_git = id_usuario
+  elif rs == "stack-overflow":
+    user.id_sof = id_usuario
+  elif rs == "linkedin":
+    user.id_li = id_usuario
+  elif rs == "google":
     user.id_google = id_usuario
 
   user.put()
@@ -279,6 +291,17 @@ def insertaGrupo(self, nombre_usuario, grupos=None):
       usuario.lista_Grupos = usuario.lista_Grupos.append(grupo)
   else:
     return "No se especifica ningun grupo que añadir"
+
+def buscaGrupo(self, nombre_usuario):
+  user = Usuario.query(Usuario.nombre_usuario==nombre_usuario).get()
+  res = {}
+  contador = 1
+  if user.lista_Grupos:
+    for grupo in user.lista_Grupos:
+      res[contador] = grupo
+      contador = contador + 1
+
+  return json.dumps(res)
 
 def insertaRed(self, nombre_usuario, redes=None):
   usuario = Usuario.query(nombre_usuario==nombre_usuario).get()
