@@ -151,6 +151,7 @@ class Usuario(ndb.Model):
   lista_Redes = ndb.StringProperty(Grupo, repeated=True)
   lista_Grupos = ndb.StringProperty(UsuarioSocial, repeated=True)
   valoracion = ndb.StructuredProperty(UserRating, repeated=True)
+  componentes = ndb.StructuredProperty(Componente, repeated=True)
   token = ndb.StructuredProperty(Token)
   #tarjeta = ndb.StructuredProperty(Tarjeta)
 
@@ -158,48 +159,44 @@ class Usuario(ndb.Model):
 
 # Definición de métodos para insertar, obtener o actualizar datos de la base de datos
 
-def getToken(self, ide, rs):
+def getToken(self, nombre_usuario, rs):
+  user = Usuario.query(Usuario.nombre_usuario == nombre_usuario).get()
+  res = ''
   if rs == "facebook":
-    token = Token(id_fb=ide)
-    user = Usuario.query(Usuario.token == token).get()
-    res = user.token_fb
+    res = user.token.token_fb
   elif rs == "twitter":
-    token = Token(id_tw=ide)
-    user = Usuario.query(Usuario.token == token).get()
-    res = user.token_tw
+    res = user.token.token_tw
   elif rs == "stack-overflow":
-    token = Token(id_sof=ide)
-    user = Usuario.query(Usuario.token == token).get()
-    res = user.token_sof
+    res = user.token.token_sof
   elif rs == "linkedin":
-    token = tokens.filter(Token.id_li==ide).get().token_li
+    res = user.token.token_li
   elif rs == "instagram":
-    token = tokens.filter(Token.id_ins==ide).get().token_ins
+    res = user.token.token_ins
   elif rs == "github":
-    token = tokens.filter(Token.id_git==ide).get().token_git
+    res = user.token.token_git
   elif rs == "google":
-    token = tokens.filter(Token.id_google==ide).get().token_google
+    res = user.token.token_google
   else:
     print "La red social solicitada no esta contemplada"
   return res
 
-def getNombreRS(self, nombre_usuario, rs):
-  tarjetas = Tarjeta.query(Tarjeta.nombre_usuario=nombre_usuario).get()
+def getIdRS(self, nombre_usuario, rs):
+  user = Usuario.query(Usuario.nombre_usuario=nombre_usuario).get()
   identificador = ''
   if rs == "facebook":
-    identificador = tarjetas.id_fb
+    identificador = user.id_fb
   elif rs == "twitter":
-    identificador = tarjetas.id_tw
+    identificador = user.id_tw
   elif rs == "stack-overflow":
-    identificador = tarjetas.id_sof
+    identificador = user.id_sof
   elif rs == "linkedin":
-    identificador = tarjetas.id_li
+    identificador = user.id_li
   elif rs == "instagram":
-    identificador = tarjetas.id_ins
+    identificador = user.id_ins
   elif rs == "github":
-    identificador = tarjetas.id_git
+    identificador = user.id_git
   elif rs == "google":
-    identificador = tarjetas.id_google
+    identificador = user.id_google
   else:
     print "La red social solicitada no esta contemplada"
   return identificador
@@ -239,20 +236,41 @@ def insertaUsuario(self, nombre_usuario, datos=None):
 
 def actualizaUsuario(self, nombre_usuario, datos):
   usuario = Usuario.query(nombre_usuario==nombre_usuario).get()
-  if datos.email:
-    usuario.email = datos.email
-  if datos.telefono:
-    usuario.telefono = datos.telefono
-  if datos.descripcion:
-    usuario.descripcion = datos.descripcion
+  if not datos == None:
+    if datos.email:
+      usuario.email = datos.email
+    if datos.telefono:
+      usuario.telefono = datos.telefono
+    if datos.descripcion:
+      usuario.descripcion = datos.descripcion
 
   usuario.put()
 
 def insertaToken(self, nombre_usuario, rs, token, id_usuario):
-  token = Token.query(nombre_usuario==nombre_usuario).get()
+  user = Usuario.query(nombre_usuario==nombre_usuario).get()
   if rs == "facebook":
-    token.token_fb = token
-    token.id_fb = id_usuario
+    user.token_fb = token
+    user.id_fb = id_usuario
+  elif rs == "twitter":
+    user.token_tw = token
+    user.id_tw = id_usuario
+  elif rs == "instagram":
+    user.token_ins = token
+    user.id_ins = id_usuario
+  elif rs == "github":
+    user.token_git = token
+    user.id_git = id_usuario
+  elif rs == "stack-overflow":
+    user.token_sof = token
+    user.id_sof = id_usuario
+  elif rs == "linkedin":
+    user.token_li = token
+    user.id_li = id_usuario
+  elif rs == "google":
+    user.token_google = token
+    user.id_google = id_usuario
+
+  user.put()
 
 def insertaGrupo(self, nombre_usuario, grupos=None):
   usuario = Usuario.query(nombre_usuario=nombre_usuario).get()
