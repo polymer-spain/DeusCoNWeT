@@ -35,49 +35,49 @@ import json
 #   zipball_url = ndb.StringProperty()
 #   tarball_url = ndb.StringProperty()
 
-class Autor(ndb.Model):
-  login = ndb.StringProperty()
-  user_id = ndb.IntegerProperty()
-  html_url = ndb.StringProperty()
-  followers = ndb.IntegerProperty()
-  following = ndb.IntegerProperty()
+# class Autor(ndb.Model):
+#   login = ndb.StringProperty()
+#   user_id = ndb.IntegerProperty()
+#   html_url = ndb.StringProperty()
+#   followers = ndb.IntegerProperty()
+#   following = ndb.IntegerProperty()
 
-class Componente(ndb.Model):
-  full_name = ndb.StringProperty() # Format: ":author/:repo"
-  repo_id = ndb.IntegerProperty() # Id of the repo in Github
-  name_repo = ndb.StringProperty()
-  # ComponentID for the repo. It's the id for the repo managed by polymer_bricks
-  full_name_id = ndb.StringProperty() # Format: ":author_:repo"
-  autor = ndb.StructuredProperty(Autor)
-  html_url = ndb.StringProperty()
-  description = ndb.StringProperty()
-  stars = ndb.IntegerProperty()
-  forks = ndb.IntegerProperty()
-  languages = ndb.StringProperty(repeated=True)
-  #tags = ndb.StructuredProperty(Tag, repeated=True)
-  #releases = ndb.StructuredProperty(Release, repeated=True)  
-  # Reputation related fields
-  reputation = ndb.FloatProperty()
-  ratingsCount = ndb.IntegerProperty()
-  reputation_sum = ndb.FloatProperty()
-  # SHA-256 string that identifies the repo 
-  #repo_hash = ndb.StringProperty()
-  # Lowercased names in order to obtain a properly ordering in ndb queries
-  #name_repo_lower_case = ndb.StringProperty()
-  #full_name_repo_lower_case = ndb.StringProperty()
+# class Componente(ndb.Model):
+#   full_name = ndb.StringProperty() # Format: ":author/:repo"
+#   repo_id = ndb.IntegerProperty() # Id of the repo in Github
+#   name_repo = ndb.StringProperty()
+#   # ComponentID for the repo. It's the id for the repo managed by polymer_bricks
+#   full_name_id = ndb.StringProperty() # Format: ":author_:repo"
+#   autor = ndb.StructuredProperty(Autor)
+#   html_url = ndb.StringProperty()
+#   description = ndb.StringProperty()
+#   stars = ndb.IntegerProperty()
+#   forks = ndb.IntegerProperty()
+#   languages = ndb.StringProperty(repeated=True)
+#   #tags = ndb.StructuredProperty(Tag, repeated=True)
+#   #releases = ndb.StructuredProperty(Release, repeated=True)  
+#   # Reputation related fields
+#   reputation = ndb.FloatProperty()
+#   ratingsCount = ndb.IntegerProperty()
+#   reputation_sum = ndb.FloatProperty()
+#   # SHA-256 string that identifies the repo 
+#   #repo_hash = ndb.StringProperty()
+#   # Lowercased names in order to obtain a properly ordering in ndb queries
+#   #name_repo_lower_case = ndb.StringProperty()
+#   #full_name_repo_lower_case = ndb.StringProperty()
 
   #Returns the rounded value corresponding to the reputation of the repo
-  def roundReputation(self):
-    repValue = float(self.reputation)
-    roundRep = round(repValue, 2)
-    decRep = roundRep - int(roundRep)
-    if decRep < 0.26:
-      roundRep = roundRep - decRep
-    elif decRep >= 0.26 and decRep<= 0.76:
-      roundRep = int(roundRep) + 0.5
-    else:
-      roundRep = float(int(roundRep) + 1)
-    return roundRep
+  # def roundReputation(self):
+  #   repValue = float(self.reputation)
+  #   roundRep = round(repValue, 2)
+  #   decRep = roundRep - int(roundRep)
+  #   if decRep < 0.26:
+  #     roundRep = roundRep - decRep
+  #   elif decRep >= 0.26 and decRep<= 0.76:
+  #     roundRep = int(roundRep) + 0.5
+  #   else:
+  #     roundRep = float(int(roundRep) + 1)
+  #   return roundRep
 
   # """Methods to generate RPC Messages returned by Polymer Bricks API"""
   # # type: basic/detailed
@@ -94,6 +94,14 @@ class Componente(ndb.Model):
   #               ,description=self.description, nStars=self.stars,
   #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
+
+class Componente(ndb.Model):
+  nombre = ndb.StringProperty()
+  x = ndb.FloatProperty()
+  y = ndb.FloatProperty()
+  url = ndb.StringProperty()
+  height = ndb.StringProperty()
+  width = ndb.StringProperty()
 
 class UserRating(ndb.Model):
   # google_user_id = ndb.StringProperty()
@@ -151,7 +159,7 @@ class Usuario(ndb.Model):
   lista_Redes = ndb.StringProperty(Grupo, repeated=True)
   lista_Grupos = ndb.StringProperty(UsuarioSocial, repeated=True)
   valoracion = ndb.StructuredProperty(UserRating, repeated=True)
-  #componentes = ndb.StructuredProperty(Componente, repeated=True)
+  componentes = ndb.StructuredProperty(Componente, repeated=True)
   token = ndb.StructuredProperty(Token)
   #tarjeta = ndb.StructuredProperty(Tarjeta)
 
@@ -228,10 +236,6 @@ def insertaUsuario(self, nombre_usuario, datos=None):
 
   user_key = usuario.put()
 
-  user_aux = user_key.get()
-  user_aux.nombre_usuario = user_key
-  user_aux.put()
-
   return user_key
 
 def actualizaUsuario(self, nombre_usuario, datos):
@@ -299,12 +303,26 @@ def buscaGrupo(self, nombre_usuario):
   if user.lista_Grupos:
     for grupo in user.lista_Grupos:
       res[contador] = grupo
-      contador = contador + 1
+      contador += 1
 
   return json.dumps(res)
 
 def insertaRed(self, nombre_usuario, redes=None):
-  usuario = Usuario.query(nombre_usuario==nombre_usuario).get()
+  usuario = Usuario.query(Usuario.nombre_usuario==nombre_usuario).get()
   if not redes == None:
     for red in redes:
       usuario.lista_Redes == usuario.lista_Redes.append(red)
+
+def buscaRed(self, nombre_usuario):
+  usuario = Usuario.query(Usuario.nombre_usuario==nombre_usuario).get()
+  res = {}
+  contador = 1
+  if usuario.lista_Redes:
+    for red in usuario.lista_Redes:
+      res[contador] = red
+      contador += 1
+
+  return json.dumps(res)
+
+def insertarComponente(self, nombre_usuario, nombre, coord_x=0, coord_y=0, url, height, width):
+  usuario = 
