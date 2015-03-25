@@ -8,7 +8,7 @@ html {
   /*
   background: rgba(188, 100, 55, 0.44);
   background-image: url('http://wallpaperciv.com/wp-content/uploads/2014/06/Social-Media-Wallpaper-Free-Download.jpg');*/
-  background-size: 100% 100%;
+  background-size: cover;
   background-repeat: no-repeat;
 }
 .content {

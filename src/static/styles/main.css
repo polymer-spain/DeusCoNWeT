@@ -8,8 +8,7 @@ body,html {
   /*  background: rgba(188, 100, 55, 0.44);*/
 }
 .view {
-  margin-left: 15%;
-  margin-right: 15%;  
+  margin:0 10%;
 }
 core-toolbar {
   background-color: transparent;
