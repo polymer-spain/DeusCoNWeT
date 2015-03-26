@@ -18,10 +18,10 @@ handlers:
 - url: /api/.*
   script: manejador_pb.app
   
-- url: /formulario
+- url: /about
   static_files: static/index.html
   upload: index\.html
-  
+
 - url: /user/.*
   static_files: static/index.html
   upload: index\.html

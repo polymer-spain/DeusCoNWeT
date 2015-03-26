@@ -6,42 +6,40 @@
     <twitter-timeline style="color: black" accessToken="3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x" secretToken="VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY" consumerKey="J4bjMZmJ6hh7r0wlG9H90cgEe" consumerSecret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" count="200"></twitter-timeline>
 
     <github-events style="color:black" username="mortega5" mostrar=10></github-events>
-    <div id="menu" class="hidden">
-      <div class="button">
-        <paper-icon-button id="menu-button" icon="arrow-back" ng-click="showMenu()"></paper-icon-button>
-      </div>
-      <div class="option" ng-click="buttonShow($event)">
-        <core-icon  icon="add-box">
-          <span style="padding-left:35px"> Añadir</span>
-        </core-icon>
-        <core-icon ng-show="menuStatus" icon="arrow-drop-down" style="float:right">
-        </core-icon>
-      </div>
 
-      <div class="option">
-        <core-icon  icon="delete" ng-click="buttonShow()">
-          <span style="padding-left:35px"> Borrar</span>
-        </core-icon>
+    <div vertical id="menu-button" layout class="option button" ng-class="{hidden: isMenuHidden()}">
+      <paper-icon-button  id="menu-icon" icon="arrow-back" ng-click="showMenu()"></paper-icon-button>
+    </div>
 
-        <core-icon ng-show="menuStatus" id="arrow" icon="arrow-drop-down" style="float:right">
-        </core-icon>
-      </div>
+    <div id="add" class="option hidden" ng-click="setSelected('add')"  ng-class="{hidden: isMenuHidden(),active: isSelected('add')}">
+      <core-icon   icon="add-box">
+        <span style="padding-left:35px"> Añadir</span>
+      </core-icon>
+      <core-icon ng-show="menuStatus" icon="arrow-drop-down" style="float:right">
+      </core-icon>
+    </div>
 
-      <div class="option">
-        <core-icon  icon="create" ng-click="buttonShow()">
-          <span style="padding-left:35px"> Modificar</span>
-        </core-icon>
-        <core-icon ng-show="menuStatus" icon="arrow-drop-down" style="float:right">
-        </core-icon>
-      </div>
+    <div id="delete" class="option hidden" ng-click="setSelected('delete')"  ng-class="{hidden: isMenuHidden(),active: isSelected('delete')}">
+      <core-icon  icon="delete" >
+        <span style="padding-left:35px"> Borrar</span>
+      </core-icon>
 
-      <div class="option">
-        <core-icon icon="help" ng-click="buttonShow()">
-          <span style="padding-left:35px">Ayuda</span>
-        </core-icon>
-      </div>
+      <core-icon ng-show="menuStatus" id="arrow" icon="arrow-drop-down" style="float:right">
+      </core-icon>
+    </div>
 
+    <div id="modify" class="option hidden" ng-click="setSelected('modify')"  ng-class="{hidden: isMenuHidden(),active: isSelected('modify')}">
+      <core-icon  icon="create">
+        <span style="padding-left:35px"> Modificar</span>
+      </core-icon>
+      <core-icon ng-show="menuStatus" icon="arrow-drop-down" style="float:right">
+      </core-icon>
+    </div>
 
+    <div id="help" class="option hidden" ng-click="setSelected('help')"  ng-class="{hidden: isMenuHidden(),active: isSelected('help')}">
+      <core-icon icon="help">
+        <span style="padding-left:35px">Ayuda</span>
+      </core-icon>
     </div>
   </div>
 </div>

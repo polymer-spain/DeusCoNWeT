@@ -11,43 +11,56 @@ body {
   border-radius: 100%;
 
 }
-
-#menu {
-  position:absolute;
+div.option#delete {
+  top:335px;
+}
+div.option#modify {
+  top:420px;
+}
+div.option#help {
+  top:505px;
+}
+div.option{
+  position:fixed;
   right:0;
-  top:150px;
+  top:250px;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding:30px 15px;
+  background-color: rgba(0,0,0,0.7);
   color:white;
   list-style: none;
-  padding:0;
   transition: 0.5s linear all;
   width: 200px;
   overflow: hidden;
 }
 
-#menu > div.button {
-  vertical-align: left;
-  padding-left: 5px;
-  height: auto;
-}
-#menu > div.option{
-  border: 1px solid rgba(255,255,255,0.3);
-  padding:2em 15px;
-  background-color: rgba(0,0,0,0.7);
-}
-#menu.hidden > div.option {
+div.option.hidden {
   border-color: rgba(255,255,255,0.3);
-   background-color: rgba(0,0,0,0.3);
-  
+  background-color: rgba(0,0,0,0.3);
+  padding:30px 15px;
+  width: 20px;
+  vertical-align: right;
 }
-#menu-button {
+div#menu-button.option.button {
   color:whitesmoke;
   background-color:#B71C1C;
-  border-radius: 100%;
+  top:210px;
+  padding:0;
+  width:220px;
+  padding-left:10px;
+
+
 }
-#menu.hidden{
-  width: 50px;
+div#menu-button.option.button.hidden {
+  width: 45px;
+  padding:0;
+  padding-left:5px;
 }
 
-#menu >  div.option:hover {
- background-color: #B71C1C; 
+div.option:hover {
+  background-color: #B71C1C; 
+}
+
+div.option.active {
+  width: 200px;
 }
