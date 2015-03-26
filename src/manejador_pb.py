@@ -483,7 +483,7 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
   """
   Class that handles the Oauth Twitter Flow
   Methods:
-  get -- Returns the Twitter access_token for a user authenticated
+    get -- Handles the calls related to Twitter Tokens.
   """
 
   # GET Method
@@ -497,7 +497,7 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
     Keyword arguments: 
       self -- info about the request build by webapp2
     """
-
+    #self.response.headers['Access-Control-Allow-Origin'] = 'http://example-project-13.appspot.com'
     action = self.request.get('action', default_value='None')
     username = self.request.get('username', default_value='None')
 
@@ -551,7 +551,6 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
 
 
 class OAuthGithubHandler(webapp2.RequestHandler):
-
   """
   Class that will act as the handler to ask for the access_token to the GitHub API
   Method:
@@ -664,7 +663,7 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
 
   # GET Method
   def get(self):
-    """ - Returns the Github access_token for a user authenticated
+    """ - Returns the Linkedin access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
@@ -722,7 +721,7 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
 
   # GET Method
   def get(self):
-    """ - Returns the Github access_token for a user authenticated
+    """ - Returns the Instagram access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
@@ -743,6 +742,8 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
 
   # POST Method
   def post(self):    
+    # self.response.headers['Access-Control-Allow-Origin'] = 'http://example-project-13.appspot.com'
+    
     # Gets the data from the request form
     try:
       access_token = self.request.POST["access_token"]
@@ -781,7 +782,7 @@ class OauthFacebookHandler(webapp2.RequestHandler):
 
   # GET Method
   def get(self):
-    """ - Returns the Github access_token for a user authenticated
+    """ - Returns the Facebook access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
@@ -839,7 +840,7 @@ class OauthFacebookHandler(webapp2.RequestHandler):
 class OauthStackOverflowHandler(webapp2.RequestHandler):
   # GET Method
   def get(self):
-    """ - Returns the Github access_token for a user authenticated
+    """ - Returns the StackOverflow access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
@@ -860,6 +861,7 @@ class OauthStackOverflowHandler(webapp2.RequestHandler):
 
   # POST Method
   def post(self):    
+
     # Gets the data from the request form
     try:
       access_token = self.request.POST["access_token"]
@@ -982,8 +984,8 @@ app = webapp2.WSGIApplication([
     (r'/api/componentes', ComponentListHandler),
     (r'/api/oauth/twitterTimeline', OAuthTwitterTimelineHandler),
     (r'/api/componentes/(.*)', ComponentHandler),
-    (r'/api/oauth/twitter', OAuthTwitterHandler),
-    (r'/api/oauth/github', OAuthGithubHandler),
+    (r'/api/oauth/Twitter', OAuthTwitterHandler),
+    (r'/api/oauth/Github', OAuthGithubHandler),
     (r'/api/oauth/Linkedin', OauthLinkedinHandler),
     (r'/api/oauth/Instagram', OAuthInstagramHandler),
     (r'/api/oauth/Facebook', OauthFacebookHandler),
