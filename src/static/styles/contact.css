@@ -1,0 +1,30 @@
+html {
+  background-image: url('../images/imagen42.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.contacto{
+  color: black;
+  border: 1px solid #CED5D7;
+  border-radius: 6px;
+  padding: 45px 45px 20px;
+  margin-top: 50px;
+  background-color: white;
+  box-shadow: 0px 5px 10px #B5C1C5, 0 0 0 10px #EEF5F7 inset;
+}
+.contacto paper-input {
+  width: 294px; 
+}
+
+.contacto textarea {
+
+  width: 294px;
+  height: 150px;
+  border:1px solid black;
+  padding: 7px 6px;
+  border: 1px solid #CED5D7;
+  resize: none; /* esta propiedad es para que el textarea no sea redimensionable */
+  box-shadow:0 0 0 3px #EEF5F7;
+  margin: 5px 0;
+
+}

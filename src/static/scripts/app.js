@@ -31,21 +31,13 @@
       templateUrl: 'views/userHome.html',
       controller: 'userHomeCtrl'
     })
-      .when('/formulario', {
-      templateUrl: 'views/formulario.html',
-      controller: 'FormularioCtrl'
+      .when('/about', {
+      templateUrl: 'views/about.html',
+      controller: 'contactCtrl'
     })
-      .when('/search',{
-      templateUrl: 'static/views/search.html',
-      controller: 'SearchCtrl'
-    })
-      .when('/profile/:userId', {
-      templateUrl: 'static/views/profile.html',
-      controller: 'ProfileCtrl'
-    })
-      .when('/about',{
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
+      .when('/contact', {
+      templateUrl: 'views/contact.html',
+      controller: 'contactCtrl'
     })
       .otherwise({redirectTo: '/'})
     ;
