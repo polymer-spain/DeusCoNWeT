@@ -152,11 +152,10 @@ class UsuarioSocial(ndb.Model):
 
 # Entidad usuario
 class Usuario(ndb.Model):
-  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo 
   email = ndb.StringProperty()
   telefono = ndb.IntegerProperty()
   descripcion = ndb.TextProperty()
-  lista_Redes = ndb.StringProperty(Grupo, repeated=True)
+  lista_Redes = ndb.StringProperty(Grupo, repeated=True)º
   lista_Grupos = ndb.StringProperty(UsuarioSocial, repeated=True)
   valoracion = ndb.StructuredProperty(UserRating, repeated=True)
   componentes = ndb.StructuredProperty(Componente, repeated=True)
