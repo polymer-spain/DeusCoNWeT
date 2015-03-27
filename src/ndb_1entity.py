@@ -20,7 +20,7 @@ from google.appengine.ext import ndb
 import json
 """NDB Instances """
 
-class Entidad(ndb.Model):
+class Usuario(ndb.Model):
   # "Componente"
   # nombre_componente = ndb.StringProperty()
   # x_componente = ndb.FloatProperty()
@@ -62,9 +62,6 @@ class Entidad(ndb.Model):
   # url_seg_rs_pertenece = ndb.StringProperty(repeated=True)
 
   # "Usuario"
-
-  id_unico = ndb.IntegerProperty()
-
   email_usuario = ndb.StringProperty()
   telefono_usuario = ndb.IntegerProperty()
   descripcion_usuario = ndb.TextProperty()
@@ -104,23 +101,122 @@ class Entidad(ndb.Model):
   id_google_usuario = ndb.StringProperty()
   token_google_usuario = ndb.StringProperty()
 
-def getToken(self, nombre_usuario, rs):
-  user = Entidad.query(Entidad.id_unico == nombre_usuario).get()
-  res = ''
+# Definición de métodos para manejar la base de datos
+
+@ndb.transactional
+def insertarUsuario(self, datos=None):
+  usuario = Usuario()
+  if not datos == None:
+    if datos.email:
+      usuario.email_usuario = datos.email
+    if datos.telefono:
+      usuario.telefono_usuario = datos.telefono
+    if datos.descripcion:
+      usuario.descripcion_usuario = datos.descripcion
+  user_key = usuario.put()
+
+  return user_key  
+
+def actualizarUsuario(self, user_key, datos):
+  usuario = user_key.get()
+  if not datos == None:
+    if datos.email:
+      usuario.email_usuario = datos.email
+    if datos.telefono:
+      usuario.telefono_usuario = datos.telefono
+    if datos.descripcion:
+      usuario.descripcion_usuario = datos.descripcion
+  
+  usuario.put()
+
+def buscarUsuario(self, user_key):
+  usuario = user_key.get()
+  datos = {"email": usuario.email_usuario,
+            "telefono": usuario.telefono_usuario,
+            "descripcion":usuario.descripcion,
+            "grupos": usuario.nombre_grupo_pertenece_usuario,
+            "redes": usuario.nombre_rs_pertenece_usuario}
+  datos = json.dumps(datos)
+
+  return datos
+
+def insertaToken(self, user_key, rs, token):
+  usuario = user_key.get()
   if rs == "facebook":
-    res = user.token_fb
+    usuario.token_fb_usuario = token
   elif rs == "twitter":
-    res = user.token_tw
-  elif rs == "stack-overflow":
-    res = user.token_sof
-  elif rs == "linkedin":
-    res = user.token_li
+    usuario.token_tw_usuario = token
   elif rs == "instagram":
-    res = user.token_ins
+    usuario.token_ins_usuario = token
   elif rs == "github":
-    res = user.token_git
+    usuario.token_git_usuario = token
+  elif rs == "stack-overflow":
+    usuario.token_sof_usuario = token
+  elif rs == "linkedin":
+    usuario.token_li_usuario = token
   elif rs == "google":
-    res = user.token_google
+    usuario.token_google_usuario = token
+
+  usuario.put()
+
+def insertaIdRS(self, user_key, rs, id_user):
+  usuario = user_key.get()
+  if rs == "facebook":
+    usuario.id_fb_usuario = id_user
+  elif rs == "twitter":
+    usuario.id_tw_usuario = id_user
+  elif rs == "instagram":
+    usuario.id_ins_usuario = id_user
+  elif rs == "github":
+    usuario.id_git_usuario = id_user
+  elif rs == "stack-overflow":
+    usuario.id_sof_usuario = id_user
+  elif rs == "linkedin":
+    usuario.id_li_usuario = id_user
+  elif rs == "google":
+    usuario.id_google_usuario = id_user
+  
+  usuario.put()
+
+def getIdRS(self, user_key, rs):
+  usuario = user_key.get()
+  if rs == "facebook":
+    identificador = usuario.id_fb_usuario
+  elif rs == "twitter":
+    identificador = usuario.id_tw_usuario
+  elif rs == "stack-overflow":
+    identificador = usuario.id_sof_usuario
+  elif rs == "linkedin":
+    identificador = usuario.id_li_usuario
+  elif rs == "instagram":
+    identificador = usuario.id_ins_usuario
+  elif rs == "github":
+    identificador = usuario.id_git_usuario
+  elif rs == "google":
+    identificador = usuario.id_google_usuario
   else:
     print "La red social solicitada no esta contemplada"
-  return res
+
+  return identificador
+
+def buscarGrupo(self, user_key):
+  usuario = user_key.get()
+  datos = {}
+  contador = 1
+  if usuario.nombre_grupo_pertenece_usuario:
+    for grupo in usuario.nombre_grupo_pertenece_usuario:
+      res[contador] = grupo
+      contador += 1
+
+  return json.dumps(res)
+
+def buscarRed(self, user_key):
+  usuario = user_key.get()
+  res = {}
+  contador = 1
+  if usuario.nombre_rs_pertenece_usuario:
+    for red in nombre_rs_pertenece_usuario:
+      res[contador] = red
+      contador += 1
+
+  return json.dumps(res)
