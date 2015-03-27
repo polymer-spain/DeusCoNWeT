@@ -152,7 +152,6 @@ class UsuarioSocial(ndb.Model):
 
 # Entidad usuario
 class Usuario(ndb.Model):
-  nombre_usuario = ndb.StringProperty(required=True) # Valor creado por nosotros mismos al detectar un usuario nuevo 
   email = ndb.StringProperty()
   telefono = ndb.IntegerProperty()
   descripcion = ndb.TextProperty()
@@ -167,8 +166,8 @@ class Usuario(ndb.Model):
 
 # Definición de métodos para insertar, obtener o actualizar datos de la base de datos
 
-def getToken(self, nombre_usuario, rs):
-  user = Usuario.query(Usuario.nombre_usuario == nombre_usuario).get()
+def getToken(self, entity_key, rs):
+  user = entity_key.get()
   res = ''
   if rs == "facebook":
     res = user.token.token_fb
@@ -188,8 +187,8 @@ def getToken(self, nombre_usuario, rs):
     print "La red social solicitada no esta contemplada"
   return res
 
-def getIdRS(self, nombre_usuario, rs):
-  user = Usuario.query(Usuario.nombre_usuario=nombre_usuario).get()
+def getIdRS(self, entity_key, rs):
+  user = entity_key.get()
   identificador = ''
   if rs == "facebook":
     identificador = user.id_fb
@@ -209,8 +208,8 @@ def getIdRS(self, nombre_usuario, rs):
     print "La red social solicitada no esta contemplada"
   return identificador
 
- def buscaUsuario(self, nombre_usuario):
-  user = Usuario.query(Usuario.nombre_usuario=nombre_usuario).get()
+ def buscaUsuario(self, entity_key):
+  user = entity_key.get()
   usuario = {"nombre_usuario": user.nombre_usuario,
               "email": user.email,
               "telefono": user.telefono,
@@ -221,11 +220,28 @@ def getIdRS(self, nombre_usuario, rs):
   return usuario
 
 @ndb.transactional
-def insertaUsuario(self, nombre_usuario, datos=None):
-  if nombre_usuario == None:
-    return "Error. El campo nombre usuario es obligatorio"
-  else:
-    usuario = Usuario(nombre_usuario=nombre_usuario)
+def insertaUsuario(self, rs, ide, token, datos=None):
+  if rs == "facebook":
+    token = Token(id_fb=ide, token_fb=token)
+    usuario.token = token
+  elif rs == "twitter":
+    token = Token(id_tw=ide, token_tw=token)
+    usuario.token = token
+  elif rs == "stack-overflow":
+    token = Token(id_sof=ide, token_sof=token)
+    usuario.token = token
+  elif rs == "linkedin":
+    token = Token(id_li=ide, token_li=token)
+    usuario.token = token
+  elif rs == "instagram":
+    token = Token(id_ins=ide, token_ins=token)
+    usuario.token = token
+  elif rs == "github":
+    token = Token(id_git=ide, token_git=token)
+    usuario.token = token
+  elif rs == "google":
+    token = Token(id_google=ide, token_google=token)
+    usuario.token = token
   if not datos == None:
     if datos.email:
       usuario.email = datos.email
@@ -238,8 +254,8 @@ def insertaUsuario(self, nombre_usuario, datos=None):
 
   return user_key
 
-def actualizaUsuario(self, nombre_usuario, datos):
-  usuario = Usuario.query(nombre_usuario==nombre_usuario).get()
+def actualizaUsuario(self, entity_key, datos):
+  usuario = entity_key.get()
   if not datos == None:
     if datos.email:
       usuario.email = datos.email
@@ -250,8 +266,8 @@ def actualizaUsuario(self, nombre_usuario, datos):
 
   usuario.put()
 
-def insertaToken(self, nombre_usuario, rs, token):
-  user = Usuario.query(nombre_usuario==nombre_usuario).get()
+def insertaToken(self, entity_key, rs, token):
+  user = entity_key.get()
   if rs == "facebook":
     user.token_fb = token
   elif rs == "twitter":
@@ -269,8 +285,8 @@ def insertaToken(self, nombre_usuario, rs, token):
 
   user.put()
 
-def insertaIdRS(self, nombre_usuario, rs, id_usuario):
-  user = Usuario.query(Usuario.nombre_usuario==nombre_usuario).get()
+def insertaIdRS(self, entity_key, rs, id_usuario):
+  user = entity_key.get()
   if rs == "facebook":
     user.id_fb = id_usuario
   elif rs == "twitter":
@@ -288,16 +304,16 @@ def insertaIdRS(self, nombre_usuario, rs, id_usuario):
 
   user.put()
 
-def insertaGrupo(self, nombre_usuario, grupos=None):
-  usuario = Usuario.query(nombre_usuario=nombre_usuario).get()
+def insertaGrupo(self, entity_key, grupos=None):
+  usuario = entity_key.get()
   if not grupos == None:
     for grupo in grupos:
       usuario.lista_Grupos = usuario.lista_Grupos.append(grupo)
   else:
     return "No se especifica ningun grupo que añadir"
 
-def buscaGrupo(self, nombre_usuario):
-  user = Usuario.query(Usuario.nombre_usuario==nombre_usuario).get()
+def buscaGrupo(self, entity_key):
+  user = entity_key.get()
   res = {}
   contador = 1
   if user.lista_Grupos:
@@ -307,14 +323,14 @@ def buscaGrupo(self, nombre_usuario):
 
   return json.dumps(res)
 
-def insertaRed(self, nombre_usuario, redes=None):
-  usuario = Usuario.query(Usuario.nombre_usuario==nombre_usuario).get()
+def insertaRed(self, entity_key, redes=None):
+  usuario = entity_key.get()
   if not redes == None:
     for red in redes:
       usuario.lista_Redes == usuario.lista_Redes.append(red)
 
-def buscaRed(self, nombre_usuario):
-  usuario = Usuario.query(Usuario.nombre_usuario==nombre_usuario).get()
+def buscaRed(self, entity_key):
+  usuario = entity_key.get()
   res = {}
   contador = 1
   if usuario.lista_Redes:
