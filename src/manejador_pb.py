@@ -632,7 +632,7 @@ class OAuthGithubHandler(webapp2.RequestHandler):
       connectionAPI = httplib.HTTPSConnection('api.github.com')
       headers = {"Accept": "application/vnd.github.v3+json",
         "User-Agent": "PolymerBricks-App",
-        "Authorization": "token ca2bf4a939c31bd9e5ba06142fa017b74f5ddcc7"}
+        "Authorization": "token TOKEN_GITHUB"}
       connectionAPI.request('GET', '/user', params_token, headers)
       response = connectionAPI.getresponse()
       user_details = json.loads(response.read())
