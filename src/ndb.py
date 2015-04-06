@@ -96,7 +96,7 @@ import json
   #               componentId=self.full_name_id)
 
 class Componente(ndb.Model):
-  nombre = ndb.StringProperty()
+  nombre = ndb.StringProperty(required=True)
   x = ndb.FloatProperty()
   y = ndb.FloatProperty()
   url = ndb.StringProperty()
@@ -155,6 +155,7 @@ class Usuario(ndb.Model):
   email = ndb.StringProperty()
   telefono = ndb.IntegerProperty()
   descripcion = ndb.TextProperty()
+  imagen = ndb.StringProperty()
   lista_Redes = ndb.StringProperty(Grupo, repeated=True)
   lista_Grupos = ndb.StringProperty(UsuarioSocial, repeated=True)
   valoracion = ndb.StructuredProperty(UserRating, repeated=True)
@@ -221,6 +222,7 @@ def getIdRS(self, entity_key, rs):
 
 @ndb.transactional
 def insertaUsuario(self, rs, ide, token, datos=None):
+  usuario = Usuario()
   if rs == "facebook":
     token = Token(id_fb=ide, token_fb=token)
     usuario.token = token
@@ -249,6 +251,8 @@ def insertaUsuario(self, rs, ide, token, datos=None):
       usuario.telefono = datos.telefono
     if datos.descripcion:
       usuario.descripcion = datos.descripcion
+    if datos.imagen:
+      usuario.imagen = datos.imagen
 
   user_key = usuario.put()
 
@@ -263,6 +267,8 @@ def actualizaUsuario(self, entity_key, datos):
       usuario.telefono = datos.telefono
     if datos.descripcion:
       usuario.descripcion = datos.descripcion
+    if datos.imagen:
+      usuario.imagen = datos.imagen
 
   usuario.put()
 
@@ -340,5 +346,27 @@ def buscaRed(self, entity_key):
 
   return json.dumps(res)
 
-def insertarComponente(self, nombre_usuario, nombre, coord_x=0, coord_y=0, url, height, width):
-  usuario = 
+def insertarComponente(self, entity_key, nombre, coord_x=0, coord_y=0, url="", height="", width=""):
+  usuario = entity_key.get()
+  componente = Componente(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width)
+  usuario.componentes = usuario.componentes.append(componente)
+
+  usuario.put()
+
+def modificarComponente(self, entity_key, nombre, datos):
+  usuario = entity_key.get()
+  comp = usuario.componentes
+  if datos.x:
+    comp.x = datos.x
+  if datos.y:
+    comp.y = datos.y
+  if datos.url:
+    comp.url = datos.url
+  if datos.height:
+    comp.height = datos.height
+  if datos.width:
+    comp.width = datos.width
+
+
+
+
