@@ -15,5 +15,39 @@ html {
 
 .information > div {
   margin: 90px 60px;
- /* margin: 30px 60px;*/
+}
+.information .right {
+  min-width: 300px;
+}
+.information .left {
+  background-image : url('../images/imagen.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+#groupImg {
+  width: 400px;
+  height: 400px;
+}
+#social {
+  margin-top:50px; 
+}
+#social  core-icon-button {
+  border-radius:5px;
+  margin:5px 10px;
+}
+core-icon-button /deep/ core-icon div {
+  background-repeat: no-repeat;
+}
+#social .facebook {
+  background-color:#3B5998;
+}
+#social .twitter {
+  background-color: #5DD7FC; 
+}
+#social .github {
+  background-color: #fff;
+  border-radius: 100%;
+}
+#social .googleplus {
+  background-color: #DC4A38;
 }

@@ -10,13 +10,13 @@
     <div vertical id="menu-button" layout class="option button" ng-class="{hidden: isMenuHidden()}">
       <paper-icon-button  id="menu-icon" icon="arrow-back" ng-click="showMenu()"></paper-icon-button>
     </div>
-
-    <div id="add" class="option hidden" ng-click="setSelected('add')"  ng-class="{hidden: isMenuHidden(),active: isSelected('add')}">
-      <core-icon   icon="add-box">
-        <span style="padding-left:35px"> Añadir</span>
-      </core-icon>
-      <core-icon ng-show="menuStatus" icon="arrow-drop-down" style="float:right">
-      </core-icon>
+    <div id="listOption">
+      <div id="add" class="option hidden" ng-click="setSelected('add')"  ng-class="{hidden: isMenuHidden(),active: isSelected('add')}">
+        <core-icon   icon="add-box">
+          <span style="padding-left:35px"> Añadir</span>
+        </core-icon>
+        <core-icon ng-show="menuStatus" icon="arrow-drop-down" style="float:right">
+        </core-icon>
     </div>
 
     <div id="delete" class="option hidden" ng-click="setSelected('delete')"  ng-class="{hidden: isMenuHidden(),active: isSelected('delete')}">
@@ -42,4 +42,5 @@
       </core-icon>
     </div>
   </div>
+</div>
 </div>

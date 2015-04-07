@@ -7,7 +7,7 @@ body,html {
 
 }
 .view {
-  margin:0 10%;
+  margin:10px 10%;
 }
 core-toolbar {
   background-color: rgba(0,0,0,0.5);

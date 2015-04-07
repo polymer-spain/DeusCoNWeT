@@ -10,18 +10,37 @@
 
 angular.module('PolymerBricks')
   .controller('MainCtrl', function ($scope,$location,$timeout) {
-  /* Funcion de retorno de log in*/
-  $scope.logged = function(e){
-    console.log(e.detail);
 
+  $scope.status = false;
+
+  $scope.logged = function(e){
     $scope.$apply(function(){
+      // escondemos el popup y cambiamos la direccion del usuario
       $scope.hidePopup();
+      // cambiamos el botton
+
+      var button = document.querySelector('#nameId');
+      // Selecionar el nombre del usuario
+      button.innerHTML="Desconectar"
+      // Seleccionar la imagen del perfin
+      // button.src=""
+      // Cambiamos a la funcion de logout
+      $scope.status = true;
       $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
     });
   };
+
   $scope.changeView = function(view){
     $location.path(view); // path not hash
   };
+
+  $scope.logout = function() {
+    var button = document.querySelector('#nameId');
+    // Selecionar el nombre del usuario
+    button.innerHTML="Entrar"
+    $location.path('/');
+    $scope.status = false;
+  }
   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged',$scope.logged);
   document.querySelector('body').addEventListener('linkedin-logged',$scope.logged);
@@ -34,7 +53,10 @@ angular.module('PolymerBricks')
   $scope.popup = false;
 
   $scope.showPopup = function(){
-    $scope.popup = true;
+    if (!$scope.status)
+      $scope.popup = true;
+    else 
+      $scope.logout();
   };
   $scope.hidePopup = function(){
     $scope.popup = false;

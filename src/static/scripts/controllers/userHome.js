@@ -10,6 +10,8 @@
 angular.module('PolymerBricks')
   .controller('userHomeCtrl', function ($scope) {
 
+  $scope.list = '{ "github":"githubButton","facebook":"facebookButton","twitter":"twitterButton"}';
+  
   $scope.menuStatus = false;
   $scope.showMenu = function(){
 

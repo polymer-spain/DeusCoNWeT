@@ -30,6 +30,9 @@ html {
 #send:hover {
    background-color: #eee; 
 }
+.contacto div > span {
+  color: #a9a9a9;    
+}
 .contacto textarea {
 
   width: 294px;
