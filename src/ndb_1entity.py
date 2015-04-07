@@ -103,7 +103,7 @@ class Usuario(ndb.Model):
   token_google_usuario = ndb.StringProperty()
 
 # Definicion de metodos para manejar la base de datos
-
+#Comprobado
 @ndb.transactional
 def insertarUsuario(self, datos=None):
   usuario = Usuario()
@@ -117,7 +117,7 @@ def insertarUsuario(self, datos=None):
   user_key = usuario.put()
 
   return user_key  
-
+#Comprobado
 def actualizarUsuario(self, user_key, datos):
   usuario = user_key.get()
   if not datos == None: 
@@ -129,7 +129,7 @@ def actualizarUsuario(self, user_key, datos):
       usuario.descripcion_usuario = datos["descripcion"]
   
   usuario.put()
-
+#Comprobado
 def buscarUsuario(self, user_key):
   usuario = user_key.get()
   datos = {"email": usuario.email_usuario,
@@ -199,24 +199,43 @@ def getIdRS(self, user_key, rs):
     print "La red social solicitada no esta contemplada"
 
   return identificador
-
+#Comprobado
+def insertaGrupo(self, user_key, grupos=[]):
+  usuario = user_key.get()
+  if len(grupos) > 0:
+    for grupo in grupos:
+      usuario.nombre_grupo_pertenece_usuario.append(grupo)
+  else:
+    return "No se especifica ningun grupo que anadir"
+#Comprobado
 def buscarGrupo(self, user_key):
   usuario = user_key.get()
   datos = {}
-  contador = 1
-  if usuario.nombre_grupo_pertenece_usuario:
+  contador = 0
+  res = {} 
+  # Diferente opcion, diferente funcionalidad
+  # res = [None]*len(usuario.nombre_grupo_pertenece_usuario)
+  if len(usuario.nombre_grupo_pertenece_usuario) > 0:
     for grupo in usuario.nombre_grupo_pertenece_usuario:
       res[contador] = grupo
       contador += 1
 
   return json.dumps(res)
-
+#Comprobado
+def insertaRed(self, user_key, redes=[]):
+  usuario = user_key.get()
+  if len(redes) > 0:
+    for red in redes:
+      usuario.nombre_rs_pertenece_usuario.append(red)
+  else:
+    return "No se especifica ninguna red que anadir"
+#Comprobado
 def buscarRed(self, user_key):
   usuario = user_key.get()
   res = {}
   contador = 1
-  if usuario.nombre_rs_pertenece_usuario:
-    for red in nombre_rs_pertenece_usuario:
+  if len(usuario.nombre_rs_pertenece_usuario) > 0:
+    for red in usuario.nombre_rs_pertenece_usuario:
       res[contador] = red
       contador += 1
 
