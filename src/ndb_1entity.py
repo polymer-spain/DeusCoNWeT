@@ -1,6 +1,6 @@
 """ Copyright 2014 Luis Ruiz Ruiz
-	  Copyright 2014 Ana Isabel Lopera Martinez
-	  Copyright 2014 Miguel Ortega Moreno
+    Copyright 2014 Ana Isabel Lopera Martinez
+    Copyright 2014 Miguel Ortega Moreno
     Copyright 2014 Juan Francisco Salamanca Carmona
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 """
 
 from google.appengine.ext import ndb
+import webapp2
 import json
 """NDB Instances """
 
@@ -30,7 +31,7 @@ class Usuario(ndb.Model):
   # width_componente = ndb.StringProperty()
 
   # #"User Rating"
-  # full_name_id_rating = ndb.StringProperty() # ¡¡PREGUNTAR!!
+  # full_name_id_rating = ndb.StringProperty()
   # rating_value = ndb.FloatProperty()
 
   # # "Grupo"
@@ -101,31 +102,31 @@ class Usuario(ndb.Model):
   id_google_usuario = ndb.StringProperty()
   token_google_usuario = ndb.StringProperty()
 
-# Definición de métodos para manejar la base de datos
+# Definicion de metodos para manejar la base de datos
 
 @ndb.transactional
 def insertarUsuario(self, datos=None):
   usuario = Usuario()
   if not datos == None:
-    if datos.email:
-      usuario.email_usuario = datos.email
-    if datos.telefono:
-      usuario.telefono_usuario = datos.telefono
-    if datos.descripcion:
-      usuario.descripcion_usuario = datos.descripcion
+    if datos.has_key("email"):
+      usuario.email_usuario = datos["email"]
+    if datos.has_key("telefono"):
+      usuario.telefono_usuario = datos["telefono"]
+    if datos.has_key("descripcion"):
+      usuario.descripcion_usuario = datos["descripcion"]
   user_key = usuario.put()
 
   return user_key  
 
 def actualizarUsuario(self, user_key, datos):
   usuario = user_key.get()
-  if not datos == None:
-    if datos.email:
-      usuario.email_usuario = datos.email
-    if datos.telefono:
-      usuario.telefono_usuario = datos.telefono
-    if datos.descripcion:
-      usuario.descripcion_usuario = datos.descripcion
+  if not datos == None: 
+    if datos.has_key("email"):
+      usuario.email_usuario = datos["email"]
+    if datos.has_key("telefono"):
+      usuario.telefono_usuario = datos["telefono"]
+    if datos.has_key("descripcion"):
+      usuario.descripcion_usuario = datos["descripcion"]
   
   usuario.put()
 
