@@ -18,6 +18,7 @@
 
 from google.appengine.ext import ndb
 import json
+import webapp2
 """NDB Instances """
 # class Tag(ndb.Model):
 #   name_tag = ndb.StringProperty()
@@ -245,14 +246,14 @@ def insertaUsuario(self, rs, ide, token, datos=None):
     token = Token(id_google=ide, token_google=token)
     usuario.token = token
   if not datos == None:
-    if datos.email:
-      usuario.email = datos.email
-    if datos.telefono:
-      usuario.telefono = datos.telefono
-    if datos.descripcion:
-      usuario.descripcion = datos.descripcion
-    if datos.imagen:
-      usuario.imagen = datos.imagen
+    if datos["email"]:
+      usuario.email = datos["email"]
+    if datos["telefono"]:
+      usuario.telefono = datos["telefono"]
+    if datos["descripcion"]:
+      usuario.descripcion = datos["descripcion"]
+    if datos["imagen"]:
+      usuario.imagen = datos["imagen"]
 
   user_key = usuario.put()
 
@@ -261,14 +262,14 @@ def insertaUsuario(self, rs, ide, token, datos=None):
 def actualizaUsuario(self, entity_key, datos):
   usuario = entity_key.get()
   if not datos == None:
-    if datos.email:
-      usuario.email = datos.email
-    if datos.telefono:
-      usuario.telefono = datos.telefono
-    if datos.descripcion:
-      usuario.descripcion = datos.descripcion
-    if datos.imagen:
-      usuario.imagen = datos.imagen
+    if datos["email"]:
+      usuario.email = datos["email"]
+    if datos["telefono"]:
+      usuario.telefono = datos["telefono"]
+    if datos["descripcion"]:
+      usuario.descripcion = datos["descripcion"]
+    if datos["imagen"]:
+      usuario.imagen = datos["imagen"]
 
   usuario.put()
 
@@ -357,15 +358,20 @@ def modificarComponente(self, entity_key, nombre, datos):
   usuario = entity_key.get()
   comp_aux = Componente(nombre=nombre)
   comp = Componente.query(usuario.componentes==comp_aux)
-  if datos.x:
-    comp.x = datos.x
-  if datos.y:
-    comp.y = datos.y
-  if datos.url:
-    comp.url = datos.url
-  if datos.height:
-    comp.height = datos.height
-  if datos.width:
-    comp.width = datos.width
+  if datos["x"]:
+    comp.x = datos["x"]
+  if datos["y"]:
+    comp.y = datos["y"]
+  if datos["url"]:
+    comp.url = datos["url"]
+  if datos["height"]:
+    comp.height = datos["height"]
+  if datos["width"]:
+    comp.width = datos["width"]
 
   usuario.put()
+
+class MainPage(webapp2.RequestHandler):
+  def get(self):
+
+    token = Token(id_tw="lrr9204", token_tw="asdfghjklm125")
