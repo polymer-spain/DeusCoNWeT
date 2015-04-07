@@ -355,7 +355,8 @@ def insertarComponente(self, entity_key, nombre, coord_x=0, coord_y=0, url="", h
 
 def modificarComponente(self, entity_key, nombre, datos):
   usuario = entity_key.get()
-  comp = usuario.componentes
+  comp_aux = Componente(nombre=nombre)
+  comp = Componente.query(usuario.componentes==comp_aux)
   if datos.x:
     comp.x = datos.x
   if datos.y:
@@ -367,6 +368,4 @@ def modificarComponente(self, entity_key, nombre, datos):
   if datos.width:
     comp.width = datos.width
 
-
-
-
+  usuario.put()
