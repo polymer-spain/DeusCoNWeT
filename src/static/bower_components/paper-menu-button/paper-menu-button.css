@@ -54,8 +54,7 @@ core-icon::shadow svg {
 #menu {
   padding-top: 8px;
   padding-bottom: 8px;
-  float:right;
-  bottom: 0;
+  margin: 0;
 }
 
 .paper-menu-button-overlay-ink {
