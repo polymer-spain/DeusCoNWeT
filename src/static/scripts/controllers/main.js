@@ -17,12 +17,10 @@ angular.module('PolymerBricks')
 
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
-      console.log(e.detail);
       if (e.detail.redSocial === 'twitter'){
         
       }
       else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
-        console.log("detectamos googleplus");
 
         var xhr = new XMLHttpRequest();
         var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token='+e.detail.token;
@@ -35,8 +33,7 @@ angular.module('PolymerBricks')
               $scope.sendData(e.detail.token,response.id,e.detail.redSocial);
             });
           } else if (xhr.readyState == 4) {
-            console.log(xhr.status);
-            console.log("[INFO]: algo fue mal en google");
+            console.log("[INFO]: Algo fue mal en google");
           }
         }
         xhr.send();
@@ -63,8 +60,8 @@ angular.module('PolymerBricks')
     xhr.open("POST",uri,true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4)
-        console.log(xhr.responseText);
+      if (xhr.readyState == 4 && !(xhr.status === 200 or xhr.status === 201))
+        console.log("[INFO]: Error al introducir datos en backend");
     };
     xhr.send(params); 
   }
