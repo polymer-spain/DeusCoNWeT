@@ -34,11 +34,14 @@ from ndb import Autor, UserRating, Usuario, Grupo, Token
 import cliente_gitHub
 
 # Imports for twitter
-
 import sys
 sys.path.insert(1, 'lib/')
 import oauth
 
+
+# Imports for session maintenance
+from webapp2_extras import auth
+from webapp2_extras import sessions  
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -476,6 +479,35 @@ class UserHandler(webapp2.RequestHandler):
                 }
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
+
+
+class LoginHandler(webapp2.RequestHandler):
+  @webapp2.cached_property
+  def user(self):
+    pass
+
+  @webapp2.cached_property
+  def session(self):
+    """ Shortcut to access the current session"""
+    return self.session_store.get_session(backend="datastore")
+
+  def dispatch(self):
+    # Get a session store for this request
+    self.session_store = sessions.get_store(request=self.request)
+    try:
+      # Dispatch the request
+      webapp2.RequestHandler.dispatch(self)
+    finally:
+      # Save all sessions
+      self.session_store.save_sessions(self.response)
+
+
+  def login(social_network, user_id):
+    pass
+
+  def logout(social_network, user_id):
+    pass
+
 
 
 class OAuthTwitterHandler(webapp2.RequestHandler):
