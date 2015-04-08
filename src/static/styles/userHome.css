@@ -1,4 +1,4 @@
-body {
+html {
   background: url('http://www.wallope.com/wp-content/uploads/textures-wallpapers-18-textures-simple1680x1050-textures-simple-background-photo.jpg') no-repeat;
   background-size: cover;
 
@@ -11,56 +11,78 @@ body {
   border-radius: 100%;
 
 }
-div.option#delete {
-  top:335px;
+#listOption {
+  position:absolute;
+  top:100px;
+  right: 0;
+  max-height: 80%;
+  vertical-align: middle;
+  width: 250px;
+  transition: 0.3s linear all;
+
+  margin-bottom: 25px;
 }
-div.option#modify {
-  top:420px;
-}
-div.option#help {
-  top:505px;
-}
-div.option{
-  position:fixed;
-  right:0;
-  top:250px;
+
+#listOption > div {
+  padding: 35px 15px;
   border: 1px solid rgba(255,255,255,0.3);
-  padding:30px 15px;
-  background-color: rgba(0,0,0,0.7);
+  background-color:#444;
+  min-height: 30px;
   color:white;
-  list-style: none;
   transition: 0.5s linear all;
   width: 200px;
-  overflow: hidden;
+  min-height: 30px;
+  z-index: 1;
+}
+#list > div :hover {
+  background-color: #b71c1c;
+  color:white;
+}
+#list div > p {
+  height: 40px;
+  margin:0;
+  padding: 15px 10px 0px 10px;
+  vertical-align: center;
+}
+#listOption > div:hover {
+  cursor: pointer;
+}
+#listOption > div#menuArrow {
+  padding: 10px 15px;
+  background-color: #B71C1C;
 }
 
-div.option.hidden {
-  border-color: rgba(255,255,255,0.3);
-  background-color: rgba(0,0,0,0.3);
-  padding:30px 15px;
-  width: 20px;
-  vertical-align: right;
+#listOption > div.hidden {
+  width: 25px;
+  background-color: rgba(0,0,0,0.4);
 }
-div#menu-button.option.button {
-  color:whitesmoke;
-  background-color:#B71C1C;
-  top:210px;
-  padding:0;
-  width:220px;
-  padding-left:10px;
-
+#list {
+  margin-top:10px;
+  max-height: 200px;
+  overflow: auto;
+  border:2px solid white;
+  border-style: inset;
+  border-radius:5px;
+  background-color: white;
+  color: black;
 
 }
-div#menu-button.option.button.hidden {
-  width: 45px;
-  padding:0;
-  padding-left:5px;
+
+#list.ng-hide-add.ng-hide-add-active,
+#list.ng-hide-remove.ng-hide-remove-active {
+  -webkit-transition: all linear 0.3s;
+  transition: all linear 0.3s;
 }
 
-div.option:hover {
-  background-color: #B71C1C; 
+#list.ng-hide {
+  opacity: 0
+}
+#list::-webkit-scrollbar {
+  width: 6px;
+  background: #b9b9b9;
 }
 
-div.option.active {
-  width: 200px;
+#list::-webkit-scrollbar-thumb {
+  background-color: #693232;
+  -webkit-border-radius: 2px;
 }

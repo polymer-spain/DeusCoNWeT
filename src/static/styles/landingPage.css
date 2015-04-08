@@ -5,16 +5,7 @@ html {
 }
 .content {
   margin-top: 5%;
-  padding: 1% 5% 2% 5%;
+  padding: 10px 50px 20px 50px;
   font-size: 1.2em;
 
-}
-.signin-status {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top:  -12%;
-  background-color:aqua;
-  height: 40%;
-  width: 40%;
 }

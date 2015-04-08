@@ -13,6 +13,7 @@
 
     <title>DeuS CoNWeT</title>
   </head>
+  
   <body unresolved ng-app="PolymerBricks" ng-controller="MainCtrl" >
     <core-toolbar>
       <img class="logo" src="images/icono.png"/>
@@ -30,8 +31,9 @@
       <core-icon-button icon="search" class=" search"></core-icon-button>
 
     </core-toolbar>
-    <div ng-view="" class="view">
-    </div>
+    
+    <div ng-view="" class="view"></div>
+    
     <div ng-show="popup" class="shadow"/>
     <div ng-show="popup" vertical center layout class="popup">
       <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>

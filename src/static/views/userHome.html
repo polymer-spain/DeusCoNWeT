@@ -7,40 +7,54 @@
 
     <github-events style="color:black" username="mortega5" mostrar=10></github-events>
 
-    <div vertical id="menu-button" layout class="option button" ng-class="{hidden: isMenuHidden()}">
-      <paper-icon-button  id="menu-icon" icon="arrow-back" ng-click="showMenu()"></paper-icon-button>
-    </div>
-    <div id="listOption">
-      <div id="add" class="option hidden" ng-click="setSelected('add')"  ng-class="{hidden: isMenuHidden(),active: isSelected('add')}">
-        <core-icon   icon="add-box">
-          <span style="padding-left:35px"> Añadir</span>
+    <div vertical layout end id="listOption" >
+
+      <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
+        <core-icon id="menu-icon" icon="arrow-back"></core-icon>
+      </div>
+
+      <div id="add" ng-class="{hidden: isMenuHidden('add')}">
+        <core-icon icon="add-box" ng-click="setSelected('add')"></core-icon>
+        <span  ng-show="showElement?true:showSingle=='add'" ng-click="setList('add')"> Añadir</span>
+        <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" ng-click="setList('add')" icon="arrow-drop-down" style="float:right">
         </core-icon>
-        <core-icon ng-show="menuStatus" icon="arrow-drop-down" style="float:right">
+
+        <div id="list" class="animate-show" ng-show="!showlist('add')">
+          <div ng-repeat="element in list">
+            <p>{{element.name}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="delete" ng-class="{hidden: isMenuHidden('delete')}" ng-click="setSelected('delete')">
+        <core-icon  icon="delete"></core-icon>
+        <span ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')"> Borrar</span>
+        <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')" id="arrow" icon="arrow-drop-down" style="float:right">
         </core-icon>
-    </div>
 
-    <div id="delete" class="option hidden" ng-click="setSelected('delete')"  ng-class="{hidden: isMenuHidden(),active: isSelected('delete')}">
-      <core-icon  icon="delete" >
-        <span style="padding-left:35px"> Borrar</span>
-      </core-icon>
+        <div id="list" class="animate-show" ng-show="!showlist('delete')">
+          <div ng-repeat="element in list">
+            <p>{{element.name}}</p>
+          </div>
+        </div>
+      </div>
 
-      <core-icon ng-show="menuStatus" id="arrow" icon="arrow-drop-down" style="float:right">
-      </core-icon>
-    </div>
+      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}" ng-click="setSelected('modify')">
+        <core-icon  icon="create"></core-icon>
+        <span ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')"> Modificar</span>
+        <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')" icon="arrow-drop-down" style="float:right">
+        </core-icon>
+        <div id="list" class="animate-show" ng-show="!showlist('modify')">
+          <div ng-repeat="element in list">
+            <p>{{element.name}}</p>
+          </div>
+        </div>
+      </div>
 
-    <div id="modify" class="option hidden" ng-click="setSelected('modify')"  ng-class="{hidden: isMenuHidden(),active: isSelected('modify')}">
-      <core-icon  icon="create">
-        <span style="padding-left:35px"> Modificar</span>
-      </core-icon>
-      <core-icon ng-show="menuStatus" icon="arrow-drop-down" style="float:right">
-      </core-icon>
-    </div>
-
-    <div id="help" class="option hidden" ng-click="setSelected('help')"  ng-class="{hidden: isMenuHidden(),active: isSelected('help')}">
-      <core-icon icon="help">
-        <span style="padding-left:35px">Ayuda</span>
-      </core-icon>
+      <div id="help" ng-class="{hidden: isMenuHidden('help')}">
+        <core-icon icon="help"></core-icon>
+        <span ng-show="showElement">Ayuda</span>
+      </div>
     </div>
   </div>
-</div>
 </div>
