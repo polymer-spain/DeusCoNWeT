@@ -156,6 +156,7 @@ class Usuario(ndb.Model):
   email = ndb.StringProperty()
   telefono = ndb.IntegerProperty()
   descripcion = ndb.TextProperty()
+<<<<<<< HEAD
   imagen = ndb.StringProperty()
   token = ndb.StructuredProperty(Token)
   lista_Redes = ndb.StructuredProperty(Grupo, repeated=True)
