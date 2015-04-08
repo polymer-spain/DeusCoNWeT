@@ -1,0 +1,7 @@
+#boton-facebook{
+	background: url('login-facebook.png');
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	height: 50px;
+  width: 200px;
+}

@@ -9,11 +9,36 @@ handlers:
 - url: /favicon\.ico
   static_files: ../favicon.ico
   upload: favicon\.ico
-- url: /app
-  static_dir: static 
-- url: .*
+
+- url: /
+  static_files: static/index.html
+  upload: index\.html
+
+- url: /api/oauth
   script: manejador_pb.app
+  secure: always
+
+- url: /api/.*
+  script: manejador_pb.app
+  
+- url: /about
+  static_files: static/index.html
+  upload: index\.html
+
+- url: /contact
+  static_files: static/index.html
+  upload: index\.html
+
+- url: /user/.*
+  static_files: static/index.html
+  upload: index\.html
+  
+- url: /
+  static_dir: static 
+
 
 libraries:
 - name: webapp2
+  version: latest
+- name: ssl
   version: latest
