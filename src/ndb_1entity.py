@@ -22,46 +22,6 @@ import json
 """NDB Instances """
 
 class Usuario(ndb.Model):
-  # "Componente"
-  # nombre_componente = ndb.StringProperty()
-  # x_componente = ndb.FloatProperty()
-  # y_componente = ndb.FloatProperty()
-  # url_componente = ndb.StringProperty()
-  # height_componente = ndb.StringProperty()
-  # width_componente = ndb.StringProperty()
-
-  # #"User Rating"
-  # full_name_id_rating = ndb.StringProperty()
-  # rating_value = ndb.FloatProperty()
-
-  # # "Grupo"
-  # nombre_grupo = ndb.StringProperty()
-  # lista_Usuarios_grupo = ndb.StringProperty(repeated=True)
-  # descripcion_grupo = ndb.StringProperty()
-
-  # # "Token"
-  # id_fb = ndb.StringProperty()
-  # token_fb = ndb.StringProperty()
-  # id_tw = ndb.StringProperty()
-  # token_tw = ndb.StringProperty()
-  # id_sof = ndb.StringProperty()
-  # token_sof = ndb.StringProperty()
-  # id_li = ndb.StringProperty()
-  # token_li = ndb.StringProperty()
-  # id_ins = ndb.StringProperty()
-  # token_ins = ndb.StringProperty()
-  # id_git = ndb.StringProperty()
-  # token_git = ndb.StringProperty()
-  # id_google = ndb.StringProperty()
-  # token_google = ndb.StringProperty()
-
-  # # "Usuario social"
-  # nombre_rs_pertenece = ndb.StringProperty(repeated=True)
-  # siguiendo_rs_pertenece = ndb.IntegerProperty(repeated=True)
-  # seguidores_rs_pertenece = ndb.IntegerProperty(repeated=True)
-  # url_sig_rs_pertenece = ndb.StringProperty(repeated=True)
-  # url_seg_rs_pertenece = ndb.StringProperty(repeated=True)
-
   # "Usuario"
   email_usuario = ndb.StringProperty()
   telefono_usuario = ndb.IntegerProperty()
@@ -105,7 +65,7 @@ class Usuario(ndb.Model):
 # Definicion de metodos para manejar la base de datos
 #Comprobado
 @ndb.transactional
-def insertarUsuario(self, datos=None):
+def insertarUsuario(datos=None):
   usuario = Usuario()
   if not datos == None:
     if datos.has_key("email"):
@@ -118,7 +78,7 @@ def insertarUsuario(self, datos=None):
 
   return user_key  
 #Comprobado
-def actualizarUsuario(self, user_key, datos):
+def actualizarUsuario(user_key, datos):
   usuario = user_key.get()
   if not datos == None: 
     if datos.has_key("email"):
@@ -130,7 +90,7 @@ def actualizarUsuario(self, user_key, datos):
   
   usuario.put()
 #Comprobado
-def buscarUsuario(self, user_key):
+def buscarUsuario(user_key):
   usuario = user_key.get()
   datos = {"email": usuario.email_usuario,
             "telefono": usuario.telefono_usuario,
@@ -140,8 +100,8 @@ def buscarUsuario(self, user_key):
   datos = json.dumps(datos)
 
   return datos
-
-def insertaToken(self, user_key, rs, token):
+#Comprobado
+def insertaToken(user_key, rs, token):
   usuario = user_key.get()
   if rs == "facebook":
     usuario.token_fb_usuario = token
@@ -157,10 +117,33 @@ def insertaToken(self, user_key, rs, token):
     usuario.token_li_usuario = token
   elif rs == "google":
     usuario.token_google_usuario = token
+  else:
+    return "La red social solicitada no esta contemplada"
 
   usuario.put()
-
-def insertaIdRS(self, user_key, rs, id_user):
+#Comprobado
+def getToken(user_key, rs):
+  usuario = user_key.get()
+  res = ''
+  if rs == "facebook":
+    res = usuario.token_fb_usuario
+  elif rs == "twitter":
+    res = usuario.token_tw_usuario
+  elif rs == "stack-overflow":
+    res = usuario.token_sof_usuario
+  elif rs == "linkedin":
+    res = usuario.token_li_usuario
+  elif rs == "instagram":
+    res = usuario.token_ins_usuario
+  elif rs == "github":
+    res = usuario.token_git_usuario
+  elif rs == "google":
+    res = usuario.token_goolge_usuario
+  else:
+    return "La red social solicitada no esta contemplada"
+  return res
+#Comprobado
+def insertaIdRS(user_key, rs, id_user):
   usuario = user_key.get()
   if rs == "facebook":
     usuario.id_fb_usuario = id_user
@@ -176,10 +159,12 @@ def insertaIdRS(self, user_key, rs, id_user):
     usuario.id_li_usuario = id_user
   elif rs == "google":
     usuario.id_google_usuario = id_user
+  else:
+    return "La red social solicitada no esta contemplada"
   
   usuario.put()
-
-def getIdRS(self, user_key, rs):
+#Comprobado
+def getIdRS(user_key, rs):
   usuario = user_key.get()
   if rs == "facebook":
     identificador = usuario.id_fb_usuario
@@ -196,11 +181,11 @@ def getIdRS(self, user_key, rs):
   elif rs == "google":
     identificador = usuario.id_google_usuario
   else:
-    print "La red social solicitada no esta contemplada"
+    return "La red social solicitada no esta contemplada"
 
   return identificador
 #Comprobado
-def insertaGrupo(self, user_key, grupos=[]):
+def insertaGrupo(user_key, grupos=[]):
   usuario = user_key.get()
   if len(grupos) > 0:
     for grupo in grupos:
@@ -208,7 +193,7 @@ def insertaGrupo(self, user_key, grupos=[]):
   else:
     return "No se especifica ningun grupo que anadir"
 #Comprobado
-def buscarGrupo(self, user_key):
+def buscarGrupo(user_key):
   usuario = user_key.get()
   datos = {}
   contador = 0
@@ -222,7 +207,7 @@ def buscarGrupo(self, user_key):
 
   return json.dumps(res)
 #Comprobado
-def insertaRed(self, user_key, redes=[]):
+def insertaRed(user_key, redes=[]):
   usuario = user_key.get()
   if len(redes) > 0:
     for red in redes:
@@ -230,7 +215,7 @@ def insertaRed(self, user_key, redes=[]):
   else:
     return "No se especifica ninguna red que anadir"
 #Comprobado
-def buscarRed(self, user_key):
+def buscarRed(user_key):
   usuario = user_key.get()
   res = {}
   contador = 1
@@ -240,3 +225,36 @@ def buscarRed(self, user_key):
       contador += 1
 
   return json.dumps(res)
+
+def insertarComponente(user_key, nombre, coord_x=0.0, coord_y=0.0, url="", height="", width=""):
+  usuario = user_key.get()
+
+  usuario.nombre_componente_usuario.append(nombre)
+  usuario.x_componente_usuario.append(coord_x)
+  usuario.y_componente_usuario.append(coord_y)
+  usuario.url_componente_usuario.append(url)
+  usuario.height_componente_usuario.append(height)
+  usuario.width_componente_usuario.append(width)
+
+  usuario.put()
+
+def modificarComponente(user_key, nombre, datos):
+  usuario = user_key.get()
+  encontrado = False
+  for i in range(0,len(usuario.nombre_componente_usuario)):
+    if(usuario.nombre_componente_usuario[i] == nombre):
+      encontrado = True
+      if datos.has_key("coord_x"):
+        usuario.x_componente_usuario[i] = datos["coord_x"]
+      if datos.has_key("coord_y"):
+        usuario.y_componente_usuario[i] = datos["coord_y"]
+      if datos.has_key("url"):
+        usuario.url_componente_usuario[i] = datos["url"]
+      if datos.has_key("height"):
+        usuario.height_componente_usuario[i] = datos["height"]
+      if datos.has_key("width"):
+        usuario.width_componente_usuario[i] = datos["width"]
+      return ""
+  if encontrado == False:
+    return "No existe un componente con ese nombre"
+  usuario.put()
