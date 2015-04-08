@@ -12,7 +12,7 @@ handlers:
 - url: /app
   static_dir: ../static 
 - url: .*
-  script: manejador_pb.app
+  script: ndb.app
 
 libraries:
 - name: webapp2
