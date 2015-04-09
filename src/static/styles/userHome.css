@@ -15,7 +15,6 @@ html {
   position:absolute;
   top:100px;
   right: 0;
-  max-height: 80%;
   vertical-align: middle;
   width: 250px;
   transition: 0.3s linear all;
@@ -27,7 +26,6 @@ html {
   padding: 35px 15px;
   border: 1px solid rgba(255,255,255,0.3);
   background-color:#444;
-  min-height: 30px;
   color:white;
   transition: 0.5s linear all;
   width: 200px;

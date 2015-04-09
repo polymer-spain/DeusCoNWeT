@@ -33,7 +33,7 @@
         </core-icon>
 
         <div id="list" class="animate-show" ng-show="!showlist('delete')">
-          <div ng-repeat="element in list">
+          <div draggable="true" ng-repeat="element in list">
             <p>{{element.name}}</p>
           </div>
         </div>
