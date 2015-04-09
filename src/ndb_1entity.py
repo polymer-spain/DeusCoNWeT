@@ -225,10 +225,9 @@ def buscarRed(user_key):
       contador += 1
 
   return json.dumps(res)
-
+#Comprobado
 def insertarComponente(user_key, nombre, coord_x=0.0, coord_y=0.0, url="", height="", width=""):
   usuario = user_key.get()
-
   usuario.nombre_componente_usuario.append(nombre)
   usuario.x_componente_usuario.append(coord_x)
   usuario.y_componente_usuario.append(coord_y)
@@ -237,7 +236,7 @@ def insertarComponente(user_key, nombre, coord_x=0.0, coord_y=0.0, url="", heigh
   usuario.width_componente_usuario.append(width)
 
   usuario.put()
-
+#Comprobado
 def modificarComponente(user_key, nombre, datos):
   usuario = user_key.get()
   encontrado = False
@@ -257,4 +256,5 @@ def modificarComponente(user_key, nombre, datos):
       return ""
   if encontrado == False:
     return "No existe un componente con ese nombre"
+
   usuario.put()
