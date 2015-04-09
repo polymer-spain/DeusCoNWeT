@@ -745,6 +745,7 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
     # Gets the data from the request form
 
         try:
+            print self.request
             access_token = self.request.POST['access_token']
             token_id = self.request.POST['token_id']
 
@@ -1135,5 +1136,5 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/instagram', OAuthInstagramHandler),
     (r'/api/oauth/facebook', OauthFacebookHandler),
     (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
-    (r'/api/oauth/googlePlus', OauthGooglePlusHandler),
+    (r'/api/oauth/googleplus', OauthGooglePlusHandler),
     ], debug=True)
