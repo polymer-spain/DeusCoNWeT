@@ -1,200 +1,82 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <base href="/">
+    <link href='https://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="elements/elements.html">
+    <link rel="stylesheet" href="styles/main.css">
 
-<html>
-	<head>
+    <title>DeuS CoNWeT</title>
+  </head>
+  
+  <body unresolved ng-app="PolymerBricks" ng-controller="MainCtrl" >
+    <core-toolbar>
+      <img class="logo" src="images/icono.png"/>
 
-		<meta charset="utf-8">
+      <h2 flex>	DeuS CoNWeT</h2>
+      <div style="border-right: 3px solid #B71C1C; padding-right: 10px">
+        <paper-button ng-click="changeView('/')">Inicio</paper-button>
+        <paper-button ng-click="changeView('/about')">Sobre nosotros</paper-button>
+        <paper-button ng-click="changeView('/contact')">Contactar</paper-button>
+      </div>
 
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<!--<base href="/polymer-bricks/app/">-->
-		<title>Polymer WebApp</title>
-		<meta name="description" content="">
+      <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
+        <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
+      </core-icon-button>
+      <core-icon-button icon="search" class=" search"></core-icon-button>
 
-		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    </core-toolbar>
+    
+    <div ng-view="" class="view"></div>
+    
+    <div ng-show="popup" class="shadow"/>
+    <div ng-show="popup" vertical center layout class="popup">
+      <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
 
-		<!-- build:css styles/main.css -->
+      <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
+      <div horizontal layout class="button-login">
+        <google-login flex class="button"style="margin-right: 5px;" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://example-project-13.appspot.com/index.html"></google-login>
+        <github-login flex class="button" scope="user:email" client_id="1f21e4d820abd2cb5a7a"></github-login>
 
-		<link rel="stylesheet" href="styles/main.css">
-		<link rel="stylesheet" href="./font-awesome-4.2.0/css/font-awesome.min.css">
-		<link href='https://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
-		<!-- endbuild-->
+      </div>
+      <div horizontal layout class="button-login">
 
+        <twitter-login flex class="button" style="margin-right: 5px;"></twitter-login>
+        <instagram-login flex class="button" clientId="9e21b27d7f60498dae9a7f8853c20026" redirectUri="http://example-project-13.appspot.com/index.html"></instagram-login>
+      </div>
+      <div horizontal layout class="button-login">
+        <linkedin-login  flex class="button" style="margin-right: 5px;" apiKey="775t0r02k5gfre"></linkedin-login>
+        <login-facebook flex class="button" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
 
-		<script async src="scripts/backend/base.js" defer></script>
-		<script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+      </div>
+    </div>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
 
-		<script src="https://apis.google.com/js/client:platform.js" async defer></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
 
-		<!-- build:vulcanized elements/elements.vulcanizeddd -->
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 
-		<link rel="import" href="elements/elements.html">
-		<!-- endbuild-->
-	</head>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
 
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
 
+    <script src="bower_components/angular-route/angular-route.js"></script>
 
-	<body unresolved ng-app="PolymerBricks" ng-controller="MainCtrl">
+    <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
 
-		<!-- Cabecera Polymer-Bricks-->
-
-		<paper-shadow id="header" z="2">
-			<core-toolbar>
-				<img class="logo" ng-click="changeView('/')" src="images/icono.png"/>
-				<span flex class="titulo">Polymer-Bricks</span>
-				<paper-button ng-click="changeView('search')">Repositorio</paper-button>
-				<paper-button ng-click="changeView('sandbox')">Sandbox</paper-button>
-				<paper-input-decorator flex ng-show="buscar" label="Busca tu componente" ng-click="changeView('search')" class="search">
-					<input id="search"  ng-model="query" ng-blur="showOff($event)"></input>
-				</paper-input-decorator>
-			<core-icon-button icon="search" style="margin:0px 30px 0px 0px;" ng-click="buscar=true;showOn()"></core-icon-button>
-
-			<div id="login" ng-show="!logueado">
-				<button class="g-signin"
-						data-scope="https://www.googleapis.com/auth/plus.login"
-						data-requestvisibleactions="http://schemas.google.com/AddActivity"
-						data-clientId="37385538925-4g90dngnd3u8ch17pgf9n0tlqocl8iro.apps.googleusercontent.com"
-						data-callback="onSignInCallback"
-						data-theme="dark"
-						data-cookiepolicy="single_host_origin">
-
-					</div>
-				<div horizontal center layout id="spanUser" ng-show="logueado">
-					<span id="userName" ng-click="changeView('profile/')" title="Perfil"></span>
-					&emsp;
-					<paper-icon-button class="g-signout" ng-show="logueado" id="g-signout">
-					</paper-icon-button>
-
-				</div>
-				</core-toolbar>
-		</paper-shadow>
-		<!--Fin Cabecera-->
-		<div class="wrapper">
-			<!-- Vistas-->
-			<div flex ng-view="" class="views"></div>
-		</div>
-		<div vertical layout class="footer">
-			<div id="desarroladores">
-				<div horizontal center-justified layout>
-
-					
-						<core-icon-button icon="account-box">
-							<span>Razvan Arato</span>
-						</core-icon-button>
-					
-					<a href="https://github.com/acburgos" target="_blank">
-						<core-icon-button icon="account-box">
-							<span>Alberto Castaño</span>
-						</core-icon-button>
-					</a>
-					<a href="https://github.com/dh1118" target="_blank">
-						<core-icon-button src="https://media.licdn.com/mpr/mpr/shrink_200_200/p/8/005/075/11b/325a960.jpg">
-							<span>David Herranz</span>
-						</core-icon-button>
-					</a>
-					<a href="https://github.com/ailopera" target="_blank">
-						<core-icon-button src="https://media.licdn.com/mpr/mpr/shrink_120_120/p/5/005/09d/258/23cba8f.jpg">
-							<span>Ana Lopera</span>
-						</core-icon-button>
-					</a>
-
-
-
-				</div>
-				<div id="desarrolladores">
-					<div horizontal center-justified layout>
-						<a href="https://github.com/EnriqueMZ" target="_blank">
-							<core-icon-button src="https://lh3.googleusercontent.com/-cphed6KtjZc/AAAAAAAAAAI/AAAAAAAAAAA/1AJ2VQDumdY/photo.jpg">
-								<span>Enrique Madridejos</span>
-							</core-icon-button>
-						</a>
-						<a href="https://github.com/Mortega5" target="_blank">
-							<core-icon-button src="https://media.licdn.com/mpr/mpr/shrink_60_60/p/6/005/09d/24e/0ae6c76.jpg">
-								<span>Miguel Ortega</span>
-							</core-icon-button>
-						</a>
-						<a href="https://github.com/lruizr" target="_blank">
-							<core-icon-button src="https://avatars0.githubusercontent.com/u/6428261?v=3&s=400">
-								<span>Luis Ruiz</span>
-							</core-icon-button>
-						</a>
-						<a href="https://github.com/JuanFryS" target="_blank">
-							<core-icon-button src="https://avatars3.githubusercontent.com/u/10289888?v=3&s=400">
-								<span>Juan Francisco Salamanca</span>
-							</core-icon-button>
-						</a>
-					</div>
-				</div>
-				<div horizontal center-justified layout >
-					<a href="http://www.fi.upm.es/" target="_blank">
-						<core-icon-button src="http://emse.fi.upm.es/imagenes/FI.gif"> Escuela Técnica Superior de Ingenieros Informáticos - UPM</core-icon-button>
-					</a>
-				</div>
-				
-					<div flex horizontal center-justified layout class="pieContenido">
-						<paper-button >
-							Contacto
-						</paper-button>
-
-						<span>|</span>
-
-						<paper-button>
-							Acerca de polymer-bricks
-						</paper-button>
-
-						<span>|</span>
-
-						<!--		<paper-button disabled noink class="pieContenido" label="Copyright">-->
-						<paper-button class="copyright" disabled>&copy; DEUS CoNWeT 2014 -  all rights reserved
-						</paper-button>
-					</div>
-			</div>
-			<!-- Footer-->
-			<!-- build:js(.) scripts/vendor.js -->
-
-			<!-- bower:js -->
-
-			<script src="bower_components/angular/angular.js"></script>
-			<script src="bower_components/angular-resource/angular-resource.js"></script>
-
-			<script src="bower_components/angular-cookies/angular-cookies.js"></script>
-
-			<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-
-			<script src="bower_components/angular-animate/angular-animate.js"></script>
-
-			<script src="bower_components/angular-touch/angular-touch.js"></script>
-
-			<script src="bower_components/angular-route/angular-route.js"></script>
-
-			<script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
-			<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
-			<!-- endbower -->
-
-
-			<!-- build:js scripts/app.js -->
-
-			<script src="scripts/app.js"></script>
-			<script src="scripts/controllers/main.js"></script>
-			<script src="scripts/controllers/sandbox.js"></script>
-			<script src="scripts/controllers/search.js"></script>
-			<script src="scripts/controllers/home.js"></script>
-			<script src="scripts/controllers/repositorio.js"></script>
-
-			<!-- endbuild-->
-
-			<!-- back-end -->
-			<script>
-				function init() {
-					google.appengine.api.polymerBricks.init('https://example-project-13.appspot.com'+ '/_ah/api');
-				}
-			</script>
-			<script src="https://apis.google.com/js/client.js?onload=init"></script>
-
-
-			<!-- endbuild -->
-
-			</body>
-
-
-		</html>
-
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/landingPage.js"></script>
+    <script src="scripts/controllers/userHome.js"></script>
+    <script src="scripts/controllers/formulario.js"></script>
+    <script src="scripts/controllers/about.js"></script>
+    <script src="scripts/controllers/contact.js"></script>
+  </body>
+</html>

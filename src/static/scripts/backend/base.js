@@ -1,9 +1,9 @@
 
 /* Llamadas a las api*/
-var base = "http://localhost:8080/";
+var base = "http://hydra.ls.fi.upm.es:8080/";
 
 // Peticion de todos los componentes ordenados //
-var getAllComponents = function(orderBy,sortBy,callback) {
+var getAllComponents = function (orderBy, sortBy, callback) {
 	xhr = new XMLHttpRequest();
 	var url = base + "componentes";
 	xhr.open("GET", url, true);
