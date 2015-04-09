@@ -117,20 +117,9 @@ class Grupo(ndb.Model):
   descripcion = ndb.StringProperty()
 # Entidad Token
 class Token(ndb.Model):
-  id_fb = ndb.StringProperty()
-  token_fb = ndb.StringProperty()
-  id_tw = ndb.StringProperty()
-  token_tw = ndb.StringProperty()
-  id_sof = ndb.StringProperty()
-  token_sof = ndb.StringProperty()
-  id_li = ndb.StringProperty()
-  token_li = ndb.StringProperty()
-  id_ins = ndb.StringProperty()
-  token_ins = ndb.StringProperty()
-  id_git = ndb.StringProperty()
-  token_git = ndb.StringProperty()
-  id_google = ndb.StringProperty()
-  token_google = ndb.StringProperty()
+  identificador = ndb.StringProperty()
+  token = ndb.StringProperty()
+  nombre_rs = ndb.StringProperty()
 
 # Entidad UsuarioSocial
 class UsuarioSocial(ndb.Model):
@@ -156,63 +145,29 @@ class Usuario(ndb.Model):
   email = ndb.StringProperty()
   telefono = ndb.IntegerProperty()
   descripcion = ndb.TextProperty()
-<<<<<<< HEAD
   imagen = ndb.StringProperty()
-  token = ndb.StructuredProperty(Token)
+  tokens = ndb.StructuredProperty(Token, repeated=True)
   lista_Redes = ndb.StructuredProperty(Grupo, repeated=True)
   lista_Grupos = ndb.StructuredProperty(UsuarioSocial, repeated=True)
   valoracion = ndb.StructuredProperty(UserRating, repeated=True)
   componentes = ndb.StructuredProperty(Componente, repeated=True)
   #tarjeta = ndb.StructuredProperty(Tarjeta)
 
-
-
+#####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
+#####################################################################################
 
 def getToken(entity_key, rs):
   user = entity_key.get()
-  return user.token
-  res = ''
-  if rs == "facebook":
-    res = user.token.token_fb
-  elif rs == "twitter":
-    res = user.token.token_tw
-  elif rs == "stack-overflow":
-    res = user.token.token_sof
-  elif rs == "linkedin":
-    res = user.token.token_li
-  elif rs == "instagram":
-    res = user.token.token_ins
-  elif rs == "github":
-    res = user.token.token_git
-  elif rs == "google":
-    res = user.token.token_google
-  else:
-    res = "La red social solicitada no esta contemplada"
+  tokens = user.tokens
+  res = None
+  for token in tokens:
+    if token.get('nombre_rs') == rs:
+      res = token
+
   return res
 
-def getIdRS(self, entity_key, rs):
-  user = entity_key.get()
-  identificador = ''
-  if rs == "facebook":
-    identificador = user.id_fb
-  elif rs == "twitter":
-    identificador = user.id_tw
-  elif rs == "stack-overflow":
-    identificador = user.id_sof
-  elif rs == "linkedin":
-    identificador = user.id_li
-  elif rs == "instagram":
-    identificador = user.id_ins
-  elif rs == "github":
-    identificador = user.id_git
-  elif rs == "google":
-    identificador = user.id_google
-  else:
-    identificador = "La red social solicitada no esta contemplada"
-  return identificador
-
-def buscaUsuario(self, entity_key):
+def buscaUsuario(entity_key):
   user = entity_key.get()
   usuario = {"nombre_usuario": user.nombre_usuario,
               "email": user.email,
@@ -224,32 +179,10 @@ def buscaUsuario(self, entity_key):
   return usuario
 
 @ndb.transactional
-def insertaUsuario(self, rs, ide, token, datos=None):
+def insertaUsuario(rs, ide, token, datos=None):
   usuario = Usuario()
-  if rs == "facebook":
-    token = Token(id_fb=ide, token_fb=token)
-    usuario.token = token
-  elif rs == "twitter":
-    print "voy a crear el token para twitter"
-    token = Token(id_tw=ide, token_tw=token)
-    usuario.token = token
-    print usuario.token
-    print usuario.token.token_tw
-  elif rs == "stack-overflow":
-    token = Token(id_sof=ide, token_sof=token)
-    usuario.token = token
-  elif rs == "linkedin":
-    token = Token(id_li=ide, token_li=token)
-    usuario.token = token
-  elif rs == "instagram":
-    token = Token(id_ins=ide, token_ins=token)
-    usuario.token = token
-  elif rs == "github":
-    token = Token(id_git=ide, token_git=token)
-    usuario.token = token
-  elif rs == "google":
-    token = Token(id_google=ide, token_google=token)
-    usuario.token = token
+  token = Token(identificador=ide, token=token, nombre_rs=rs)
+  usuario.tokens.append(token)
   if not datos == None:
     if datos["email"]:
       usuario.email = datos["email"]
@@ -264,7 +197,7 @@ def insertaUsuario(self, rs, ide, token, datos=None):
 
   return user_key
 
-def actualizaUsuario(self, entity_key, datos):
+def actualizaUsuario(entity_key, datos):
   usuario = entity_key.get()
   if not datos == None:
     if datos["email"]:
@@ -278,53 +211,21 @@ def actualizaUsuario(self, entity_key, datos):
 
   usuario.put()
 
-def insertaToken(self, entity_key, rs, token):
+def insertaToken(entity_key, rs, token, id_usuario):
   user = entity_key.get()
-  if rs == "facebook":
-    user.token.token_fb = token
-  elif rs == "twitter":
-    user.token.token_tw = token
-  elif rs == "instagram":
-    user.token.token_ins = token
-  elif rs == "github":
-    user.token.token_git = token
-  elif rs == "stack-overflow":
-    user.token.token_sof = token
-  elif rs == "linkedin":
-    user.token.token_li = token
-  elif rs == "google":
-    user.token.token_google = token
-
+  tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
+  user.tokens.append(tok_aux)
   user.put()
 
-def insertaIdRS(self, entity_key, rs, id_usuario):
-  user = entity_key.get()
-  if rs == "facebook":
-    user.token.id_fb = id_usuario
-  elif rs == "twitter":
-    user.token.id_tw = id_usuario
-  elif rs == "instagram":
-    user.token.id_ins = id_usuario
-  elif rs == "github":
-    user.token.id_git = id_usuario
-  elif rs == "stack-overflow":
-    user.token.id_sof = id_usuario
-  elif rs == "linkedin":
-    user.token.id_li = id_usuario
-  elif rs == "google":
-    user.token.id_google = id_usuario
-
-  user.put()
-
-def insertaGrupo(self, entity_key, grupos=None):
+def insertaGrupo(entity_key, grupos=None):
   usuario = entity_key.get()
   if not grupos == None:
     for grupo in grupos:
-      usuario.lista_Grupos = usuario.lista_Grupos.append(grupo)
+      usuario.lista_Grupos.append(grupo)
   else:
     return "No se especifica ningun grupo que insertar"
 
-def buscaGrupo(self, entity_key):
+def buscaGrupo(entity_key):
   user = entity_key.get()
   res = {}
   contador = 1
@@ -335,13 +236,13 @@ def buscaGrupo(self, entity_key):
 
   return json.dumps(res)
 
-def insertaRed(self, entity_key, redes=None):
+def insertaRed(entity_key, redes=None):
   usuario = entity_key.get()
   if not redes == None:
     for red in redes:
-      usuario.lista_Redes == usuario.lista_Redes.append(red)
+      usuario.lista_Redes.append(red)
 
-def buscaRed(self, entity_key):
+def buscaRed(entity_key):
   usuario = entity_key.get()
   res = {}
   contador = 1
@@ -352,14 +253,14 @@ def buscaRed(self, entity_key):
 
   return json.dumps(res)
 
-def insertarComponente(self, entity_key, nombre, coord_x=0, coord_y=0, url="", height="", width=""):
+def insertarComponente(entity_key, nombre, coord_x=0, coord_y=0, url="", height="", width=""):
   usuario = entity_key.get()
   componente = Componente(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width)
-  usuario.componentes = usuario.componentes.append(componente)
+  usuario.componentes.append(componente)
 
   usuario.put()
 
-def modificarComponente(self, entity_key, nombre, datos):
+def modificarComponente(entity_key, nombre, datos):
   usuario = entity_key.get()
   comp_aux = Componente(nombre=nombre)
   comp = Componente.query(usuario.componentes==comp_aux)
@@ -386,7 +287,7 @@ class MainPage(webapp2.RequestHandler):
     tok = getToken(key, "twitter")
     self.response.write(tok)
 
-    tok_err = getToken(key, "instagram")
+    tok_err = getToken(key, "ins")
     self.response.write(tok_err)
 
 app = webapp2.WSGIApplication([
