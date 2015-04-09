@@ -63,10 +63,32 @@ class Usuario(ndb.Model):
   token_google_usuario = ndb.StringProperty()
 
 # Definicion de metodos para manejar la base de datos
-#Comprobado
+# Comprobado
 @ndb.transactional
-def insertarUsuario(datos=None):
+def insertarUsuario(rs, identificador, token, datos=None):
   usuario = Usuario()
+  if rs == "facebook":
+    usuario.token_fb_usuario = token
+    usuario.id_fb_usuario = identificador
+  elif rs == "twitter":
+    usuario.token_tw_usuario = token
+    usuario.id_tw_usuario = identificador
+  elif rs == "instagram":
+    usuario.token_ins_usuario = token
+    usuario.id_ins_usuario = identificador
+  elif rs == "github":
+    usuario.token_git_usuario = token
+    usuario.id_git_usuario = identificador
+  elif rs == "stack-overflow":
+    usuario.token_sof_usuario = token
+    usuario.id_sof_usuario = identificador
+  elif rs == "linkedin":
+    usuario.token_li_usuario = token
+    usuario.id_li_usuario = identificador
+  elif rs == "google":
+    usuario.token_google_usuario = token
+    usuario.id_google_usuario = identificador
+
   if not datos == None:
     if datos.has_key("email"):
       usuario.email_usuario = datos["email"]
@@ -228,6 +250,7 @@ def buscarRed(user_key):
 #Comprobado
 def insertarComponente(user_key, nombre, coord_x=0.0, coord_y=0.0, url="", height="", width=""):
   usuario = user_key.get()
+
   usuario.nombre_componente_usuario.append(nombre)
   usuario.x_componente_usuario.append(coord_x)
   usuario.y_componente_usuario.append(coord_y)
@@ -256,5 +279,20 @@ def modificarComponente(user_key, nombre, datos):
       return ""
   if encontrado == False:
     return "No existe un componente con ese nombre"
-
   usuario.put()
+#Comprobado
+def getComponente(user_key, nombre):
+  usuario = user_key.get()
+  encontrado = False
+  for i in range(0,len(usuario.nombre_componente_usuario)):
+    if(usuario.nombre_componente_usuario[i] == nombre):
+      encontrado = True
+      datos={"coord_x": usuario.x_componente_usuario[i],
+              "coord_y": usuario.y_componente_usuario[i],
+              "url": usuario.url_componente_usuario[i],
+              "height": usuario.height_componente_usuario[i],
+              "width": usuario.width_componente_usuario[i]}
+      datos = json.dumps(datos)
+      return datos
+  if encontrado == False:
+    return "No existe un componente con ese nombre"
