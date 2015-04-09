@@ -19,6 +19,10 @@
 from google.appengine.ext import ndb
 import json
 import webapp2
+
+# Definimos la lista de redes sociales con las que trabajamos
+rs_list = ["twitter", "facebook", "stack-overflow", "instagram", "linkedin", "google", "github"]
+
 """NDB Instances """
 # class Tag(ndb.Model):
 #   name_tag = ndb.StringProperty()
@@ -112,7 +116,7 @@ class UserRating(ndb.Model):
 
 # Entidad Grupo
 class Grupo(ndb.Model):
-  nombre_grupo = ndb.StringProperty()
+  nombre_grupo = ndb.StringProperty(required=True)
   lista_Usuarios = ndb.StringProperty()
   descripcion = ndb.StringProperty()
 # Entidad Token
@@ -157,12 +161,14 @@ class Usuario(ndb.Model):
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
 #####################################################################################
 
-def getToken(entity_key, rs):
+def getToken(entity_key, rs): #FUNCIONA
   user = entity_key.get()
   tokens = user.tokens
   res = None
+  if not rs in rs_list:
+    return "La red social no esta contemplada"
   for token in tokens:
-    if token.get('nombre_rs') == rs:
+    if token.nombre_rs == rs:
       res = token
 
   return res
@@ -179,7 +185,7 @@ def buscaUsuario(entity_key):
   return usuario
 
 @ndb.transactional
-def insertaUsuario(rs, ide, token, datos=None):
+def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   usuario = Usuario()
   token = Token(identificador=ide, token=token, nombre_rs=rs)
   usuario.tokens.append(token)
@@ -211,19 +217,29 @@ def actualizaUsuario(entity_key, datos):
 
   usuario.put()
 
-def insertaToken(entity_key, rs, token, id_usuario):
+def insertaToken(entity_key, rs, token, id_usuario): #FUNCIONA
   user = entity_key.get()
   tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
   user.tokens.append(tok_aux)
+  print user.tokens
   user.put()
 
-def insertaGrupo(entity_key, grupos=None):
+def insertaGrupo(entity_key, nombre, datos=None):
   usuario = entity_key.get()
-  if not grupos == None:
-    for grupo in grupos:
-      usuario.lista_Grupos.append(grupo)
-  else:
-    return "No se especifica ningun grupo que insertar"
+  grupo = Grupo(nombre_grupo=nombre)
+  
+  if not datos == None:
+    if datos.get("descripcion"): grupo.descripcion = datos["descripcion"]
+    if datos.get("usuarios"):
+      for usuario in datos["usuarios"]:
+        datos.lista_Usuarios.append(usuario)
+
+  usuario.lista_Grupos.append(grupo)
+  usuario.put()
+
+def addUsuarioAGrupo(entity_key, nombre_grupo, usuarios):
+  user = entity_key.get()
+  
 
 def buscaGrupo(entity_key):
   user = entity_key.get()
@@ -277,18 +293,39 @@ def modificarComponente(entity_key, nombre, datos):
 
   usuario.put()
 
+def getComponente(entity_key, nombre):
+  user = entity_key.get()
+  comps = user.comps
+  res = None
+  for comp in comps:
+    if comp.nombre == nombre:
+      res = comp
+
+  return res
+
 class MainPage(webapp2.RequestHandler):
   def get(self):
     self.response.headers['Content-Type'] = 'text/plain'
-    self.response.write('Hago el get')
-    datos = ["lruiz@conwet.com", 61472589, "Este es mi perfil personal", "www.example.com/mi-foto.jpg"]
+    #PARTE 1: INSERCION DE 1 USUARIO, AÑADIR 1 TOKEN, MOSTRAR TOKENS
+    datos = {"email":"lruiz@conwet.com", 
+              "telefono": 61472589, 
+              "descripcion":"Este es mi perfil personal", 
+              "imagen": "www.example.com/mi-foto.jpg"}
     key = insertaUsuario("twitter", "lrr9204", "asdfghjklm159753", datos)
 
     tok = getToken(key, "twitter")
-    self.response.write(tok)
+    self.response.write(tok.nombre_rs + "--> identificador: " + tok.identificador + "; token: " + tok.token)
+    self.response.write("\n")
 
-    tok_err = getToken(key, "ins")
-    self.response.write(tok_err)
+    insertaToken(key, "facebook", "poiuytrewq12345", "Luis Ruiz")
+
+    tok_f = getToken(key, "facebook")
+    self.response.write(tok_f.nombre_rs + "--> identificador: " + tok_f.identificador + "; token: " + tok_f.token)
+    self.response.write("\n")
+
+    #PARTE 2: INSERTAR GRUPO, RED Y COMPONENTE, MOSTRAR TODOS
+
+
 
 app = webapp2.WSGIApplication([
       ('/', MainPage),
