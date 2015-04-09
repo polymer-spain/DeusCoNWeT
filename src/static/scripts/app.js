@@ -20,7 +20,7 @@
     'ng-polymer-elements',
     'ui.bootstrap'
   ])
-    .config(function ($locationProvider, $routeProvider) {
+    .config(function ($locationProvider, $routeProvider,$httpProvider) {
 
     $routeProvider
       .when('/', {
