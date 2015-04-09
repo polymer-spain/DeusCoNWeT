@@ -24,7 +24,11 @@ handlers:
 - url: /about
   static_files: static/index.html
   upload: index\.html
-
+  
+- url: /privacy
+  static_files: static/index.html
+  upload: index\.html
+  
 - url: /contact
   static_files: static/index.html
   upload: index\.html
@@ -35,7 +39,6 @@ handlers:
   
 - url: /
   static_dir: static 
-
 
 libraries:
 - name: webapp2

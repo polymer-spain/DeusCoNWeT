@@ -28,20 +28,22 @@ import urllib
 from google.appengine.ext import ndb
 
 # Local imports
-# Eliminados Tag y Release y Repo
 
-from ndb import Autor, UserRating, Usuario, Grupo, Token
+from ndb import Componente, UserRating, Usuario, Grupo
+
 import cliente_gitHub
 
 # Imports for twitter
+
 import sys
 sys.path.insert(1, 'lib/')
 import oauth
 
-
 # Imports for session maintenance
-#from webapp2_extras import auth
-from webapp2_extras import sessions  
+# from webapp2_extras import auth
+
+from webapp2_extras import sessions
+
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -482,22 +484,30 @@ class UserHandler(webapp2.RequestHandler):
 
 
 class LoginHandler(webapp2.RequestHandler):
-  
-  def dispatch(self):
+
+    def dispatch(self):
+
     # Get a session store for this request.
-    self.session_store = sessions.get_store(request=self.request)
 
-    try:
+        self.session_store = sessions.get_store(request=self.request)
+
+        try:
+
         # Dispatch the request.
-        webapp2.RequestHandler.dispatch(self)
-    finally:
-        # Save all sessions.
-        self.session_store.save_sessions(self.response)
 
-  @webapp2.cached_property
-  def session(self):
+            webapp2.RequestHandler.dispatch(self)
+        finally:
+
+        # Save all sessions.
+
+            self.session_store.save_sessions(self.response)
+
+    @webapp2.cached_property
+    def session(self):
+
     # Returns a session using the default cookie key.
-    return self.session_store.get_session()
+
+        return self.session_store.get_session()
 
 
 class OAuthTwitterHandler(webapp2.RequestHandler, LoginHandler):
@@ -562,12 +572,9 @@ class OAuthTwitterHandler(webapp2.RequestHandler, LoginHandler):
                 user_token.put()
                 self.response.set_status(200)
 
-
             # TEST Login
-            self.session[user_info["username"]] = user_info
 
-
-
+            self.session[user_info['username']] = user_info
         elif action == 'access_token' and not username == None:
 
             user_details = Token.query(Token.nombre_usuario
@@ -1124,9 +1131,8 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
 
 config = {}
-config['webapp2_extras.sessions'] = {
-    'secret_key': 'my-super-secret-key',
-}
+config['webapp2_extras.sessions'] = \
+    {'secret_key': 'my-super-secret-key'}
 
 app = webapp2.WSGIApplication([
     (r'/api/componentes', ComponentListHandler),

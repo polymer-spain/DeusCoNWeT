@@ -18,7 +18,7 @@ angular.module('PolymerBricks')
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter'){
-        
+          $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
       }
       else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
 
@@ -38,8 +38,8 @@ angular.module('PolymerBricks')
         }
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
-        $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
-        $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
+          $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
+          $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
       }
       // cambiamos el botton
       var button = document.querySelector('#nameId');
@@ -60,7 +60,7 @@ angular.module('PolymerBricks')
     xhr.open("POST",uri,true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && !(xhr.status === 200 or xhr.status === 201))
+      if (xhr.readyState == 4 && !(xhr.status === 200 || xhr.status === 201))
         console.log("[INFO]: Error al introducir datos en backend");
     };
     xhr.send(params); 

@@ -39,6 +39,10 @@
       templateUrl: 'views/contact.html',
       controller: 'contactCtrl'
     })
+      .when('/privacy',{
+      templateUrl: 'views/privacy.html',
+      controller: 'landingCtrl'
+    })
       .otherwise({redirectTo: '/'})
     ;
     $locationProvider.html5Mode(true)

@@ -26,7 +26,6 @@ polyfill-next-selector { content: ':host > h2'; }
 	border-radius: 3px;
 	padding: 0px;
 	cursor: pointer;
-	height: 45px;
 	text-transform: none;
 	vertical-align: center;
 }

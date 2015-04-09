@@ -72,7 +72,7 @@ angular.module('PolymerBricks')
         break;
     }
   }
-  $scope.showlist = function(event) {
+  $scope.hidelist = function(event) {
     switch(event){
       case 'add':
         return $scope.listaOpciones[0];
@@ -91,6 +91,8 @@ angular.module('PolymerBricks')
     if ($scope.selected === event){
       $scope.selected='';
       $scope.showSingle='';
+      if (!$scope.hidelist(event))
+        $scope.setList(event);
     }
     else {
       $scope.selected = event;

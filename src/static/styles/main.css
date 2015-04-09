@@ -4,7 +4,7 @@ body,html {
   margin:0;
   color:rgba(255, 255, 255, 0.85);
   font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
-
+  background-attachment: fixed;
 }
 .view {
   margin:10px 150px;
@@ -38,17 +38,18 @@ paper-button {
   left:0;
   right:0;
   bottom:0;
-  width:250px;
   border-radius:15px;
-  height:250px;
   padding:30px;
   padding-top:0;
   margin: auto;
   color:brown;
   background-color:whitesmoke;
   background:solid;
-  height: 300px;
+  height: 250px;
   width: 400px;
+}
+#popup > div {
+  margin-top: 30px; 
 }
 .shadow {
   position:absolute;
