@@ -212,7 +212,7 @@ def getIdRS(self, entity_key, rs):
     print "La red social solicitada no esta contemplada"
   return identificador
 
- def buscaUsuario(self, entity_key):
+def buscaUsuario(self, entity_key):
   user = entity_key.get()
   usuario = {"nombre_usuario": user.nombre_usuario,
               "email": user.email,
@@ -375,5 +375,4 @@ def modificarComponente(self, entity_key, nombre, datos):
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
-
     token = Token(id_tw="lrr9204", token_tw="asdfghjklm125")
