@@ -22,7 +22,7 @@ import webapp2
 import re, string, json, httplib, urllib
 from google.appengine.ext import ndb
 # Local imports
-from ndb import Tag, Release, Autor, Repo, UserRating , Usuario, Grupo
+from ndb import Componente, UserRating , Usuario, Grupo
 import cliente_gitHub
 
 # Imports for twitter
