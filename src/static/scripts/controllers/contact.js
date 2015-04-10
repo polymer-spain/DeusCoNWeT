@@ -1,5 +1,5 @@
 angular.module('PolymerBricks')
-.controller('contactCtrl', function ($scope,$http,$modal) {
+.controller('contactCtrl', function ($scope,$http) {
 	'use strict';
 
 });
