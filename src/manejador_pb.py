@@ -29,7 +29,7 @@ from google.appengine.ext import ndb
 
 # Local imports
 
-from ndb import Componente, UserRating, Usuario, Grupo
+from ndb import Componente, UserRating, Usuario, Grupo, Token
 
 import cliente_gitHub
 
@@ -487,30 +487,24 @@ class LoginHandler(webapp2.RequestHandler):
 
     def dispatch(self):
 
-    # Get a session store for this request.
+      # Get a session store for this request.
+      self.session_store = sessions.get_store(request=self.request)
 
-        self.session_store = sessions.get_store(request=self.request)
-
-        try:
-
+      try:
         # Dispatch the request.
-
-            webapp2.RequestHandler.dispatch(self)
-        finally:
-
+        webapp2.RequestHandler.dispatch(self)
+      finally:
         # Save all sessions.
-
-            self.session_store.save_sessions(self.response)
+        print "DEBUG: RESPUESTA" + self.response.status_message
+        self.session_store.save_sessions(self.response)
 
     @webapp2.cached_property
     def session(self):
-
-    # Returns a session using the default cookie key.
-
-        return self.session_store.get_session()
+      # Returns a session using the default cookie key.
+      return self.session_store.get_session()
 
 
-class OAuthTwitterHandler(webapp2.RequestHandler, LoginHandler):
+class OAuthTwitterHandler(LoginHandler):
 
     """
   Class that handles the Oauth Twitter Flow
@@ -1131,8 +1125,7 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
 
 config = {}
-config['webapp2_extras.sessions'] = \
-    {'secret_key': 'my-super-secret-key'}
+config['webapp2_extras.sessions'] = {'secret_key': 'example-project-13',}
 
 app = webapp2.WSGIApplication([
     (r'/api/componentes', ComponentListHandler),
@@ -1145,4 +1138,4 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/facebook', OauthFacebookHandler),
     (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', OauthGooglePlusHandler),
-    ], debug=True)
+    ], debug=True, config=config)
