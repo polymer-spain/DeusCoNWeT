@@ -39,11 +39,6 @@ import sys
 sys.path.insert(1, 'lib/')
 import oauth
 
-# Imports for session maintenance
-# from webapp2_extras import auth
-
-from webapp2_extras import sessions
-
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -483,26 +478,16 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
+
 class LoginHandler(webapp2.RequestHandler):
-
-    def dispatch(self):
-
-      # Get a session store for this request.
-      self.session_store = sessions.get_store(request=self.request)
-
-      try:
-        # Dispatch the request.
-        webapp2.RequestHandler.dispatch(self)
-      finally:
-        # Save all sessions.
-        print "DEBUG: RESPUESTA" + self.response.status_message
-        self.session_store.save_sessions(self.response)
-
-    @webapp2.cached_property
-    def session(self):
-      # Returns a session using the default cookie key.
-      return self.session_store.get_session()
-
+  def login(self):
+    pass
+  
+  def logout(self):
+    pass
+  
+  def getSession(self):
+    pass
 
 class OAuthTwitterHandler(LoginHandler):
 
@@ -566,20 +551,16 @@ class OAuthTwitterHandler(LoginHandler):
                 user_token.put()
                 self.response.set_status(200)
 
-            # TEST Login
-
-            self.session[user_info['username']] = user_info
         elif action == 'access_token' and not username == None:
-
             user_details = Token.query(Token.nombre_usuario
                     == username).get()
             if not user_details == None:
                 response = {'username': user_details.nombre_usuario,
                             'id_twitter': user_details.id_tw,
                             'token_twitter': user_details.token_tw}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(200)
             else:
                 self.response.set_status(404)
         else:
@@ -1124,9 +1105,6 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
         self.response.write(respuesta.content)
 
 
-config = {}
-config['webapp2_extras.sessions'] = {'secret_key': 'example-project-13',}
-
 app = webapp2.WSGIApplication([
     (r'/api/componentes', ComponentListHandler),
     (r'/api/oauth/twitterTimeline', OAuthTwitterTimelineHandler),
@@ -1138,4 +1116,4 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/facebook', OauthFacebookHandler),
     (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', OauthGooglePlusHandler),
-    ], debug=True, config=config)
+    ], debug=True)
