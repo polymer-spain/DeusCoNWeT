@@ -127,7 +127,7 @@ class Token(ndb.Model):
 
 # Entidad UsuarioSocial
 class UsuarioSocial(ndb.Model):
-  nombre_rs = ndb.StringProperty()
+  nombre_rs = ndb.StringProperty(required=True)
   siguiendo = ndb.IntegerProperty()
   seguidores = ndb.IntegerProperty()
   url_sig = ndb.StringProperty()
@@ -151,8 +151,8 @@ class Usuario(ndb.Model):
   descripcion = ndb.TextProperty()
   imagen = ndb.StringProperty()
   tokens = ndb.StructuredProperty(Token, repeated=True)
-  lista_Redes = ndb.StructuredProperty(Grupo, repeated=True)
-  lista_Grupos = ndb.StructuredProperty(UsuarioSocial, repeated=True)
+  lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
+  lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
   valoracion = ndb.StructuredProperty(UserRating, repeated=True)
   componentes = ndb.StructuredProperty(Componente, repeated=True)
   #tarjeta = ndb.StructuredProperty(Tarjeta)
@@ -224,39 +224,68 @@ def insertaToken(entity_key, rs, token, id_usuario): #FUNCIONA
   print user.tokens
   user.put()
 
-def insertaGrupo(entity_key, nombre, datos=None):
+def insertaGrupo(entity_key, nombre, datos=None): #FUNCIONA
   usuario = entity_key.get()
   grupo = Grupo(nombre_grupo=nombre)
+  users = ""
   
   if not datos == None:
     if datos.get("descripcion"): grupo.descripcion = datos["descripcion"]
     if datos.get("usuarios"):
-      for usuario in datos["usuarios"]:
-        datos.lista_Usuarios.append(usuario)
+      for user in datos["usuarios"]:
+        users += user + ", "
 
+  grupo.lista_Usuarios = users
   usuario.lista_Grupos.append(grupo)
   usuario.put()
 
-def addUsuarioAGrupo(entity_key, nombre_grupo, usuarios):
+def addUsuarioAGrupo(entity_key, nombre_grupo, usuario):
   user = entity_key.get()
-  
+  grupos = user.lista_Grupos
 
-def buscaGrupo(entity_key):
+  for grupo in grupos:
+    if grupo.nombre_grupo == nombre_grupo:
+      user.grupo.lista_Usuarios.append(usuario)
+
+  user.put()
+
+def addDescripcionAGrupo(entity_key, nombre, descripcion):
+  usuario = entity_key.get()
+  grupos = usuario.lista_Grupos
+
+  for grupo in grupos:
+    if grupo.nombre_grupo == nombre:
+      usuario.grupo.descripcion = descripcion
+
+  user.put()
+
+def buscaGrupos(entity_key): #FUNCIONA
   user = entity_key.get()
   res = {}
   contador = 1
   if user.lista_Grupos:
     for grupo in user.lista_Grupos:
-      res[contador] = grupo
+      res[contador] = grupo.nombre_grupo
       contador += 1
 
   return json.dumps(res)
 
-def insertaRed(entity_key, redes=None):
+def insertaRed(entity_key, nombre, datos=None):
   usuario = entity_key.get()
-  if not redes == None:
-    for red in redes:
-      usuario.lista_Redes.append(red)
+  user_social = UsuarioSocial(nombre_rs=nombre)
+  if not datos == None:
+    if datos.get("siguiendo"):
+      user_social.siguiendo = datos["siguiendo"]
+    if datos.get("seguidores"):
+      user_social.seguidores = datos["seguidores"]
+    if datos.get("url_seg"):
+      user_social.url_seg = datos["url_seg"]
+    if datos.get("url_sig"):
+      user_social.url_sig = datos["url_sig"]
+
+  usuario.lista_Redes.append(user_social)
+  usuario.put()
+    
 
 def buscaRed(entity_key):
   usuario = entity_key.get()
@@ -306,7 +335,7 @@ def getComponente(entity_key, nombre):
 class MainPage(webapp2.RequestHandler):
   def get(self):
     self.response.headers['Content-Type'] = 'text/plain'
-    #PARTE 1: INSERCION DE 1 USUARIO, AÑADIR 1 TOKEN, MOSTRAR TOKENS
+    #PARTE 1: INSERCION DE 1 USUARIO, INSERCION 1 TOKEN, MOSTRAR TOKENS
     datos = {"email":"lruiz@conwet.com", 
               "telefono": 61472589, 
               "descripcion":"Este es mi perfil personal", 
@@ -324,7 +353,16 @@ class MainPage(webapp2.RequestHandler):
     self.response.write("\n")
 
     #PARTE 2: INSERTAR GRUPO, RED Y COMPONENTE, MOSTRAR TODOS
+    datos_grupo = {"descripcion": "Grupo de prueba para usuario 1",
+                    "usuarios": ["luis", "ana", "miguel", "enrique"]}
 
+    insertaGrupo(key, "DEUS", datos_grupo)
+
+    grupo = buscaGrupos(key)
+    grupo = json.loads(grupo)
+    keys = grupo.keys()
+    for key in keys:
+      self.response.write("Grupo " + key + ": " + grupo[key] + "\n")
 
 
 app = webapp2.WSGIApplication([
