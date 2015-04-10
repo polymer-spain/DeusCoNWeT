@@ -363,6 +363,13 @@ class MainPage(webapp2.RequestHandler):
     for key in keys:
       self.response.write("Grupo " + key + ": " + grupo[key] + "\n")
 
+    datos_red = {"siguiendo": 134,
+                  "seguidores": 50,
+                  "url_seg": "api.twitter.com/get_followers",
+                  "url_sig": "api.twitter.com/get_following"}
+
+    
+
 
 app = webapp2.WSGIApplication([
       ('/', MainPage),
