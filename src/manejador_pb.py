@@ -39,6 +39,7 @@ import sys
 sys.path.insert(1, 'lib/')
 import oauth
 
+domain = "http://example-project-13.appspot.com"
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -480,8 +481,9 @@ class UserHandler(webapp2.RequestHandler):
 
 
 class LoginHandler(webapp2.RequestHandler):
-  def login(self):
-    pass
+  def login(self, user):
+    
+
   
   def logout(self):
     pass
@@ -532,9 +534,6 @@ class OAuthTwitterHandler(LoginHandler):
             response = {'oauth_url': client.get_authorization_url()}
             self.response.write(json.dumps(response))
         elif action == 'authorization':
-
-      # print "HOST: " + self.request.host
-
             auth_token = self.request.get('oauth_token')
             auth_verifier = self.request.get('oauth_verifier')
             user_info = client.get_user_info(auth_token,
@@ -549,7 +548,15 @@ class OAuthTwitterHandler(LoginHandler):
                                    ], id_tw=str(user_info['token']),
                                    token_tw=user_info['secret'])
                 user_token.put()
-                self.response.set_status(200)
+                
+                # Create Session
+                session_id = self.login(user_token)
+                self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+                self.response.set_status(201)
+            # Create Session
+            session_id = self.login(stored_user)
+            self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+            self.response.set_status(200)
 
         elif action == 'access_token' and not username == None:
             user_details = Token.query(Token.nombre_usuario
