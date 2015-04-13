@@ -480,7 +480,6 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
-
 class LoginHandler(webapp2.RequestHandler):
   def login(self, user_id):
     print "DEBUG: " + user_id
@@ -545,7 +544,6 @@ class OAuthTwitterHandler(LoginHandler):
             # TODO: query de stored user
             if stored_user == None:
                 user_id = ndb_pb.insertaUsuario('Twitter', user_info['username'],user_info['token'])
-                
                 # Create Session
                 print "DEBUG TW: " + str(user_id)
                 session_id = self.login(str(user_id))
@@ -557,6 +555,7 @@ class OAuthTwitterHandler(LoginHandler):
             self.response.set_status(200)
 
         elif action == 'access_token' and not username == None:
+
             user_details = Token.query(Token.nombre_usuario
                     == username).get()
             if not user_details == None:
