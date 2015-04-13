@@ -555,12 +555,12 @@ class OAuthTwitterHandler(LoginHandler):
             user_details = Token.query(Token.nombre_usuario
                     == username).get()
             if not user_details == None:
-                response = {'username': user_details.nombre_usuario,
+              response = {'username': user_details.nombre_usuario,
                             'id_twitter': user_details.id_tw,
                             'token_twitter': user_details.token_tw}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(200)
+              self.response.content_type = 'application/json'
+              self.response.write(json.dumps(response))
+              self.response.set_status(200)
             else:
                 self.response.set_status(404)
         else:
