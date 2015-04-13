@@ -190,13 +190,13 @@ def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   token = Token(identificador=ide, token=token, nombre_rs=rs)
   usuario.tokens.append(token)
   if not datos == None:
-    if datos["email"]:
+    if datos.hasKey("email"):
       usuario.email = datos["email"]
-    if datos["telefono"]:
+    if datos.hasKey("telefono"):
       usuario.telefono = datos["telefono"]
-    if datos["descripcion"]:
+    if datos.hasKey("descripcion"):
       usuario.descripcion = datos["descripcion"]
-    if datos["imagen"]:
+    if datos.hasKey("imagen"):
       usuario.imagen = datos["imagen"]
 
   user_key = usuario.put()
@@ -205,15 +205,14 @@ def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
 
 def actualizaUsuario(entity_key, datos):
   usuario = entity_key.get()
-  if not datos == None:
-    if datos["email"]:
-      usuario.email = datos["email"]
-    if datos["telefono"]:
-      usuario.telefono = datos["telefono"]
-    if datos["descripcion"]:
-      usuario.descripcion = datos["descripcion"]
-    if datos["imagen"]:
-      usuario.imagen = datos["imagen"]
+  if hasKey("email"):
+    usuario.email = datos["email"]
+  if hasKey("telefono"):
+    usuario.telefono = datos["telefono"]
+  if hasKey("descripcion"):
+    usuario.descripcion = datos["descripcion"]
+  if hasKey("imagen"):
+    usuario.imagen = datos["imagen"]
 
   usuario.put()
 
@@ -230,8 +229,8 @@ def insertaGrupo(entity_key, nombre, datos=None): #FUNCIONA
   users = ""
   
   if not datos == None:
-    if datos.get("descripcion"): grupo.descripcion = datos["descripcion"]
-    if datos.get("usuarios"):
+    if datos.hasKey("descripcion"): grupo.descripcion = datos["descripcion"]
+    if datos.hasKey("usuarios"):
       for user in datos["usuarios"]:
         users += user + ", "
 
@@ -274,13 +273,13 @@ def insertaRed(entity_key, nombre, datos=None):
   usuario = entity_key.get()
   user_social = UsuarioSocial(nombre_rs=nombre)
   if not datos == None:
-    if datos.get("siguiendo"):
+    if datos.hasKey("siguiendo"):
       user_social.siguiendo = datos["siguiendo"]
-    if datos.get("seguidores"):
+    if datos.hasKey("seguidores"):
       user_social.seguidores = datos["seguidores"]
-    if datos.get("url_seg"):
+    if datos.hasKey("url_seg"):
       user_social.url_seg = datos["url_seg"]
-    if datos.get("url_sig"):
+    if datos.hasKey("url_sig"):
       user_social.url_sig = datos["url_sig"]
 
   usuario.lista_Redes.append(user_social)
@@ -309,15 +308,15 @@ def modificarComponente(entity_key, nombre, datos):
   usuario = entity_key.get()
   comp_aux = Componente(nombre=nombre)
   comp = Componente.query(usuario.componentes==comp_aux)
-  if datos["x"]:
+  if datos.hasKey("x"):
     comp.x = datos["x"]
-  if datos["y"]:
+  if datos.hasKey("y"):
     comp.y = datos["y"]
-  if datos["url"]:
+  if datos.hasKey("url"):
     comp.url = datos["url"]
-  if datos["height"]:
+  if datos.hasKey("height"):
     comp.height = datos["height"]
-  if datos["width"]:
+  if datos.hasKey("width"):
     comp.width = datos["width"]
 
   usuario.put()
@@ -363,6 +362,13 @@ class MainPage(webapp2.RequestHandler):
     keys = grupo.keys()
     for key in keys:
       self.response.write("Grupo " + key + ": " + grupo[key] + "\n")
+
+    datos_red = {"siguiendo": 134,
+                  "seguidores": 50,
+                  "url_seg": "api.twitter.com/get_followers",
+                  "url_sig": "api.twitter.com/get_following"}
+
+    
 
 
 app = webapp2.WSGIApplication([
