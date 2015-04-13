@@ -482,8 +482,8 @@ class UserHandler(webapp2.RequestHandler):
 
 class LoginHandler(webapp2.RequestHandler):
   def login(self, user_id):
-    print "DEBUG: " + user_id
-    m = hashlib.sha256(user_id)
+    print "DEBUG: " + str(user_id)
+    m = hashlib.sha256(str(user_id))
     print m.hexdigest()
     return m.hexdigest()
   
@@ -545,8 +545,7 @@ class OAuthTwitterHandler(LoginHandler):
             if stored_user == None:
                 user_id = ndb_pb.insertaUsuario('Twitter', user_info['username'],user_info['token'])
                 # Create Session
-                print "DEBUG TW: " + str(user_id)
-                session_id = self.login(str(user_id))
+                session_id = self.login(str(user_id.id()))
                 self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
                 self.response.set_status(201)
             # Create Session
