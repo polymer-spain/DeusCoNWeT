@@ -26,6 +26,7 @@ class Usuario(ndb.Model):
   email_usuario = ndb.StringProperty()
   telefono_usuario = ndb.IntegerProperty()
   descripcion_usuario = ndb.TextProperty()
+  imagen_usuario = ndb.StringProperty()
     #"Lista de redes"
   nombre_rs_pertenece_usuario = ndb.StringProperty(repeated=True)
   siguiendo_rs_pertenece_usuario = ndb.IntegerProperty(repeated=True)
@@ -33,8 +34,8 @@ class Usuario(ndb.Model):
   url_sig_rs_pertenece_usuario = ndb.StringProperty(repeated=True)
   url_seg_rs_pertenece_usuario = ndb.StringProperty(repeated=True)
     # "lista_Grupos"
+  # lista_Usuarios_grupo_pertenece_usuario = ndb.StringProperty(repeated=True)
   nombre_grupo_pertenece_usuario = ndb.StringProperty(repeated=True)
-  lista_Usuarios_grupo_pertenece_usuario = ndb.StringProperty(repeated=True)
   descripcion_grupo_pertenece_usuario = ndb.StringProperty(repeated=True)
     # "Valoracion"
   name_valorada = ndb.StringProperty(repeated=True)
@@ -88,6 +89,8 @@ def insertarUsuario(rs, identificador, token, datos=None):
   elif rs == "google":
     usuario.token_google_usuario = token
     usuario.id_google_usuario = identificador
+  else:
+    return "La red social solicitada no esta contemplada"
 
   if not datos == None:
     if datos.has_key("email"):
@@ -96,6 +99,8 @@ def insertarUsuario(rs, identificador, token, datos=None):
       usuario.telefono_usuario = datos["telefono"]
     if datos.has_key("descripcion"):
       usuario.descripcion_usuario = datos["descripcion"]
+    if datos.has_key("imagen"):
+      usuario.imagen_usuario = datos["imagen"]
   user_key = usuario.put()
 
   return user_key  
@@ -109,6 +114,8 @@ def actualizarUsuario(user_key, datos):
       usuario.telefono_usuario = datos["telefono"]
     if datos.has_key("descripcion"):
       usuario.descripcion_usuario = datos["descripcion"]
+    if datos.has_key("imagen"):
+      usuario.imagen_usuario = datos["imagen"]
   
   usuario.put()
 #Comprobado
@@ -118,7 +125,8 @@ def buscarUsuario(user_key):
             "telefono": usuario.telefono_usuario,
             "descripcion":usuario.descripcion,
             "grupos": usuario.nombre_grupo_pertenece_usuario,
-            "redes": usuario.nombre_rs_pertenece_usuario}
+            "redes": usuario.nombre_rs_pertenece_usuario,
+            "imagen": usuario.imagen_usuario}
   datos = json.dumps(datos)
 
   return datos
@@ -164,6 +172,8 @@ def getToken(user_key, rs):
   else:
     return "La red social solicitada no esta contemplada"
   return res
+
+
 #Comprobado
 def insertaIdRS(user_key, rs, id_user):
   usuario = user_key.get()
@@ -206,15 +216,27 @@ def getIdRS(user_key, rs):
     return "La red social solicitada no esta contemplada"
 
   return identificador
-#Comprobado
-def insertaGrupo(user_key, grupos=[]):
+# Comprobado
+# Obligatoria una descripcion, aunque esta sea vacia
+def insertaGrupo(user_key, grupos=[], descripcion=[]):
   usuario = user_key.get()
   if len(grupos) > 0:
     for grupo in grupos:
       usuario.nombre_grupo_pertenece_usuario.append(grupo)
+    for desc in descripcion:
+      usuario.descripcion_grupo_pertenece_usuario.append(desc)
   else:
     return "No se especifica ningun grupo que anadir"
+# Comprobado
+def addDescripcionAGrupo(user_key, nombre, descripcion):
+  usuario = user_key.get()
+  for i in range(0,len(usuario.nombre_grupo_pertenece_usuario)):
+    if(usuario.nombre_grupo_pertenece_usuario[i] == nombre):
+      usuario.descripcion_grupo_pertenece_usuario[i] = descripcion
+
+  usuario.put()
 #Comprobado
+# Solo devuelve el nombre, no la descripcion
 def buscarGrupo(user_key):
   usuario = user_key.get()
   datos = {}
@@ -226,16 +248,33 @@ def buscarGrupo(user_key):
     for grupo in usuario.nombre_grupo_pertenece_usuario:
       res[contador] = grupo
       contador += 1
-
-  return json.dumps(res)
-#Comprobado
-def insertaRed(user_key, redes=[]):
-  usuario = user_key.get()
-  if len(redes) > 0:
-    for red in redes:
-      usuario.nombre_rs_pertenece_usuario.append(red)
+      return json.dumps(res)
   else:
-    return "No se especifica ninguna red que anadir"
+    return "No existen grupos para este usuario"
+# Comprobado
+def insertaRed(user_key, red, datos=None):
+  usuario = user_key.get()
+  usuario.nombre_rs_pertenece_usuario.append(red)
+  i = len(usuario.nombre_rs_pertenece_usuario)-1
+  if not datos == None:
+    if datos.has_key("siguiendo"):
+      usuario.siguiendo_rs_pertenece_usuario.append(datos["siguiendo"])
+    else:
+       usuario.siguiendo_rs_pertenece_usuario.append(0)
+    if datos.has_key("seguidores"):
+      usuario.seguidores_rs_pertenece_usuario.append(datos["seguidores"])
+    else:
+       usuario.siguiendo_rs_pertenece_usuario.append(0)
+    if datos.has_key("url_seg"):
+      usuario.url_seg_rs_pertenece_usuario.append(datos["url_seg"])
+    else:
+       usuario.url_seg_rs_pertenece_usuario.append("")
+    if datos.has_key("url_sig"):
+      usuario.url_sig_rs_pertenece_usuario.append(datos["url_sig"])
+    else:
+       usuario.url_sig_rs_pertenece_usuario.append("")
+  
+  usuario.put()
 #Comprobado
 def buscarRed(user_key):
   usuario = user_key.get()
@@ -247,6 +286,20 @@ def buscarRed(user_key):
       contador += 1
 
   return json.dumps(res)
+# Comprobado
+def modificarRS(user_key, rs, seguidores=None, siguiendo=None, url_seguidores="", url_siguiendo=""):
+  usuario = user_key.get()
+  encontrado = False
+  for i in range(0,len(usuario.nombre_rs_pertenece_usuario)):
+    if usuario.nombre_rs_pertenece_usuario[i] == rs:
+      encontrado = True
+      usuario.seguidores_rs_pertenece_usuario[i] = seguidores
+      usuario.siguiendo_rs_pertenece_usuario[i] = siguiendo
+      usuario.url_seg_rs_pertenece_usuario[i] = url_seguidores
+      usuario.url_sig_rs_pertenece_usuario[i] = url_siguiendo
+  usuario.put()
+  if encontrado == False:
+    return "No existe una red social con ese nombre"
 #Comprobado
 def insertarComponente(user_key, nombre, coord_x=0.0, coord_y=0.0, url="", height="", width=""):
   usuario = user_key.get()
@@ -296,3 +349,87 @@ def getComponente(user_key, nombre):
       return datos
   if encontrado == False:
     return "No existe un componente con ese nombre"
+
+
+# class MainPage(webapp2.RequestHandler):
+#   def get(self):
+#     self.response.write('Ejecucion correcta\n')
+
+#     # Insertar usuario
+#     datos={"email":"jfsalca","telefono":667994811, "descripcion":"Prueba"}
+#     key = insertarUsuario("facebook", "pepe_id", "token_fb_usuario", datos)
+
+#     if key == "La red social solicitada no esta contemplada":
+#       self.response.write(key)
+
+    # Insertar token
+    # respuesta = insertaToken(key, "facebook", "token_fb_usuario")
+    
+    # Buscar token
+    # respuesta = getToken(key, "facebook")
+    # self.response.write(respuesta)
+
+    # Insertar id
+    # respuesta = insertaIdRS(key, "instagram", "id_ins")
+    # self.response.write(respuesta)
+    
+    # Buscar id
+    # respuesta = getIdRS(key, "asd")
+    # self.response.write(respuesta)
+
+    # Insertar grupo
+    #grupo=["grupo1", "grupo2"]
+    #descripcion=["", "grupo pintura"]
+    #respuesta=insertaGrupo(key,grupo,descripcion)
+    #self.response.write(key.get().descripcion_grupo_pertenece_usuario)
+
+    # Anadir descripcion a grupo
+    #desc = addDescripcionAGrupo(key, "grupo2", "desc_grupo_X")
+    #self.response.write(key.get().descripcion_grupo_pertenece_usuario )
+
+    # Buscar grupo
+    # busqueda=buscarGrupo(key)
+    # if not busqueda == "No existen grupos para este usuario":
+    #   busqueda=json.loads(busqueda)
+    # self.response.write(busqueda)
+
+    # Insertar red
+    # datos_red = {"siguiendo": 123, "seguidores": 50, "url_sig": "api.twitter.com/get_following"}
+    # respuesta = insertaRed(key, "facebook", datos_red)
+
+    # datos_red2 = {"siguiendo": 111, "seguidores": 555, "url_seg": "pene", "url_sig": "api.twitter.com/get_following"}
+    # insertaRed(key, "twitter", datos_red2)
+
+    # self.response.write(key.get().siguiendo_rs_pertenece_usuario)
+    # self.response.write(key.get().seguidores_rs_pertenece_usuario)
+    # self.response.write(key.get().url_sig_rs_pertenece_usuario)
+    # self.response.write(key.get().url_seg_rs_pertenece_usuario)
+
+    # Buscar red
+    # busqueda = buscarRed(key)
+    # busqueda = json.loads(busqueda)
+    # self.response.write(busqueda)
+
+    # Anadir datos a red
+    # modificarRS(key, "facebook", 20, 30)
+
+    # Insertar componente
+    # insertarComponente(key, "nombre_comp", 2.0, 2.0, "url", "45px", "45px")
+
+    # Modificar componentes
+      # insertarComponente(key, "nombre_comp3", 2.0, 2.0, "url", "2.0", "2.0")
+    # datos={"url":"asdasd", "coord_x":4.82, "width": "45px"}
+    # datos2={"height":"345px", "coord_y":1}
+    # modificarComponente(key, "nombre_comp", datos)
+    # modificarComponente(key, "nombre_comp3", datos2)
+
+    # Buscar componente
+    # busqueda = getComponente(key, "nombre_comp")
+    # self.response.write(busqueda)
+    # if not busqueda == "No existe un componente con ese nombre":
+    #   busqueda = json.loads(busqueda)
+    # self.response.write(busqueda["width"])
+
+application = webapp2.WSGIApplication([
+    ('/', MainPage),
+], debug=True)
