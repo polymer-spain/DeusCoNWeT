@@ -292,7 +292,7 @@ def buscaRed(entity_key):
   contador = 1
   if usuario.lista_Redes:
     for red in usuario.lista_Redes:
-      res[contador] = red
+      res[contador] = red.nombre_rs
       contador += 1
 
   return json.dumps(res)
@@ -377,7 +377,13 @@ class MainPage(webapp2.RequestHandler):
                   "url_seg": "api.twitter.com/get_followers",
                   "url_sig": "api.twitter.com/get_following"}
 
-    
+    insertaRed(key, "twitter", datos_red)
+
+    red = buscaRed(key)
+    red = json.loads(red)
+    red_keys = red.keys()
+    for key in keys:
+      self.response.write("Redes " + key + ": " + red[key] + "\n")
 
 
 app = webapp2.WSGIApplication([
