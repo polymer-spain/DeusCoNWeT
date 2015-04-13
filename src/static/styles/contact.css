@@ -8,9 +8,12 @@ html {
   border-radius: 6px;
   padding: 45px 45px 20px;
   margin-top: 50px;
-  background-color: white;
+  background-color: rgba(255,255,255,0.9);
   resize: both;
   box-shadow: 0 0 0 5px #EEF5F7 inset;
+}
+#email /deep/ paper-input-decorator /deep/ .unfocused-underline {
+   background-color: #ea5050; 
 }
 #email /deep/ paper-input-decorator[focused] /deep/ .focused-underline {
   background-color: #B71C1C; 
@@ -25,23 +28,25 @@ html {
   float: right;
   font-family: inherit;
   border: 1px solid #333;
-  
+
 }
 #send:hover {
-   background-color: #eee; 
+  background-color: #eee; 
 }
 .contacto div > span {
   color: #a9a9a9;    
 }
 .contacto textarea {
-
   width: 294px;
   height: 150px;
   max-width: 100%;
-  border:1px solid black;
   padding: 7px 6px;
-  border: 1px solid #CED5D7;
-  box-shadow:0 0 0 3px #EEF5F7;
+  border: none;
+  box-shadow:0 0 0 1.5px #ea5050;
   margin: 5px 0;
+}
 
+textarea:focus {
+  outline: none !important;
+  box-shadow:0 0 0 1.5px #B71C1C;
 }

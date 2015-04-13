@@ -1,14 +1,18 @@
 
+
 body,html {
   height: 100%;
   margin:0;
   color:rgba(255, 255, 255, 0.85);
   font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
   background-attachment: fixed;
+  min-width: 1024px;
 }
+
 .view {
   margin:10px 150px;
 }
+
 core-toolbar {
   background-color: rgba(0,0,0,0.5);
   padding: 15px 150px;
@@ -16,8 +20,17 @@ core-toolbar {
   min-width: 600px;
   color:whitesmoke;
 }
+@media (max-width: 1200px) {
+  .view {
+    margin:10px 30px;
+  }
+  core-toolbar {
+    padding: 15px 30px; 
+  }
+}
 .logo {
   height: 80px;
+  cursor: pointer;
 }
 h2 {
   font-size: 120%; 
