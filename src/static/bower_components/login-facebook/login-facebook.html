@@ -8,9 +8,10 @@
     <polymer-element name="login-facebook" attributes="key_app scope">   
       <template> 
         <link rel="stylesheet" href="login-facebook.css">
-
-        <paper-button id="boton-facebook" on-click="{{login}}"></paper-button>
-
+        <paper-button id="boton-facebook" on-click="{{login}}" class="login">
+          <core-icon src="http://www.glinks.co/images/facebook-white.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
+          Sign in with Facebook
+        </paper-button>
       </template> 
       <script>  
         Polymer('login-facebook',{ 

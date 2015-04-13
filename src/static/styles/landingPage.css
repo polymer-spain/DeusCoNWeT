@@ -1,11 +1,43 @@
 html {
-  background-image: url('../images/imagen42.jpg');
+  background-image: url('../images/vias1.3.jpg');
   background-size: cover;
   background-repeat: no-repeat;
 }
+#section1 {
+  height: 100%;
+  padding-top: 0px;
+  z-index:0;
+}
 .content {
+  font-size:18px;
   margin-top: 5%;
   padding: 10px 50px 20px 50px;
-  font-size: 1.2em;
-
 }
+#section2{
+  padding-top: 60px;
+  border-top: 1px solid white;
+  margin-top:35%;
+  z-index:0;
+}
+#section3{
+  z-index:0;
+  margin-top:40%;
+  border-top: 1px solid white;
+  padding-top: 150px;
+  margin-bottom: 25%;
+}
+ul {
+  list-style: circle;
+  font-size: 26px;
+}
+ul li.selected {
+  list-style:disc;
+}
+
+a {
+  color:white; 
+}
+a:visited {
+  color:white;
+}
+

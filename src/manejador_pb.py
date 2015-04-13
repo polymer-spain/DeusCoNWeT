@@ -480,7 +480,6 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
-
 class LoginHandler(webapp2.RequestHandler):
   def login(self, user):
     
@@ -549,7 +548,6 @@ class OAuthTwitterHandler(LoginHandler):
                                    ], id_tw=str(user_info['token']),
                                    token_tw=user_info['secret'])
                 user_token.put()
-                
                 # Create Session
                 session_id = self.login(user_token)
                 self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
@@ -560,6 +558,7 @@ class OAuthTwitterHandler(LoginHandler):
             self.response.set_status(200)
 
         elif action == 'access_token' and not username == None:
+
             user_details = Token.query(Token.nombre_usuario
                     == username).get()
             if not user_details == None:
