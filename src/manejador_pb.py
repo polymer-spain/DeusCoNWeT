@@ -23,14 +23,14 @@ import webapp2
 import re
 import string
 import json
-import httplib
+import httplib, hashlib
 import urllib
 from google.appengine.ext import ndb
 
 # Local imports
 
-
-from ndb import Componente, UserRating, Usuario, Grupo, Token
+import ndb_pb
+from ndb_pb import Componente, UserRating, Usuario, Grupo, Token
 
 import cliente_gitHub
 
@@ -482,14 +482,13 @@ class UserHandler(webapp2.RequestHandler):
 
 
 class LoginHandler(webapp2.RequestHandler):
-  def login(self, user):
-    
-
+  def login(self, user_id):
+    print "DEBUG: " + user_id
+    m = hashlib.sha256(user_id)
+    print m.hexdigest()
+    return m.hexdigest()
   
-  def logout(self):
-    pass
-  
-  def getSession(self):
+  def getUserInfo(self):
     pass
 
 class OAuthTwitterHandler(LoginHandler):
@@ -539,19 +538,17 @@ class OAuthTwitterHandler(LoginHandler):
             auth_verifier = self.request.get('oauth_verifier')
             user_info = client.get_user_info(auth_token,
                     auth_verifier=auth_verifier)
+            # We store the user id and token into a Token Entity
 
-      # We store the user id and token into a Token Entity
-
-            stored_user = Token.query(Token.id_tw == user_info['token'
+            stored_user = Token.query(Token.token == user_info['token'
                     ]).get()
+            # TODO: query de stored user
             if stored_user == None:
-                user_token = Token(nombre_usuario=user_info['username'
-                                   ], id_tw=str(user_info['token']),
-                                   token_tw=user_info['secret'])
-                user_token.put()
+                user_id = ndb_pb.insertaUsuario('Twitter', user_info['username'],user_info['token'])
                 
                 # Create Session
-                session_id = self.login(user_token)
+                print "DEBUG TW: " + str(user_id)
+                session_id = self.login(str(user_id))
                 self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
                 self.response.set_status(201)
             # Create Session
