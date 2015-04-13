@@ -258,8 +258,7 @@ def addDescripcionAGrupo(entity_key, nombre, descripcion):
     if grupo.nombre_grupo == nombre:
       usuario.grupo.descripcion = descripcion
 
-
-  user.put()
+  usuario.put()
 
 def buscaGrupos(entity_key): #FUNCIONA
   user = entity_key.get()
@@ -333,6 +332,15 @@ def getComponente(entity_key, nombre):
       res = comp
 
   return res
+
+def buscaToken(id_usuario, rs):
+  tokens = Token.query()
+  token = token.filter(ndb.AND(identificador==id_usuario, nombre_rs==rs))
+  if token:
+    return token.token
+  else:
+    return "No existe token para el usuario en la red solicitada"
+
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
