@@ -29,6 +29,7 @@ from google.appengine.ext import ndb
 
 # Local imports
 
+
 from ndb import Componente, UserRating, Usuario, Grupo, Token
 
 import cliente_gitHub
