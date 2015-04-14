@@ -341,7 +341,7 @@ def getComponente(entity_key, nombre): # FUNCIONA
 
 def buscaToken(id_usuario, rs):
   tokens = Token.query()
-  token = tokens.filter(ndb.AND(identificador==id_usuario, nombre_rs==rs))
+  token = tokens.filter(ndb.AND(Token.identificador==id_usuario, Token.nombre_rs==rs))
   if token:
     return token.token
   else:
