@@ -189,13 +189,13 @@ def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   token = Token(identificador=ide, token=token, nombre_rs=rs)
   usuario.tokens.append(token)
   if not datos == None:
-    if datos.hasKey("email"):
+    if datos.has_key("email"):
       usuario.email = datos["email"]
-    if datos.hasKey("telefono"):
+    if datos.has_key("telefono"):
       usuario.telefono = datos["telefono"]
-    if datos.hasKey("descripcion"):
+    if datos.has_key("descripcion"):
       usuario.descripcion = datos["descripcion"]
-    if datos.hasKey("imagen"):
+    if datos.has_key("imagen"):
       usuario.imagen = datos["imagen"]
 
   user_key = usuario.put()
@@ -204,13 +204,13 @@ def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
 
 def actualizaUsuario(entity_key, datos):
   usuario = entity_key.get()
-  if hasKey("email"):
+  if has_key("email"):
     usuario.email = datos["email"]
-  if hasKey("telefono"):
+  if has_key("telefono"):
     usuario.telefono = datos["telefono"]
-  if hasKey("descripcion"):
+  if has_key("descripcion"):
     usuario.descripcion = datos["descripcion"]
-  if hasKey("imagen"):
+  if has_key("imagen"):
     usuario.imagen = datos["imagen"]
 
   usuario.put()
@@ -228,8 +228,8 @@ def insertaGrupo(entity_key, nombre, datos=None): #FUNCIONA
   users = ""
   
   if not datos == None:
-    if datos.hasKey("descripcion"): grupo.descripcion = datos["descripcion"]
-    if datos.hasKey("usuarios"):
+    if datos.has_key("descripcion"): grupo.descripcion = datos["descripcion"]
+    if datos.has_key("usuarios"):
       for user in datos["usuarios"]:
         users += user + ", "
 
@@ -268,24 +268,24 @@ def buscaGrupos(entity_key): #FUNCIONA
 
   return json.dumps(res)
 
-def insertaRed(entity_key, nombre, datos=None):
+def insertaRed(entity_key, nombre, datos=None): # FUNCIONA
   usuario = entity_key.get()
   user_social = UsuarioSocial(nombre_rs=nombre)
   if not datos == None:
-    if datos.hasKey("siguiendo"):
+    if datos.has_key("siguiendo"):
       user_social.siguiendo = datos["siguiendo"]
-    if datos.hasKey("seguidores"):
+    if datos.has_key("seguidores"):
       user_social.seguidores = datos["seguidores"]
-    if datos.hasKey("url_seg"):
+    if datos.has_key("url_seg"):
       user_social.url_seg = datos["url_seg"]
-    if datos.hasKey("url_sig"):
+    if datos.has_key("url_sig"):
       user_social.url_sig = datos["url_sig"]
 
   usuario.lista_Redes.append(user_social)
   usuario.put()
     
 
-def buscaRed(entity_key):
+def buscaRed(entity_key): # FUNCIONA
   usuario = entity_key.get()
   res = {}
   contador = 1
@@ -307,28 +307,37 @@ def modificarComponente(entity_key, nombre, datos):
   usuario = entity_key.get()
   comp_aux = Componente(nombre=nombre)
   comp = Componente.query(usuario.componentes==comp_aux)
-  if datos.hasKey("x"):
+  if datos.has_key("x"):
     comp.x = datos["x"]
-  if datos.hasKey("y"):
+  if datos.has_key("y"):
     comp.y = datos["y"]
-  if datos.hasKey("url"):
+  if datos.has_key("url"):
     comp.url = datos["url"]
-  if datos.hasKey("height"):
+  if datos.has_key("height"):
     comp.height = datos["height"]
-  if datos.hasKey("width"):
+  if datos.has_key("width"):
     comp.width = datos["width"]
 
   usuario.put()
 
 def getComponente(entity_key, nombre):
   user = entity_key.get()
-  comps = user.comps
-  res = None
+  comps = user.componentes
+  res = {"nombre": nombre,
+          "x": 0,
+          "y": 0,
+          "url": "",
+          "height": "",
+          "width": ""}
   for comp in comps:
     if comp.nombre == nombre:
-      res = comp
+      res["x"] = comp.x
+      res["y"] = comp.y
+      res["url"] = comp.url
+      res["height"] = comp.height
+      res["width"] = comp.width
 
-  return res
+  return json.dumps(res)
 
 def buscaToken(id_usuario, rs):
   tokens = Token.query()
@@ -368,8 +377,8 @@ class MainPage(webapp2.RequestHandler):
     grupo = buscaGrupos(key)
     grupo = json.loads(grupo)
     keys = grupo.keys()
-    for key in keys:
-      self.response.write("Grupo " + key + ": " + grupo[key] + "\n")
+    for key_group in keys:
+      self.response.write("Grupo " + key_group + ": " + grupo[key_group] + "\n")
 
     datos_red = {"siguiendo": 134,
                   "seguidores": 50,
@@ -381,8 +390,18 @@ class MainPage(webapp2.RequestHandler):
     red = buscaRed(key)
     red = json.loads(red)
     red_keys = red.keys()
-    for key in keys:
-      self.response.write("Redes " + key + ": " + red[key] + "\n")
+    for key_network in keys:
+      self.response.write("Redes " + key_network + ": " + red[key_network] + "\n")
+
+    insertarComponente(key, "login_twitter", coord_x=12, coord_y=15, url="https://github.com/deus/login_twitter", height="120px", width="50px")
+
+    comp = getComponente(key, "login_twitter")
+    comp = json.loads(comp)
+    keys = comp.keys()
+    self.response.write("Componente " + comp["nombre"] + ":\n")
+    for key_comp in keys:
+      if not key_comp == "nombre":
+        self.response.write("\t" + key_comp + ": " + str(comp[key_comp]) + "\n")
 
 
 app = webapp2.WSGIApplication([
