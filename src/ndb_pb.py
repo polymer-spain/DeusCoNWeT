@@ -17,8 +17,7 @@
 """
 
 from google.appengine.ext import ndb
-import json
-import webapp2
+import json, webapp2
 
 # Definimos la lista de redes sociales con las que trabajamos
 rs_list = ["twitter", "facebook", "stack-overflow", "instagram", "linkedin", "google", "github"]
