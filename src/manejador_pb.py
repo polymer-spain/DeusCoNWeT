@@ -532,6 +532,7 @@ class OAuthTwitterHandler(LoginHandler):
             self.response.content_type = 'application/json'
             response = {'oauth_url': client.get_authorization_url()}
             self.response.write(json.dumps(response))
+
         elif action == 'authorization':
             auth_token = self.request.get('oauth_token')
             auth_verifier = self.request.get('oauth_verifier')
@@ -554,7 +555,6 @@ class OAuthTwitterHandler(LoginHandler):
             self.response.set_status(200)
 
         elif action == 'access_token' and not username == None:
-
             user_details = Token.query(Token.nombre_usuario
                     == username).get()
             if not user_details == None:
@@ -1006,7 +1006,7 @@ class OauthStackOverflowHandler(webapp2.RequestHandler):
             self.response.set_status(400)
 
 
-class OauthGooglePlusHandler(webapp2.RequestHandler):
+class OauthGooglePlusHandler(LoginHandler):
 
   # GET Method
 
@@ -1032,49 +1032,35 @@ class OauthGooglePlusHandler(webapp2.RequestHandler):
             self.response.set_status(400)
 
   # POST Method
-
     def post(self):
 
     # Gets the data from the request form
 
         try:
-            access_token = self.request.POST['access_token']
-            token_id = self.request.POST['token_id']
+          access_token = self.request.POST['access_token']
+          token_id = self.request.POST['token_id']
 
-      # Checks if the username was stored previously
+          # Checks if the username was stored previously
 
-            stored_credentials = Token.query(Token.id_google
+          stored_credentials = Token.query(Token.id_google
                     == token_id).get()
-            if stored_credentials == None:
+          if stored_credentials == None:
+            # Generate a valid username for a new user
+            user_id = ndb_pb.insertaUsuario('google',token_id, access_token )
 
-        # Stores the credentials in a Token Entity
-        # TODO: Generate a valid username for a new user in the user_credentials
+            session_id = self.login(str(user_id.id()))
+            # Returns the session cookie
+            self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+            self.response.set_status(201)
+          else:
+            # TODO: We store the new set of credentials
 
-                user_credentials = Token(id_google=token_id,
-                        token_google=access_token)
-                user_credentials.put()
+            stored_credentials.id_google = token_id
+            stored_credentials.token_google = access_token
+            stored_credentials.put()
 
-        # TODO: Return the username owner of the keys
-
-                response = {'username': user_credentials.nombre_usuario}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(201)
-            else:
-
-        # We store the new set of credentials
-
-                stored_credentials.id_google = token_id
-                stored_credentials.token_google = access_token
-                stored_credentials.put()
-
-        # TODO: Return the username owner of the keys
-
-                response = \
-                    {'username': stored_credentials.nombre_usuario}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            # TODO: Return the username owner of the keys in a cookie
+            self.response.set_status(200)
         except:
             response = \
                 {'error': 'You must provide a valid pair of access_token and token_id in the request'}
