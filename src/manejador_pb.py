@@ -1,29 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-""" Copyright 2015 Luis Ruiz Ruiz
-  Copyright 2015 Ana Isabel Lopera Martinez
-  Copyright 2015 Miguel Ortega Moreno
-  Copyright 2015 Juan Francisco Salamanca
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-"""
+g
 
 import webapp2
 import re
 import string
 import json
-import httplib, hashlib
+import httplib
+import hashlib
 import urllib
 from google.appengine.ext import ndb
 
@@ -40,7 +25,8 @@ import sys
 sys.path.insert(1, 'lib/')
 import oauth
 
-domain = "http://example-project-13.appspot.com"
+domain = 'http://example-project-13.appspot.com'
+
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -481,14 +467,16 @@ class UserHandler(webapp2.RequestHandler):
 
 
 class LoginHandler(webapp2.RequestHandler):
-  def login(self, user_id):
-    print "DEBUG: " + str(user_id)
-    m = hashlib.sha256(str(user_id))
-    print m.hexdigest()
-    return m.hexdigest()
-  
-  def getUserInfo(self):
-    pass
+
+    def login(self, user_id):
+        print 'DEBUG: ' + str(user_id)
+        m = hashlib.sha256(str(user_id))
+        print m.hexdigest()
+        return m.hexdigest()
+
+    def getUserInfo(self):
+        pass
+
 
 class OAuthTwitterHandler(LoginHandler):
 
@@ -532,38 +520,48 @@ class OAuthTwitterHandler(LoginHandler):
             self.response.content_type = 'application/json'
             response = {'oauth_url': client.get_authorization_url()}
             self.response.write(json.dumps(response))
-
         elif action == 'authorization':
+
             auth_token = self.request.get('oauth_token')
             auth_verifier = self.request.get('oauth_verifier')
             user_info = client.get_user_info(auth_token,
                     auth_verifier=auth_verifier)
+
             # We store the user id and token into a Token Entity
 
             stored_user = Token.query(Token.token == user_info['token'
                     ]).get()
-            # TODO: query de stored user
-            if stored_user == None:
-                user_id = ndb_pb.insertaUsuario('Twitter', user_info['username'],user_info['token'])
-                # Create Session
-                session_id = self.login(str(user_id.id()))
-                self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
-                self.response.set_status(201)
-            # Create Session
-            session_id = self.login(stored_user)
-            self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
-            self.response.set_status(200)
 
+            # TODO: query de stored user
+
+            if stored_user == None:
+                user_id = ndb_pb.insertaUsuario('Twitter',
+                        user_info['username'], user_info['token'])
+
+                # Create Session
+
+                session_id = self.login(str(user_id.id()))
+                self.response.set_cookie('session', value=session_id,
+                        path='/users', domain=domain, secure=True)
+                self.response.set_status(201)
+
+            # Create Session
+
+            session_id = self.login(stored_user)
+            self.response.set_cookie('session', value=session_id,
+                    path='/users', domain=domain, secure=True)
+            self.response.set_status(200)
         elif action == 'access_token' and not username == None:
+
             user_details = Token.query(Token.nombre_usuario
                     == username).get()
             if not user_details == None:
-              response = {'username': user_details.nombre_usuario,
+                response = {'username': user_details.nombre_usuario,
                             'id_twitter': user_details.id_tw,
                             'token_twitter': user_details.token_tw}
-              self.response.content_type = 'application/json'
-              self.response.write(json.dumps(response))
-              self.response.set_status(200)
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
             else:
                 self.response.set_status(404)
         else:
@@ -1032,36 +1030,55 @@ class OauthGooglePlusHandler(LoginHandler):
             self.response.set_status(400)
 
   # POST Method
+
     def post(self):
+
       # Gets the data from the request form
-      try:
-        access_token = self.request.POST['access_token']
-        token_id = self.request.POST['token_id']
+
+        try:
+            access_token = self.request.POST['access_token']
+            token_id = self.request.POST['token_id']
+            print 'llega aqui token'
 
         # Checks if the username was stored previously
 
-        stored_credentials = ndb_pb.buscaToken(token_id, "google")
-        if stored_credentials == None:
+            stored_credentials = ndb_pb.buscaToken(token_id, 'google')
+            print stored_credentials
+            if stored_credentials == None:
+
           # Generate a valid username for a new user
-          user_id = ndb_pb.insertaUsuario('google',token_id, access_token )
-          session_id = self.login(str(user_id.id()))
+
+                print 'llega aqui'
+                user_id = ndb_pb.insertaUsuario('google', token_id,
+                        access_token)
+                session_id = self.login(str(user_id.id()))
+                print 'llega aqui 2'
+
           # Returns the session cookie
-          self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
-          self.response.set_status(201)
-        else:
+
+                self.response.set_cookie('session', value=session_id,
+                        path='/users', domain=domain, secure=True)
+                self.response.set_status(201)
+                print 'llega aqui 3'
+            else:
+
           # TODO: We store the new set of credentials
-          stored_credentials.id_google = token_id
-          stored_credentials.token_google = access_token
-          stored_credentials.put()
+
+                print 'llega aqui 4'
+                stored_credentials.id_google = token_id
+                stored_credentials.token_google = access_token
+                stored_credentials.put()
+                print 'llega aqui 5'
 
           # TODO: Return the username owner of the keys in a cookie
-          self.response.set_status(200)
-      except:
-          response = \
-              {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-          self.response.content_type = 'application/json'
-          self.response.write(json.dumps(response))
-          self.response.set_status(400)
+
+                self.response.set_status(200)
+        except:
+            response = \
+                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):

@@ -1,5 +1,5 @@
 html {
-  background-image: url('../images/vias1.3.jpg');
+  background-image: url('../images/vias1.5.jpg');
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -21,7 +21,7 @@ html {
 }
 #section3{
   z-index:0;
-  margin-top:40%;
+  margin-top:45%;
   border-top: 1px solid white;
   padding-top: 150px;
   margin-bottom: 25%;

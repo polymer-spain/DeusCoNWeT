@@ -17,7 +17,7 @@
 
   <body unresolved ng-app="PolymerBricks" ng-controller="MainCtrl" >
     <core-toolbar>
-      <img class="logo" src="images/logo2.png">
+      <img class="logo" src="images/logo.png">
 
       <h2 id="name" ng-click="changeView('/')" flex>	DEUS CoNWeT</h2>
 
@@ -32,7 +32,7 @@
       <paper-button ng-click="changeView('/contact')">Contactar</paper-button>
       <paper-button ng-click="changeView('/privacy')">Privacidad</paper-button>
     </div>
-    <div ng-view="" class="view">
+    <div ng-view="" id="view" class="view">
 
     </div>
 

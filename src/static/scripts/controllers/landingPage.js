@@ -10,7 +10,28 @@
 angular.module('PolymerBricks')
   .controller('landingCtrl', function ($scope,$location,$anchorScroll) {
   'use strict';
+
   $scope.selected = 'section1';
+
+  $scope.wheel = function(e) {
+/*    e.preventDefault();
+    console.log(e);
+    if ($scope.selected==='section1') {
+      $scope.selected = 'section2'
+      $location.hash($scope.selected); 
+      $anchorScroll();
+    } else if ($scope.selected === 'section2') {
+      $scope.selected = 'section3'
+      $location.hash($scope.selected); 
+      $anchorScroll();
+
+    }else if ($scope.selected === 'section3') {
+      $scope.selected = 'section1'
+      $location.hash($scope.selected); 
+      $anchorScroll();
+    };*/
+  }
+  window.onmousewheel = document.onmousewheel = $scope.wheel;
 
   $scope.setSelected = function(sel){
     $scope.selected = sel;
@@ -29,4 +50,4 @@ angular.module('PolymerBricks')
   $scope.isSelected = function(sel) {
     return $scope.selected === sel; 
   }
-})
+});
