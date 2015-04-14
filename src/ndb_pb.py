@@ -345,9 +345,9 @@ def buscaToken(id_usuario, rs):
   tokens = Token.query()
   token = tokens.filter(ndb.AND(Token.identificador==id_usuario, Token.nombre_rs==rs))
   if token:
-    return token.token
+    return token
   else:
-    return "No existe token para el usuario en la red solicitada"
+    return None
 
 
 class MainPage(webapp2.RequestHandler):

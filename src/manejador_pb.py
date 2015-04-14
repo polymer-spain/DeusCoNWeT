@@ -1045,7 +1045,6 @@ class OauthGooglePlusHandler(LoginHandler):
         self.response.set_status(400)
 
       # Checks if the username was stored previously
-
       stored_credentials = ndb_pb.buscaToken(token_id, "google")
       if stored_credentials == None:
         # Generate a valid username for a new user
@@ -1056,11 +1055,11 @@ class OauthGooglePlusHandler(LoginHandler):
         self.response.set_status(201)
       else:
         # TODO: We store the new set of credentials
-        stored_credentials.id_google = token_id
-        stored_credentials.token_google = access_token
-        stored_credentials.put()
-
         # TODO: Return the username owner of the keys in a cookie
+        user_id = ndb_pb.insertaUsuario('google',token_id, access_token)
+        session_id = self.login(str(user_id.id()))
+        # Returns the session cookie
+        self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
         self.response.set_status(200)
 
 
