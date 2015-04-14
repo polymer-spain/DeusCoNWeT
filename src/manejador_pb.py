@@ -1033,40 +1033,35 @@ class OauthGooglePlusHandler(LoginHandler):
 
   # POST Method
     def post(self):
+      # Gets the data from the request form
+      try:
+        access_token = self.request.POST['access_token']
+        token_id = self.request.POST['token_id']
 
-    # Gets the data from the request form
+        # Checks if the username was stored previously
 
-        try:
-          access_token = self.request.POST['access_token']
-          token_id = self.request.POST['token_id']
+        stored_credentials = ndb_pb.buscaToken(token_id, "google")
+        if stored_credentials == None:
+          # Generate a valid username for a new user
+          user_id = ndb_pb.insertaUsuario('google',token_id, access_token )
+          session_id = self.login(str(user_id.id()))
+          # Returns the session cookie
+          self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+          self.response.set_status(201)
+        else:
+          # TODO: We store the new set of credentials
+          stored_credentials.id_google = token_id
+          stored_credentials.token_google = access_token
+          stored_credentials.put()
 
-          # Checks if the username was stored previously
-
-          stored_credentials = Token.query(Token.id_google
-                    == token_id).get()
-          if stored_credentials == None:
-            # Generate a valid username for a new user
-            user_id = ndb_pb.insertaUsuario('google',token_id, access_token )
-
-            session_id = self.login(str(user_id.id()))
-            # Returns the session cookie
-            self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
-            self.response.set_status(201)
-          else:
-            # TODO: We store the new set of credentials
-
-            stored_credentials.id_google = token_id
-            stored_credentials.token_google = access_token
-            stored_credentials.put()
-
-            # TODO: Return the username owner of the keys in a cookie
-            self.response.set_status(200)
-        except:
-            response = \
-                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(400)
+          # TODO: Return the username owner of the keys in a cookie
+          self.response.set_status(200)
+      except:
+          response = \
+              {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+          self.response.content_type = 'application/json'
+          self.response.write(json.dumps(response))
+          self.response.set_status(400)
 
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
