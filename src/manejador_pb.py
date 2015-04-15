@@ -1103,10 +1103,11 @@ class ContactFormHandler(webapp2.RequestHandler):
       message_body = self.request.POST['message']
       message_subject = self.request.POST['subject']
       # Create the message
-      message = MIMEText(message_body)
-      message['to'] = 'deus@conwet.com'
-      message['from'] = '37385538925-4g90dngnd3u8ch17pgf9n0tlqocl8iro@developer.gserviceaccount.com'
-      message['subject'] = message_subject + " contacto: " + sender
+      # message = MIMEText(message_body)
+      # message['to'] = 'deus@conwet.com'
+      # message['from'] = '37385538925-4g90dngnd3u8ch17pgf9n0tlqocl8iro@developer.gserviceaccount.com'
+      # message['subject'] = message_subject + " contacto: " + sender
+      
     except: 
       self.request.set_status(400)
 
