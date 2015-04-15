@@ -298,7 +298,7 @@ def buscaRed(entity_key): # FUNCIONA
 
   return json.dumps(res)
 
-def insertarComponente(entity_key, nombre, coord_x=0, coord_y=0, url="", height="", width=""):
+def insertarComponente(entity_key, nombre, coord_x=0, coord_y=0, url="", height="", width=""): # FUNCIONA
   usuario = entity_key.get()
   componente = Componente(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width)
   usuario.componentes.append(componente)
@@ -322,7 +322,7 @@ def modificarComponente(entity_key, nombre, datos):
 
   usuario.put()
 
-def getComponente(entity_key, nombre):
+def getComponente(entity_key, nombre): # FUNCIONA
   user = entity_key.get()
   comps = user.componentes
   res = {"nombre": nombre,
@@ -343,12 +343,22 @@ def getComponente(entity_key, nombre):
 
 def buscaToken(id_usuario, rs):
   tokens = Token.query()
-  token = token.filter(ndb.AND(identificador==id_usuario, nombre_rs==rs))
+  token = tokens.filter(ndb.AND(Token.identificador==id_usuario, Token.nombre_rs==rs))
   if token:
-    return token.token
+    return token
   else:
-    return "No existe token para el usuario en la red solicitada"
+    return None
 
+def modificaToken(id_usuario, nuevo_token, rs):
+  usuarios = Usuario.query()
+  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+  usuario = usuarios.filter(Usuario.tokens==token_aux)
+  tokens = usuario.tokens
+  for token in tokens:
+    if token.identificador==id_usuario and token.nombre_rs==rs:
+      token.token = nuevo_token
+
+  usuario.put()
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
@@ -404,6 +414,8 @@ class MainPage(webapp2.RequestHandler):
     for key_comp in keys:
       if not key_comp == "nombre":
         self.response.write("\t" + key_comp + ": " + str(comp[key_comp]) + "\n")
+
+    #PARTE 3: MODIFICACION DE ENTIDADES
 
 
 app = webapp2.WSGIApplication([

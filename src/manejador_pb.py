@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-g
-
 import webapp2
 import re
 import string
@@ -11,22 +9,22 @@ import httplib
 import hashlib
 import urllib
 from google.appengine.ext import ndb
+from google.appengine.api import memcache
 
 # Local imports
-
 import ndb_pb
 from ndb_pb import Componente, UserRating, Usuario, Grupo, Token
 
 import cliente_gitHub
 
-# Imports for twitter
-
+# Imports for TwitterHandler
 import sys
 sys.path.insert(1, 'lib/')
 import oauth
 
-domain = 'http://example-project-13.appspot.com'
 
+# Global vars
+domain = "http://example-project-13.appspot.com"
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -468,15 +466,23 @@ class UserHandler(webapp2.RequestHandler):
 
 class LoginHandler(webapp2.RequestHandler):
 
-    def login(self, user_id):
-        print 'DEBUG: ' + str(user_id)
-        m = hashlib.sha256(str(user_id))
-        print m.hexdigest()
-        return m.hexdigest()
+  def login(self, user_id):
+    cypher = hashlib.sha256(str(user_id))
+    hash_id = cypher.hexdigest()
+    # Store in memcache hash-user_id pair
+    memcache.add(hash_id, user_id)
+    return hash_id
 
-    def getUserInfo(self):
-        pass
+  def getUserInfo(self, hashed_id):
+    user = memcache.get(hashed_id)
+    return user
 
+  def logout(self, hashed_id):
+    logout_status = False
+    status = memcache.delete(hashed_id)
+    if status == 2: 
+      logout_status = True
+    return logout_status
 
 class OAuthTwitterHandler(LoginHandler):
 
@@ -1034,18 +1040,21 @@ class OauthGooglePlusHandler(LoginHandler):
     def post(self):
 
       # Gets the data from the request form
-
+      action = self.request.get("action")
+      if action == "credentials":
         try:
-            access_token = self.request.POST['access_token']
-            token_id = self.request.POST['token_id']
-            print 'llega aqui token'
+          access_token = self.request.POST['access_token']
+          token_id = self.request.POST['token_id']
+        except:
+          response = \
+          {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+          self.response.content_type = 'application/json'
+          self.response.write(json.dumps(response))
+          self.response.set_status(400)
 
         # Checks if the username was stored previously
-
-            stored_credentials = ndb_pb.buscaToken(token_id, 'google')
-            print stored_credentials
-            if stored_credentials == None:
-
+        stored_credentials = ndb_pb.buscaToken(token_id, "google")
+        if stored_credentials == None:
           # Generate a valid username for a new user
 
                 print 'llega aqui'
@@ -1055,31 +1064,27 @@ class OauthGooglePlusHandler(LoginHandler):
                 print 'llega aqui 2'
 
           # Returns the session cookie
+          self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+          self.response.set_status(201)
+        else:
+          # TODO: We store the new set of credentials (change insertaUsuario)
+          user_id = ndb_pb.insertaUsuario('google',token_id, access_token)
+          session_id = self.login(str(user_id.id()))
+          # Returns the session cookie
+          self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+          self.response.set_status(200)
 
-                self.response.set_cookie('session', value=session_id,
-                        path='/users', domain=domain, secure=True)
-                self.response.set_status(201)
-                print 'llega aqui 3'
-            else:
-
-          # TODO: We store the new set of credentials
-
-                print 'llega aqui 4'
-                stored_credentials.id_google = token_id
-                stored_credentials.token_google = access_token
-                stored_credentials.put()
-                print 'llega aqui 5'
-
-          # TODO: Return the username owner of the keys in a cookie
-
-                self.response.set_status(200)
-        except:
-            response = \
-                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(400)
-
+      elif action == "logout":
+        cookie_value = self.request.cookies.get('session')
+        print "Cookie value: " + cookie_value
+        # Logout
+        logout_status = self.logout(cookie_value)
+        # Delete cookie
+        self.response.delete_cookie('session')
+        print "LOGOUT: " + str(logout_status)
+        self.response.set_status(200)
+      else:
+        self.response.set_status(400)
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
