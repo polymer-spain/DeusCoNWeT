@@ -359,7 +359,7 @@ def modificaToken(id_usuario, nuevo_token, rs):
       token.token = nuevo_token
 
   usuario.put()
-
+  print "KEY: " + usuario.key()
 class MainPage(webapp2.RequestHandler):
   def get(self):
     self.response.headers['Content-Type'] = 'text/plain'

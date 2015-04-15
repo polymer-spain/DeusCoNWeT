@@ -480,7 +480,15 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
-class LoginHandler(webapp2.RequestHandler):
+class SessionHandler(webapp2.RequestHandler):
+  """
+  Class that handles the session of the application
+  Methods:
+    login - Generates a valid hash for a given user_id
+    getUserInfo - Gets the info related to a logged user_id
+    logout - Deletes the session for a given user
+  """
+
   def login(self, user_id):
     cypher = hashlib.sha256(str(user_id))
     hash_id = cypher.hexdigest()
@@ -500,7 +508,7 @@ class LoginHandler(webapp2.RequestHandler):
     return logout_status
 
 
-class OAuthTwitterHandler(LoginHandler):
+class OAuthTwitterHandler(SessionHandler):
 
     """
   Class that handles the Oauth Twitter Flow
@@ -552,16 +560,16 @@ class OAuthTwitterHandler(LoginHandler):
 
             stored_user = Token.query(Token.token == user_info['token'
                     ]).get()
-            # TODO: query de stored user
+            # TODO: query for the stored user (modificaToken)
             if stored_user == None:
                 user_id = ndb_pb.insertaUsuario('Twitter', user_info['username'],user_info['token'])
                 # Create Session
                 session_id = self.login(str(user_id.id()))
-                self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+                self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
                 self.response.set_status(201)
             # Create Session
             session_id = self.login(stored_user)
-            self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
             self.response.set_status(200)
 
         elif action == 'access_token' and not username == None:
@@ -1016,7 +1024,7 @@ class OauthStackOverflowHandler(webapp2.RequestHandler):
             self.response.set_status(400)
 
 
-class OauthGooglePlusHandler(LoginHandler):
+class OauthGooglePlusHandler(SessionHandler):
 
   # GET Method
 
@@ -1045,7 +1053,7 @@ class OauthGooglePlusHandler(LoginHandler):
     def post(self):
       # Gets the data from the request form
       action = self.request.get("action")
-      if action == "credentials":
+      if action == "login":
         try:
           access_token = self.request.POST['access_token']
           token_id = self.request.POST['token_id']
@@ -1063,14 +1071,14 @@ class OauthGooglePlusHandler(LoginHandler):
           user_id = ndb_pb.insertaUsuario('google',token_id, access_token )
           session_id = self.login(str(user_id.id()))
           # Returns the session cookie
-          self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+          self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
           self.response.set_status(201)
         else:
           # TODO: We store the new set of credentials (change insertaUsuario)
-          user_id = ndb_pb.insertaUsuario('google',token_id, access_token)
+          user_id = ndb_pb.modificaToken(token_id, access_token, 'google')
           session_id = self.login(str(user_id.id()))
           # Returns the session cookie
-          self.response.set_cookie("session", value=session_id, path="/users", domain=domain, secure=True)
+          self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
           self.response.set_status(200)
 
       elif action == "logout":
@@ -1083,7 +1091,11 @@ class OauthGooglePlusHandler(LoginHandler):
         print "LOGOUT: " + str(logout_status)
         self.response.set_status(200)
       else:
+        response = {'error': 'Invalid value for the action param'}
+          self.response.content_type = 'application/json'
+          self.response.write(json.dumps(response))
         self.response.set_status(400)
+
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
