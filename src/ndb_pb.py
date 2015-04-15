@@ -219,7 +219,6 @@ def insertaToken(entity_key, rs, token, id_usuario): #FUNCIONA
   user = entity_key.get()
   tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
   user.tokens.append(tok_aux)
-  print user.tokens
   user.put()
 
 def insertaGrupo(entity_key, nombre, datos=None): #FUNCIONA
@@ -350,13 +349,14 @@ def buscaToken(id_usuario, rs):
 def modificaToken(id_usuario, nuevo_token, rs):
   usuarios = Usuario.query()
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
-  usuario = usuarios.filter(Usuario.tokens==token_aux)
+  usuario = usuarios.filter(Usuario.tokens==token_aux).get()
   tokens = usuario.tokens
   for token in tokens:
     if token.identificador==id_usuario and token.nombre_rs==rs:
       token.token = nuevo_token
 
   usuario.put()
+  return usuario.key
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
@@ -367,6 +367,7 @@ class MainPage(webapp2.RequestHandler):
               "descripcion":"Este es mi perfil personal", 
               "imagen": "www.example.com/mi-foto.jpg"}
     key = insertaUsuario("twitter", "lrr9204", "asdfghjklm159753", datos)
+    self.response.write(key)
 
     tok = getToken(key, "twitter")
     self.response.write(tok.nombre_rs + "--> identificador: " + tok.identificador + "; token: " + tok.token)
@@ -414,6 +415,7 @@ class MainPage(webapp2.RequestHandler):
         self.response.write("\t" + key_comp + ": " + str(comp[key_comp]) + "\n")
 
     #PARTE 3: MODIFICACION DE ENTIDADES
+    modificaToken("lrr9204", "mnbvcxzmnbvcxz1234", "twitter")
 
 
 app = webapp2.WSGIApplication([
