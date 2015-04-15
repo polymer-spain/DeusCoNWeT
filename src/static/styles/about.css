@@ -1,5 +1,5 @@
 html {
-  background-image: url('../images/imagen42.jpg');
+  background-image: url('../images/vias.jpg');
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -8,7 +8,7 @@ html {
   height:600px;
   color: whitesmoke;
   width:100%;
-  margin-top: 25px;
+  margin-top: 10%;
   border-radius: 15px;
   background-color:rgba(46, 45, 45, 0.2);
 }

@@ -1,28 +1,40 @@
 html {
-  background-image: url('../images/vias1.3.jpg');
+  background-image: url('../images/vias.jpg');
   background-size: cover;
   background-repeat: no-repeat;
+  overflow-y: hidden; 
 }
 #section1 {
   height: 100%;
-  padding-top: 0px;
   z-index:0;
 }
 .content {
-  font-size:18px;
-  margin-top: 5%;
+  font-size:16px;
   padding: 10px 50px 20px 50px;
 }
+.slogan {
+  width:400px;
+  display:inline-block;
+  min-width:300px;
+  font-size: 20px;
+  text-align: center;
+}
+@media (min-width: 1400px) {
+  .content {
+    font-size: 25px;
+  }
+  .slogan {
+    font-size: 25px; 
+  }
+}
 #section2{
-  padding-top: 60px;
-  border-top: 1px solid white;
+  padding-top: 80px;
   margin-top:35%;
   z-index:0;
 }
 #section3{
   z-index:0;
-  margin-top:40%;
-  border-top: 1px solid white;
+  margin-top:45%;
   padding-top: 150px;
   margin-bottom: 25%;
 }
@@ -30,7 +42,7 @@ ul {
   list-style: circle;
   font-size: 26px;
 }
-ul li.selected {
+ul li[selected] {
   list-style:disc;
 }
 
@@ -41,3 +53,10 @@ a:visited {
   color:white;
 }
 
+section {
+  padding-top: 200px; 
+}
+
+#beta {
+  background-color:#B71C1C;
+}

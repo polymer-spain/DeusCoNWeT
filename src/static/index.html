@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="images/logo2.png" />
     <meta name="description" content="">
     <base href="/">
-    <link href='https://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/elements.html">
     <link rel="stylesheet" href="styles/main.css">
@@ -17,7 +17,7 @@
 
   <body unresolved ng-app="PolymerBricks" ng-controller="MainCtrl" >
     <core-toolbar>
-      <img class="logo" src="images/logo2.png">
+      <img class="logo" src="images/logo.png">
 
       <h2 id="name" ng-click="changeView('/')" flex>	DEUS CoNWeT</h2>
 
@@ -32,7 +32,7 @@
       <paper-button ng-click="changeView('/contact')">Contactar</paper-button>
       <paper-button ng-click="changeView('/privacy')">Privacidad</paper-button>
     </div>
-    <div ng-view="" class="view">
+    <div ng-view="" id="view" class="view">
 
     </div>
 
