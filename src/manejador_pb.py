@@ -26,18 +26,31 @@ import json
 import httplib
 import urllib
 from google.appengine.ext import ndb
+# Inserts to the path the 'lib' directory
+import sys
+sys.path.insert(1, 'lib/')
 
 # Local imports
 # Eliminados Tag y Release y Repo
-
-from ndb import Autor, UserRating, Usuario, Grupo, Token
+import ndb_pb
+from ndb_pb import Autor, UserRating, Usuario, Grupo, Token
 import cliente_gitHub
 
-# Imports for twitter
-
-import sys
-sys.path.insert(1, 'lib/')
+# Import for twitter
 import oauth
+
+# Imports for ContactHandler
+import base64
+from email.mime.audio import MIMEAudio
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import mimetypes
+
+from apiclient import errors
+from apiclient.discovery import build
+service = build('gmail','v1')
 
 
 class ComponentListHandler(webapp2.RequestHandler):
@@ -1098,18 +1111,33 @@ class ContactFormHandler(webapp2.RequestHandler):
 
   def post(self):
     # Get params
-    try:
-      sender = self.request.POST['email']
-      message_body = self.request.POST['message']
-      message_subject = self.request.POST['subject']
-      # Create the message
-      # message = MIMEText(message_body)
-      # message['to'] = 'deus@conwet.com'
-      # message['from'] = '37385538925-4g90dngnd3u8ch17pgf9n0tlqocl8iro@developer.gserviceaccount.com'
-      # message['subject'] = message_subject + " contacto: " + sender
-      
-    except: 
-      self.request.set_status(400)
+    if action == 'contact':
+      try:
+        sender = self.request.POST['email']
+        message_body = self.request.POST['message']
+        message_subject = self.request.POST['subject']
+        # Create the message
+        message = MIMEText(message_body)
+        message['to'] = 'deus@conwet.com'
+        message['from'] = '37385538925-4g90dngnd3u8ch17pgf9n0tlqocl8iro@developer.gserviceaccount.com'
+        message['subject'] = message_subject + " contacto: " + sender
+        # Send the message
+        mail = (service.users().messages().send(userId='alopera@conwet.com',body=message))
+      except errors.HttpError, error:
+        print "DEBUG: An error ocurred: %s" % error  
+      except:
+        response = {'error': 'Invalid value for email, message or subject'}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response)) 
+        self.request.set_status(400)
+    elif action == 'subscribe':
+      self.request.set_status(501)
+    else:
+      response = {'error': 'Invalid value for action param'}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
+      self.response.set_status(400)      
+
 
 app = webapp2.WSGIApplication([
     (r'/api/componentes', ComponentListHandler),
