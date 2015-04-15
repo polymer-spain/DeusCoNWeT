@@ -1106,11 +1106,11 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
                                 protected=True)
         self.response.write(respuesta.content)
 
-class ContactFormHandler(webapp2.RequestHandler):
-
+class ContactFormsHandler(webapp2.RequestHandler):
 
   def post(self):
     # Get params
+    action = self.request.get('action', default_value='')
     if action == 'contact':
       try:
         sender = self.request.POST['email']
