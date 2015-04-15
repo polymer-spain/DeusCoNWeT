@@ -36,7 +36,6 @@ handlers:
 - url: /
   static_dir: static 
 
-
 libraries:
 - name: webapp2
   version: latest

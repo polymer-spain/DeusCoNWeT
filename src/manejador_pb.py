@@ -33,7 +33,7 @@ sys.path.insert(1, 'lib/')
 # Local imports
 # Eliminados Tag y Release y Repo
 import ndb_pb
-from ndb_pb import Autor, UserRating, Usuario, Grupo, Token
+from ndb_pb import Autor, UserRating, Usuario, Grupo, Token, Componente
 import cliente_gitHub
 
 # Import for twitter
