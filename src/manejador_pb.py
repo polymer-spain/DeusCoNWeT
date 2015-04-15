@@ -1044,9 +1044,7 @@ class OauthGooglePlusHandler(SessionHandler):
             self.response.set_status(400)
 
   # POST Method
-
     def post(self):
-
       # Gets the data from the request form
       action = self.request.get("action")
       if action == "login":
@@ -1063,19 +1061,14 @@ class OauthGooglePlusHandler(SessionHandler):
         # Checks if the username was stored previously
         stored_credentials = ndb_pb.buscaToken(token_id, "google")
         if stored_credentials == None:
-          # Generate a valid username for a new user
-
-                print 'llega aqui'
-                user_id = ndb_pb.insertaUsuario('google', token_id,
-                        access_token)
-                session_id = self.login(str(user_id.id()))
-                print 'llega aqui 2'
-
+          # Generate a valid username for a new user      
+          user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
+          session_id = self.login(str(user_id.id()))
           # Returns the session cookie
           self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
           self.response.set_status(201)
         else:
-          # TODO: We store the new set of credentials (change insertaUsuario)
+          # We store the new set of credentials (change insertaUsuario)
           user_id = ndb_pb.modificaToken(token_id, access_token, 'google')
           session_id = self.login(str(user_id.id()))
           # Returns the session cookie
@@ -1093,8 +1086,8 @@ class OauthGooglePlusHandler(SessionHandler):
         self.response.set_status(200)
       else:
         response = {'error': 'Invalid value for the action param'}
-          self.response.content_type = 'application/json'
-          self.response.write(json.dumps(response))
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
         self.response.set_status(400)
 
 
