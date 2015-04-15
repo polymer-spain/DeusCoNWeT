@@ -1093,6 +1093,22 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
                                 protected=True)
         self.response.write(respuesta.content)
 
+class ContactFormHandler(webapp2.RequestHandler):
+
+
+  def post(self):
+    # Get params
+    try:
+      sender = self.request.POST['email']
+      message_body = self.request.POST['message']
+      message_subject = self.request.POST['subject']
+      # Create the message
+      message = MIMEText(message_body)
+      message['to'] = 'deus@conwet.com'
+      message['from'] = '37385538925-4g90dngnd3u8ch17pgf9n0tlqocl8iro@developer.gserviceaccount.com'
+      message['subject'] = message_subject + " contacto: " + sender
+    except: 
+      self.request.set_status(400)
 
 app = webapp2.WSGIApplication([
     (r'/api/componentes', ComponentListHandler),
@@ -1105,4 +1121,5 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/facebook', OauthFacebookHandler),
     (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', OauthGooglePlusHandler),
+    (r'/contact', ContactFormHandler),
     ], debug=True)
