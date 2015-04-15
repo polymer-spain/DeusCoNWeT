@@ -349,6 +349,16 @@ def buscaToken(id_usuario, rs):
   else:
     return None
 
+def modificaToken(id_usuario, nuevo_token, rs):
+  usuarios = Usuario.query()
+  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+  usuario = usuarios.filter(Usuario.tokens==token_aux)
+  tokens = usuario.tokens
+  for token in tokens:
+    if token.identificador==id_usuario and token.nombre_rs==rs:
+      token.token = nuevo_token
+
+  usuario.put()
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
