@@ -42,7 +42,7 @@ ul {
   list-style: circle;
   font-size: 26px;
 }
-ul li[selected] {
+ul li.selected {
   list-style:disc;
 }
 

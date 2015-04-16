@@ -43,7 +43,7 @@
       templateUrl: 'views/privacy.html',
       controller: 'landingCtrl'
     })
-      .otherwise({redirectTo: '/'})
+/*      .otherwise({redirectTo: '/'})*/
     ;
     $locationProvider.html5Mode(true)
   });

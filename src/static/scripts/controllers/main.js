@@ -67,6 +67,7 @@ angular.module('PolymerBricks')
   }
 
   $scope.changeView = function(view){
+    $location.hash('');
     $location.path(view); // path not hash
   };
 

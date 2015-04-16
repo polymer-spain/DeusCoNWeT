@@ -1,7 +1,7 @@
 <ul style="position:fixed;right:10px;top:400px;">
-  <li id="disc1" ng-click="setSelected('1')" selected></li>
-  <li id="disc2"  ng-click="setSelected('2')"></li>
-  <li id="disc3" ng-click="setSelected('3')"></li>
+  <li id="disc1" ng-click="setSelected('1')" ng-class="{selected: isSelected(1)}"></li>
+  <li id="disc2"  ng-click="setSelected('2')" ng-class="{selected: isSelected(2)}"></li>
+  <li id="disc3" ng-click="setSelected('3')" ng-class="{selected: isSelected(3)}"></li>
 </ul>
 
 <link rel="stylesheet" href="styles/landingPage.css">
