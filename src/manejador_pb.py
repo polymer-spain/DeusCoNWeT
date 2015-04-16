@@ -40,18 +40,7 @@ import cliente_gitHub
 import oauth
 
 # Imports for ContactHandler
-import base64
-from email.mime.audio import MIMEAudio
-from email.mime.base import MIMEBase
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import mimetypes
-
-from apiclient import errors
-from apiclient.discovery import build
-service = build('gmail','v1')
-
+from google.appengine.api import mail
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -1106,33 +1095,26 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
                                 protected=True)
         self.response.write(respuesta.content)
 
+
 class ContactFormsHandler(webapp2.RequestHandler):
 
   def post(self):
     # Get params
     action = self.request.get('action', default_value='')
     if action == 'contact':
-      try:
-        sender = self.request.POST['email']
-        message_body = self.request.POST['message']
-        message_subject = self.request.POST['subject']
-        # Create the message
-        message = MIMEText(message_body)
-        message['to'] = 'deus@conwet.com'
-        message['from'] = 'deus@conwet.com'
-        message['subject'] = message_subject + " contacto: " + sender
-        json_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
-        print "DEBUG: message " + base64.urlsafe_b64encode(message.as_string())
-        # Send the message
-        mail = (service.users().messages().send(userId='alopera@conwet.com',body=json_message))
-        print 'Message Id: %s' % message['id']
-      except errors.HttpError, error:
-        print "DEBUG: An error ocurred: %s" % error  
-      # except:
-      #   response = {'error': 'Invalid value for email, message or subject'}
-      #   self.response.content_type = 'application/json'
-      #   self.response.write(json.dumps(response)) 
-      #   self.response.set_status(400)
+      # Subject is an optional param
+      subject = self.request.get('subject', default_value='')
+      message = self.request.get('message', default_value='')
+      sender = self.request.get('sender', default_value='')
+      if not sender == '' and not message == '':
+        subject= 'Contacto: ' + subject + ' de: ' + sender
+        mail.send_mail('deus@conwet.com','deus@conwet.com' , subject, message)
+      else:
+        response = {'error': 'You must provide a sender and message param'}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(400)      
+
     elif action == 'subscribe':
       self.response.set_status(501)
     else:
