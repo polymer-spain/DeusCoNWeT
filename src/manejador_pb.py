@@ -1122,6 +1122,7 @@ class ContactFormsHandler(webapp2.RequestHandler):
         message['from'] = 'deus@conwet.com'
         message['subject'] = message_subject + " contacto: " + sender
         json_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
+        print "DEBUG: message " + base64.urlsafe_b64encode(message.as_string())
         # Send the message
         mail = (service.users().messages().send(userId='alopera@conwet.com',body=json_message))
         print 'Message Id: %s' % message['id']
