@@ -33,7 +33,7 @@ sys.path.insert(1, 'lib/')
 # Local imports
 # Eliminados Tag y Release y Repo
 import ndb_pb
-from ndb_pb import Autor, UserRating, Usuario, Grupo, Token, Componente
+from ndb_pb import UserRating, Usuario, Grupo, Token, Componente
 import cliente_gitHub
 
 # Import for twitter
@@ -1119,19 +1119,21 @@ class ContactFormsHandler(webapp2.RequestHandler):
         # Create the message
         message = MIMEText(message_body)
         message['to'] = 'deus@conwet.com'
-        message['from'] = '37385538925-4g90dngnd3u8ch17pgf9n0tlqocl8iro@developer.gserviceaccount.com'
+        message['from'] = 'deus@conwet.com'
         message['subject'] = message_subject + " contacto: " + sender
+        json_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
         # Send the message
-        mail = (service.users().messages().send(userId='alopera@conwet.com',body=message))
+        mail = (service.users().messages().send(userId='alopera@conwet.com',body=json_message))
+        print 'Message Id: %s' % message['id']
       except errors.HttpError, error:
         print "DEBUG: An error ocurred: %s" % error  
-      except:
-        response = {'error': 'Invalid value for email, message or subject'}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response)) 
-        self.request.set_status(400)
+      # except:
+      #   response = {'error': 'Invalid value for email, message or subject'}
+      #   self.response.content_type = 'application/json'
+      #   self.response.write(json.dumps(response)) 
+      #   self.response.set_status(400)
     elif action == 'subscribe':
-      self.request.set_status(501)
+      self.response.set_status(501)
     else:
       response = {'error': 'Invalid value for action param'}
       self.response.content_type = 'application/json'
@@ -1150,5 +1152,5 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/facebook', OauthFacebookHandler),
     (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', OauthGooglePlusHandler),
-    (r'/contact', ContactFormHandler),
+    (r'/api/contact', ContactFormsHandler),
     ], debug=True)
