@@ -183,10 +183,11 @@ def buscaUsuario(entity_key):
   usuario = json.dumps(usuario)
   return usuario
 
-@ndb.transactional
+@ndb.transactional(xg=True)
 def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   usuario = Usuario()
   token = Token(identificador=ide, token=token, nombre_rs=rs)
+  token.put()
   usuario.tokens.append(token)
   if not datos == None:
     if datos.has_key("email"):
@@ -340,7 +341,8 @@ def getComponente(entity_key, nombre): # FUNCIONA
 
 def buscaToken(id_usuario, rs):
   tokens = Token.query()
-  token = tokens.filter(Token.identificador==id_usuario).get() #filter(Token.nombre_rs==rs).get()
+  print tokens
+  token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() #filter(Token.nombre_rs==rs).get()
   print token
   if token:
     return token.token
