@@ -2,14 +2,16 @@
 <div horizontal center-justified layout>
   <div class='contacto'>
     <h2>Formulario de Contacto</h2>
-    <div><paper-input id="email" floatingLabel label="Email"></paper-input></div>
-    </br>
-  <div><span>Mensaje</span></div>
-  <div>
-    <textarea id="t1"></textarea>
-  </div>
-  <paper-button id="send">
-    Enviar
-  </paper-button>
-  </form>
+
+    <div><paper-input-decorator autovalidate floatingLabel label="Email" error="Debe ser un correo real">
+      <input id="sender" type="email" aria-label="required">
+      </paper-input-decoratos></div>
+    <div><paper-input id="subject" floatingLabel label="Asunto"></paper-input></div>
+    <div>
+      <textarea id="message" placeholder="Contenido del mensaje"></textarea>
+    </div>
+    <span class="invalid" id="invalid"></span><paper-button ng-click="sendEmail()" id="send">
+      Enviar
+    </paper-button>
+    </form>
 </div>

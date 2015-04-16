@@ -18,23 +18,25 @@ html {
 #email /deep/ paper-input-decorator[focused] /deep/ .label-text{
   color: dimgrey; 
 }
+.contacto paper-input-decorator,
 .contacto paper-input {
   width: 294px; 
 }
+
+
 #send {
   float: right;
   font-family: inherit;
   border: 1px solid #333;
-  
+
 }
 #send:hover {
-   background-color: #eee; 
+  background-color: #eee; 
 }
 .contacto div > span {
   color: #a9a9a9;    
 }
 .contacto textarea {
-
   width: 294px;
   height: 150px;
   max-width: 100%;
@@ -43,5 +45,10 @@ html {
   border: 1px solid #CED5D7;
   box-shadow:0 0 0 3px #EEF5F7;
   margin: 5px 0;
+}
 
+span.invalid {
+  color: #B71C1C;
+  font-size: 12px;
+  font-family: 'Roboto';
 }
