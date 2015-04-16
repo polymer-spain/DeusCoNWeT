@@ -1051,6 +1051,27 @@ class OauthGooglePlusHandler(SessionHandler):
         try:
           access_token = self.request.POST['access_token']
           token_id = self.request.POST['token_id']
+
+          print "access_token " + access_token
+          print "token_id " + token_id
+          # Checks if the username was stored previously
+          stored_credentials = ndb_pb.buscaToken(token_id, "google")
+          print stored_credentials
+          if stored_credentials == None:
+            # Generate a valid username for a new user      
+            user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
+            session_id = self.login(str(user_id.id()))
+            # Returns the session cookie
+            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+            self.response.set_status(201)
+          else:
+            # We store the new set of credentials (change insertaUsuario)
+            user_id = ndb_pb.modificaToken(token_id, access_token, 'google')
+            session_id = self.login(str(user_id.id()))
+            # Returns the session cookie
+            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+            self.response.set_status(200)
+
         except:
           response = \
           {'error': 'You must provide a valid pair of access_token and token_id in the request'}
@@ -1058,23 +1079,7 @@ class OauthGooglePlusHandler(SessionHandler):
           self.response.write(json.dumps(response))
           self.response.set_status(400)
 
-        # Checks if the username was stored previously
-        stored_credentials = ndb_pb.buscaToken(token_id, "google")
-        if stored_credentials == None:
-          # Generate a valid username for a new user      
-          user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
-          session_id = self.login(str(user_id.id()))
-          # Returns the session cookie
-          self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
-          self.response.set_status(201)
-        else:
-          # We store the new set of credentials (change insertaUsuario)
-          user_id = ndb_pb.modificaToken(token_id, access_token, 'google')
-          session_id = self.login(str(user_id.id()))
-          # Returns the session cookie
-          self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
-          self.response.set_status(200)
-
+        
       elif action == "logout":
         cookie_value = self.request.cookies.get('session')
         print "Cookie value: " + cookie_value
