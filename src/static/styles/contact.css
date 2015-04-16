@@ -50,3 +50,6 @@ textarea:focus {
   outline: none !important;
   box-shadow:0 0 0 1.5px #B71C1C;
 }
+.content {
+   padding-top: 150px; 
+}
