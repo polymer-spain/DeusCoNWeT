@@ -307,7 +307,7 @@ def insertarComponente(entity_key, nombre, coord_x=0, coord_y=0, url="", height=
 def modificarComponente(entity_key, nombre, datos):
   usuario = entity_key.get()
   comp_aux = Componente(nombre=nombre)
-  comp = Componente.query(usuario.componentes==comp_aux)
+  comp = Componente.query(usuario.componentes==comp_aux).get()
   if datos.has_key("x"):
     comp.x = datos["x"]
   if datos.has_key("y"):
@@ -342,17 +342,17 @@ def getComponente(entity_key, nombre): # FUNCIONA
 
 def buscaToken(id_usuario, rs):
   tokens = Token.query()
-  token = tokens.filter(ndb.AND(Token.identificador==id_usuario, Token.nombre_rs==rs))
+  token = tokens.filter(Token.identificador==id_usuario).get() #filter(Token.nombre_rs==rs).get()
+  print token
   if token:
-    return token
+    return token.token
   else:
     return None
 
-def modificaToken(id_usuario, nuevo_token, rs):
-  usuarios = Usuario.query()
+def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
-  usuario = usuarios.filter(Usuario.tokens==token_aux).get()
-  tokens = usuario.token
+  usuario = Usuario.query(Usuario.tokens==token_aux).get()
+  tokens = usuario.tokens
   for token in tokens:
     if token.identificador==id_usuario and token.nombre_rs==rs:
       token.token = nuevo_token
@@ -370,7 +370,6 @@ class MainPage(webapp2.RequestHandler):
               "descripcion":"Este es mi perfil personal", 
               "imagen": "www.example.com/mi-foto.jpg"}
     key = insertaUsuario("twitter", "lrr9204", "asdfghjklm159753", datos)
-    self.response.write(key)
 
     tok = getToken(key, "twitter")
     self.response.write(tok.nombre_rs + "--> identificador: " + tok.identificador + "; token: " + tok.token)
@@ -418,7 +417,14 @@ class MainPage(webapp2.RequestHandler):
         self.response.write("\t" + key_comp + ": " + str(comp[key_comp]) + "\n")
 
     #PARTE 3: MODIFICACION DE ENTIDADES
-    modificaToken("lrr9204", "mnbvcxzmnbvcxz1234", "twitter")
+    new_key = modificaToken("lrr9204", "mnbvcxzmnbvcxz1234", "twitter")
+    tok = getToken(key, "twitter")
+    self.response.write(tok.nombre_rs + "--> identificador: " + tok.identificador + "; token: " + tok.token)
+    self.response.write("\n")
+
+    token_param = buscaToken("lrr9204", "facebook")
+    self.response.write(token_param)
+    self.response.write("\n")
 
 
 app = webapp2.WSGIApplication([
