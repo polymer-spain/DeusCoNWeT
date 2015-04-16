@@ -26,19 +26,21 @@ import json
 import httplib
 import urllib
 from google.appengine.ext import ndb
+# Inserts to the path the 'lib' directory
+import sys
+sys.path.insert(1, 'lib/')
 
 # Local imports
 # Eliminados Tag y Release y Repo
-
-from ndb import Autor, UserRating, Usuario, Grupo, Token
+import ndb_pb
+from ndb_pb import UserRating, Usuario, Grupo, Token, Componente
 import cliente_gitHub
 
-# Imports for twitter
-
-import sys
-sys.path.insert(1, 'lib/')
+# Import for twitter
 import oauth
 
+# Imports for ContactHandler
+from google.appengine.api import mail
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -1094,6 +1096,34 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
         self.response.write(respuesta.content)
 
 
+class ContactFormsHandler(webapp2.RequestHandler):
+
+  def post(self):
+    # Get params
+    action = self.request.get('action', default_value='')
+    if action == 'contact':
+      # Subject is an optional param
+      subject = self.request.get('subject', default_value='')
+      message = self.request.get('message', default_value='')
+      sender = self.request.get('sender', default_value='')
+      if not sender == '' and not message == '':
+        subject= 'Contacto: ' + subject + ' de: ' + sender
+        mail.send_mail('deus@conwet.com','deus@conwet.com' , subject, message)
+      else:
+        response = {'error': 'You must provide a sender and message param'}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(400)      
+
+    elif action == 'subscribe':
+      self.response.set_status(501)
+    else:
+      response = {'error': 'Invalid value for action param'}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
+      self.response.set_status(400)      
+
+
 app = webapp2.WSGIApplication([
     (r'/api/componentes', ComponentListHandler),
     (r'/api/oauth/twitterTimeline', OAuthTwitterTimelineHandler),
@@ -1105,4 +1135,5 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/facebook', OauthFacebookHandler),
     (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', OauthGooglePlusHandler),
+    (r'/api/contact', ContactFormsHandler),
     ], debug=True)

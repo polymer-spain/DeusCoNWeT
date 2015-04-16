@@ -1,5 +1,5 @@
 application: example-project-13
-version: 1
+version: stable
 runtime: python27
 threadsafe: true
 api_version: 1
@@ -35,7 +35,6 @@ handlers:
   
 - url: /
   static_dir: static 
-
 
 libraries:
 - name: webapp2

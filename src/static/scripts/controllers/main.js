@@ -60,7 +60,7 @@ angular.module('PolymerBricks')
     xhr.open("POST",uri,true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && !(xhr.status === 200 or xhr.status === 201))
+      if (xhr.readyState == 4 && !(xhr.status === 200 || xhr.status === 201))
         console.log("[INFO]: Error al introducir datos en backend");
     };
     xhr.send(params); 
