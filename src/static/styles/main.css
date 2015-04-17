@@ -1,26 +1,40 @@
-
 body,html {
-  height: 100%;
   margin:0;
-  color:whitesmoke;
-  font-family: 'Lora';
-  /* Opcion 2*/
-  /*  background: rgba(188, 100, 55, 0.44);*/
+  color:rgba(255, 255, 255, 0.85);
+  font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
+  background-attachment: fixed;
+  min-width: 1024px;
 }
-.view {
-  margin:0 10%;
-}
-core-toolbar {
-  background-color: transparent;
-  padding: 2% 10%;
-  color:antiquewhite;
 
+.view {
+  margin:0px 150px ;
+}
+
+core-toolbar {
+  position: fixed;
+  width: 100%;
+  top:0;
+  background-color: rgba(0,0,0,0.5);
+  padding: 15px 150px;
+  height: 100px;
+  min-width: 600px;
+  color:whitesmoke;
+}
+@media (max-width: 1200px) {
+
+  core-toolbar {
+    padding: 15px 30px; 
+  }
 }
 .logo {
-  height: 120%;
+  height: 50px;
+  cursor: pointer;
+}
+h2 {
+  font-size: 120%; 
 }
 paper-button {
-  font-size: 0.8em;
+  font-size: 70%;
 }
 .search{
   border-radius: 100%;
@@ -28,4 +42,38 @@ paper-button {
   height:38px;
   background-color: #B71C1C;
 }
-
+.popup {
+  display: inline-block;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  border-radius:15px;
+  padding:30px;
+  padding-top:0;
+  margin: auto;
+  color:brown;
+  background-color:whitesmoke;
+  background:solid;
+  height: 250px;
+  width: 400px;
+}
+#popup > div {
+  margin-top: 30px; 
+}
+.shadow {
+  position:fixed;
+  top:0;
+  right:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+}
+.button-login twitter-login,
+.button-login login-facebook {
+  margin-top: 25px;
+}
+#name:hover{
+ cursor: pointer;
+}

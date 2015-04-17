@@ -1,0 +1,56 @@
+html {
+  background-image: url('../images/vias.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.contacto{
+  color: black;
+  border-radius: 6px;
+  padding: 45px 45px 20px;
+  margin-top: 50px;
+  background-color: rgba(255,255,255,0.9);
+  resize: both;
+  box-shadow: 0 0 0 5px #EEF5F7 inset;
+}
+#email /deep/ paper-input-decorator /deep/ .unfocused-underline {
+   background-color: #ea5050; 
+}
+#email /deep/ paper-input-decorator[focused] /deep/ .focused-underline {
+  background-color: #B71C1C; 
+}
+#email /deep/ paper-input-decorator[focused] /deep/ .label-text{
+  color: dimgrey; 
+}
+.contacto paper-input-decorator,
+.contacto paper-input {
+  width: 294px; 
+}
+
+
+#send {
+  float: right;
+  font-family: inherit;
+  border: 1px solid #333;
+
+}
+#send:hover {
+  background-color: #eee; 
+}
+.contacto div > span {
+  color: #a9a9a9;    
+}
+.contacto textarea {
+  width: 294px;
+  height: 150px;
+  max-width: 100%;
+  padding: 7px 6px;
+  border: none;
+  box-shadow:0 0 0 1.5px #ea5050;
+  margin: 5px 0;
+}
+
+span.invalid {
+  color: #B71C1C;
+  font-size: 12px;
+  font-family: 'Roboto';
+}

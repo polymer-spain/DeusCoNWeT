@@ -1,44 +1,32 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-""" Copyright 2015 Luis Ruiz Ruiz
-  Copyright 2015 Ana Isabel Lopera Martinez
-  Copyright 2015 Miguel Ortega Moreno
-  Copyright 2015 Juan Francisco Salamanca
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-"""
-
 import webapp2
 import re
 import string
 import json
 import httplib
+import hashlib
 import urllib
 from google.appengine.ext import ndb
+from google.appengine.api import memcache
 
 # Local imports
-# Eliminados Tag y Release y Repo
+import ndb_pb
+from ndb_pb import Componente, UserRating, Usuario, Grupo, Token
 
-from ndb import Autor, UserRating, Usuario, Grupo, Token
 import cliente_gitHub
 
-# Imports for twitter
-
+# Imports for TwitterHandler
 import sys
 sys.path.insert(1, 'lib/')
 import oauth
 
+# Imports for ContactHandler
+from google.appengine.api import mail
+
+# Global vars
+domain = "http://example-project-13.appspot.com"
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -478,17 +466,48 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
-class OAuthTwitterHandler(webapp2.RequestHandler):
 
+class SessionHandler(webapp2.RequestHandler):
   """
+  Class that handles the session of the application
+  Methods:
+    login - Generates a valid hash for a given user_id
+    getUserInfo - Gets the info related to a logged user_id
+    logout - Deletes the session for a given user
+  """
+
+  def login(self, user_id):
+    cypher = hashlib.sha256(str(user_id))
+    hash_id = cypher.hexdigest()
+    # Store in memcache hash-user_id pair
+    memcache.add(hash_id, user_id)
+    return hash_id
+
+  def getUserInfo(self, hashed_id):
+    user = memcache.get(hashed_id)
+    return user
+
+  def logout(self, hashed_id):
+    logout_status = False
+    status = memcache.delete(hashed_id)
+    if status == 2: 
+      logout_status = True
+    return logout_status
+
+
+
+class OAuthTwitterHandler(SessionHandler):
+
+    """
   Class that handles the Oauth Twitter Flow
   Methods:
     get -- Handles the calls related to Twitter Tokens.
   """
 
   # GET Method
-  def get(self):
-    """ Handles the calls related to Twitter Tokens. 
+
+    def get(self):
+        """ Handles the calls related to Twitter Tokens. 
     Depending on the 'action' param, performs different actions:
     - 'action':request_token. Gets the Twitter access_token for a user authenticated via web and
        stores it in the database. 
@@ -497,61 +516,78 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
     Keyword arguments: 
       self -- info about the request build by webapp2
     """
-    #self.response.headers['Access-Control-Allow-Origin'] = 'http://example-project-13.appspot.com'
-    action = self.request.get('action', default_value='None')
-    username = self.request.get('username', default_value='None')
 
-    consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
-    consumer_secret = \
-        'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
-    request_token_url = 'https://api.twitter.com/oauth/request_token'
-    base_authorization_url = 'https://api.twitter.com/oauth/authorize'
+    # self.response.headers['Access-Control-Allow-Origin'] = 'http://example-project-13.appspot.com'
 
-    client = oauth.TwitterClient(consumer_key, consumer_secret,
-                                 'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
-                                 )
-    
-    if action == 'request_token':
-      self.response.content_type = 'application/json'
-      response = {'oauth_url': client.get_authorization_url()}
-      self.response.write(json.dumps(response))
+        action = self.request.get('action', default_value='None')
+        username = self.request.get('username', default_value='None')
 
-    elif action == 'authorization':
-      # print "HOST: " + self.request.host
-      auth_token = self.request.get('oauth_token')
-      auth_verifier = self.request.get('oauth_verifier')
-      user_info = client.get_user_info(auth_token,
-              auth_verifier=auth_verifier)
+        consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
+        consumer_secret = \
+            'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
+        request_token_url = \
+            'https://api.twitter.com/oauth/request_token'
+        base_authorization_url = \
+            'https://api.twitter.com/oauth/authorize'
 
-      # We store the user id and token into a Token Entity
-      stored_user = Token.query(Token.id_tw == user_info['token'
-                                ]).get()
-      if stored_user == None:
-        user_token = Token(nombre_usuario=user_info['username'],
-         id_tw=str(user_info['token']),
-         token_tw=user_info['secret'])
-        user_token.put()
-        self.response.set_status(200)
+        client = oauth.TwitterClient(consumer_key, consumer_secret,
+                'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
+                )
 
-    elif action == 'access_token' and not username == None:
-      user_details = Token.query(Token.nombre_usuario
-              == username).get()
-      if not user_details == None:
-        response = {'username': user_details.nombre_usuario,
-                    'id_twitter': user_details.id_tw,
-                    'token_twitter': user_details.token_tw}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-      else:
-          self.response.set_status(404)
-    
-    else:
-      self.response.set_status(400)
+        if action == 'request_token':
+            self.response.content_type = 'application/json'
+            response = {'oauth_url': client.get_authorization_url()}
+            self.response.write(json.dumps(response))
+        elif action == 'authorization':
+
+            auth_token = self.request.get('oauth_token')
+            auth_verifier = self.request.get('oauth_verifier')
+            user_info = client.get_user_info(auth_token,
+                    auth_verifier=auth_verifier)
+
+            # We store the user id and token into a Token Entity
+
+            stored_user = Token.query(Token.token == user_info['token'
+                    ]).get()
+
+            # TODO: query for the stored user (modificaToken)
+
+            if stored_user == None:
+                user_id = ndb_pb.insertaUsuario('Twitter',
+                        user_info['username'], user_info['token'])
+
+                # Create Session
+
+                session_id = self.login(str(user_id.id()))
+                self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+                self.response.set_status(201)
+
+            # Create Session
+
+            session_id = self.login(stored_user)
+            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+            self.response.set_status(200)
+        elif action == 'access_token' and not username == None:
+
+            user_details = Token.query(Token.nombre_usuario
+                    == username).get()
+            if not user_details == None:
+                response = {'username': user_details.nombre_usuario,
+                            'id_twitter': user_details.id_tw,
+                            'token_twitter': user_details.token_tw}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+            else:
+                self.response.set_status(404)
+        else:
+
+            self.response.set_status(400)
 
 
 class OAuthGithubHandler(webapp2.RequestHandler):
-  """
+
+    """
   Class that will act as the handler to ask for the access_token to the GitHub API
   Method:
   get -- Returns the Github access_token for a user authenticated
@@ -559,436 +595,569 @@ class OAuthGithubHandler(webapp2.RequestHandler):
   """
 
   # GET Method
-  def get(self):
-    """ - Returns the Github access_token for a user authenticated
+
+    def get(self):
+        """ - Returns the Github access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
 
-    username = self.request.get('username', default_value='None')
-    if not username == None:
-      user_details = Token.query(Token.nombre_usuario
-        == username).get()
-      if not user_details == None:
-        response = {'username': user_details.nombre_usuario,
-        'id_github': user_details.id_git,
-        'token_github': user_details.token_git}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-      else:
-        self.response.set_status(404)
+        username = self.request.get('username', default_value='None')
+        if not username == None:
+            user_details = Token.query(Token.nombre_usuario
+                    == username).get()
+            if not user_details == None:
+                response = {'username': user_details.nombre_usuario,
+                            'id_github': user_details.id_git,
+                            'token_github': user_details.token_git}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+            else:
+                self.response.set_status(404)
 
   # POST Method
-  def post(self):
-    """ Defines the flow of the process to get an access_token to use the Github API
+
+    def post(self):
+        """ Defines the flow of the process to get an access_token to use the Github API
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
 
-    action = self.request.get('action', default_value='request_code'
-      )
-    url = 'github.com'
-    authorize_url = \
-    'http://github-login-lab.appspot.com/oauth/github?action=request_token'
-    access_token_url = '/login/oauth/access_token'
-    client_id = '1f21e4d820abd2cb5a7a'
-    client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
-    access_token = ''
+        action = self.request.get('action', default_value='request_code'
+                                  )
+        url = 'github.com'
+        authorize_url = \
+            'http://github-login-lab.appspot.com/oauth/github?action=request_token'
+        access_token_url = '/login/oauth/access_token'
+        client_id = '1f21e4d820abd2cb5a7a'
+        client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
+        access_token = ''
 
-    connection = httplib.HTTPSConnection(url)
-    if action == 'request_token':
+        connection = httplib.HTTPSConnection(url)
+        if action == 'request_token':
 
       # Cogemos el codigo de la peticion
 
-      code = self.request.get('code')
+            code = self.request.get('code')
 
       # Indicamos los parametros de la peticion a github
 
-      params_token = urllib.urlencode({'client_id': client_id,
-        'client_secret': client_secret, 'code': code})
+            params_token = urllib.urlencode({'client_id': client_id,
+                    'client_secret': client_secret, 'code': code})
 
       # Realizamos la peticion en la conexion
 
-      connection.request('POST', access_token_url, params_token)
+            connection.request('POST', access_token_url, params_token)
 
       # Cogemos la respuesta de la peticion y realizamos un split
       # para coger el valor del token
 
-      response_token = connection.getresponse()
-      data_token = response_token.read()
-      access_token = data_token.split('&')
-      access_token = access_token[0].split('=')[1]
+            response_token = connection.getresponse()
+            data_token = response_token.read()
+            access_token = data_token.split('&')
+            access_token = access_token[0].split('=')[1]
 
       # Gestion de la respuesta de webapp
 
-      self.response.content_type = 'application/json'
-      response = '{"token": "' + access_token + '"}'
-      self.response.write(response)
-      connection.close()
-      self.response.set_status(200)
+            self.response.content_type = 'application/json'
+            response = '{"token": "' + access_token + '"}'
+            self.response.write(response)
+            connection.close()
+            self.response.set_status(200)
 
       # Obtenemos los detalles del usuario autenticado
-      connectionAPI = httplib.HTTPSConnection('api.github.com')
-      headers = {"Accept": "application/vnd.github.v3+json",
-        "User-Agent": "PolymerBricks-App",
-        "Authorization": "token ca2bf4a939c31bd9e5ba06142fa017b74f5ddcc7"}
-      connectionAPI.request('GET', '/user', params_token, headers)
-      response = connectionAPI.getresponse()
-      user_details = json.loads(response.read())
-      
+
+            connectionAPI = httplib.HTTPSConnection('api.github.com')
+            headers = {'Accept': 'application/vnd.github.v3+json',
+                       'User-Agent': 'PolymerBricks-App',
+                       'Authorization': 'token TOKEN_GITHUB'}
+            connectionAPI.request('GET', '/user', params_token, headers)
+            response = connectionAPI.getresponse()
+            user_details = json.loads(response.read())
+
       # Almacenamos el par id usuario/token autenticado
-      stored_credentials = Token.query(Token.id_git == str(user_details["id"])).get()
-      if stored_credentials == None:
+
+            stored_credentials = Token.query(Token.id_git
+                    == str(user_details['id'])).get()
+            if stored_credentials == None:
+
         # Almacena las credenciales en una entidad Token
-        #TODO: Generar un id de usuario valido
-        user_credentials = Token(id_git = str(user_details['id']), token_git = access_token)
-        user_credentials.put()
-        response = {'username': user_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(201)
-      else:
+        # TODO: Generar un id de usuario valido
+
+                user_credentials = Token(id_git=str(user_details['id'
+                        ]), token_git=access_token)
+                user_credentials.put()
+                response = {'username': user_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(201)
+            else:
+
         # Almacenamos el access token recibido
-        stored_credentials.id_git = str(user_details['id'])
-        stored_credentials.token_git = access_token
-        stored_credentials.put()
-        #TODO: devolver el propietario de las claves
-        response = {'username': stored_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
+
+                stored_credentials.id_git = str(user_details['id'])
+                stored_credentials.token_git = access_token
+                stored_credentials.put()
+
+        # TODO: devolver el propietario de las claves
+
+                response = \
+                    {'username': stored_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+
 
 class OauthLinkedinHandler(webapp2.RequestHandler):
 
   # GET Method
-  def get(self):
-    """ - Returns the Linkedin access_token for a user authenticated
+
+    def get(self):
+        """ - Returns the Linkedin access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
-    username = self.request.get('username', default_value='None')
-    if not username == 'None':
-      user_details = Token.query(Token.nombre_usuario
-              == username).get()
-      if not user_details == None:
-        response = {'token_id': user_details.id_li,
-                    'access_token': user_details.token_li}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-      else:
-        self.response.set_status(404)
-    else:
-      self.response.set_status(400)
+
+        username = self.request.get('username', default_value='None')
+        if not username == 'None':
+            user_details = Token.query(Token.nombre_usuario
+                    == username).get()
+            if not user_details == None:
+                response = {'token_id': user_details.id_li,
+                            'access_token': user_details.token_li}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+            else:
+                self.response.set_status(404)
+        else:
+            self.response.set_status(400)
 
   # POST Method
-  def post(self):    
-    # Gets the data from the request form
-    try:
-      access_token = self.request.POST["access_token"]
-      token_id = self.request.POST["token_id"]
 
-      #Checks if the username was stored previously
-      stored_credentials = Token.query(Token.id_li == token_id).get()
-      if stored_credentials == None:
+    def post(self):
+
+    # Gets the data from the request form
+
+        try:
+            print self.request
+            access_token = self.request.POST['access_token']
+            token_id = self.request.POST['token_id']
+
+      # Checks if the username was stored previously
+
+            stored_credentials = Token.query(Token.id_li
+                    == token_id).get()
+            if stored_credentials == None:
+
         # Stores the credentials in a Token Entity
         # TODO: Generate a valid username for a new user in the user_credentials
-        user_credentials = Token(id_li=token_id, token_li=access_token)
-        user_credentials.put()
+
+                user_credentials = Token(id_li=token_id,
+                        token_li=access_token)
+                user_credentials.put()
+
         # TODO: Return the username owner of the keys
-        response = {'username': user_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(201)
-      else:
+
+                response = {'username': user_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(201)
+            else:
+
         # We store the new set of credentials
-        stored_credentials.id_li = token_id
-        stored_credentials.token_li = access_token
-        stored_credentials.put()
+
+                stored_credentials.id_li = token_id
+                stored_credentials.token_li = access_token
+                stored_credentials.put()
+
         # TODO: Return the username owner of the keys
-        response = {'username': stored_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-    except:
-      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(400)
+
+                response = \
+                    {'username': stored_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+        except:
+            response = \
+                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
+
 
 class OAuthInstagramHandler(webapp2.RequestHandler):
 
   # GET Method
-  def get(self):
-    """ - Returns the Instagram access_token for a user authenticated
+
+    def get(self):
+        """ - Returns the Instagram access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
-    username = self.request.get('username', default_value='None')
-    if not username == 'None':
-      user_details = Token.query(Token.nombre_usuario
-              == username).get()
-      if not user_details == None:
-        response = {'token_id': user_details.id_ins,
-                    'access_token': user_details.token_ins}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-      else:
-        self.response.set_status(404)
-    else:
-      self.response.set_status(400)
+
+        username = self.request.get('username', default_value='None')
+        if not username == 'None':
+            user_details = Token.query(Token.nombre_usuario
+                    == username).get()
+            if not user_details == None:
+                response = {'token_id': user_details.id_ins,
+                            'access_token': user_details.token_ins}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+            else:
+                self.response.set_status(404)
+        else:
+            self.response.set_status(400)
 
   # POST Method
-  def post(self):    
+
+    def post(self):
+
     # self.response.headers['Access-Control-Allow-Origin'] = 'http://example-project-13.appspot.com'
-    
+
     # Gets the data from the request form
-    try:
-      access_token = self.request.POST["access_token"]
-      token_id = self.request.POST["token_id"]
-    
-      #Checks if the username was stored previously
-      stored_credentials = Token.query(Token.id_ins == token_id).get()
-      if stored_credentials == None:
+
+        try:
+            access_token = self.request.POST['access_token']
+            token_id = self.request.POST['token_id']
+
+      # Checks if the username was stored previously
+
+            stored_credentials = Token.query(Token.id_ins
+                    == token_id).get()
+            if stored_credentials == None:
+
         # Stores the credentials in a Token Entity
         # TODO: Generate a valid username for a new user in the user_credentials
-        user_credentials = Token(id_ins=token_id, token_ins=access_token)
-        user_credentials.put()
+
+                user_credentials = Token(id_ins=token_id,
+                        token_ins=access_token)
+                user_credentials.put()
+
         # TODO: Return the username owner of the keys
-        response = {'username': user_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(201)
-      else:
+
+                response = {'username': user_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(201)
+            else:
+
         # We store the new set of credentials
-        stored_credentials.id_ins = token_id
-        stored_credentials.token_ins = access_token
-        stored_credentials.put()
+
+                stored_credentials.id_ins = token_id
+                stored_credentials.token_ins = access_token
+                stored_credentials.put()
+
         # TODO: Return the username owner of the keys
-        response = {'username': stored_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-    except:
-      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(400)
+
+                response = \
+                    {'username': stored_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+        except:
+            response = \
+                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 class OauthFacebookHandler(webapp2.RequestHandler):
 
   # GET Method
-  def get(self):
-    """ - Returns the Facebook access_token for a user authenticated
+
+    def get(self):
+        """ - Returns the Facebook access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
-    username = self.request.get('username', default_value='None')
-    if not username == 'None':
-      user_details = Token.query(Token.nombre_usuario
-              == username).get()
-      if not user_details == None:
-        response = {'token_id': user_details.id_fb,
-                    'access_token': user_details.token_fb}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-      else:
-        self.response.set_status(404)
-    else:
-      self.response.set_status(400)
+
+        username = self.request.get('username', default_value='None')
+        if not username == 'None':
+            user_details = Token.query(Token.nombre_usuario
+                    == username).get()
+            if not user_details == None:
+                response = {'token_id': user_details.id_fb,
+                            'access_token': user_details.token_fb}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+            else:
+                self.response.set_status(404)
+        else:
+            self.response.set_status(400)
 
   # POST Method
-  def post(self):    
+
+    def post(self):
+
     # Gets the data from the request form
-    try:
-      access_token = self.request.POST["access_token"]
-      token_id = self.request.POST["token_id"]
-    
-      #Checks if the username was stored previously
-      stored_credentials = Token.query(Token.id_fb == token_id).get()
-      if stored_credentials == None:
+
+        try:
+            access_token = self.request.POST['access_token']
+            token_id = self.request.POST['token_id']
+
+      # Checks if the username was stored previously
+
+            stored_credentials = Token.query(Token.id_fb
+                    == token_id).get()
+            if stored_credentials == None:
+
         # Stores the credentials in a Token Entity
         # TODO: Generate a valid username for a new user in the user_credentials
-        user_credentials = Token(id_fb=token_id, token_fb=access_token)
-        user_credentials.put()
+
+                user_credentials = Token(id_fb=token_id,
+                        token_fb=access_token)
+                user_credentials.put()
+
         # TODO: Return the username owner of the keys
-        response = {'username': user_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(201)
-      else:
+
+                response = {'username': user_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(201)
+            else:
+
         # We store the new set of credentials
-        stored_credentials.id_fb = token_id
-        stored_credentials.token_fb = access_token
-        stored_credentials.put()
+
+                stored_credentials.id_fb = token_id
+                stored_credentials.token_fb = access_token
+                stored_credentials.put()
+
         # TODO: Return the username owner of the keys
-        response = {'username': stored_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-    except:
-      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(400)
+
+                response = \
+                    {'username': stored_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+        except:
+            response = \
+                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 class OauthStackOverflowHandler(webapp2.RequestHandler):
+
   # GET Method
-  def get(self):
-    """ - Returns the StackOverflow access_token for a user authenticated
+
+    def get(self):
+        """ - Returns the StackOverflow access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
-    username = self.request.get('username', default_value='None')
-    if not username == 'None':
-      user_details = Token.query(Token.nombre_usuario
-              == username).get()
-      if not user_details == None:
-        response = {'token_id': user_details.id_sof,
-                    'access_token': user_details.token_sof}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-      else:
-        self.response.set_status(404)
-    else:
-      self.response.set_status(400)
+
+        username = self.request.get('username', default_value='None')
+        if not username == 'None':
+            user_details = Token.query(Token.nombre_usuario
+                    == username).get()
+            if not user_details == None:
+                response = {'token_id': user_details.id_sof,
+                            'access_token': user_details.token_sof}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+            else:
+                self.response.set_status(404)
+        else:
+            self.response.set_status(400)
 
   # POST Method
-  def post(self):    
+
+    def post(self):
 
     # Gets the data from the request form
-    try:
-      access_token = self.request.POST["access_token"]
-      token_id = self.request.POST["token_id"]
-    
-      #Checks if the username was stored previously
-      stored_credentials = Token.query(Token.id_sof == token_id).get()
-      if stored_credentials == None:
+
+        try:
+            access_token = self.request.POST['access_token']
+            token_id = self.request.POST['token_id']
+
+      # Checks if the username was stored previously
+
+            stored_credentials = Token.query(Token.id_sof
+                    == token_id).get()
+            if stored_credentials == None:
+
         # Stores the credentials in a Token Entity
         # TODO: Generate a valid username for a new user in the user_credentials
-        user_credentials = Token(id_sof=token_id, token_sof=access_token)
-        user_credentials.put()
+
+                user_credentials = Token(id_sof=token_id,
+                        token_sof=access_token)
+                user_credentials.put()
+
         # TODO: Return the username owner of the keys
-        response = {'username': user_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(201)
-      else:
+
+                response = {'username': user_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(201)
+            else:
+
         # We store the new set of credentials
-        stored_credentials.id_sof = token_id
-        stored_credentials.token_sof = access_token
-        stored_credentials.put()
+
+                stored_credentials.id_sof = token_id
+                stored_credentials.token_sof = access_token
+                stored_credentials.put()
+
         # TODO: Return the username owner of the keys
-        response = {'username': stored_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-    except:
-      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(400)
+
+                response = \
+                    {'username': stored_credentials.nombre_usuario}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+        except:
+            response = \
+                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
-class OauthGooglePlusHandler(webapp2.RequestHandler):
+class OauthGooglePlusHandler(SessionHandler):
+
   # GET Method
-  def get(self):
-    """ - Returns the Github access_token for a user authenticated
+
+    def get(self):
+        """ - Returns the Github access_token for a user authenticated
     Keyword arguments: 
     self -- info about the request build by webapp2
     """
-    username = self.request.get('username', default_value='None')
-    if not username == 'None':
-      user_details = Token.query(Token.nombre_usuario
-              == username).get()
-      if not user_details == None:
-        response = {'token_id': user_details.id_google,
-                    'access_token': user_details.token_google}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-      else:
-        self.response.set_status(404)
-    else:
-      self.response.set_status(400)
+
+        username = self.request.get('username', default_value='None')
+        if not username == 'None':
+            user_details = Token.query(Token.nombre_usuario
+                    == username).get()
+            if not user_details == None:
+                response = {'token_id': user_details.id_google,
+                            'access_token': user_details.token_google}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+            else:
+                self.response.set_status(404)
+        else:
+            self.response.set_status(400)
 
   # POST Method
-  def post(self):    
-    # Gets the data from the request form
-    try:
-      access_token = self.request.POST["access_token"]
-      token_id = self.request.POST["token_id"]
-    
-      #Checks if the username was stored previously
-      stored_credentials = Token.query(Token.id_google == token_id).get()
-      if stored_credentials == None:
-        # Stores the credentials in a Token Entity
-        # TODO: Generate a valid username for a new user in the user_credentials
-        user_credentials = Token(id_google=token_id, token_google=access_token)
-        user_credentials.put()
-        # TODO: Return the username owner of the keys
-        response = {'username': user_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(201)
-      else:
-        # We store the new set of credentials
-        stored_credentials.id_google = token_id
-        stored_credentials.token_google = access_token
-        stored_credentials.put()
-        # TODO: Return the username owner of the keys
-        response = {'username': stored_credentials.nombre_usuario}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(200)
-    except:
-      response = {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(400)
+    def post(self):
+      # Gets the data from the request form
+      action = self.request.get("action")
+      if action == "login":
+        try:
+          access_token = self.request.POST['access_token']
+          token_id = self.request.POST['token_id']
+          # Checks if the username was stored previously
+          stored_credentials = ndb_pb.buscaToken(token_id, "google")
+          print stored_credentials
+          if stored_credentials == None:
+            # Generate a valid username for a new user      
+            user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
+            session_id = self.login(str(user_id.id()))
+            # Returns the session cookie
+            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+            self.response.set_status(201)
+          else:
+            # We store the new set of credentials (change insertaUsuario)
+            user_id = ndb_pb.modificaToken(token_id, access_token, 'google')
+            session_id = self.login(str(user_id.id()))
+            # Returns the session cookie
+            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+            self.response.set_status(200)
 
+        except KeyError:
+          response = \
+          {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+          self.response.content_type = 'application/json'
+          self.response.write(json.dumps(response))
+          self.response.set_status(400)
+
+        
+      elif action == "logout":
+        cookie_value = self.request.cookies.get('session')
+        print "Cookie value: " + cookie_value
+        # Logout
+        logout_status = self.logout(cookie_value)
+        # Delete cookie
+        self.response.delete_cookie('session')
+        print "LOGOUT: " + str(logout_status)
+        self.response.set_status(200)
+      else:
+        response = {'error': 'Invalid value for the action param'}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(400)
 
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
-  def get(self):
-      consumer_key = self.request.get('consumer_key', default_value=''
-              )
-      consumer_secret = self.request.get('consumer_secret',
-              default_value='')
-      access_token = self.request.get('access_token', default_value=''
-              )
-      secret_token = self.request.get('secret_token', default_value=''
-              )
-      count = self.request.get('count', default_value='20')
+    def get(self):
+        consumer_key = self.request.get('consumer_key', default_value=''
+                )
+        consumer_secret = self.request.get('consumer_secret',
+                default_value='')
+        access_token = self.request.get('access_token', default_value=''
+                )
+        secret_token = self.request.get('secret_token', default_value=''
+                )
+        count = self.request.get('count', default_value='20')
 
-      client = oauth.TwitterClient(consumer_key, consumer_secret,
-              'oob')
+        client = oauth.TwitterClient(consumer_key, consumer_secret,
+                'oob')
 
-      respuesta = \
-          client.make_request('https://api.twitter.com/1.1/statuses/home_timeline.json'
-                              , token=access_token,
-                              secret=secret_token,
-                              additional_params={'count': count},
-                              protected=True)
-      self.response.write(respuesta.content)
+        respuesta = \
+            client.make_request('https://api.twitter.com/1.1/statuses/home_timeline.json'
+                                , token=access_token,
+                                secret=secret_token,
+                                additional_params={'count': count},
+                                protected=True)
+        self.response.write(respuesta.content)
+
+
+class ContactFormsHandler(webapp2.RequestHandler):
+
+  def post(self):
+    # Get params
+    action = self.request.get('action', default_value='')
+    if action == 'contact':
+      # Subject is an optional param
+      subject = self.request.get('subject', default_value='')
+      message = self.request.get('message', default_value='')
+      sender = self.request.get('sender', default_value='')
+      if not sender == '' and not message == '':
+        subject= 'Contacto: ' + subject + ' de: ' + sender
+        mail.send_mail('deus@conwet.com','deus@conwet.com' , subject, message)
+      else:
+        response = {'error': 'You must provide a sender and message param'}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(400)      
+
+    elif action == 'subscribe':
+      self.response.set_status(501)
+    else:
+      response = {'error': 'Invalid value for action param'}
+      self.response.content_type = 'application/json'
+      self.response.write(json.dumps(response))
+      self.response.set_status(400)      
 
 
 app = webapp2.WSGIApplication([
     (r'/api/componentes', ComponentListHandler),
     (r'/api/oauth/twitterTimeline', OAuthTwitterTimelineHandler),
     (r'/api/componentes/(.*)', ComponentHandler),
-    (r'/api/oauth/Twitter', OAuthTwitterHandler),
-    (r'/api/oauth/Github', OAuthGithubHandler),
-    (r'/api/oauth/Linkedin', OauthLinkedinHandler),
-    (r'/api/oauth/Instagram', OAuthInstagramHandler),
-    (r'/api/oauth/Facebook', OauthFacebookHandler),
-    (r'/api/oauth/StackOverflow', OauthStackOverflowHandler),
-    (r'/api/oauth/GooglePlus', OauthGooglePlusHandler),
+    (r'/api/oauth/twitter', OAuthTwitterHandler),
+    (r'/api/oauth/github', OAuthGithubHandler),
+    (r'/api/oauth/linkedin', OauthLinkedinHandler),
+    (r'/api/oauth/instagram', OAuthInstagramHandler),
+    (r'/api/oauth/facebook', OauthFacebookHandler),
+    (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
+    (r'/api/oauth/googleplus', OauthGooglePlusHandler),
+    (r'/api/contact', ContactFormsHandler),
     ], debug=True)

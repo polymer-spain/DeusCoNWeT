@@ -20,7 +20,7 @@
     'ng-polymer-elements',
     'ui.bootstrap'
   ])
-    .config(function ($locationProvider, $routeProvider) {
+    .config(function ($locationProvider, $routeProvider,$httpProvider) {
 
     $routeProvider
       .when('/', {
@@ -31,22 +31,24 @@
       templateUrl: 'views/userHome.html',
       controller: 'userHomeCtrl'
     })
-      .when('/formulario', {
-      templateUrl: 'views/formulario.html',
-      controller: 'FormularioCtrl'
+      .when('/about', {
+      templateUrl: 'views/about.html',
+      controller: 'contactCtrl'
     })
-      .when('/search',{
-      templateUrl: 'static/views/search.html',
-      controller: 'SearchCtrl'
+      .when('/contact', {
+      templateUrl: 'views/contact.html',
+      controller: 'contactCtrl'
     })
       .when('/user/:userId/profile', {
       templateUrl: 'views/profile.html',
       controller: 'ProfileCtrl'
-		
+	})
+      .when('/privacy',{
+      templateUrl: 'views/privacy.html',
+      controller: 'landingCtrl'
     })
-      .otherwise({redirectTo: '/'})
-    ;
-    $locationProvider.html5Mode(true)
+      .otherwise({redirectTo: '/'});
+    $locationProvider.html5Mode(true);
   });
   document.addEventListener('polymer-ready', function() {
     // Perform some behaviour

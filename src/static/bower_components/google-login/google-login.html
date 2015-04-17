@@ -83,7 +83,7 @@ limitations under the License.
 			acToken:'',
 			tokenType:'',
 			expiresToken:'',
-			textLogin:'Sign in with google',
+			textLogin:'Sign in with Google+',
 
 
 			ready : function(){
@@ -116,9 +116,9 @@ limitations under the License.
 							var patron = "access_token"+"=([^&#]*)";
 							var exp = new RegExp(patron);
 							back.acToken = exp.exec(url)[1];0
-							back.fire('google-logged',{token: back.acToken,redSocial:'google+'});
-							back.$.button.className="disconnect";
-							back.textLogin='Log out';
+							back.fire('google-logged',{token: back.acToken,redSocial:'googleplus'});
+/*							back.$.button.className="disconnect";
+							back.textLogin='Log out';*/
 							win.close();
 
 						}
