@@ -1,0 +1,103 @@
+body {
+  } 
+html,body{
+  background-color: rgba(135, 139, 237, 0.18); 
+}
+html {
+background: url('http://www.wallope.com/wp-content/uploads/textures-wallpapers-18-textures-simple1680x1050-textures-simple-background-photo.jpg') no-repeat;
+  background-size: cover;
+}
+.content {
+  margin-top: 5%;
+  padding: 1% 5% 2% 5%;
+  font-size: 1.2em;
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#26000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+#email {
+	
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    height: 25px;
+    width: 56%;
+    background: #fff;
+    color: #000;
+}
+.nom{
+	    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    height: 25px;
+    width: 27.4%;
+    background: #fff;
+    color: #000;
+}
+input{
+		
+		margin-bottom: 10px;
+		
+	}
+.spans{
+		
+		color:#171717;
+		margin: 10px;
+	}
+
+select{
+	height: 25px;
+    width: 18.3%;
+	
+}
+
+#pr{
+	
+	position: relative;
+	
+}
+#contenedor{
+		 margin-left: 35%
+	  }
+
+}
+#oculto{
+	
+	display: none;
+}
+
+#redes{	
+	-webkit-transition: all 0.3s ease-in;
+			-moz-transition: all 0.3s ease-in;
+				-o-transition: all 0.3s ease-in;
+					transition: all 0.3s ease-in;
+		background: rgba(0, 0, 0, 0.69);	
+		width: 55%;
+		height: 50%;
+		overflow: hidden;
+		box-shadow: 0 0 10px rgba(255, 255, 255, 0.56);
+		border-radius: 10px 10px 10px 10px;	
+		border: 2px solid while;
+		color: #fff;
+}
+
+
+#redes:hover{
+	transform:scale(1.02,1.02);
+    -webkit-transform:scale(1.02,1.02);
+	
+	
+	
+}
+
+
+core-item{
+	margin-top: 5px;
+	
+}
+.button-login{
+	
+	width: 100%;
+	height: 100%;
+	
+}

@@ -39,9 +39,10 @@
       templateUrl: 'static/views/search.html',
       controller: 'SearchCtrl'
     })
-      .when('/profile/:userId', {
-      templateUrl: 'static/views/profile.html',
+      .when('/user/:userId/profile', {
+      templateUrl: 'views/profile.html',
       controller: 'ProfileCtrl'
+		
     })
       .otherwise({redirectTo: '/'})
     ;
@@ -51,6 +52,7 @@
     // Perform some behaviour
 
   });
+	
   // wrap document so it plays nice with other libraries
 
 })(wrap(document));

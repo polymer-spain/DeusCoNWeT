@@ -10,10 +10,21 @@
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/elements.html">
     <link rel="stylesheet" href="styles/main.css">
-
+<style>
+  /* manually position the dropdown below the trigger */
+  core-dropdown {
+    position: absolute;
+    top: 38px;
+    left: 0;
+	color: black;
+	 border-radius: 5px 5px 5px 5px;
+	 background: blue;
+  }
+</style>
     <title>DeuS CoNWeT</title>
   </head>
   <body unresolved ng-app="PolymerBricks" ng-controller="MainCtrl" >
+   
     <core-toolbar>
       <img middle class="logo" src="images/icono.png"/>
 
@@ -23,6 +34,27 @@
         <paper-button>Sobre nosotros</paper-button>
         <paper-button>Contactar</paper-button>
       </div>
+      
+  <polymer-element name="x-trigger" extends="core-icon-button" relative on-tap="{{toggle}}">
+  <script>
+    Polymer({
+      toggle: function() {
+        if (!this.dropdown) {
+          this.dropdown = this.querySelector('core-dropdown');
+        }
+        this.dropdown && this.dropdown.toggle();
+      }
+    });
+  </script>
+  </polymer-element>
+<x-trigger icon="social:person"><span style="padding-left: 3px;vertical-align:middle">Entrar</span>
+        <core-dropdown class="open-below">
+        <paper-button><span style="padding-left: 3px;vertical-align:middle">Inicio</span></paper-button><br>
+        <paper-button><span style="padding-left: 3px;vertical-align:middle">Sobre nosotros</span></paper-button><br>
+        <paper-button><span style="padding-left: 3px;vertical-align:middle">Contactar</span></paper-button><br>
+        <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Perfil</span></a></paper-button>
+        </core-dropdown>
+ </x-trigger>
 
       <core-icon-button ng-click="showPopup()" icon="social:person" class="signin">
         <span style="padding-left: 3px;vertical-align:middle">Entrar</span>
@@ -30,6 +62,7 @@
       <core-icon-button icon="search" class=" search"></core-icon-button>
 
     </core-toolbar>
+    
     <div ng-view="" class="view">
 
     </div>
@@ -54,5 +87,7 @@
     <script src="scripts/controllers/landingPage.js"></script>
     <script src="scripts/controllers/userHome.js"></script>
     <script src="scripts/controllers/formulario.js"></script>
+    <script src="scripts/controllers/profile.js"></script>
+    
   </body>
 </html>

@@ -24,7 +24,7 @@ handlers:
 - url: /formulario
   static_files: static/index.html
   upload: index\.html
-  
+
 - url: /user/.*
   static_files: static/index.html
   upload: index\.html
