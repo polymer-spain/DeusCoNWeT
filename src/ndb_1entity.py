@@ -17,6 +17,7 @@
 """
 
 from google.appengine.ext import ndb
+
 import webapp2
 import json
 """NDB Instances """
@@ -69,24 +70,31 @@ class Usuario(ndb.Model):
 def insertarUsuario(rs, identificador, token, datos=None):
   usuario = Usuario()
   if rs == "facebook":
+    usuario.nombre_rs_pertenece_usuario.append(rs)
     usuario.token_fb_usuario = token
     usuario.id_fb_usuario = identificador
   elif rs == "twitter":
+    usuario.nombre_rs_pertenece_usuario.append(rs)
     usuario.token_tw_usuario = token
     usuario.id_tw_usuario = identificador
   elif rs == "instagram":
+    usuario.nombre_rs_pertenece_usuario.append(rs)
     usuario.token_ins_usuario = token
     usuario.id_ins_usuario = identificador
   elif rs == "github":
+    usuario.nombre_rs_pertenece_usuario.append(rs)
     usuario.token_git_usuario = token
     usuario.id_git_usuario = identificador
   elif rs == "stack-overflow":
+    usuario.nombre_rs_pertenece_usuario.append(rs)
     usuario.token_sof_usuario = token
     usuario.id_sof_usuario = identificador
   elif rs == "linkedin":
+    usuario.nombre_rs_pertenece_usuario.append(rs)
     usuario.token_li_usuario = token
     usuario.id_li_usuario = identificador
   elif rs == "google":
+    usuario.nombre_rs_pertenece_usuario.append(rs)
     usuario.token_google_usuario = token
     usuario.id_google_usuario = identificador
   else:
@@ -131,7 +139,28 @@ def buscarUsuario(user_key):
 
   return datos
 #Comprobado
-def insertaToken(user_key, rs, token):
+def insertarToken(user_key, rs, token):
+  usuario = user_key.get()
+  if rs == "facebook":
+    usuario.token_fb_usuario = token
+  elif rs == "twitter":
+    usuario.token_tw_usuario = token
+  elif rs == "instagram":
+    usuario.token_ins_usuario = token
+  elif rs == "github":
+    usuario.token_git_usuario = token
+  elif rs == "stack-overflow":
+    usuario.token_sof_usuario = token
+  elif rs == "linkedin":
+    usuario.token_li_usuario = token
+  elif rs == "google":
+    usuario.token_google_usuario = token
+  else:
+    return "La red social solicitada no esta contemplada"
+
+  usuario.put()
+#Comprobado
+def modificarToken(user_key, rs, token):
   usuario = user_key.get()
   if rs == "facebook":
     usuario.token_fb_usuario = token
@@ -172,10 +201,41 @@ def getToken(user_key, rs):
   else:
     return "La red social solicitada no esta contemplada"
   return res
-
+# Comprobado
+def getTokenbyId(rs, identificador):
+  if rs == "facebook":
+    qry = Usuario.query(Usuario.nombre_rs_pertenece_usuario == "facebook")
+    qry = qry.filter(Usuario.id_fb_usuario == identificador)
+    return qry.get().token_fb_usuario
+  if rs == "twitter":
+    qry = Usuario.query(Usuario.nombre_rs_pertenece_usuario == "twitter")
+    qry = qry.filter(Usuario.id_tw_usuario == identificador)
+    return qry.get().token_tw_usuario
+  if rs == "stack-overflow":
+    qry = Usuario.query(Usuario.nombre_rs_pertenece_usuario == "stack-overflow")
+    qry = qry.filter(Usuario.id_sof_usuario == identificador)
+    return qry.get().token_sof_usuario
+  if rs == "linkedin":
+    qry = Usuario.query(Usuario.nombre_rs_pertenece_usuario == "linkedin")
+    qry = qry.filter(Usuario.id_li_usuario == identificador)
+    return qry.get().token_li_usuario
+  if rs == "instagram":
+    qry = Usuario.query(Usuario.nombre_rs_pertenece_usuario == "instagram")
+    qry = qry.filter(Usuario.id_ins_usuario == identificador)
+    return qry.get().token_ins_usuario
+  if rs == "github":
+    qry = Usuario.query(Usuario.nombre_rs_pertenece_usuario == "github")
+    qry = qry.filter(Usuario.id_git_usuario == identificador)
+    return qry.get().token_git_usuario
+  if rs == "google":
+    qry = Usuario.query(Usuario.nombre_rs_pertenece_usuario == "google")
+    qry = qry.filter(Usuario.id_google_usuario == identificador)
+    return qry.get().token_google_usuario
+  else:
+    return "La red social solicitada no esta contemplada"
 
 #Comprobado
-def insertaIdRS(user_key, rs, id_user):
+def insertarIdRS(user_key, rs, id_user):
   usuario = user_key.get()
   if rs == "facebook":
     usuario.id_fb_usuario = id_user
@@ -218,7 +278,10 @@ def getIdRS(user_key, rs):
   return identificador
 # Comprobado
 # Obligatoria una descripcion, aunque esta sea vacia
-def insertaGrupo(user_key, grupos=[], descripcion=[]):
+# En este modelo, este metodo es el mismo que se necesitaria en el caso de anadir un usuario
+# al grupo, ya que no hay entidad grupo y es cada usuario particular el que tiene costancia
+# de a que grupo pertenece
+def insertarGrupo(user_key, grupos=[], descripcion=[]):
   usuario = user_key.get()
   if len(grupos) > 0:
     for grupo in grupos:
@@ -252,7 +315,7 @@ def buscarGrupo(user_key):
   else:
     return "No existen grupos para este usuario"
 # Comprobado
-def insertaRed(user_key, red, datos=None):
+def insertarRed(user_key, red, datos=None):
   usuario = user_key.get()
   usuario.nombre_rs_pertenece_usuario.append(red)
   i = len(usuario.nombre_rs_pertenece_usuario)-1
@@ -351,26 +414,54 @@ def getComponente(user_key, nombre):
     return "No existe un componente con ese nombre"
 
 
-# class MainPage(webapp2.RequestHandler):
-#   def get(self):
-#     self.response.write('Ejecucion correcta\n')
+class MainPage(webapp2.RequestHandler):
+  def get(self):
+    self.response.write('Ejecucion correcta\n')
 
-#     # Insertar usuario
-#     datos={"email":"jfsalca","telefono":667994811, "descripcion":"Prueba"}
-#     key = insertarUsuario("facebook", "pepe_id", "token_fb_usuario", datos)
+    # Insertar usuario
+    # datos={"email":"jfsalca","telefono":667994811, "descripcion":"Prueba"}
+    # key = insertarUsuario("facebook", "pepe_1", "token_1", datos)
+    # key = insertarUsuario("twitter", "pepe_2", "token_2", datos)
+    # key = insertarUsuario("google", "pepe_3", "token_3", datos)
+    # key = insertarUsuario("stack-overflow", "pepe_4", "token_4", datos)
+    # key = insertarUsuario("linkedin", "pepe_5", "token_5", datos)
+    # key = insertarUsuario("github", "pepe_6", "token_6", datos)
+    # key = insertarUsuario("instagram", "pepe_7", "token_7", datos)
+    # self.response.write(key.get().token_tw_usuario)
 
-#     if key == "La red social solicitada no esta contemplada":
-#       self.response.write(key)
+    # if key == "La red social solicitada no esta contemplada":
+    #   self.response.write(key)
 
     # Insertar token
-    # respuesta = insertaToken(key, "facebook", "token_fb_usuario")
+    # respuesta = insertarToken(key, "facebook", "token_fb_usuario")
+
+    # Modificar token
+    # respuesta = modificarToken(key, "twitter", "token_cambiado")
+    # self.response.write(key.get().token_tw_usuario)
     
     # Buscar token
     # respuesta = getToken(key, "facebook")
     # self.response.write(respuesta)
 
+    # Buscar token por id
+    # respuesta = getTokenbyId("facebook", "pepe_1")
+    # self.response.write(respuesta)
+    # respuesta = getTokenbyId("twitter", "pepe_2")
+    # self.response.write(respuesta)
+    # respuesta = getTokenbyId("google", "pepe_3")
+    # self.response.write(respuesta)
+    # respuesta = getTokenbyId("stack-overflow", "pepe_4")
+    # self.response.write(respuesta)
+    # respuesta = getTokenbyId("linkedin", "pepe_5")
+    # self.response.write(respuesta)
+    # respuesta = getTokenbyId("github", "pepe_6")
+    # self.response.write(respuesta)
+    # respuesta = getTokenbyId("instagram", "pepe_7")
+    # self.response.write(respuesta)
+
+
     # Insertar id
-    # respuesta = insertaIdRS(key, "instagram", "id_ins")
+    # respuesta = insertarIdRS(key, "instagram", "id_ins")
     # self.response.write(respuesta)
     
     # Buscar id
@@ -380,7 +471,7 @@ def getComponente(user_key, nombre):
     # Insertar grupo
     #grupo=["grupo1", "grupo2"]
     #descripcion=["", "grupo pintura"]
-    #respuesta=insertaGrupo(key,grupo,descripcion)
+    #respuesta=insertarGrupo(key,grupo,descripcion)
     #self.response.write(key.get().descripcion_grupo_pertenece_usuario)
 
     # Anadir descripcion a grupo
@@ -395,10 +486,10 @@ def getComponente(user_key, nombre):
 
     # Insertar red
     # datos_red = {"siguiendo": 123, "seguidores": 50, "url_sig": "api.twitter.com/get_following"}
-    # respuesta = insertaRed(key, "facebook", datos_red)
+    # respuesta = insertarRed(key, "facebook", datos_red)
 
     # datos_red2 = {"siguiendo": 111, "seguidores": 555, "url_seg": "pene", "url_sig": "api.twitter.com/get_following"}
-    # insertaRed(key, "twitter", datos_red2)
+    # insertarRed(key, "twitter", datos_red2)
 
     # self.response.write(key.get().siguiendo_rs_pertenece_usuario)
     # self.response.write(key.get().seguidores_rs_pertenece_usuario)
