@@ -421,7 +421,7 @@ class MainPage(webapp2.RequestHandler):
     self.response.write(tok.nombre_rs + "--> identificador: " + tok.identificador + "; token: " + tok.token)
     self.response.write("\n")
 
-    token_param = buscaToken("lrr9204", "facebook")
+    token_param = buscaToken("lrr9204", "twitter")
     self.response.write(token_param)
     self.response.write("\n")
 
