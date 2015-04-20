@@ -21,9 +21,12 @@ html {
 #email /deep/ paper-input-decorator[focused] /deep/ .label-text{
   color: dimgrey; 
 }
+.contacto paper-input-decorator,
 .contacto paper-input {
   width: 294px; 
 }
+
+
 #send {
   float: right;
   font-family: inherit;
@@ -46,10 +49,8 @@ html {
   margin: 5px 0;
 }
 
-textarea:focus {
-  outline: none !important;
-  box-shadow:0 0 0 1.5px #B71C1C;
-}
-.content {
-   padding-top: 150px; 
+span.invalid {
+  color: #B71C1C;
+  font-size: 12px;
+  font-family: 'Roboto';
 }
