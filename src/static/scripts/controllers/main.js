@@ -18,7 +18,7 @@ angular.module('PolymerBricks')
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter'){
-          $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
+        $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
       }
       else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
 
@@ -38,8 +38,8 @@ angular.module('PolymerBricks')
         }
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
-          $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
-          $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
+        $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
+        $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
       }
       // cambiamos el botton
       var button = document.querySelector('#nameId');
@@ -97,5 +97,43 @@ angular.module('PolymerBricks')
   $scope.hidePopup = function(){
     $scope.popup = false;
   };
+  
+  $scope.sendSub = function() {
+    var message = document.querySelector('#message');
+    var sender = document.querySelector('#sender');
+    var subject = document.querySelector('#subject');
+    var error = document.querySelector('#invalid');
+    error.innerHTML = '';
+    if (!message.value) {
+      error.innerHTML="*El mensaje no debe estar vacio" 
+    }
+
+    if (!sender.value || !sender.checkValidity() ) {
+      error.innerHTML+="<br>*El email debe ser válido" 
+    } 
+    if (message.value && sender.checkValidity() && sender.value) {
+      var xhr = new XMLHttpRequest();
+      var uri = 'http://example-project-13.appspot.com/api/contact';   
+      var params = "action=contact&message="+message.value+"&sender="+sender.value;
+
+      if (subject.value !== undefined) {
+        params += "&subject="+subject.value; 
+      }
+
+      xhr.open("POST",uri,true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && (xhr.status === 200) ){
+          console.log('[INFO]: Todo fue bien');
+          message.value = '';
+          sender.value = '';
+          subject.value = '';
+        }
+        if (xhr.readyState == 4 && !(xhr.status === 200 || xhr.status === 201))
+          console.log("[INFO]: Error al introducir datos en backend");
+      };
+      xhr.send(params); 
+    }
+  }
 
 });
