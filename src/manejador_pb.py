@@ -12,19 +12,22 @@ from google.appengine.ext import ndb
 from google.appengine.api import memcache
 
 # Local imports
+
 import ndb_pb
 from ndb_pb import Componente, UserRating, Usuario, Grupo, Token
 
 import cliente_gitHub
 
 # Imports for TwitterHandler
+
 import sys
 sys.path.insert(1, 'lib/')
 import oauth
 
-
 # Global vars
-domain = "http://example-project-13.appspot.com"
+
+domain = 'http://example-project-13.appspot.com'
+
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -464,9 +467,9 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
-
 class SessionHandler(webapp2.RequestHandler):
-  """
+
+    """
   Class that handles the session of the application
   Methods:
     login - Generates a valid hash for a given user_id
@@ -474,24 +477,25 @@ class SessionHandler(webapp2.RequestHandler):
     logout - Deletes the session for a given user
   """
 
-  def login(self, user_id):
-    cypher = hashlib.sha256(str(user_id))
-    hash_id = cypher.hexdigest()
+    def login(self, user_id):
+        cypher = hashlib.sha256(str(user_id))
+        hash_id = cypher.hexdigest()
+
     # Store in memcache hash-user_id pair
-    memcache.add(hash_id, user_id)
-    return hash_id
 
-  def getUserInfo(self, hashed_id):
-    user = memcache.get(hashed_id)
-    return user
+        memcache.add(hash_id, user_id)
+        return hash_id
 
-  def logout(self, hashed_id):
-    logout_status = False
-    status = memcache.delete(hashed_id)
-    if status == 2: 
-      logout_status = True
-    return logout_status
+    def getUserInfo(self, hashed_id):
+        user = memcache.get(hashed_id)
+        return user
 
+    def logout(self, hashed_id):
+        logout_status = False
+        status = memcache.delete(hashed_id)
+        if status == 2:
+            logout_status = True
+        return logout_status
 
 
 class OAuthTwitterHandler(SessionHandler):
@@ -557,13 +561,15 @@ class OAuthTwitterHandler(SessionHandler):
                 # Create Session
 
                 session_id = self.login(str(user_id.id()))
-                self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+                self.response.set_cookie('session', value=session_id,
+                        path='/', domain=domain, secure=True)
                 self.response.set_status(201)
 
             # Create Session
 
             session_id = self.login(stored_user)
-            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+            self.response.set_cookie('session', value=session_id,
+                    path='/', domain=domain, secure=True)
             self.response.set_status(200)
         elif action == 'access_token' and not username == None:
 
@@ -933,7 +939,7 @@ class OauthFacebookHandler(webapp2.RequestHandler):
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
-        except:
+        except KeyError:
             response = \
                 {'error': 'You must provide a valid pair of access_token and token_id in the request'}
             self.response.content_type = 'application/json'
@@ -1044,51 +1050,71 @@ class OauthGooglePlusHandler(SessionHandler):
             self.response.set_status(400)
 
   # POST Method
+
     def post(self):
+
       # Gets the data from the request form
-      action = self.request.get("action")
-      if action == "login":
-        try:
-          access_token = self.request.POST['access_token']
-          token_id = self.request.POST['token_id']
-        except:
-          response = \
-          {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-          self.response.content_type = 'application/json'
-          self.response.write(json.dumps(response))
-          self.response.set_status(400)
+
+        action = self.request.get('action')
+        if action == 'login':
+            try:
+                access_token = self.request.POST['access_token']
+                token_id = self.request.POST['token_id']
+            except:
+                response = \
+                    {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
 
         # Checks if the username was stored previously
-        stored_credentials = ndb_pb.buscaToken(token_id, "google")
-        if stored_credentials == None:
-          # Generate a valid username for a new user      
-          user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
-          session_id = self.login(str(user_id.id()))
-          # Returns the session cookie
-          self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
-          self.response.set_status(201)
-        else:
-          # We store the new set of credentials (change insertaUsuario)
-          user_id = ndb_pb.modificaToken(token_id, access_token, 'google')
-          session_id = self.login(str(user_id.id()))
-          # Returns the session cookie
-          self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
-          self.response.set_status(200)
 
-      elif action == "logout":
-        cookie_value = self.request.cookies.get('session')
-        print "Cookie value: " + cookie_value
+            stored_credentials = ndb_pb.buscaToken(token_id, 'google')
+            if stored_credentials == None:
+
+          # Generate a valid username for a new user
+
+                user_id = ndb_pb.insertaUsuario('google', token_id,
+                        access_token)
+                session_id = self.login(str(user_id.id()))
+
+          # Returns the session cookie
+
+                self.response.set_cookie('session', value=session_id,
+                        path='/', domain=domain, secure=True)
+                self.response.set_status(201)
+            else:
+
+          # We store the new set of credentials (change insertaUsuario)
+
+                user_id = ndb_pb.modificaToken(token_id, access_token,
+                        'google')
+                session_id = self.login(str(user_id.id()))
+
+          # Returns the session cookie
+
+                self.response.set_cookie('session', value=session_id,
+                        path='/', domain=domain, secure=True)
+                self.response.set_status(200)
+        elif action == 'logout':
+
+            cookie_value = self.request.cookies.get('session')
+            print 'Cookie value: ' + cookie_value
+
         # Logout
-        logout_status = self.logout(cookie_value)
+
+            logout_status = self.logout(cookie_value)
+
         # Delete cookie
-        self.response.delete_cookie('session')
-        print "LOGOUT: " + str(logout_status)
-        self.response.set_status(200)
-      else:
-        response = {'error': 'Invalid value for the action param'}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(400)
+
+            self.response.delete_cookie('session')
+            print 'LOGOUT: ' + str(logout_status)
+            self.response.set_status(200)
+        else:
+            response = {'error': 'Invalid value for the action param'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
