@@ -172,14 +172,19 @@ def getToken(entity_key, rs): #FUNCIONA
 
   return res
 
-def buscaUsuario(entity_key):
+def buscaUsuario(entity_key): #FUNCIONA
   user = entity_key.get()
-  usuario = {"nombre_usuario": user.nombre_usuario,
-              "email": user.email,
+  grupos = user.lista_Grupos; redes = user.lista_Redes
+  nombres_grupos = []; nombres_redes = []
+  for grupo in grupos:
+    nombres_grupos.append(grupo.nombre_grupo)
+  for red in redes:
+    nombres_redes.append(red.nombre_rs)
+  usuario = {"email": user.email,
               "telefono": user.telefono,
               "descripcion": user.descripcion,
-              "grupos": user.lista_Grupos,
-              "redes": user.lista_Redes}
+              "grupos": nombres_grupos,
+              "redes": nombres_redes}
   usuario = json.dumps(usuario)
   return usuario
 
@@ -237,25 +242,25 @@ def insertaGrupo(entity_key, nombre, datos=None): #FUNCIONA
   usuario.lista_Grupos.append(grupo)
   usuario.put()
 
-def addUsuarioAGrupo(entity_key, nombre_grupo, usuario):
+def addUsuarioAGrupo(entity_key, nombre_grupo, usuario): #FUNCIONA
   user = entity_key.get()
   grupos = user.lista_Grupos
 
   for grupo in grupos:
     if grupo.nombre_grupo == nombre_grupo:
-      user.grupo.lista_Usuarios.append(usuario)
+      grupo.lista_Usuarios += usuario
 
   user.put()
 
-def addDescripcionAGrupo(entity_key, nombre, descripcion):
+def addDescripcionAGrupo(entity_key, nombre, descripcion): #FUNCIONA
   usuario = entity_key.get()
   grupos = usuario.lista_Grupos
 
   for grupo in grupos:
     if grupo.nombre_grupo == nombre:
-      usuario.grupo.descripcion = descripcion
+      grupo.descripcion = descripcion
 
-  user.put()
+  usuario.put()
 
 def buscaGrupos(entity_key): #FUNCIONA
   user = entity_key.get()
@@ -303,20 +308,21 @@ def insertarComponente(entity_key, nombre, coord_x=0, coord_y=0, url="", height=
 
   usuario.put()
 
-def modificarComponente(entity_key, nombre, datos):
+def modificarComponente(entity_key, nombre, datos): #FUNCIONA
   usuario = entity_key.get()
-  comp_aux = Componente(nombre=nombre)
-  comp = Componente.query(usuario.componentes==comp_aux).get()
-  if datos.has_key("x"):
-    comp.x = datos["x"]
-  if datos.has_key("y"):
-    comp.y = datos["y"]
-  if datos.has_key("url"):
-    comp.url = datos["url"]
-  if datos.has_key("height"):
-    comp.height = datos["height"]
-  if datos.has_key("width"):
-    comp.width = datos["width"]
+  comps = usuario.componentes
+  for comp in comps:
+    if comp.nombre == nombre:
+      if datos.has_key("x"):
+        comp.x = datos["x"]
+      if datos.has_key("y"):
+        comp.y = datos["y"]
+      if datos.has_key("url"):
+        comp.url = datos["url"]
+      if datos.has_key("height"):
+        comp.height = datos["height"]
+      if datos.has_key("width"):
+        comp.width = datos["width"]
 
   usuario.put()
 
@@ -339,7 +345,7 @@ def getComponente(entity_key, nombre): # FUNCIONA
 
   return json.dumps(res)
 
-def buscaToken(id_usuario, rs):
+def buscaToken(id_usuario, rs): #FUNCIONA
   tokens = Token.query()
   print tokens
   token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() #filter(Token.nombre_rs==rs).get()
@@ -424,6 +430,32 @@ class MainPage(webapp2.RequestHandler):
     token_param = buscaToken("lrr9204", "twitter")
     self.response.write(token_param)
     self.response.write("\n")
+
+    info_user = buscaUsuario(key)
+    info_user = json.loads(info_user)
+    keys = info_user.keys()
+    for key_user in keys:
+      self.response.write("Datos usuario --> " + str(key_user) + ": " + str(info_user[key_user]) + "\n")
+
+    addUsuarioAGrupo(key, "DEUS", "pepe")
+    addDescripcionAGrupo(key, "DEUS", "Grupo UPM")
+    grupo = buscaGrupos(key)
+    grupo = json.loads(grupo)
+    keys = grupo.keys()
+    for key_group in keys:
+      self.response.write("Grupo " + key_group + ": " + grupo[key_group] + "\n")
+
+    datos_act = {"x": 19}
+    modificarComponente(key, "login_twitter", datos_act)
+    comp = getComponente(key, "login_twitter")
+    comp = json.loads(comp)
+    keys = comp.keys()
+    self.response.write("Componente " + comp["nombre"] + ":\n")
+    for key_comp in keys:
+      if not key_comp == "nombre":
+        self.response.write("\t" + key_comp + ": " + str(comp[key_comp]) + "\n")
+
+
 
 
 app = webapp2.WSGIApplication([
