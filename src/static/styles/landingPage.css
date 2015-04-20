@@ -2,7 +2,9 @@ html {
   background-image: url('../images/vias.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  overflow-y: hidden; 
+}
+#landing {
+
 }
 #landing  #section1 {
   height: 100%;
