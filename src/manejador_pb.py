@@ -506,7 +506,6 @@ class OAuthTwitterHandler(SessionHandler):
   """
 
   # GET Method
-
     def get(self):
         """ Handles the calls related to Twitter Tokens. 
     Depending on the 'action' param, performs different actions:
@@ -570,8 +569,8 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
             self.response.set_status(200)
             # Send session details to client in the channel created previously
-            channel.send_message(auth_token, session_id)
-
+            status_channel = channel.send_message(auth_token, session_id)
+            print "DEBUG: status channel" + status_channel
         elif action == 'access_token' and not username == None:
 
             user_details = Token.query(Token.nombre_usuario
@@ -588,6 +587,32 @@ class OAuthTwitterHandler(SessionHandler):
         else:
 
             self.response.set_status(400)
+
+    # POST Method
+    def post(self):
+        action = self.request.get('action', default_value='')
+        if action == 'logout':
+            cookie_value = self.request.cookies.get('session')
+            if not cookie_value == None:
+                print "DEBUG: Cookie value: " + cookie_value
+                # Logout
+                logout_status = self.logout(cookie_value)
+                # Delete cookie
+                self.response.delete_cookie('session')
+                print "DEBUG: LOGOUT: " + str(logout_status)
+                self.response.set_status(200)
+            else:
+                response = {'error': 'This request requires a secure_cookie with the session identifier'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+    
+        else:
+            response = {'error': 'Invalid value for the action param'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
+
 
 
 class OAuthGithubHandler(webapp2.RequestHandler):
@@ -1086,12 +1111,12 @@ class OauthGooglePlusHandler(SessionHandler):
         
       elif action == "logout":
         cookie_value = self.request.cookies.get('session')
-        print "Cookie value: " + cookie_value
+        print "DEBUG: Cookie value: " + cookie_value
         # Logout
         logout_status = self.logout(cookie_value)
         # Delete cookie
         self.response.delete_cookie('session')
-        print "LOGOUT: " + str(logout_status)
+        print "DEBUG: LOGOUT: " + str(logout_status)
         self.response.set_status(200)
       else:
         response = {'error': 'Invalid value for the action param'}
