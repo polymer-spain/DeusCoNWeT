@@ -536,9 +536,10 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.content_type = 'application/json'
             response = {'oauth_url': client.get_authorization_url()}
             self.response.write(json.dumps(response))
+        
         elif action == 'authorization':
-
             auth_token = self.request.get('oauth_token')
+            print "DEBUG" + auth_token
             auth_verifier = self.request.get('oauth_verifier')
             user_info = client.get_user_info(auth_token,
                     auth_verifier=auth_verifier)

@@ -380,7 +380,6 @@ class TwitterClient(OAuthClient):
         token=access_token, secret=access_secret, protected=True)
 
     data = json.loads(response.content)
-
     user_info = self._get_default_user_info()
     user_info["id"] = data["id"]
     user_info["username"] = data["screen_name"]
