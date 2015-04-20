@@ -21,6 +21,7 @@ import cliente_gitHub
 import sys
 sys.path.insert(1, 'lib/')
 import oauth
+from google.appengine.api import channel
 
 # Imports for ContactHandler
 from google.appengine.api import mail
@@ -536,38 +537,41 @@ class OAuthTwitterHandler(SessionHandler):
 
         if action == 'request_token':
             self.response.content_type = 'application/json'
-            response = {'oauth_url': client.get_authorization_url()}
+            # Creates a channel to send the session details once the oauth flow is completed
+            auth_token = client._get_auth_token()
+            token = channel.create_channel(auth_token)
+            
+            response = {'oauth_url': client.get_authorization_url(),
+                        'token': token}
             self.response.write(json.dumps(response))
         
         elif action == 'authorization':
             auth_token = self.request.get('oauth_token')
-            print "DEBUG" + auth_token
             auth_verifier = self.request.get('oauth_verifier')
             user_info = client.get_user_info(auth_token,
                     auth_verifier=auth_verifier)
 
-            # We store the user id and token into a Token Entity
-
+            # TODO: query for the stored user (modificaToken)
             stored_user = Token.query(Token.token == user_info['token'
                     ]).get()
-
-            # TODO: query for the stored user (modificaToken)
-
+            
+            # We store the user id and token into a Token Entity
             if stored_user == None:
                 user_id = ndb_pb.insertaUsuario('Twitter',
                         user_info['username'], user_info['token'])
 
                 # Create Session
-
                 session_id = self.login(str(user_id.id()))
                 self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
                 self.response.set_status(201)
 
             # Create Session
-
             session_id = self.login(stored_user)
             self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
             self.response.set_status(200)
+            # Send session details to client in the channel created previously
+            channel.send_message(auth_token, session_id)
+
         elif action == 'access_token' and not username == None:
 
             user_details = Token.query(Token.nombre_usuario
