@@ -9,7 +9,7 @@
  */
 
 angular.module('PolymerBricks')
-  .controller('FormularioCtrl', function($scope, $routeParams,$timeout) {
+  .controller('privacyCtrl', function($scope, $routeParams,$timeout) {
   $scope.mailTo = function () {
 
     var link = "mailto:deus@conwet.com"

@@ -4,15 +4,15 @@ html {
   background-repeat: no-repeat;
   overflow-y: hidden; 
 }
-#section1 {
+#landing  #section1 {
   height: 100%;
   z-index:0;
 }
-.content {
+#landing > .content {
   font-size:16px;
   padding: 10px 50px 20px 50px;
 }
-.slogan {
+#landing  .slogan {
   width:400px;
   display:inline-block;
   min-width:300px;
@@ -20,43 +20,43 @@ html {
   text-align: center;
 }
 @media (min-width: 1400px) {
-  .content {
-    font-size: 25px;
+  #landing  .content {
+    font-size: 22px;
   }
-  .slogan {
-    font-size: 25px; 
+  #landing  .slogan {
+    font-size: 22px; 
   }
 }
-#section2{
+#landing #section2{
   padding-top: 80px;
   margin-top:35%;
   z-index:0;
 }
-#section3{
+#landing #section3{
   z-index:0;
   margin-top:45%;
   padding-top: 150px;
   margin-bottom: 25%;
 }
-ul {
+#landing ul {
   list-style: circle;
   font-size: 26px;
 }
-ul li.selected {
+#landing ul li.selected {
   list-style:disc;
 }
 
-a {
+#landing a {
   color:white; 
 }
-a:visited {
+#landing a:visited {
   color:white;
 }
 
-section {
+#landing section {
   padding-top: 200px; 
 }
 
-#beta {
+#landing #beta {
   background-color:#B71C1C;
 }

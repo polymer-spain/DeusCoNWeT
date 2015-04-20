@@ -4,7 +4,7 @@ angular.module('PolymerBricks')
 
   $scope.sendEmail = function(action,message,sender,subject){
     var xhr = new XMLHttpRequest();
-    var uri = 'http://example-project-13.appspot.com/api/contact;   
+    var uri = 'http://example-project-13.appspot.com/api/contact';   
     var params = "action="+action+"&message="+message+"&sender="+sender;
     if (subject !== undefined) {
       params += "subject="+subject; 
