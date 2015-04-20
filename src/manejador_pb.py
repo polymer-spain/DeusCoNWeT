@@ -569,8 +569,11 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
             self.response.set_status(200)
             # Send session details to client in the channel created previously
-            status_channel = channel.send_message(auth_token, session_id)
-            print "DEBUG: status channel" + status_channel
+            session_message = {
+                'session_id': session_id
+            }
+            channel.send_message(auth_token, json.dumps(session_message))
+            
         elif action == 'access_token' and not username == None:
 
             user_details = Token.query(Token.nombre_usuario
