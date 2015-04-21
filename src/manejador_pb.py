@@ -1094,7 +1094,7 @@ class OauthGooglePlusHandler(SessionHandler):
             self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
             self.response.set_status(201)
           else:
-            # We store the new set of credentials (change insertaUsuario)
+            # We store the new set of credentials
             user_id = ndb_pb.modificaToken(token_id, access_token, 'google')
             session_id = self.login(str(user_id.id()))
             # Returns the session cookie
