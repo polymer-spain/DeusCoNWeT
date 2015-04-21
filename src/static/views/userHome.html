@@ -19,32 +19,32 @@
         <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" ng-click="setList('add')" icon="arrow-drop-down" style="float:right">
         </core-icon>
 
-        <div id="list" class="animate-show" ng-show="!showlist('add')">
+        <div id="list" class="animate-show" ng-show="!hidelist('add')">
           <div ng-repeat="element in list">
             <p>{{element.name}}</p>
           </div>
         </div>
       </div>
 
-      <div id="delete" ng-class="{hidden: isMenuHidden('delete')}" ng-click="setSelected('delete')">
-        <core-icon  icon="delete"></core-icon>
+      <div id="delete" ng-class="{hidden: isMenuHidden('delete')}">
+        <core-icon  icon="delete" ng-click="setSelected('delete')"></core-icon>
         <span ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')"> Borrar</span>
         <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')" id="arrow" icon="arrow-drop-down" style="float:right">
         </core-icon>
 
-        <div id="list" class="animate-show" ng-show="!showlist('delete')">
+        <div id="list" class="animate-show" ng-show="!hidelist('delete')">
           <div draggable="true" ng-repeat="element in list">
             <p>{{element.name}}</p>
           </div>
         </div>
       </div>
 
-      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}" ng-click="setSelected('modify')">
-        <core-icon  icon="create"></core-icon>
+      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
+        <core-icon  icon="create" ng-click="setSelected('modify')"></core-icon>
         <span ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')"> Modificar</span>
         <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')" icon="arrow-drop-down" style="float:right">
         </core-icon>
-        <div id="list" class="animate-show" ng-show="!showlist('modify')">
+        <div id="list" class="animate-show" ng-show="!hidelist('modify')">
           <div ng-repeat="element in list">
             <p>{{element.name}}</p>
           </div>

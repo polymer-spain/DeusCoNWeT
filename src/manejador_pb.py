@@ -1,46 +1,42 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-""" Copyright 2015 Luis Ruiz Ruiz
-  Copyright 2015 Ana Isabel Lopera Martinez
-  Copyright 2015 Miguel Ortega Moreno
-  Copyright 2015 Juan Francisco Salamanca
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-"""
-
 import webapp2
 import re
 import string
 import json
 import httplib
+import hashlib
 import urllib
 from google.appengine.ext import ndb
+from google.appengine.api import memcache
+
 # Inserts to the path the 'lib' directory
+
 import sys
 sys.path.insert(1, 'lib/')
 
 # Local imports
 # Eliminados Tag y Release y Repo
+
 import ndb_pb
 from ndb_pb import UserRating, Usuario, Grupo, Token, Componente
 import cliente_gitHub
 
 # Import for twitter
+
 import oauth
 
 # Imports for ContactHandler
+
 from google.appengine.api import mail
+
+import cliente_gitHub
+
+# Global vars
+
+domain = 'http://example-project-13.appspot.com'
+
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -480,7 +476,38 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
-class OAuthTwitterHandler(webapp2.RequestHandler):
+class SessionHandler(webapp2.RequestHandler):
+
+    """
+  Class that handles the session of the application
+  Methods:
+    login - Generates a valid hash for a given user_id
+    getUserInfo - Gets the info related to a logged user_id
+    logout - Deletes the session for a given user
+  """
+
+    def login(self, user_id):
+        cypher = hashlib.sha256(str(user_id))
+        hash_id = cypher.hexdigest()
+
+    # Store in memcache hash-user_id pair
+
+        memcache.add(hash_id, user_id)
+        return hash_id
+
+    def getUserInfo(self, hashed_id):
+        user = memcache.get(hashed_id)
+        return user
+
+    def logout(self, hashed_id):
+        logout_status = False
+        status = memcache.delete(hashed_id)
+        if status == 2:
+            logout_status = True
+        return logout_status
+
+
+class OAuthTwitterHandler(SessionHandler):
 
     """
   Class that handles the Oauth Twitter Flow
@@ -524,23 +551,35 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
         elif action == 'authorization':
 
-      # print "HOST: " + self.request.host
-
             auth_token = self.request.get('oauth_token')
             auth_verifier = self.request.get('oauth_verifier')
             user_info = client.get_user_info(auth_token,
                     auth_verifier=auth_verifier)
 
-      # We store the user id and token into a Token Entity
+            # We store the user id and token into a Token Entity
 
-            stored_user = Token.query(Token.id_tw == user_info['token'
+            stored_user = Token.query(Token.token == user_info['token'
                     ]).get()
+
+            # TODO: query for the stored user (modificaToken)
+
             if stored_user == None:
-                user_token = Token(nombre_usuario=user_info['username'
-                                   ], id_tw=str(user_info['token']),
-                                   token_tw=user_info['secret'])
-                user_token.put()
-                self.response.set_status(200)
+                user_id = ndb_pb.insertaUsuario('Twitter',
+                        user_info['username'], user_info['token'])
+
+                # Create Session
+
+                session_id = self.login(str(user_id.id()))
+                self.response.set_cookie('session', value=session_id,
+                        path='/', domain=domain, secure=True)
+                self.response.set_status(201)
+
+            # Create Session
+
+            session_id = self.login(stored_user)
+            self.response.set_cookie('session', value=session_id,
+                    path='/', domain=domain, secure=True)
+            self.response.set_status(200)
         elif action == 'access_token' and not username == None:
 
             user_details = Token.query(Token.nombre_usuario
@@ -909,7 +948,7 @@ class OauthFacebookHandler(webapp2.RequestHandler):
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
-        except:
+        except KeyError:
             response = \
                 {'error': 'You must provide a valid pair of access_token and token_id in the request'}
             self.response.content_type = 'application/json'
@@ -994,7 +1033,7 @@ class OauthStackOverflowHandler(webapp2.RequestHandler):
             self.response.set_status(400)
 
 
-class OauthGooglePlusHandler(webapp2.RequestHandler):
+class OauthGooglePlusHandler(SessionHandler):
 
   # GET Method
 
@@ -1023,49 +1062,65 @@ class OauthGooglePlusHandler(webapp2.RequestHandler):
 
     def post(self):
 
-    # Gets the data from the request form
+      # Gets the data from the request form
 
-        try:
-            access_token = self.request.POST['access_token']
-            token_id = self.request.POST['token_id']
-
-      # Checks if the username was stored previously
-
-            stored_credentials = Token.query(Token.id_google
-                    == token_id).get()
-            if stored_credentials == None:
-
-        # Stores the credentials in a Token Entity
-        # TODO: Generate a valid username for a new user in the user_credentials
-
-                user_credentials = Token(id_google=token_id,
-                        token_google=access_token)
-                user_credentials.put()
-
-        # TODO: Return the username owner of the keys
-
-                response = {'username': user_credentials.nombre_usuario}
+        action = self.request.get('action')
+        if action == 'login':
+            try:
+                access_token = self.request.POST['access_token']
+                token_id = self.request.POST['token_id']
+            except:
+                response = \
+                    {'error': 'You must provide a valid pair of access_token and token_id in the request'}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
+                self.response.set_status(400)
+
+        # Checks if the username was stored previously
+
+            stored_credentials = ndb_pb.buscaToken(token_id, 'google')
+            if stored_credentials == None:
+
+          # Generate a valid username for a new user
+
+                user_id = ndb_pb.insertaUsuario('google', token_id,
+                        access_token)
+                session_id = self.login(str(user_id.id()))
+
+          # Returns the session cookie
+
+                self.response.set_cookie('session', value=session_id,
+                        path='/', domain=domain, secure=True)
                 self.response.set_status(201)
             else:
 
-        # We store the new set of credentials
+          # We store the new set of credentials (change insertaUsuario)
 
-                stored_credentials.id_google = token_id
-                stored_credentials.token_google = access_token
-                stored_credentials.put()
+                user_id = ndb_pb.modificaToken(token_id, access_token,
+                        'google')
+                session_id = self.login(str(user_id.id()))
 
-        # TODO: Return the username owner of the keys
+          # Returns the session cookie
 
-                response = \
-                    {'username': stored_credentials.nombre_usuario}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
+                self.response.set_cookie('session', value=session_id,
+                        path='/', domain=domain, secure=True)
                 self.response.set_status(200)
-        except:
-            response = \
-                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+        elif action == 'logout':
+
+            cookie_value = self.request.cookies.get('session')
+            print 'Cookie value: ' + cookie_value
+
+        # Logout
+
+            logout_status = self.logout(cookie_value)
+
+        # Delete cookie
+
+            self.response.delete_cookie('session')
+            print 'LOGOUT: ' + str(logout_status)
+            self.response.set_status(200)
+        else:
+            response = {'error': 'Invalid value for the action param'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
             self.response.set_status(400)
@@ -1098,30 +1153,36 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
 class ContactFormsHandler(webapp2.RequestHandler):
 
-  def post(self):
-    # Get params
-    action = self.request.get('action', default_value='')
-    if action == 'contact':
-      # Subject is an optional param
-      subject = self.request.get('subject', default_value='')
-      message = self.request.get('message', default_value='')
-      sender = self.request.get('sender', default_value='')
-      if not sender == '' and not message == '':
-        subject= 'Contacto: ' + subject + ' de: ' + sender
-        mail.send_mail('deus@conwet.com','deus@conwet.com' , subject, message)
-      else:
-        response = {'error': 'You must provide a sender and message param'}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(400)      
+    def post(self):
 
-    elif action == 'subscribe':
-      self.response.set_status(501)
-    else:
-      response = {'error': 'Invalid value for action param'}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(400)      
+    # Get params
+
+        action = self.request.get('action', default_value='')
+        if action == 'contact':
+
+      # Subject is an optional param
+
+            subject = self.request.get('subject', default_value='')
+            message = self.request.get('message', default_value='')
+            sender = self.request.get('sender', default_value='')
+            if not sender == '' and not message == '':
+                subject = 'Contacto: ' + subject + ' de: ' + sender
+                mail.send_mail('deus@conwet.com', 'deus@conwet.com',
+                               subject, message)
+            else:
+                response = \
+                    {'error': 'You must provide a sender and message param'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        elif action == 'subscribe':
+
+            self.response.set_status(501)
+        else:
+            response = {'error': 'Invalid value for action param'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 app = webapp2.WSGIApplication([

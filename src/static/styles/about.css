@@ -1,27 +1,27 @@
 html {
-  background-image: url('../images/imagen42.jpg');
+  background-image: url('../images/vias.jpg');
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 .information {
-  height:600px;
+  height:460px;
   color: whitesmoke;
   width:100%;
-  margin-top: 25px;
+  margin-top: 13%;
   border-radius: 15px;
   background-color:rgba(46, 45, 45, 0.2);
 }
 
 .information > div {
-  margin: 90px 60px;
+  margin: 70px 60px 20px 60px;;
 }
 .information .right {
   min-width: 300px;
 }
 .information .left {
-  background-image : url('../images/imagen.jpg');
-  background-size: cover;
+  background-image : url('https://centauro.ls.fi.upm.es/todos.jpg');
+  background-size: contain;
   background-repeat: no-repeat;
 }
 #groupImg {

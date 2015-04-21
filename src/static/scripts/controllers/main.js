@@ -18,7 +18,7 @@ angular.module('PolymerBricks')
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter'){
-        
+        $scope.changeView('/user/'+e.detail.redSocial+'_'+e.detail.userId);
       }
       else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
 
@@ -29,7 +29,7 @@ angular.module('PolymerBricks')
           if (xhr.readyState == 4 && xhr.status === 200){
             $scope.$apply(function(){
               var response = JSON.parse(xhr.responseText);
-              $location.path('/user/'+e.detail.redSocial+'_'+response.id);
+              $scope.changeView('/user/'+e.detail.redSocial+'_'+response.id);
               $scope.sendData(e.detail.token,response.id,e.detail.redSocial);
             });
           } else if (xhr.readyState == 4) {
@@ -38,7 +38,7 @@ angular.module('PolymerBricks')
         }
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
-        $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
+        $scope.changeView('/user/'+e.detail.redSocial+'_'+e.detail.userId);
         $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
       }
       // cambiamos el botton
@@ -55,8 +55,9 @@ angular.module('PolymerBricks')
 
   $scope.sendData = function(token,tokenId,redSocial){
     var xhr = new XMLHttpRequest();
-    var uri = 'http://example-project-13.appspot.com/api/oauth/'+redSocial;   
+    var uri = 'http://example-project-13.appspot.com/api/oauth/'+redSocial;
     var params = "token_id="+token+"&access_token="+tokenId;
+    console.log(params);
     xhr.open("POST",uri,true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function() {
@@ -67,6 +68,7 @@ angular.module('PolymerBricks')
   }
 
   $scope.changeView = function(view){
+    $location.hash('');
     $location.path(view); // path not hash
   };
 
@@ -74,7 +76,7 @@ angular.module('PolymerBricks')
     var button = document.querySelector('#nameId');
     // Selecionar el nombre del usuario
     button.innerHTML="Entrar"
-    $location.path('/');
+    $scope.changeView('/');
     $scope.status = false;
   }
   /* Escuhas de los botones*/

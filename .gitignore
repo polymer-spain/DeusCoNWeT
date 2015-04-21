@@ -2,3 +2,6 @@ prueba.html
 static/views/backup-home.html
 *.pyc
 node_modules
+grunt*
+Gruntfile.js
+images/min
