@@ -9,7 +9,6 @@ handlers:
 - url: /favicon\.ico
   static_files: ../favicon.ico
   upload: favicon\.ico
-
 - url: /
   static_files: static/index.html
   upload: index\.html
@@ -39,7 +38,6 @@ handlers:
   
 - url: /
   static_dir: static 
-
 libraries:
 - name: webapp2
   version: latest
