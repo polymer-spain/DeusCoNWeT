@@ -11,17 +11,7 @@
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/elements.html">
     <link rel="stylesheet" href="styles/main.css">
-<style>
-  /* manually position the dropdown below the trigger */
-  core-dropdown {
-    position: absolute;
-    top: 38px;
-    left: 0;
-	color: black;
-	 border-radius: 5px 5px 5px 5px;
-	 background: blue;
-  }
-</style>
+	
     <title>DeuS CoNWeT</title>
   </head>
 
@@ -49,10 +39,9 @@
     });
   </script>
   </polymer-element>
-<x-trigger icon="social:person"><span style="padding-left: 3px;vertical-align:middle">Entrar</span>
+  
+<x-trigger src="images/logo.png"><span style="padding-left: 3px;vertical-align:middle">Entrar</span>
         <core-dropdown class="open-below">
-        <paper-button><span style="padding-left: 3px;vertical-align:middle">Inicio</span></paper-button><br>
-        <paper-button><span style="padding-left: 3px;vertical-align:middle">Sobre nosotros</span></paper-button><br>
         <paper-button><span style="padding-left: 3px;vertical-align:middle">Contactar</span></paper-button><br>
         <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Perfil</span></a></paper-button>
         </core-dropdown>
@@ -88,20 +77,13 @@
 
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
-
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-
     <script src="bower_components/angular-animate/angular-animate.js"></script>
-
     <script src="bower_components/angular-touch/angular-touch.js"></script>
-
     <script src="bower_components/angular-route/angular-route.js"></script>
-
     <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
     <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
-
     <script src="scripts/app.js"></script>
     <script src="scripts/min.js"></script>
     <script src="scripts/controllers/main.js"></script>

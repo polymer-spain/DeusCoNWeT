@@ -4,10 +4,11 @@ body,html {
   font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
   background-attachment: fixed;
   min-width: 1024px;
+min-height: 100%;
 }
 
 .view {
-  margin:0px 150px ;
+  margin:100px 150px ;
 }
 
 core-toolbar {
@@ -77,3 +78,29 @@ paper-button {
 #name:hover{
  cursor: pointer;
 }
+  core-dropdown {
+    position: absolute;
+    top: 38px;
+    left: 0;
+	 border-radius: 5px 5px 5px 5px;
+	 background: blue;
+  	 background-color: #eee;
+      color: #000;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 8px;}
+
+
+
+
+    .with-margin {
+      margin: 12px;
+    }
+
+    .open-below {
+      top: 38px;
+    }
+
+>
+
+

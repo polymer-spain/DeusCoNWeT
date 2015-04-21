@@ -1,17 +1,14 @@
-body {
-  } 
-html,body{
-  background-color: rgba(135, 139, 237, 0.18); 
-}
+
 html {
-background: url('http://www.wallope.com/wp-content/uploads/textures-wallpapers-18-textures-simple1680x1050-textures-simple-background-photo.jpg') no-repeat;
+  background: url('http://www.wallope.com/wp-content/uploads/textures-wallpapers-18-textures-simple1680x1050-textures-simple-background-photo.jpg') no-repeat;
   background-size: cover;
+
 }
 .content {
-  margin-top: 5%;
+  margin-top: 7%;
   padding: 1% 5% 2% 5%;
   font-size: 1.2em;
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#26000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#26000000',GradientType=1 );  IE6-9 fallback on horizontal gradient 
 }
 #email {
 	
@@ -25,12 +22,12 @@ background: url('http://www.wallope.com/wp-content/uploads/textures-wallpapers-1
     color: #000;
 }
 .nom{
-	    appearance: none;
+	appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     -o-appearance: none;
     height: 25px;
-    width: 27.4%;
+    width: 27.2%;
     background: #fff;
     color: #000;
 }
@@ -46,9 +43,18 @@ input{
 	}
 
 select{
-	height: 25px;
-    width: 18.3%;
 	
+    width: 18.3%;
+	background: #F3F3F3;
+	color: #0d0d0d;
+	padding: 5px;
+	font-size: 13px;
+	line-height: 100%;
+	border: 1px solid #9d9d9d;
+	border-radius: 0;
+	height: 30px;
+	margin-bottom: 5px;
+	margin-top: 3px;
 }
 
 #pr{
@@ -71,23 +77,21 @@ select{
 			-moz-transition: all 0.3s ease-in;
 				-o-transition: all 0.3s ease-in;
 					transition: all 0.3s ease-in;
-		background: rgba(0, 0, 0, 0.69);	
-		width: 55%;
-		height: 50%;
+		background: rgba(253, 244, 244, 0.67);	
+		width: 56%;
+		height: 40%;
 		overflow: hidden;
-		box-shadow: 0 0 10px rgba(255, 255, 255, 0.56);
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
 		border-radius: 10px 10px 10px 10px;	
-		border: 2px solid while;
-		color: #fff;
+		border: 2px solid black;
+		color: #000;
 }
 
 
 #redes:hover{
 	transform:scale(1.02,1.02);
     -webkit-transform:scale(1.02,1.02);
-	
-	
-	
+
 }
 
 
@@ -95,9 +99,91 @@ core-item{
 	margin-top: 5px;
 	
 }
-.button-login{
+core-submenu::shadow #submenu {
+  margin-left: 7px;
+}
+
+core-submenu::shadow #submenuItem {
+  margin-left: 25%;
+}
+
+login-facebook{
 	
-	width: 100%;
-	height: 100%;
+	width: 125%;
+}
+
+#label{
+	
+	margin-left: 25%;
 	
 }
+google-login{width: 125%;}
+twitter-login{width: 125%;}
+github-login{width: 125%;}
+linkedin-login{width: 125%;}
+instagram-login{width: 125%;}
+
+input[type=submit] {
+padding:5px 15px; background:#ccc; border:0 none;
+cursor:pointer;
+border-radius: 5px;
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.91); 
+margin-left: 21%;
+border: 1px solid while;
+}
+
+input[type=submit]:hover{
+	
+	transform:scale(1.02,1.02);
+    -webkit-transform:scale(1.02,1.02);
+
+}
+
+strong{
+	font-size: 100%;
+	color:black;
+	
+}
+.SelectStyle {
+	width: 220px;
+	position: relative;
+}
+
+
+
+ 
+#sexo{
+	width: 57%;
+	background: #F3F3F3;
+	color: #0d0d0d;
+	padding: 5px;
+	font-size: 13px;
+	line-height: 100%;
+	border: 1px solid #9d9d9d;
+	border-radius: 0;
+	height: 30px;
+	margin-bottom: 5px;
+	margin-top: 3px;
+}
+ 
+option {
+	padding: 10px;
+}
+input:hover{
+	transform:scale(1.03,1.03);
+    -webkit-transform:scale(1.03,1.03);
+
+}
+select:hover{
+	transform:scale(1.03,1.03);
+    -webkit-transform:scale(1.03,1.03);
+
+}
+
+textarea:hover{
+	transform:scale(1.03,1.03);
+    -webkit-transform:scale(1.03,1.03);
+
+}
+
+

@@ -2,11 +2,6 @@
 angular.module('PolymerBricks')
 .controller('ProfileCtrl', function ($scope) {
 	
-	$scope.redes=[
-			{nombre:"F"},
-			{nombre:"L"},
-			{nombre:"I"} ]
-	
 	$scope.calC= function()	{	 
 	var nombre=document.getElementById("nombre").value;
 	var apellido=document.getElementById("apellido").value;
@@ -15,29 +10,34 @@ angular.module('PolymerBricks')
 	var month=document.getElementById("month").value;
 	var year=document.getElementById("year").value;
 	var descr=document.getElementById("descr").value;	
+	var sex=document.getElementById("sexo").value;	
 		console.log(nombre);
 		console.log(apellido);
 		console.log(mail);
 		console.log(dia);
 		console.log(month);
-		console.log(year)
-		console.log(descr)
+		console.log(year);
+		console.log(descr);
 		
-		var resultado="ninguno";
-        
-        var porNombre=document.getElementsByName("sex");
-        for(var i=0;i<porNombre.length;i++)
-        {
-            if(porNombre[i].checked)
-                resultado=porNombre[i].value;
-        }
-        
-       console.log(resultado);
+		
+	if(sex==1){
+	console.log("Mujer");	
+		sex="Mujer";
+		
+	}
+		
+	if(sex==2){
+	console.log("Hombre");	
+		sex="Hombre";
+	}
+	if(sex==3){
+	console.log("Otros");	
+		sex="Otros";
+	}
+
+		
     }
-		
-
-		
-
+	
 	
 	 
 	
