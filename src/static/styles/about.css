@@ -5,16 +5,16 @@ html {
 }
 
 .information {
-  height:600px;
+  height:460px;
   color: whitesmoke;
   width:100%;
-  margin-top: 10%;
+  margin-top: 13%;
   border-radius: 15px;
   background-color:rgba(46, 45, 45, 0.2);
 }
 
 .information > div {
-  margin: 90px 60px;
+  margin: 70px 60px 20px 60px;;
 }
 .information .right {
   min-width: 300px;
