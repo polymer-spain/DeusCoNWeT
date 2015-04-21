@@ -292,8 +292,6 @@ def addUsuarioAGrupo(entity_key, nombre_grupo, usuario): #FUNCIONA
     if grupo.nombre_grupo == nombre_grupo:
       grupo.lista_Usuarios += usuario
 
-
-<<<<<<< HEAD
 def addDescripcionAGrupo(entity_key, nombre, descripcion): #FUNCIONA
   usuario = entity_key.get()
   grupos = usuario.lista_Grupos
