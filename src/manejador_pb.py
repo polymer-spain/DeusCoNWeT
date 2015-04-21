@@ -509,10 +509,9 @@ class OAuthTwitterHandler(SessionHandler):
     def get(self):
         """ Handles the calls related to Twitter Tokens. 
     Depending on the 'action' param, performs different actions:
-    - 'action':request_token. Gets the Twitter access_token for a user authenticated via web and
-       stores it in the database. 
-    - 'action':access_token. Returns the Twitter access_token for a user authenticated.
-    - 'action':authorization. Manages the callback from Twitter in the Twitter oauth flow.
+    - 'action': login. Initiates the three-step oauth flow in Twitter. 
+    - 'action': credentials. Returns the Twitter token_id and access_token for a user authenticated.
+    - 'action': authorization. Manages the callback from Twitter in the Twitter oauth flow.
     Keyword arguments: 
       self -- info about the request build by webapp2
     """
@@ -534,7 +533,7 @@ class OAuthTwitterHandler(SessionHandler):
                 'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
                 )
 
-        if action == 'request_token':
+        if action == 'login':
             self.response.content_type = 'application/json'
             # Creates a channel to send the session details once the oauth flow is completed
             auth_token = client._get_auth_token()
@@ -574,7 +573,7 @@ class OAuthTwitterHandler(SessionHandler):
             }
             channel.send_message(auth_token, json.dumps(session_message))
             
-        elif action == 'access_token' and not username == None:
+        elif action == 'credentials' and not username == None:
 
             user_details = Token.query(Token.nombre_usuario
                     == username).get()
@@ -968,7 +967,7 @@ class OauthFacebookHandler(webapp2.RequestHandler):
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
-        except:
+        except KeyError:
             response = \
                 {'error': 'You must provide a valid pair of access_token and token_id in the request'}
             self.response.content_type = 'application/json'
@@ -1111,16 +1110,20 @@ class OauthGooglePlusHandler(SessionHandler):
           self.response.write(json.dumps(response))
           self.response.set_status(400)
 
-        
       elif action == "logout":
         cookie_value = self.request.cookies.get('session')
-        print "DEBUG: Cookie value: " + cookie_value
-        # Logout
-        logout_status = self.logout(cookie_value)
-        # Delete cookie
-        self.response.delete_cookie('session')
-        print "DEBUG: LOGOUT: " + str(logout_status)
-        self.response.set_status(200)
+        if not cookie_value == None:
+          # Logout
+          logout_status = self.logout(cookie_value)
+          # Delete cookie
+          self.response.delete_cookie('session')
+          print "DEBUG: LOGOUT: " + str(logout_status)
+          self.response.set_status(200)
+        else:
+          response = {'error': 'This request requires a secure_cookie with the session identifier'}
+          self.response.content_type = 'application/json'
+          self.response.write(json.dumps(response))
+          self.response.set_status(400)
       else:
         response = {'error': 'Invalid value for the action param'}
         self.response.content_type = 'application/json'
