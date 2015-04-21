@@ -1,7 +1,7 @@
 angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $location, $timeout) {
   'use strict';
   $scope.status = false;
-
+  $scope.domain = 'http://' + $location.host();
   $scope.logged = function (e) {
     $scope.$apply(function () {
 
@@ -45,14 +45,14 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
   $scope.sendData = function (token, tokenId, redSocial) {
     var xhr, uri, params;
     xhr = new XMLHttpRequest();
-    uri = 'http://example-project-13.appspot.com/api/oauth/' + redSocial;
+    uri = $scope.domain + '/api/oauth/' + redSocial;
     params = "token_id=" + token + "&access_token=" + tokenId + "&action=login";
     xhr.open("POST", uri, true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
+      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201)) {
         console.log(xhr.responseText);
-      } else if (xhr.readyState === 4) {
+      } else if (xhr.readyState === 4 && xhr.status !== 200) {
         console.log("[INFO]: Error al introducir datos en backend");
       }
     };
@@ -110,7 +110,7 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
     if (message.value && sender.checkValidity() && sender.value) {
       var xhr, uri, params;
       xhr = new XMLHttpRequest();
-      uri = 'http://example-project-13.appspot.com/api/contact';
+      uri = $scope.domain+'/api/contact';
       params = "action=contact&message=" + message.value + "&sender=" + sender.value;
 
       if (subject.value !== undefined) {
