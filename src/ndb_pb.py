@@ -99,6 +99,11 @@ rs_list = ["twitter", "facebook", "stack-overflow", "instagram", "linkedin", "go
   #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
 
+class UsuarioBeta(ndb.Model):
+  email = ndb.StringProperty(required=True)
+  nombre = ndb.StringProperty()
+  apellidos = ndb.StringProperty()
+
 class Componente(ndb.Model):
   nombre = ndb.StringProperty(required=True)
   x = ndb.FloatProperty()
@@ -208,15 +213,15 @@ def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
 
   return user_key
 
-def actualizaUsuario(entity_key, datos):
+def actualizaUsuario(entity_key, datos): #FUNCIONA
   usuario = entity_key.get()
-  if has_key("email"):
+  if datos.has_key("email"):
     usuario.email = datos["email"]
-  if has_key("telefono"):
+  if datos.has_key("telefono"):
     usuario.telefono = datos["telefono"]
-  if has_key("descripcion"):
+  if datos.has_key("descripcion"):
     usuario.descripcion = datos["descripcion"]
-  if has_key("imagen"):
+  if datos.has_key("imagen"):
     usuario.imagen = datos["imagen"]
 
   usuario.put()
@@ -347,9 +352,7 @@ def getComponente(entity_key, nombre): # FUNCIONA
 
 def buscaToken(id_usuario, rs): #FUNCIONA
   tokens = Token.query()
-  print tokens
-  token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() #filter(Token.nombre_rs==rs).get()
-  print token
+  token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
   if token:
     return token.token
   else:
@@ -365,6 +368,19 @@ def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
 
   usuario.put()
   return usuario.key
+
+def nuevoUsuarioBeta(email, nombre, apellidos): #FUNCIONA
+  user_beta = UsuarioBeta(email=email, nombre=nombre, apellidos=apellidos)
+  user_beta.put()
+
+def getEmails(): #FUNCIONA
+  users_beta = UsuarioBeta.query().fetch(100)
+  lista_emails = []
+  for user in users_beta:
+    lista_emails.append(user.email)
+
+  return lista_emails
+
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
@@ -455,6 +471,23 @@ class MainPage(webapp2.RequestHandler):
       if not key_comp == "nombre":
         self.response.write("\t" + key_comp + ": " + str(comp[key_comp]) + "\n")
 
+    nuevos_datos_us = {"email": "l.ruizr04@gmail.com",
+                        "telefono": 614526893}
+    actualizaUsuario(key, nuevos_datos_us)
+    info_user = buscaUsuario(key)
+    info_user = json.loads(info_user)
+    keys = info_user.keys()
+    for key_user in keys:
+      self.response.write("Datos usuario --> " + str(key_user) + ": " + str(info_user[key_user]) + "\n")
+
+    nuevoUsuarioBeta("luis@ruiz", "Luis", "Ruiz Ruiz")
+    nuevoUsuarioBeta("ana@lopera", "Ana", "Lopera Martinez")
+    nuevoUsuarioBeta("juanfran@salamanca", "Juanfran", "Salamanca Carmona")
+    nuevoUsuarioBeta("miguel@ortega", "Miguel", "Ortega Moreno")
+
+    emails = getEmails()
+    for email in emails:
+      self.response.write("\t email: " + email + "\n")
 
 
 
