@@ -9,6 +9,7 @@ body,html {
   font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
   background-attachment: fixed;
   min-width: 1024px;
+  min-height: 100%;
 }
 
 .view {
