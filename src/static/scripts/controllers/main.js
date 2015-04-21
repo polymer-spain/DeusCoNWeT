@@ -56,14 +56,8 @@ angular.module('PolymerBricks')
 
   $scope.sendData = function(token,tokenId,redSocial){
     var xhr = new XMLHttpRequest();
-<<<<<<< HEAD
     var uri = 'http://example-project-13.appspot.com/api/oauth/'+redSocial;   
     var params = "token_id=" + token + "&access_token=" + tokenId + "&action=login";
-=======
-    var uri = 'http://example-project-13.appspot.com/api/oauth/'+redSocial;
-    var params = "token_id="+token+"&access_token="+tokenId;
-    console.log(params);
->>>>>>> develop
     xhr.open("POST",uri,true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function() {

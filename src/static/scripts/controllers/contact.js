@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-angular.module('PolymerBricks').controller('contactCtrl', function ($scope,$http,$modal) {
-  'use strict';
-  
-  $scope.sendEmail = function() {
-=======
 angular.module('PolymerBricks').controller('contactCtrl', function ($scope, $http, $modal) {
   'use strict';
 
   $scope.sendEmail = function () {
->>>>>>> develop
     var message = document.querySelector('#message');
     var sender = document.querySelector('#sender');
     var subject = document.querySelector('#subject');
