@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="import" href="../polymer/polymer.html">
+    <link rel="import" href="../paper-button/paper-button.html">
+  </head>
+  <body>
+    <polymer-element name="login-facebook" attributes="key_app scope">   
+      <template> 
+        <link rel="stylesheet" href="login-facebook.css">
+        <paper-button id="boton-facebook" on-click="{{login}}" class="login">
+          <core-icon src="http://www.glinks.co/images/facebook-white.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
+          Sign in with Facebook
+        </paper-button>
+      </template> 
+      <script>  
+        Polymer('login-facebook',{ 
+
+          key_app:'',
+          scope:'',
+          //Se realizara la carga del SDK de Facebook
+          ready: function(){
+            var script = document.createElement('script');
+            script.type = "text/javascript";
+            script.text = "	(function(d, s, id) { \
+var js, fjs = d.getElementsByTagName(s)[0];\
+if (d.getElementById(id)) return;\
+js = d.createElement(s); js.id = id;\
+js.src = '//connect.facebook.net/en_US/sdk.js';\
+fjs.parentNode.insertBefore(js, fjs);\
+}(document, 'script', 'facebook-jssdk'));\
+"
+document.body.appendChild(script);
+          },  
+          //Se incializa la api
+          login:function() {  
+            FB.init({
+              appId      : this.key_app,//Key App
+              cookie     : true,  // enable cookies to allow the server to 
+              xfbml      : true,  // parse social plugins on this page
+              version    : 'v2.2' // use version 2.2
+            });
+            //Se realiza el login con los permisos requeridos para la app
+            FB.login(function(response) {
+              this.acToken=response.authResponse.accessToken;
+              this.userId = response.authResponse.userID;
+              document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});
+            }, {scope: this.scope});
+          } 
+        });     
+      </script>  
+    </polymer-element>
+  </body>
+</html>

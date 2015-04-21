@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="styles/userHome.css">
+
+<div style="padding-top:60px;">
+  <img id="foto" src="http://minionslovebananas.com/images/check-in-minion.jpg">
+  <div horizontal around-justified layout>
+    <twitter-timeline style="color: black" accessToken="3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x" secretToken="VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY" consumerKey="J4bjMZmJ6hh7r0wlG9H90cgEe" consumerSecret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" count="200"></twitter-timeline>
+
+    <github-events style="color:black" username="mortega5" mostrar=10></github-events>
+
+    <div vertical layout end id="listOption" >
+
+      <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
+        <core-icon id="menu-icon" icon="arrow-back"></core-icon>
+      </div>
+
+      <div id="add" ng-class="{hidden: isMenuHidden('add')}">
+        <core-icon icon="add-box" ng-click="setSelected('add')"></core-icon>
+        <span  ng-show="showElement?true:showSingle=='add'" ng-click="setList('add')"> Añadir</span>
+        <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" ng-click="setList('add')" icon="arrow-drop-down" style="float:right">
+        </core-icon>
+
+        <div id="list" class="animate-show" ng-show="!hidelist('add')">
+          <div ng-repeat="element in list">
+            <p>{{element.name}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="delete" ng-class="{hidden: isMenuHidden('delete')}">
+        <core-icon  icon="delete" ng-click="setSelected('delete')"></core-icon>
+        <span ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')"> Borrar</span>
+        <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')" id="arrow" icon="arrow-drop-down" style="float:right">
+        </core-icon>
+
+        <div id="list" class="animate-show" ng-show="!hidelist('delete')">
+          <div draggable="true" ng-repeat="element in list">
+            <p>{{element.name}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
+        <core-icon  icon="create" ng-click="setSelected('modify')"></core-icon>
+        <span ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')"> Modificar</span>
+        <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')" icon="arrow-drop-down" style="float:right">
+        </core-icon>
+        <div id="list" class="animate-show" ng-show="!hidelist('modify')">
+          <div ng-repeat="element in list">
+            <p>{{element.name}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="help" ng-class="{hidden: isMenuHidden('help')}">
+        <core-icon icon="help"></core-icon>
+        <span ng-show="showElement">Ayuda</span>
+      </div>
+    </div>
+  </div>
+</div>
