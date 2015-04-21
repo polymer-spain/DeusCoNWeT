@@ -10,6 +10,8 @@ import hashlib
 import urllib
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
+import sys
+sys.path.insert(1, 'lib/')
 
 # Local imports
 import ndb_pb
@@ -18,16 +20,19 @@ from ndb_pb import Componente, UserRating, Usuario, Grupo, Token
 import cliente_gitHub
 
 # Imports for TwitterHandler
-import sys
-sys.path.insert(1, 'lib/')
 import oauth
 from google.appengine.api import channel
+
 
 # Imports for ContactHandler
 from google.appengine.api import mail
 
+import cliente_gitHub
+
 # Global vars
-domain = "http://example-project-13.appspot.com"
+
+domain = 'http://example-project-13.appspot.com'
+
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -467,9 +472,9 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
-
 class SessionHandler(webapp2.RequestHandler):
-  """
+
+    """
   Class that handles the session of the application
   Methods:
     login - Generates a valid hash for a given user_id
@@ -477,24 +482,25 @@ class SessionHandler(webapp2.RequestHandler):
     logout - Deletes the session for a given user
   """
 
-  def login(self, user_id):
-    cypher = hashlib.sha256(str(user_id))
-    hash_id = cypher.hexdigest()
+    def login(self, user_id):
+        cypher = hashlib.sha256(str(user_id))
+        hash_id = cypher.hexdigest()
+
     # Store in memcache hash-user_id pair
-    memcache.add(hash_id, user_id)
-    return hash_id
 
-  def getUserInfo(self, hashed_id):
-    user = memcache.get(hashed_id)
-    return user
+        memcache.add(hash_id, user_id)
+        return hash_id
 
-  def logout(self, hashed_id):
-    logout_status = False
-    status = memcache.delete(hashed_id)
-    if status == 2: 
-      logout_status = True
-    return logout_status
+    def getUserInfo(self, hashed_id):
+        user = memcache.get(hashed_id)
+        return user
 
+    def logout(self, hashed_id):
+        logout_status = False
+        status = memcache.delete(hashed_id)
+        if status == 2:
+            logout_status = True
+        return logout_status
 
 
 class OAuthTwitterHandler(SessionHandler):
@@ -560,12 +566,14 @@ class OAuthTwitterHandler(SessionHandler):
 
                 # Create Session
                 session_id = self.login(str(user_id.id()))
-                self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+                self.response.set_cookie('session', value=session_id,
+                        path='/', domain=domain, secure=True)
                 self.response.set_status(201)
 
             # Create Session
             session_id = self.login(stored_user)
-            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+            self.response.set_cookie('session', value=session_id,
+                    path='/', domain=domain, secure=True)
             self.response.set_status(200)
             # Send session details to client in the channel created previously
             session_message = {
@@ -1076,7 +1084,9 @@ class OauthGooglePlusHandler(SessionHandler):
             self.response.set_status(400)
 
   # POST Method
+
     def post(self):
+
       # Gets the data from the request form
       action = self.request.get("action")
       if action == "login":
@@ -1156,30 +1166,36 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
 class ContactFormsHandler(webapp2.RequestHandler):
 
-  def post(self):
-    # Get params
-    action = self.request.get('action', default_value='')
-    if action == 'contact':
-      # Subject is an optional param
-      subject = self.request.get('subject', default_value='')
-      message = self.request.get('message', default_value='')
-      sender = self.request.get('sender', default_value='')
-      if not sender == '' and not message == '':
-        subject= 'Contacto: ' + subject + ' de: ' + sender
-        mail.send_mail('deus@conwet.com','deus@conwet.com' , subject, message)
-      else:
-        response = {'error': 'You must provide a sender and message param'}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(400)      
+    def post(self):
 
-    elif action == 'subscribe':
-      self.response.set_status(501)
-    else:
-      response = {'error': 'Invalid value for action param'}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(400)      
+    # Get params
+
+        action = self.request.get('action', default_value='')
+        if action == 'contact':
+
+      # Subject is an optional param
+
+            subject = self.request.get('subject', default_value='')
+            message = self.request.get('message', default_value='')
+            sender = self.request.get('sender', default_value='')
+            if not sender == '' and not message == '':
+                subject = 'Contacto: ' + subject + ' de: ' + sender
+                mail.send_mail('deus@conwet.com', 'deus@conwet.com',
+                               subject, message)
+            else:
+                response = \
+                    {'error': 'You must provide a sender and message param'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        elif action == 'subscribe':
+
+            self.response.set_status(501)
+        else:
+            response = {'error': 'Invalid value for action param'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 app = webapp2.WSGIApplication([

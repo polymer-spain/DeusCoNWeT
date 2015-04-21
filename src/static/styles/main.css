@@ -1,3 +1,8 @@
+@font-face {
+  font-family: myFont;
+  src: url(../font/font.ttf);
+}
+
 body,html {
   margin:0;
   color:rgba(255, 255, 255, 0.85);
@@ -74,6 +79,11 @@ paper-button {
 .button-login login-facebook {
   margin-top: 25px;
 }
+#name {
+  letter-spacing: 10px;
+  font-size: 45px; 
+  font-family: myFont, serif;
+}
 #name:hover{
- cursor: pointer;
+  cursor: pointer;
 }

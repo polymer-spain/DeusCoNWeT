@@ -33,7 +33,7 @@
     })
       .when('/about', {
       templateUrl: 'views/about.html',
-      controller: 'contactCtrl'
+      controller: 'aboutCtrl'
     })
       .when('/contact', {
       templateUrl: 'views/contact.html',
@@ -41,7 +41,7 @@
     })
       .when('/privacy',{
       templateUrl: 'views/privacy.html',
-      controller: 'landingCtrl'
+      controller: 'privacyCtrl'
     })
       .otherwise({redirectTo: '/'})
     ;

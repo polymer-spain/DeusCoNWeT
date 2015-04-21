@@ -1,4 +1,5 @@
-# -*- encoding: utf-8 -*-
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 """ Copyright 2014 Luis Ruiz Ruiz
     Copyright 2014 Ana Isabel Lopera Martinez
@@ -19,12 +20,22 @@
 """
 
 from google.appengine.ext import ndb
-import json, webapp2
+import json
+import webapp2
 
 # Definimos la lista de redes sociales con las que trabajamos
-rs_list = ["twitter", "facebook", "stack-overflow", "instagram", "linkedin", "google", "github"]
 
-"""NDB Instances """
+rs_list = [
+    'twitter',
+    'facebook',
+    'stack-overflow',
+    'instagram',
+    'linkedin',
+    'google',
+    'github',
+    ]
+
+
 # class Tag(ndb.Model):
 #   name_tag = ndb.StringProperty()
 #   date_tag = ndb.StringProperty()
@@ -61,18 +72,18 @@ rs_list = ["twitter", "facebook", "stack-overflow", "instagram", "linkedin", "go
 #   forks = ndb.IntegerProperty()
 #   languages = ndb.StringProperty(repeated=True)
 #   #tags = ndb.StructuredProperty(Tag, repeated=True)
-#   #releases = ndb.StructuredProperty(Release, repeated=True)  
+#   #releases = ndb.StructuredProperty(Release, repeated=True)
 #   # Reputation related fields
 #   reputation = ndb.FloatProperty()
 #   ratingsCount = ndb.IntegerProperty()
 #   reputation_sum = ndb.FloatProperty()
-#   # SHA-256 string that identifies the repo 
+#   # SHA-256 string that identifies the repo
 #   #repo_hash = ndb.StringProperty()
 #   # Lowercased names in order to obtain a properly ordering in ndb queries
 #   #name_repo_lower_case = ndb.StringProperty()
 #   #full_name_repo_lower_case = ndb.StringProperty()
 
-  #Returns the rounded value corresponding to the reputation of the repo
+  # Returns the rounded value corresponding to the reputation of the repo
   # def roundReputation(self):
   #   repValue = float(self.reputation)
   #   roundRep = round(repValue, 2)
@@ -92,7 +103,7 @@ rs_list = ["twitter", "facebook", "stack-overflow", "instagram", "linkedin", "go
   #     # We set the user rating to 0, then we will set the proper value (in getUserRating)
   #     return ComponentBasicInfo(name=self.name_repo, author=self.owner.login
   #               ,description=self.description, nStars=self.stars,
-  #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0, 
+  #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
   #   elif type=="detailed":
   #     # We set the user rating to 0, then we will set the proper value (in getUserRating)
@@ -102,40 +113,55 @@ rs_list = ["twitter", "facebook", "stack-overflow", "instagram", "linkedin", "go
   #               componentId=self.full_name_id)
 
 class Componente(ndb.Model):
-  nombre = ndb.StringProperty(required=True)
-  x = ndb.FloatProperty()
-  y = ndb.FloatProperty()
-  url = ndb.StringProperty()
-  height = ndb.StringProperty()
-  width = ndb.StringProperty()
+
+    nombre = ndb.StringProperty(required=True)
+    x = ndb.FloatProperty()
+    y = ndb.FloatProperty()
+    url = ndb.StringProperty()
+    height = ndb.StringProperty()
+    width = ndb.StringProperty()
+
 
 class UserRating(ndb.Model):
+
   # google_user_id = ndb.StringProperty()
-  full_name_id = ndb.StringProperty()
-  rating_value = ndb.FloatProperty()
+
+    full_name_id = ndb.StringProperty()
+    rating_value = ndb.FloatProperty()
 
 
 # Entidad Grupo
+
 class Grupo(ndb.Model):
-  nombre_grupo = ndb.StringProperty(required=True)
-  lista_Usuarios = ndb.StringProperty()
-  descripcion = ndb.StringProperty()
+
+    nombre_grupo = ndb.StringProperty(required=True)
+    lista_Usuarios = ndb.StringProperty()
+    descripcion = ndb.StringProperty()
+
+
 # Entidad Token
+
 class Token(ndb.Model):
-  identificador = ndb.StringProperty()
-  token = ndb.StringProperty()
-  nombre_rs = ndb.StringProperty()
+
+    identificador = ndb.StringProperty()
+    token = ndb.StringProperty()
+    nombre_rs = ndb.StringProperty()
+
 
 # Entidad UsuarioSocial
+
 class UsuarioSocial(ndb.Model):
-  nombre_rs = ndb.StringProperty(required=True)
-  siguiendo = ndb.IntegerProperty()
-  seguidores = ndb.IntegerProperty()
-  url_sig = ndb.StringProperty()
-  url_seg = ndb.StringProperty()
+
+    nombre_rs = ndb.StringProperty(required=True)
+    siguiendo = ndb.IntegerProperty()
+    seguidores = ndb.IntegerProperty()
+    url_sig = ndb.StringProperty()
+    url_seg = ndb.StringProperty()
+
+
   # Faltan las uris del resto de apis a consultar
 
-# #Entidad Tarjeta
+##Entidad Tarjeta
 # class Tarjeta(ndb.Model):
 #   id_tw = ndb.StringProperty()
 #   id_fb = ndb.StringProperty()
@@ -146,33 +172,37 @@ class UsuarioSocial(ndb.Model):
 #   id_google = ndb.StringProperty()
 
 # Entidad usuario
+
 class Usuario(ndb.Model):
-  email = ndb.StringProperty()
-  telefono = ndb.IntegerProperty()
-  descripcion = ndb.TextProperty()
-  imagen = ndb.StringProperty()
-  tokens = ndb.StructuredProperty(Token, repeated=True)
-  lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
-  lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
-  valoracion = ndb.StructuredProperty(UserRating, repeated=True)
-  componentes = ndb.StructuredProperty(Componente, repeated=True)
-  #tarjeta = ndb.StructuredProperty(Tarjeta)
+
+    email = ndb.StringProperty()
+    telefono = ndb.IntegerProperty()
+    descripcion = ndb.TextProperty()
+    imagen = ndb.StringProperty()
+    tokens = ndb.StructuredProperty(Token, repeated=True)
+    lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
+    lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
+    valoracion = ndb.StructuredProperty(UserRating, repeated=True)
+    componentes = ndb.StructuredProperty(Componente, repeated=True)
+
+
+  # tarjeta = ndb.StructuredProperty(Tarjeta)
 
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
 #####################################################################################
 
-def getToken(entity_key, rs): #FUNCIONA
-  user = entity_key.get()
-  tokens = user.tokens
-  res = None
-  if not rs in rs_list:
-    return "La red social no esta contemplada"
-  for token in tokens:
-    if token.nombre_rs == rs:
-      res = token
+def getToken(entity_key, rs):  # FUNCIONA
+    user = entity_key.get()
+    tokens = user.tokens
+    res = None
+    if not rs in rs_list:
+        return 'La red social no esta contemplada'
+    for token in tokens:
+        if token.nombre_rs == rs:
+            res = token
 
-  return res
+    return res
 
 def buscaUsuario(entity_key): #FUNCIONA
   user = entity_key.get()
@@ -211,38 +241,48 @@ def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   return user_key
 
 def actualizaUsuario(entity_key, datos):
-  usuario = entity_key.get()
-  if has_key("email"):
-    usuario.email = datos["email"]
-  if has_key("telefono"):
-    usuario.telefono = datos["telefono"]
-  if has_key("descripcion"):
-    usuario.descripcion = datos["descripcion"]
-  if has_key("imagen"):
-    usuario.imagen = datos["imagen"]
+    usuario = entity_key.get()
+    if has_key('email'):
+        usuario.email = datos['email']
+    if has_key('telefono'):
+        usuario.telefono = datos['telefono']
+    if has_key('descripcion'):
+        usuario.descripcion = datos['descripcion']
+    if has_key('imagen'):
+        usuario.imagen = datos['imagen']
 
-  usuario.put()
+    usuario.put()
 
-def insertaToken(entity_key, rs, token, id_usuario): #FUNCIONA
-  user = entity_key.get()
-  tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
-  user.tokens.append(tok_aux)
-  user.put()
 
-def insertaGrupo(entity_key, nombre, datos=None): #FUNCIONA
-  usuario = entity_key.get()
-  grupo = Grupo(nombre_grupo=nombre)
-  users = ""
-  
-  if not datos == None:
-    if datos.has_key("descripcion"): grupo.descripcion = datos["descripcion"]
-    if datos.has_key("usuarios"):
-      for user in datos["usuarios"]:
-        users += user + ", "
+def insertaToken(  # FUNCIONA
+    entity_key,
+    rs,
+    token,
+    id_usuario,
+    ):
 
-  grupo.lista_Usuarios = users
-  usuario.lista_Grupos.append(grupo)
-  usuario.put()
+    user = entity_key.get()
+    tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
+    user.tokens.append(tok_aux)
+    user.put()
+
+
+def insertaGrupo(entity_key, nombre, datos=None):  # FUNCIONA
+    usuario = entity_key.get()
+    grupo = Grupo(nombre_grupo=nombre)
+    users = ''
+
+    if not datos == None:
+        if datos.has_key('descripcion'):
+            grupo.descripcion = datos['descripcion']
+        if datos.has_key('usuarios'):
+            for user in datos['usuarios']:
+                users += user + ', '
+
+    grupo.lista_Usuarios = users
+    usuario.lista_Grupos.append(grupo)
+    usuario.put()
+
 
 def addUsuarioAGrupo(entity_key, nombre_grupo, usuario): #FUNCIONA
   user = entity_key.get()
@@ -252,8 +292,8 @@ def addUsuarioAGrupo(entity_key, nombre_grupo, usuario): #FUNCIONA
     if grupo.nombre_grupo == nombre_grupo:
       grupo.lista_Usuarios += usuario
 
-  user.put()
 
+<<<<<<< HEAD
 def addDescripcionAGrupo(entity_key, nombre, descripcion): #FUNCIONA
   usuario = entity_key.get()
   grupos = usuario.lista_Grupos

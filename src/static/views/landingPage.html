@@ -1,62 +1,65 @@
-<ul style="position:fixed;right:10px;top:400px;">
-  <li id="disc1" ng-click="setSelected('1')" selected></li>
-  <li id="disc2"  ng-click="setSelected('2')"></li>
-  <li id="disc3" ng-click="setSelected('3')"></li>
-</ul>
-
-<link rel="stylesheet" href="styles/landingPage.css">
-<section id="section1">
-  <div class="content" oscuro=true>
-    <h1 style="text-align:center">Bienvenido</h1>
-    <div style="padding-top: 30px"horizontal layout>
-      <div class="slogan">
-        <p>Mantente informado de toda la actividad en las redes de tus grupos de amigos</p>
-        <paper-button id="beta">Subcribirse a la beta</paper-button>
-      </div>
-      <div style="display:inline-block;margin-left:40%;text-align:center">
-        <h3>Accede con tu red social</h3>
-        <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
-        <br>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="section2">
-  <link rel="stylesheet" href="styles/landingPage.css">
-  <div class="content" oscuro=true>
-    <h1 style="text-align:center">Bienvenido 2</h1>
-    <div style="padding-top: 30px"horizontal layout>
-      <div style="width:400px;display:inline-block;min-width:300px">
-        Estamos trabajando en un proyecto que te permita unificar todas tus cuentas en una sola página. Tras unos sencillos pasos, serás capaz de controlar y visualizar el contenido de las distintas redes sociales a las que perteneces. También podrás ver en una sola página las publicaciones de tus amigos.
-        <br>
-        <br>
-        Próximamente lanzaremos nuestra primera Beta, ¡No nos pierdas de vista!
-      </div>
-      <div style="display:inline-block;margin-left:40%;text-align:center">
-        <h3>Accede con tu red social</h3>
-        <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
-        </r>
-    </div>
-  </div>
-</section>
-
-<section id="section3">
-  <link rel="stylesheet" href="styles/landingPage.css">
-  <div class="content" oscuro=true>
-    <h1 style="text-align:center">Bienvenido 3</h1>
-    <div style="padding-top: 30px"horizontal layout>
-      <div style="width:400px;display:inline-block;min-width:300px">
-        Estamos trabajando en un proyecto que te permita unificar todas tus cuentas en una sola página. Tras unos sencillos pasos, serás capaz de controlar y visualizar el contenido de las distintas redes sociales a las que perteneces. También podrás ver en una sola página las publicaciones de tus amigos.
-        <br>
-        <br>
-        Próximamente lanzaremos nuestra primera Beta, ¡No nos pierdas de vista!
-      </div>
-      <div style="display:inline-block;margin-left:40%;text-align:center">
-        <h3>Accede con tu red social</h3>
-        <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
-        <br>
+<style>
+  html {
+    overflow-y: hidden; 
+  }
+</style>
+<div id="landing">
+  <ul style="position:fixed;right:10px;top:400px;">
+    <li id="disc1" ng-click="setSelected('1')" ng-class="{selected: isSelected(1)}"></li>
+    <li id="disc2"  ng-click="setSelected('2')" ng-class="{selected: isSelected(2)}"></li>
+    <li id="disc3" ng-click="setSelected('3')" ng-class="{selected: isSelected(3)}"></li>
+  </ul>
+  <section id="section1">
+    <div class="content" oscuro=true>
+      <h1 style="text-align:center">Bienvenido</h1>
+      <div style="padding-top: 30px"horizontal layout>
+        <div class="slogan">
+          <p>Mantente informado de toda la actividad en las redes de tus grupos de amigos</p>
+          <paper-button id="beta">Subcribirse a la beta</paper-button>
+        </div>
+        <div style="display:inline-block;margin-left:40%;text-align:center">
+          <h3>Accede con tu red social</h3>
+          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
+          <br>
+        </div>
       </div>
     </div>
+  </section>
 
-    </section>
+  <section id="section2">
+    <div class="content" oscuro=true>
+      <h1 style="text-align:center">Bienvenido 2</h1>
+      <div style="padding-top: 30px"horizontal layout>
+        <div style="width:400px;display:inline-block;min-width:300px">
+          Estamos trabajando en un proyecto que te permita unificar todas tus cuentas en una sola página. Tras unos sencillos pasos, serás capaz de controlar y visualizar el contenido de las distintas redes sociales a las que perteneces. También podrás ver en una sola página las publicaciones de tus amigos.
+          <br>
+          <br>
+          Próximamente lanzaremos nuestra primera Beta, ¡No nos pierdas de vista!
+        </div>
+        <div style="display:inline-block;margin-left:40%;text-align:center">
+          <h3>Accede con tu red social</h3>
+          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
+          </r>
+      </div>
+    </div>
+  </section>
+
+  <section id="section3">
+    <div class="content" oscuro=true>
+      <h1 style="text-align:center">Bienvenido 3</h1>
+      <div style="padding-top: 30px"horizontal layout>
+        <div style="width:400px;display:inline-block;min-width:300px">
+          Estamos trabajando en un proyecto que te permita unificar todas tus cuentas en una sola página. Tras unos sencillos pasos, serás capaz de controlar y visualizar el contenido de las distintas redes sociales a las que perteneces. También podrás ver en una sola página las publicaciones de tus amigos.
+          <br>
+          <br>
+          Próximamente lanzaremos nuestra primera Beta, ¡No nos pierdas de vista!
+        </div>
+        <div style="display:inline-block;margin-left:40%;text-align:center">
+          <h3>Accede con tu red social</h3>
+          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
+          <br>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
