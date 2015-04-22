@@ -1151,37 +1151,56 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
         self.response.write(respuesta.content)
 
 
-class ContactFormsHandler(webapp2.RequestHandler):
-
+class ContactHandler(webapp2.RequestHandler):
+    """ Class that represent the contact resource, used for customer support.
+    Method:
+    post -- Sends an email to deus@conwet.com with the info specified in the request.
+    """
     def post(self):
-
-    # Get params
-
-        action = self.request.get('action', default_value='')
-        if action == 'contact':
-
-      # Subject is an optional param
-
-            subject = self.request.get('subject', default_value='')
-            message = self.request.get('message', default_value='')
-            sender = self.request.get('sender', default_value='')
-            if not sender == '' and not message == '':
-                subject = 'Contacto: ' + subject + ' de: ' + sender
-                mail.send_mail('deus@conwet.com', 'deus@conwet.com',
-                               subject, message)
-            else:
-                response = \
-                    {'error': 'You must provide a sender and message param'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        elif action == 'subscribe':
-
-            self.response.set_status(501)
-        else:
-            response = {'error': 'Invalid value for action param'}
+        """ Sends an email to deus@conwet.com with the info specified in the request.
+            Keyword arguments: 
+                self -- info about the request built by webapp2
+        """
+        # Get params
+        # Subject is an optional param
+        try:
+            subject = self.request.POST['subject']
+            message = self.request.POST['message']
+            sender = self.request.POST['sender']
+            # Sends an email to deus@conwet
+            subject = 'Contacto: ' + subject + ', de: ' + sender
+            mail.send_mail('deus@conwet.com', 'deus@conwet.com', subject, message)
+            self.response.set_status(201)
+        except KeyError:
+            response = {'error': 'You must provide a sender and message param'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
+            self.response.set_status(400)
+        
+
+class SubscriptionHandler(webapp2.RequestHandler):
+    """ Handler for the subscription resource
+    Method:
+    post -- Creates a new subscription to the system.
+    """
+    
+    # POST Method
+    def post(self):
+        """ Creates a new subscription to the system.
+            Keyword arguments: 
+                self -- info about the request built by webapp2
+        """
+        # Get params
+        email = self.request.POST['email']
+        name = self.request.POST['name']
+        surname = self.request.POST['surname']
+        try:
+            ndb_pb.nuevoUsuarioBeta(email, name, surname)
+            self.response.set_status(201)
+        except KeyError:
+            response = {'error': 'You must provide an email, name and surname as params in the request'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))    
             self.response.set_status(400)
 
 
@@ -1196,5 +1215,6 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/facebook', OauthFacebookHandler),
     (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', OauthGooglePlusHandler),
-    (r'/api/contact', ContactFormsHandler),
+    (r'/api/contacts', ContactHandler),
+    (r'/api/subscriptions', SubscriptionHandler),
     ], debug=True)
