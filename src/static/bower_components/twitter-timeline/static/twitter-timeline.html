@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- Request a la api de twitter solicitando el timeline. Para ello son necesarios todos los tokens -->
     <core-ajax 
                id="requestTimeline"
-               url="{{endpoint}}"
+               url='{{ endpoint }}'
                method="GET"
                params='{
                        "access_token": "{{accessToken}}",
@@ -89,8 +89,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       since_id: "",
       endpoint:'',
       ready: function(event, detail, sender) {
-        this.$.requestTimeline.go();
+        if (this.accesToken){
+          this.$.requestTimeline.go();
+        }
       },
+      domReady: function(e,d,s) {
+        if (this.accessToken){
+          this.$.requestTimeline.go();
+        }
+      },
+
       /*Funcion que prepara los tweets antes de mostrarlos*/
       response: function(event, detail, sender) {
         this.events = this.changeTime(sender.response);

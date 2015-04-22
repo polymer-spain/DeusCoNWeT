@@ -1,5 +1,8 @@
 angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $location, $timeout) {
   'use strict';
+
+
+
   $scope.status = false;
   $scope.domain = 'http://' + $location.host();
   $scope.logged = function (e) {
@@ -32,26 +35,30 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
         $scope.sendData(e.detail.token, e.detail.userId, e.detail.redSocial);
       }
       // cambiamos el botton
-      button = document.querySelector('#nameId');
-      // Selecionar el nombre del usuario
-      button.innerHTML = "Desconectar";
-      // Seleccionar la imagen del perfin
-      // button.src=""
-      // Cambiamos a la funcion de logout
-      $scope.status = true;
+      $scope.logOutButton();
+
     });
   };
+  $scope.logOutButton = function() {
+    var button = document.querySelector('#nameId');
+    button.innerHTML = "Desconectar";
+    // Seleccionar la imagen del perfin
+    // button.src=""
+    // Cambiamos a la funcion de logout
+    $scope.status = true;
 
+  };
   $scope.sendData = function (token, tokenId, redSocial) {
     var xhr, uri, params;
     xhr = new XMLHttpRequest();
     uri = $scope.domain + '/api/oauth/' + redSocial;
     params = "token_id=" + token + "&access_token=" + tokenId + "&action=login";
     xhr.open("POST", uri, true);
+    xhr.withCredentials=true;
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201)) {
-        console.log(xhr.responseText);
+        console.log(xhr);  
       } else if (xhr.readyState === 4 && xhr.status !== 200) {
         console.log("[INFO]: Error al introducir datos en backend");
       }

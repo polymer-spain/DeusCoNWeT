@@ -93,7 +93,18 @@ Element providing solution to no problem in particular.
         this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
       }
       // Call Github Api
-      this.$.request.go();
+      if (this.username) {
+        this.$.request.go();
+      }
+    },
+    domReady : function() {
+      if (this.token != '') {
+        this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
+      }
+      // Call Github Api
+      if (this.username) {
+        this.$.request.go();
+      }
     },
     response: function(event,detail,sender){
       // Github events
