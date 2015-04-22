@@ -253,8 +253,8 @@ def actualizaUsuario(entity_key, datos):
 
     usuario.put()
 
-
-def insertaToken(  # FUNCIONA
+# FUNCIONA
+def insertaToken(  
     entity_key,
     rs,
     token,
@@ -387,9 +387,7 @@ def getComponente(entity_key, nombre): # FUNCIONA
 
 def buscaToken(id_usuario, rs): #FUNCIONA
   tokens = Token.query()
-  print tokens
   token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() #filter(Token.nombre_rs==rs).get()
-  print token
   if token:
     return token.token
   else:
