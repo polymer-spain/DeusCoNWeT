@@ -268,8 +268,8 @@ def actualizaUsuario(entity_key, datos):
 
     usuario.put()
 
-
-def insertaToken(  # FUNCIONA
+# FUNCIONA
+def insertaToken(  
     entity_key,
     rs,
     token,
@@ -299,155 +299,125 @@ def insertaGrupo(entity_key, nombre, datos=None):  # FUNCIONA
     usuario.put()
 
 
-def addUsuarioAGrupo(entity_key, nombre_grupo, usuario):  # FUNCIONA
-    user = entity_key.get()
-    grupos = user.lista_Grupos
+def addUsuarioAGrupo(entity_key, nombre_grupo, usuario): #FUNCIONA
+  user = entity_key.get()
+  grupos = user.lista_Grupos
 
-    for grupo in grupos:
-        if grupo.nombre_grupo == nombre_grupo:
-            grupo.lista_Usuarios += usuario
+  for grupo in grupos:
+    if grupo.nombre_grupo == nombre_grupo:
+      grupo.lista_Usuarios += usuario
 
+def addDescripcionAGrupo(entity_key, nombre, descripcion): #FUNCIONA
+  usuario = entity_key.get()
+  grupos = usuario.lista_Grupos
 
-def addDescripcionAGrupo(entity_key, nombre, descripcion):  # FUNCIONA
-    usuario = entity_key.get()
-    grupos = usuario.lista_Grupos
+  for grupo in grupos:
+    if grupo.nombre_grupo == nombre:
+      grupo.descripcion = descripcion
 
-    for grupo in grupos:
-        if grupo.nombre_grupo == nombre:
-            grupo.descripcion = descripcion
+  usuario.put()
 
-    usuario.put()
+def buscaGrupos(entity_key): #FUNCIONA
+  user = entity_key.get()
+  res = {}
+  contador = 1
+  if user.lista_Grupos:
+    for grupo in user.lista_Grupos:
+      res[contador] = grupo.nombre_grupo
+      contador += 1
 
+  return json.dumps(res)
 
-def buscaGrupos(entity_key):  # FUNCIONA
-    user = entity_key.get()
-    res = {}
-    contador = 1
-    if user.lista_Grupos:
-        for grupo in user.lista_Grupos:
-            res[contador] = grupo.nombre_grupo
-            contador += 1
+def insertaRed(entity_key, nombre, datos=None): # FUNCIONA
+  usuario = entity_key.get()
+  user_social = UsuarioSocial(nombre_rs=nombre)
+  if not datos == None:
+    if datos.has_key("siguiendo"):
+      user_social.siguiendo = datos["siguiendo"]
+    if datos.has_key("seguidores"):
+      user_social.seguidores = datos["seguidores"]
+    if datos.has_key("url_seg"):
+      user_social.url_seg = datos["url_seg"]
+    if datos.has_key("url_sig"):
+      user_social.url_sig = datos["url_sig"]
 
-    return json.dumps(res)
+  usuario.lista_Redes.append(user_social)
+  usuario.put()
+    
 
+def buscaRed(entity_key): # FUNCIONA
+  usuario = entity_key.get()
+  res = {}
+  contador = 1
+  if usuario.lista_Redes:
+    for red in usuario.lista_Redes:
+      res[contador] = red.nombre_rs
+      contador += 1
 
-def insertaRed(entity_key, nombre, datos=None):  # FUNCIONA
-    usuario = entity_key.get()
-    user_social = UsuarioSocial(nombre_rs=nombre)
-    if not datos == None:
-        if datos.has_key('siguiendo'):
-            user_social.siguiendo = datos['siguiendo']
-        if datos.has_key('seguidores'):
-            user_social.seguidores = datos['seguidores']
-        if datos.has_key('url_seg'):
-            user_social.url_seg = datos['url_seg']
-        if datos.has_key('url_sig'):
-            user_social.url_sig = datos['url_sig']
+  return json.dumps(res)
 
-    usuario.lista_Redes.append(user_social)
-    usuario.put()
+def insertarComponente(entity_key, nombre, coord_x=0, coord_y=0, url="", height="", width=""): # FUNCIONA
+  usuario = entity_key.get()
+  componente = Componente(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width)
+  usuario.componentes.append(componente)
 
+  usuario.put()
 
-def buscaRed(entity_key):  # FUNCIONA
-    usuario = entity_key.get()
-    res = {}
-    contador = 1
-    if usuario.lista_Redes:
-        for red in usuario.lista_Redes:
-            res[contador] = red.nombre_rs
-            contador += 1
+def modificarComponente(entity_key, nombre, datos): #FUNCIONA
+  usuario = entity_key.get()
+  comps = usuario.componentes
+  for comp in comps:
+    if comp.nombre == nombre:
+      if datos.has_key("x"):
+        comp.x = datos["x"]
+      if datos.has_key("y"):
+        comp.y = datos["y"]
+      if datos.has_key("url"):
+        comp.url = datos["url"]
+      if datos.has_key("height"):
+        comp.height = datos["height"]
+      if datos.has_key("width"):
+        comp.width = datos["width"]
 
-    return json.dumps(res)
+  usuario.put()
 
+def getComponente(entity_key, nombre): # FUNCIONA
+  user = entity_key.get()
+  comps = user.componentes
+  res = {"nombre": nombre,
+          "x": 0,
+          "y": 0,
+          "url": "",
+          "height": "",
+          "width": ""}
+  for comp in comps:
+    if comp.nombre == nombre:
+      res["x"] = comp.x
+      res["y"] = comp.y
+      res["url"] = comp.url
+      res["height"] = comp.height
+      res["width"] = comp.width
 
-def insertarComponente(  # FUNCIONA
-    entity_key,
-    nombre,
-    coord_x=0,
-    coord_y=0,
-    url='',
-    height='',
-    width='',
-    ):
+  return json.dumps(res)
 
-    usuario = entity_key.get()
-    componente = Componente(
-        nombre=nombre,
-        x=coord_x,
-        y=coord_y,
-        url=url,
-        height=height,
-        width=width,
-        )
-    usuario.componentes.append(componente)
+def buscaToken(id_usuario, rs): #FUNCIONA
+  tokens = Token.query()
+  token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() #filter(Token.nombre_rs==rs).get()
+  if token:
+    return token.token
+  else:
+    return None
 
-    usuario.put()
+def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
+  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+  usuario = Usuario.query(Usuario.tokens==token_aux).get()
+  tokens = usuario.tokens
+  for token in tokens:
+    if token.identificador==id_usuario and token.nombre_rs==rs:
+      token.token = nuevo_token
 
-
-def modificarComponente(entity_key, nombre, datos):  # FUNCIONA
-    usuario = entity_key.get()
-    comps = usuario.componentes
-    for comp in comps:
-        if comp.nombre == nombre:
-            if datos.has_key('x'):
-                comp.x = datos['x']
-            if datos.has_key('y'):
-                comp.y = datos['y']
-            if datos.has_key('url'):
-                comp.url = datos['url']
-            if datos.has_key('height'):
-                comp.height = datos['height']
-            if datos.has_key('width'):
-                comp.width = datos['width']
-
-    usuario.put()
-
-
-def getComponente(entity_key, nombre):  # FUNCIONA
-    user = entity_key.get()
-    comps = user.componentes
-    res = {
-        'nombre': nombre,
-        'x': 0,
-        'y': 0,
-        'url': '',
-        'height': '',
-        'width': '',
-        }
-    for comp in comps:
-        if comp.nombre == nombre:
-            res['x'] = comp.x
-            res['y'] = comp.y
-            res['url'] = comp.url
-            res['height'] = comp.height
-            res['width'] = comp.width
-
-    return json.dumps(res)
-
-
-def buscaToken(id_usuario, rs):  # FUNCIONA
-    tokens = Token.query()
-    print tokens
-    token = tokens.filter(Token.identificador
-                          == id_usuario).filter(Token.nombre_rs
-            == rs).get()  # filter(Token.nombre_rs==rs).get()
-    print token
-    if token:
-        return token.token
-    else:
-        return None
-
-
-def modificaToken(id_usuario, nuevo_token, rs):  # FUNCIONA
-    token_aux = Token(identificador=id_usuario, nombre_rs=rs)
-    usuario = Usuario.query(Usuario.tokens == token_aux).get()
-    tokens = usuario.tokens
-    for token in tokens:
-        if token.identificador == id_usuario and token.nombre_rs == rs:
-            token.token = nuevo_token
-
-    usuario.put()
-    return usuario.key
+  usuario.put()
+  return usuario.key
 
 
 class MainPage(webapp2.RequestHandler):

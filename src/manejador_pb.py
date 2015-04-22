@@ -1136,18 +1136,12 @@ class OauthGooglePlusHandler(SessionHandler):
                 token_id = self.request.POST['token_id']
 
           # Checks if the username was stored previously
-
-                stored_credentials = ndb_pb.buscaToken(token_id,
-                        'google')
-                print stored_credentials
-                if stored_credentials == None:
-
-            # Generate a valid username for a new user
-
-                    user_id = ndb_pb.insertaUsuario('google', token_id,
-                            access_token)
-                    session_id = self.login(str(user_id.id()))
-
+          stored_credentials = ndb_pb.buscaToken(token_id, "google")
+          if stored_credentials == None:
+            print "DEBUG: stored_credentials" + stored_credentials
+            # Generate a valid username for a new user      
+            user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
+            session_id = self.login(str(user_id.id()))
             # Returns the session cookie
 
                     self.response.set_cookie('session',
