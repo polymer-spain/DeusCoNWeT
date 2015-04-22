@@ -29,16 +29,17 @@ html {
     font-size: 22px; 
   }
 }
+
 #landing #section2{
-  padding-top: 80px;
-  margin-top:35%;
+  padding-top: 100px;
+  margin-top:50%;
   z-index:0;
 }
 #landing #section3{
   z-index:0;
-  margin-top:45%;
+  margin-top:50%;
   padding-top: 150px;
-  margin-bottom: 25%;
+  margin-bottom: 50%;
 }
 #landing ul {
   list-style: circle;

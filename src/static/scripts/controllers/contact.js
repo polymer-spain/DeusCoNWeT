@@ -16,7 +16,7 @@ angular.module('PolymerBricks').controller('contactCtrl', function ($scope, $htt
     }
     if (message.value && sender.checkValidity() && sender.value) {
       var xhr = new XMLHttpRequest();
-      var uri = 'http://example-project-13.appspot.com/api/contact';
+      var uri = $scope.$parent.domain;
       var params = "action=contact&message=" + message.value + "&sender=" + sender.value;
 
       if (subject.value !== undefined) {
