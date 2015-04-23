@@ -1190,11 +1190,11 @@ class SubscriptionHandler(webapp2.RequestHandler):
             Keyword arguments: 
                 self -- info about the request built by webapp2
         """
-        # Get params
-        email = self.request.POST['email']
-        name = self.request.POST['name']
-        surname = self.request.POST['surname']
         try:
+            # Get params
+            email = self.request.POST['email']
+            name = self.request.POST['name']
+            surname = self.request.POST['surname']
             ndb_pb.nuevoUsuarioBeta(email, name, surname)
             self.response.set_status(201)
         except KeyError:
