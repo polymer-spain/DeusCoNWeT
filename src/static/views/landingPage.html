@@ -16,11 +16,11 @@
       <div style="padding-top: 30px"horizontal layout>
         <div class="slogan">
           <p>Mantente informado de toda la actividad en las redes de tus grupos de amigos</p>
-          <paper-button  id="beta">Suscribirse a la beta</paper-button>
+          <paper-button  ng-click="setSelected('4')" id="beta">Suscribirse a la beta</paper-button>
         </div>
         <div style="display:inline-block;margin-left:40%;text-align:center">
           <h3>Accede con tu red social</h3>
-          <paper-button ng-click="setSelected('4')" style="background-color: #B71C1C">Entrar</paper-button>
+          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
           <br>
         </div>
       </div>
@@ -86,4 +86,10 @@
       </div>
     </div>
   </section>
+</div>
+<div ng-show="sended" vertical center layout class="popup">
+  <core-icon-button style="position:absolute;right:0" ng-click="closeSended()" icon="close"></core-icon-button>
+
+  <span style="margin:7% 10%;font-size:1.4em">Se ha suscrito correctamente</span>
+
 </div>

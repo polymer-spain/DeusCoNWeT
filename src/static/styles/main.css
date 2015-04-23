@@ -63,6 +63,7 @@ paper-button {
   background:solid;
   height: 250px;
   width: 400px;
+  z-index: 1;
 }
 #popup > div {
   margin-top: 30px; 

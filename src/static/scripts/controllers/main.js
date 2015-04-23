@@ -11,6 +11,11 @@
 angular.module('PolymerBricks')
   .controller('MainCtrl', function ($scope, $location, $timeout) {
   $scope.status = false;
+  $scope.domain = $location.host();
+  $scope.shadow = false;
+  $scope.sended = false;
+
+
 
   $scope.logged = function(e){
     $scope.$apply(function(){
@@ -52,7 +57,7 @@ angular.module('PolymerBricks')
     });
   };
 
-  };
+
   $scope.sendData = function (token, tokenId, redSocial) {
     var xhr, uri, params;
     xhr = new XMLHttpRequest();
@@ -61,15 +66,16 @@ angular.module('PolymerBricks')
     xhr.open("POST", uri, true);
     xhr.withCredentials=true;
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201)) {
         console.log(xhr);  
       } else if (xhr.readyState === 4 && xhr.status !== 200) {
         console.log("[INFO]: Error al introducir datos en backend");
-    };
-    xhr.send(params); 
-  }
-
+      };
+      xhr.send(params); 
+    }
+  };
   $scope.changeView = function(view){
     $location.hash('');
     $location.path(view); // path not hash
@@ -78,7 +84,7 @@ angular.module('PolymerBricks')
   $scope.logout = function() {
     var button = document.querySelector('#nameId');
     // Selecionar el nombre del usuario
-    button.innerHTML="Entrar"
+    button.innerHTML="Entrar";
     $scope.changeView('/');
     $scope.status = false;
   }
@@ -94,13 +100,16 @@ angular.module('PolymerBricks')
   $scope.popup = false;
 
   $scope.showPopup = function(){
-    if (!$scope.status)
+    if (!$scope.status) {
       $scope.popup = true;
-    else 
+      $scope.shadow = true;
+    } else {
       $scope.logout();
+    }
   };
   $scope.hidePopup = function(){
     $scope.popup = false;
+    $scope.shadow = false;
   };
 
 });

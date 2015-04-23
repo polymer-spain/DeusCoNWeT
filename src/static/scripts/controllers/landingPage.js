@@ -56,7 +56,6 @@ angular.module('PolymerBricks')
 
 }).controller('landingCtrl', function ($scope,$timeout,$location,anchorSmoothScroll) {
   'use strict';
-
   if ($location.hash() === 'section1') {
     $scope.selected = 1;
   } else if ($location.hash() === 'section2') {
@@ -80,7 +79,7 @@ angular.module('PolymerBricks')
     document.querySelector(el2).setAttribute('selected',true);
 
   };
-  
+
   $scope.sub = function () {
     var name, sender, surname, error;
     name = document.querySelector('#namesus');
@@ -108,72 +107,37 @@ angular.module('PolymerBricks')
     }
 
     if (name.value && sender.checkValidity() && surname.value) {
-      var xhr, uri, params;
-      xhr = new XMLHttpRequest();
-      uri = $scope.$parent.domain+'/api/subscriptions';
-      params = "name=" + name.value + "&sender=" + sender.value + "&surname=" + surname.value;
+      var peticion, uri, params;
+      peticion = new XMLHttpRequest();
+      uri = 'http://test-frontend.example-project-13.appspot.com' + '/api/subscriptions';
+      params = "name=" + name.value + "&email=" + sender.value + "&surname=" + surname.value;
 
-      xhr.open("POST", uri, true);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && (xhr.status === 200)) {
+      peticion.open("POST", uri, true);
+      peticion.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      peticion.onreadystatechange = function () {
+        if (peticion.readyState === 4 && (peticion.status === 201)) {
           console.log('[INFO]: Todo fue bien');
+          name.value='';
+          sender.value='';
+          surname.value='';
+          $scope.$apply(function () { 
+            $scope.$parent.shadow = true;
+            $scope.$parent.sended = true;
+          });
 
-        }
-        if (xhr.readyState === 4 && !(xhr.status === 200 || xhr.status === 201)) {
-          console.log("[INFO]: Error al introducir datos en backend");
+        } else if (peticion.readyState === 4 && (peticion.status === 200)) {
+          error.innerHTML="* Ya esta registrado para la beta";
+          name.value='';
+          sender.value='';
+          surname.value='';
+        } else if (peticion.readyState === 4 && !(peticion.status === 200 || peticion.status === 201)) {
+          console.log("[INFO]: Error al introducir datos en backend",peticion);
         }
       };
-      xhr.send(params);
+      peticion.send(params);
     }
   };
 
-  $scope.sub = function () {
-    var name, sender, surname, error;
-    name = document.querySelector('#namesus');
-    sender = document.querySelector('#sendersus');
-    surname = document.querySelector('#surnamesus');
-    error = document.querySelector('#invalid');
-
-    error.innerHTML = '';
-    if (!name.value) {
-      error.innerHTML = "* El nombre es obligatorio";
-    }
-    
-    if (!surname.value) {
-      if (error.innerHTML) {
-        error.innerHTML +='<br>';
-      }
-      error.innerHTML += "* El apellido es obligatorio";
-    }
-    
-    if (!sender.value || !sender.checkValidity()) {
-      if (error.innerHTML) {
-        error.innerHTML +='<br>';
-      }
-      error.innerHTML += "* El correo debe ser valido"
-    }
-    
-    if (name.value && sender.checkValidity() && surname.value) {
-      var xhr, uri, params;
-      xhr = new XMLHttpRequest();
-      uri = $scope.$parent.domain+'/api/subscriptions';
-      params = "name=" + name.value + "&sender=" + sender.value + "&surname=" + surname.value;
-
-      xhr.open("POST", uri, true);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && (xhr.status === 200)) {
-          console.log('[INFO]: Todo fue bien');
-
-        }
-        if (xhr.readyState === 4 && !(xhr.status === 200 || xhr.status === 201)) {
-          console.log("[INFO]: Error al introducir datos en backend");
-        }
-      };
-      xhr.send(params);
-    }
-  };
 
   $scope.wheel = function(e) {
     $scope.$apply(function () {
@@ -205,6 +169,11 @@ angular.module('PolymerBricks')
 
   document.onmousewheel = $scope.wheel;
 
+  $scope.closeSended = function() {
+      $scope.$parent.shadow = false;
+      $scope.$parent.sended = false;
+      $scope.setSelected(1);
+  };
   $scope.setSelected = function(sel){
     $scope.selected = sel;
     $scope.cambiarAnchor("section"+sel);
