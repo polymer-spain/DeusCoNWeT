@@ -922,7 +922,7 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
 
 class OauthFacebookHandler(webapp2.RequestHandler):
 
-  # GET Method
+    # GET Method
 
     def get(self):
         """ - Returns the Facebook access_token for a user authenticated
@@ -945,72 +945,60 @@ class OauthFacebookHandler(webapp2.RequestHandler):
         else:
             self.response.set_status(400)
 
-  # POST Method
-
+    # POST Method
     def post(self):
         action = self.request.get('action')
         if action == 'login':
-
-      # Gets the data from the request form
-
+            # Gets the data from the request form
             try:
                 access_token = self.request.POST['access_token']
                 token_id = self.request.POST['token_id']
 
-        # Checks if the username was stored previously
-
+                # Checks if the username was stored previously
                 stored_credentials = ndb_pb.buscaToken(token_id,
-                        'facebook')
+                'facebook')
                 if stored_credentials == None:
 
-          # Stores the credentials in a Token Entity
-          # Generate a valid username for a new user in the user_credentials
-
+                    # Stores the credentials in a Token Entity
+                    # Generate a valid username for a new user in the user_credentials
                     user_id = ndb_pb.insertaUsuario('facebook',
-                            token_id, access_token)
+                    token_id, access_token)
                     session_id = self.login(str(user_id.id()))
 
-          # Returns the session cookie
-
+                    # Returns the session cookie
                     self.response.set_cookie('session',
-                            value=session_id, path='/', domain=domain,
-                            secure=True)
+                    value=session_id, path='/', domain=domain,
+                    secure=True)
                     self.response.set_status(201)
                 else:
 
-          # We store the new set of credentials
-
+                    # We store the new set of credentials
                     user_id = ndb_pb.modificaToken(token_id,
-                            access_token, 'facebook')
+                    access_token, 'facebook')
                     session_id = self.login(str(user_id.id()))
 
-          # Returns the session cookie
-
+                    # Returns the session cookie
                     self.response.set_cookie('session',
-                            value=session_id, path='/', domain=domain,
-                            secure=True)
+                    value=session_id, path='/', domain=domain,
+                    secure=True)
                     self.response.set_status(200)
             except KeyError:
                 response = \
-                    {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
         elif action == 'logout':
             cookie_value = self.request.cookies.get('session')
             if not cookie_value == None:
-
-        # Logout
-
+                # Logout
                 logout_status = self.logout(cookie_value)
-
-        # Delete cookie
-
+                # Delete cookie
                 self.response.delete_cookie('session')
                 self.response.set_status(200)
             else:
                 response = \
-                    {'error': 'This request requires a secure_cookie with the session identifier'}
+                {'error': 'This request requires a secure_cookie with the session identifier'}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
@@ -1134,6 +1122,8 @@ class OauthGooglePlusHandler(SessionHandler):
                 access_token = self.request.POST['access_token']
                 token_id = self.request.POST['token_id']
                 # Checks if the username was stored previously
+                print "DEBUG: token_id: " + token_id
+                print "DEBUG: access_token: " + access_token
                 stored_credentials = ndb_pb.buscaToken(token_id, "google")
                 if stored_credentials == None:
                     # Generate a valid username for a new user      
@@ -1141,8 +1131,8 @@ class OauthGooglePlusHandler(SessionHandler):
                     session_id = self.login(str(user_id.id()))
                     
                     # Returns the session cookie
-                    self.response.set_cookie('session',value=session_id, path='/', domain=domain,
-                        secure=True)
+                    #self.response.set_cookie('session',value=session_id, secure=True)
+                    self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
                     self.response.set_status(201)
                 else:
                     # We store the new set of credentials
@@ -1150,8 +1140,8 @@ class OauthGooglePlusHandler(SessionHandler):
                     session_id = self.login(str(user_id.id()))
 
                     # Returns the session cookie
-                    self.response.set_cookie('session',value=session_id, path='/', domain=domain,
-                        secure=False)
+                    #self.response.set_cookie('session',value=session_id, secure=False)
+                    self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
                     self.response.set_status(200)
             except KeyError:
                 response = \

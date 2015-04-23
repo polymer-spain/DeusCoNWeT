@@ -52,7 +52,7 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
     var xhr, uri, params;
     xhr = new XMLHttpRequest();
     uri = $scope.domain + '/api/oauth/' + redSocial;
-    params = "token_id=" + token + "&access_token=" + tokenId + "&action=login";
+    params = "token_id=" + tokenId + "&access_token=" + token + "&action=login";
     xhr.open("POST", uri, true);
     xhr.withCredentials=true;
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
