@@ -752,22 +752,28 @@ class OAuthGithubHandler(webapp2.RequestHandler):
 
 
 class OauthLinkedinHandler(webapp2.RequestHandler):
+"""
+  Class that represents the Linkedin token resource. 
+  Methods:
+    get -- Returns the GooglePlus access_token and token_id for a user authenticated
+    post -- Creates or updates the pair of token_id and access_token for an user.
+  """
 
-  # GET Method
-
+    # GET Method
     def get(self):
         """ - Returns the Linkedin access_token for a user authenticated
-    Keyword arguments: 
-    self -- info about the request build by webapp2
-    """
-
-        username = self.request.get('username', default_value='None')
-        if not username == 'None':
-            user_details = Token.query(Token.nombre_usuario
-                    == username).get()
-            if not user_details == None:
-                response = {'token_id': user_details.id_li,
-                            'access_token': user_details.token_li}
+        Keyword arguments: 
+        self -- info about the request build by webapp2
+        """
+        cookie_value = self.request.cookies.get('session')
+        if not cookie_value == None:
+            # Obtains info related to the user authenticated in the system
+            user = self.getUserInfo(cookie_value)
+            # Searchs for user's credentials 
+            user_credentials = ndb_pb.getToken(user,'linkedin')
+            if not user_credentials == None:
+                response = {'token_id': user_credentials.identificador,
+                            'access_token': user_credentials.token}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
@@ -776,19 +782,19 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
         else:
             self.response.set_status(400)
 
+
   # POST Method
-
-    def post(self):
-
+  def post(self):
+    """ - Creates or updates the pair of token_id and access_token for an user.
+        Keyword arguments: 
+        self -- info about the request build by webapp2
+    """
     # Gets the data from the request form
+    try:
+        access_token = self.request.POST['access_token']
+        token_id = self.request.POST['token_id']
 
-        try:
-            print self.request
-            access_token = self.request.POST['access_token']
-            token_id = self.request.POST['token_id']
-
-      # Checks if the username was stored previously
-
+        # Checks if the username was stored previously
             stored_credentials = Token.query(Token.id_li
                     == token_id).get()
             if stored_credentials == None:
@@ -821,7 +827,7 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
-        except:
+        except KeyError:
             response = \
                 {'error': 'You must provide a valid pair of access_token and token_id in the request'}
             self.response.content_type = 'application/json'
