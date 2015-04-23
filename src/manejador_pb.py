@@ -488,8 +488,7 @@ class SessionHandler(webapp2.RequestHandler):
         cypher = hashlib.sha256(str(user_id))
         hash_id = cypher.hexdigest()
 
-    # Store in memcache hash-user_id pair
-
+        # Store in memcache hash-user_id pair
         memcache.add(hash_id, user_id)
         return hash_id
 
@@ -508,24 +507,25 @@ class SessionHandler(webapp2.RequestHandler):
 class OAuthTwitterHandler(SessionHandler):
 
     """
-  Class that handles the Oauth Twitter Flow
-  Methods:
-    get -- Handles the calls related to Twitter Tokens.
-  """
-
-  # GET Method
-
-    def get(self):
-        """ Handles the calls related to Twitter Tokens. 
-    Depending on the 'action' param, performs different actions:
-    - 'action': login. Initiates the three-step oauth flow in Twitter. 
-    - 'action': credentials. Returns the Twitter token_id and access_token for a user authenticated.
-    - 'action': authorization. Manages the callback from Twitter in the Twitter oauth flow.
-    Keyword arguments: 
-      self -- info about the request build by webapp2
+    Class that handles the Oauth Twitter Flow from the server and represent the Twitter
+    token resource.
+    Methods:
+        get -- Handles the calls related to Twitter Tokens.
+        post -- 
     """
 
-    # self.response.headers['Access-Control-Allow-Origin'] = 'http://example-project-13.appspot.com'
+    # GET Method
+    def get(self):
+        """ Handles the calls related to Twitter Tokens. 
+        Depending on the 'action' param, performs different actions:
+            - 'action': login. Initiates the three-step oauth flow in Twitter. 
+            - 'action': credentials. Returns the Twitter token_id and access_token for a user authenticated.
+            - 'action': authorization. Manages the callback from Twitter in the Twitter oauth flow.
+        Keyword arguments: 
+        self -- info about the request build by webapp2
+        """
+
+        # self.response.headers['Access-Control-Allow-Origin'] = 'http://example-project-13.appspot.com'
 
         action = self.request.get('action', default_value='None')
         username = self.request.get('username', default_value='None')
@@ -546,7 +546,6 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.content_type = 'application/json'
 
             # Creates a channel to send the session details once the oauth flow is completed
-
             auth_token = client._get_auth_token()
             token = channel.create_channel(auth_token)
 
@@ -554,74 +553,64 @@ class OAuthTwitterHandler(SessionHandler):
                         'token': token}
             self.response.write(json.dumps(response))
         elif action == 'authorization':
-
+            # Gets the params in the request
             auth_token = self.request.get('oauth_token')
             auth_verifier = self.request.get('oauth_verifier')
+            # Retrieves user info
             user_info = client.get_user_info(auth_token,
                     auth_verifier=auth_verifier)
-
-            # TODO: query for the stored user (modificaToken)
-
-            stored_user = Token.query(Token.token == user_info['token'
-                    ]).get()
-
-            # We store the user id and token into a Token Entity
+            #Query for the stored user 
+            stored_user = ndb_pb.buscaToken(token_id, "twitter")
 
             if stored_user == None:
+                # We store the user id and token into a Token Entity
                 user_id = ndb_pb.insertaUsuario('Twitter',
                         user_info['username'], user_info['token'])
-
-                # Create Session
-
-                session_id = self.login(str(user_id.id()))
-                self.response.set_cookie('session', value=session_id,
-                        path='/', domain=domain, secure=True)
                 self.response.set_status(201)
+            else:
+                # We store the new user's access_token
+                user_id = ndb_pb.modificaToken(token_id,access_token, 'google')
+                self.response.set_status(200)
 
             # Create Session
-
-            session_id = self.login(stored_user)
-            self.response.set_cookie('session', value=session_id,
-                    path='/', domain=domain, secure=True)
-            self.response.set_status(200)
-
+            session_id = self.login(str(user_id.id()))
             # Send session details to client in the channel created previously
-
             session_message = {'session_id': session_id}
-            channel.send_message(auth_token,
-                                 json.dumps(session_message))
+            channel.send_message(auth_token, json.dumps(session_message))
+
         elif action == 'credentials' and not username == None:
-
-            user_details = Token.query(Token.nombre_usuario
-                    == username).get()
-            if not user_details == None:
-                response = {'username': user_details.nombre_usuario,
-                            'id_twitter': user_details.id_tw,
-                            'token_twitter': user_details.token_tw}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            cookie_value = self.request.cookies.get('session')
+            if not cookie_value == None:
+                # Obtains info related to the user authenticated in the system
+                user = self.getUserInfo(cookie_value)
+                # Searchs for user's credentials 
+                user_credentials = ndb_pb.getToken(user,'twitter')
+                if not user_credentials == None:
+                    response = {'token_id': user_credentials.identificador, 
+                    'access_token': user_credentials.token}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                else:
+                    self.response.set_status(404)
             else:
-                self.response.set_status(404)
-        else:
-
-            self.response.set_status(400)
-
+                self.response.set_status(400)
+    
     # POST Method
-
     def post(self):
+        """ Destroys the session previously initialized in the system
+            Keyword arguments: 
+            self -- info about the request built by webapp2
+        """
         action = self.request.get('action', default_value='')
         if action == 'logout':
             cookie_value = self.request.cookies.get('session')
             if not cookie_value == None:
                 print 'DEBUG: Cookie value: ' + cookie_value
-
                 # Logout
-
                 logout_status = self.logout(cookie_value)
 
                 # Delete cookie
-
                 self.response.delete_cookie('session')
                 print 'DEBUG: LOGOUT: ' + str(logout_status)
                 self.response.set_status(200)
@@ -632,7 +621,6 @@ class OAuthTwitterHandler(SessionHandler):
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
         else:
-
             response = {'error': 'Invalid value for the action param'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
@@ -921,22 +909,29 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
 
 
 class OauthFacebookHandler(webapp2.RequestHandler):
-
-    # GET Method
-
-    def get(self):
-        """ - Returns the Facebook access_token for a user authenticated
-    Keyword arguments: 
-    self -- info about the request build by webapp2
+    """
+    Class that represents the FaceBook token resource. 
+    Methods:
+        get -- Returns the Facebook access_token and token_id for a user authenticated
+        post -- Creates or updates the pair of token_id and access_token for an user and
+            initiates a new session or destroy a session previously initialized.
     """
 
-        username = self.request.get('username', default_value='None')
-        if not username == 'None':
-            user_details = Token.query(Token.nombre_usuario
-                    == username).get()
-            if not user_details == None:
-                response = {'token_id': user_details.id_fb,
-                            'access_token': user_details.token_fb}
+    # GET Method
+    def get(self):
+        """ - Returns the Facebook access_token for a user authenticated
+        Keyword arguments: 
+        self -- info about the request built by webapp2
+        """
+        cookie_value = self.request.cookies.get('session')
+        if not cookie_value == None:
+            # Obtains info related to the user authenticated in the system
+            user = self.getUserInfo(cookie_value)
+            # Searchs for user's credentials 
+            user_credentials = ndb_pb.getToken(user,'facebook')
+            if not user_credentials == None:
+                response = {'token_id': user_credentials.identificador,
+                            'access_token': user_credentials.token}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
@@ -958,7 +953,6 @@ class OauthFacebookHandler(webapp2.RequestHandler):
                 stored_credentials = ndb_pb.buscaToken(token_id,
                 'facebook')
                 if stored_credentials == None:
-
                     # Stores the credentials in a Token Entity
                     # Generate a valid username for a new user in the user_credentials
                     user_id = ndb_pb.insertaUsuario('facebook',
@@ -971,7 +965,6 @@ class OauthFacebookHandler(webapp2.RequestHandler):
                     secure=True)
                     self.response.set_status(201)
                 else:
-
                     # We store the new set of credentials
                     user_id = ndb_pb.modificaToken(token_id,
                     access_token, 'facebook')
@@ -1087,22 +1080,28 @@ class OauthStackOverflowHandler(webapp2.RequestHandler):
 
 
 class OauthGooglePlusHandler(SessionHandler):
-
-  # GET Method
-
+"""
+  Class that represents the GooglePlus token resource. 
+  Methods:
+    get -- Returns the GooglePlus access_token and token_id for a user authenticated
+    post -- Creates or updates the pair of token_id and access_token for an user and
+            initiates a new session or destroy a session previously initialized.
+  """
+    # GET Method
     def get(self):
-        """ - Returns the Github access_token for a user authenticated
-    Keyword arguments: 
-    self -- info about the request build by webapp2
-    """
-
-        username = self.request.get('username', default_value='None')
-        if not username == 'None':
-            user_details = Token.query(Token.nombre_usuario
-                    == username).get()
-            if not user_details == None:
-                response = {'token_id': user_details.id_google,
-                            'access_token': user_details.token_google}
+        """ - Returns the GooglePlus access_token and token_id for a user authenticated
+        Keyword arguments: 
+        self -- info about the request built by webapp2
+        """
+        cookie_value = self.request.cookies.get('session')
+        if not cookie_value == None:
+            # Obtains info related to the user authenticated in the system
+            user = self.getUserInfo(cookie_value)
+            # Searchs for user's credentials 
+            user_credentials = ndb_pb.getToken(user,'google')
+            if not user_credentials == None:
+                response = {'token_id': user_credentials.identificador,
+                            'access_token': user_credentials.token}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
@@ -1111,10 +1110,15 @@ class OauthGooglePlusHandler(SessionHandler):
         else:
             self.response.set_status(400)
 
-  # POST Method
-
+    # POST Method
     def post(self):
-
+        """ - It performs two possible actions:
+            Login: Creates or updates the pair of token_id and access_token for an user.
+                   Also, it initiates a session in the system. 
+            Logout: Destroys the session previously initialized in the system
+        Keyword arguments: 
+        self -- info about the request built by webapp2
+        """
         # Gets the data from the request form
         action = self.request.get('action')
         if action == 'login':
