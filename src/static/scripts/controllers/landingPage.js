@@ -8,8 +8,7 @@
  * Controller of the pruebaApp
  */
 angular.module('PolymerBricks')
-  .service('anchorSmoothScroll', function(){
-
+  .service('anchorSmoothScroll', function () {
   this.scrollTo = function(eID) {
     var startY = currentYPosition();
     var stopY = elmYPosition(eID);
@@ -55,18 +54,20 @@ angular.module('PolymerBricks')
 
   };
 
-})
-  .controller('landingCtrl', function ($scope,$timeout,$location,anchorSmoothScroll) {
+}).controller('landingCtrl', function ($scope,$timeout,$location,anchorSmoothScroll) {
   'use strict';
 
-  if ($location.hash() === 'section1'){
+  if ($location.hash() === 'section1') {
     $scope.selected = 1;
-  } else if ($location.hash() === 'section2'){
+  } else if ($location.hash() === 'section2') {
     $scope.selected = 2;
   }
-  else if ($location.hash() === 'section3'){
+  else if ($location.hash() === 'section3') {
     $scope.selected = 3;
-  } else {
+  } else if ($location.hash() === 'section4') {
+    $scope.selected = 4;
+  }
+  else {
     $scope.selected = 1;
   }
 
@@ -127,6 +128,53 @@ angular.module('PolymerBricks')
     }
   };
 
+  $scope.sub = function () {
+    var name, sender, surname, error;
+    name = document.querySelector('#namesus');
+    sender = document.querySelector('#sendersus');
+    surname = document.querySelector('#surnamesus');
+    error = document.querySelector('#invalid');
+
+    error.innerHTML = '';
+    if (!name.value) {
+      error.innerHTML = "* El nombre es obligatorio";
+    }
+    
+    if (!surname.value) {
+      if (error.innerHTML) {
+        error.innerHTML +='<br>';
+      }
+      error.innerHTML += "* El apellido es obligatorio";
+    }
+    
+    if (!sender.value || !sender.checkValidity()) {
+      if (error.innerHTML) {
+        error.innerHTML +='<br>';
+      }
+      error.innerHTML += "* El correo debe ser valido"
+    }
+    
+    if (name.value && sender.checkValidity() && surname.value) {
+      var xhr, uri, params;
+      xhr = new XMLHttpRequest();
+      uri = $scope.$parent.domain+'/api/subscriptions';
+      params = "name=" + name.value + "&sender=" + sender.value + "&surname=" + surname.value;
+
+      xhr.open("POST", uri, true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && (xhr.status === 200)) {
+          console.log('[INFO]: Todo fue bien');
+
+        }
+        if (xhr.readyState === 4 && !(xhr.status === 200 || xhr.status === 201)) {
+          console.log("[INFO]: Error al introducir datos en backend");
+        }
+      };
+      xhr.send(params);
+    }
+  };
+
   $scope.wheel = function(e) {
     $scope.$apply(function () {
       e.preventDefault();
@@ -144,9 +192,12 @@ angular.module('PolymerBricks')
         $scope.cambiarAnchor('section'+$scope.selected); 
 
         /* Section 3*/
-      } else if ($scope.selected === 3 && e.wheelDelta>0) {
+      } else if ($scope.selected === 3) {
         $scope.selected += scrolled;
-        $scope.cambiarAnchor('section2');
+        $scope.cambiarAnchor('section'+$scope.selected);
+      } else if ($scope.selected === 4 && e.wheelDelta > 0) {
+        $scope.selected +=scrolled;
+        $scope.cambiarAnchor('section3');
       };
       document.onmousewheel = $scope.wheel;
     });

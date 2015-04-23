@@ -1,11 +1,14 @@
 angular.module('PolymerBricks').controller('contactCtrl', function ($scope, $http, $modal) {
   'use strict';
 
+    
   $scope.sendEmail = function () {
-    var message = document.querySelector('#message');
-    var sender = document.querySelector('#sender');
-    var subject = document.querySelector('#subject');
-    var error = document.querySelector('#invalid');
+    var message, sender, subject, error;
+    message = document.querySelector('#message');
+    sender = document.querySelector('#sender');
+    subject = document.querySelector('#subject');
+    error = document.querySelector('#invalid');
+    
     error.innerHTML = '';
     if (!message.value) {
       error.innerHTML = "*El mensaje no debe estar vacio";
@@ -15,9 +18,10 @@ angular.module('PolymerBricks').controller('contactCtrl', function ($scope, $htt
       error.innerHTML += "<br>*El email debe ser válido";
     }
     if (message.value && sender.checkValidity() && sender.value) {
-      var xhr = new XMLHttpRequest();
-      var uri = 'http://example-project-13.appspot.com/api/contact';
-      var params = "action=contact&message=" + message.value + "&sender=" + sender.value;
+      var xhr, uri, params;
+      xhr = new XMLHttpRequest();
+      uri = 'http://example-project-13.appspot.com/api/contacts';
+      params = "message=" + message.value + "&sender=" + sender.value;
 
       if (subject.value !== undefined) {
         params += "&subject=" + subject.value;
@@ -26,7 +30,7 @@ angular.module('PolymerBricks').controller('contactCtrl', function ($scope, $htt
       xhr.open("POST", uri, true);
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
       xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && (xhr.status === 200) ) {
+        if (xhr.readyState === 4 && (xhr.status === 200)) {
           console.log('[INFO]: Todo fue bien');
           message.value = '';
           sender.value = '';

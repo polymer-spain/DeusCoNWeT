@@ -52,16 +52,19 @@ angular.module('PolymerBricks')
     });
   };
 
-
-  $scope.sendData = function(token,tokenId,redSocial){
-    var xhr = new XMLHttpRequest();
-    var uri = 'http://example-project-13.appspot.com/api/oauth/'+redSocial;
-    var params = "token_id="+token+"&access_token="+tokenId;
-    console.log(params);
-    xhr.open("POST",uri,true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && !(xhr.status === 200 || xhr.status === 201))
+  };
+  $scope.sendData = function (token, tokenId, redSocial) {
+    var xhr, uri, params;
+    xhr = new XMLHttpRequest();
+    uri = $scope.domain + '/api/oauth/' + redSocial;
+    params = "token_id=" + tokenId + "&access_token=" + token + "&action=login";
+    xhr.open("POST", uri, true);
+    xhr.withCredentials=true;
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201)) {
+        console.log(xhr);  
+      } else if (xhr.readyState === 4 && xhr.status !== 200) {
         console.log("[INFO]: Error al introducir datos en backend");
     };
     xhr.send(params); 
