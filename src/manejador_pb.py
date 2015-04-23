@@ -33,7 +33,7 @@ import cliente_gitHub
 
 # Global vars
 
-domain = 'http://example-project-13.appspot.com'
+domain = 'example-project-13.appspot.com'
 
 
 class ComponentListHandler(webapp2.RequestHandler):
@@ -1127,59 +1127,44 @@ class OauthGooglePlusHandler(SessionHandler):
 
     def post(self):
 
-      # Gets the data from the request form
-
+        # Gets the data from the request form
         action = self.request.get('action')
         if action == 'login':
             try:
                 access_token = self.request.POST['access_token']
                 token_id = self.request.POST['token_id']
-
-          # Checks if the username was stored previously
-          stored_credentials = ndb_pb.buscaToken(token_id, "google")
-          if stored_credentials == None:
-            print "DEBUG: stored_credentials" + stored_credentials
-            # Generate a valid username for a new user      
-            user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
-            session_id = self.login(str(user_id.id()))
-            # Returns the session cookie
-
-                    self.response.set_cookie('session',
-                            value=session_id, path='/', domain=domain,
-                            secure=True)
+                # Checks if the username was stored previously
+                stored_credentials = ndb_pb.buscaToken(token_id, "google")
+                if stored_credentials == None:
+                    # Generate a valid username for a new user      
+                    user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
+                    session_id = self.login(str(user_id.id()))
+                    
+                    # Returns the session cookie
+                    self.response.set_cookie('session',value=session_id, path='/', domain=domain,
+                        secure=True)
                     self.response.set_status(201)
                 else:
-
-            # We store the new set of credentials
-
-                    user_id = ndb_pb.modificaToken(token_id,
-                            access_token, 'google')
+                    # We store the new set of credentials
+                    user_id = ndb_pb.modificaToken(token_id,access_token, 'google')
                     session_id = self.login(str(user_id.id()))
 
-            # Returns the session cookie
-
-                    self.response.set_cookie('session',
-                            value=session_id, path='/', domain=domain,
-                            secure=False)
+                    # Returns the session cookie
+                    self.response.set_cookie('session',value=session_id, path='/', domain=domain,
+                        secure=False)
                     self.response.set_status(200)
             except KeyError:
-
                 response = \
                     {'error': 'You must provide a valid pair of access_token and token_id in the request'}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
         elif action == 'logout':
-
             cookie_value = self.request.cookies.get('session')
             if not cookie_value == None:
-
-          # Logout
-
+                # Logout
                 logout_status = self.logout(cookie_value)
-
-          # Delete cookie
-
+                # Delete cookie
                 self.response.delete_cookie('session')
                 print 'DEBUG: LOGOUT: ' + str(logout_status)
                 self.response.set_status(200)
