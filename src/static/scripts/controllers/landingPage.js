@@ -79,6 +79,53 @@ angular.module('PolymerBricks')
     document.querySelector(el2).setAttribute('selected',true);
 
   };
+  
+  $scope.sub = function () {
+    var name, sender, surname, error;
+    name = document.querySelector('#namesus');
+    sender = document.querySelector('#sendersus');
+    surname = document.querySelector('#surnamesus');
+    error = document.querySelector('#invalid');
+
+    error.innerHTML = '';
+    if (!name.value) {
+      error.innerHTML = "* El nombre es obligatorio";
+    }
+
+    if (!surname.value) {
+      if (error.innerHTML) {
+        error.innerHTML +='<br>';
+      }
+      error.innerHTML += "* El apellido es obligatorio";
+    }
+
+    if (!sender.value || !sender.checkValidity()) {
+      if (error.innerHTML) {
+        error.innerHTML +='<br>';
+      }
+      error.innerHTML += "* El correo debe ser valido"
+    }
+
+    if (name.value && sender.checkValidity() && surname.value) {
+      var xhr, uri, params;
+      xhr = new XMLHttpRequest();
+      uri = $scope.$parent.domain+'/api/subscriptions';
+      params = "name=" + name.value + "&sender=" + sender.value + "&surname=" + surname.value;
+
+      xhr.open("POST", uri, true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && (xhr.status === 200)) {
+          console.log('[INFO]: Todo fue bien');
+
+        }
+        if (xhr.readyState === 4 && !(xhr.status === 200 || xhr.status === 201)) {
+          console.log("[INFO]: Error al introducir datos en backend");
+        }
+      };
+      xhr.send(params);
+    }
+  };
 
   $scope.wheel = function(e) {
     $scope.$apply(function () {
@@ -101,7 +148,7 @@ angular.module('PolymerBricks')
         $scope.selected += scrolled;
         $scope.cambiarAnchor('section2');
       };
-        document.onmousewheel = $scope.wheel;
+      document.onmousewheel = $scope.wheel;
     });
   };
 
