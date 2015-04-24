@@ -54,7 +54,7 @@ angular.module('PolymerBricks')
 
   };
 
-}).controller('landingCtrl', function ($scope,$timeout,$location,anchorSmoothScroll) {
+}).controller('landingCtrl', function ($scope,$timeout,$location,anchorSmoothScroll,$anchorScroll) {
   'use strict';
   if ($location.hash() === 'section1') {
     $scope.selected = 1;
@@ -73,6 +73,11 @@ angular.module('PolymerBricks')
   $scope.cambiarAnchor = function(section){
     $location.hash(section);
     anchorSmoothScroll.scrollTo(section);   
+  };
+  $scope.goto = function (section) {
+    $scope.selected = section;
+    $location.hash('section'+section);
+    $anchorScroll()
   };
   $scope.setStyle = function (el, el2){
     document.querySelector(el).removeAttribute('selected')
@@ -170,9 +175,9 @@ angular.module('PolymerBricks')
   document.onmousewheel = $scope.wheel;
 
   $scope.closeSended = function() {
-      $scope.$parent.shadow = false;
-      $scope.$parent.sended = false;
-      $scope.setSelected(1);
+    $scope.$parent.shadow = false;
+    $scope.$parent.sended = false;
+    $scope.goto(1);
   };
   $scope.setSelected = function(sel){
     $scope.selected = sel;

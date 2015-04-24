@@ -97,7 +97,7 @@ paper-input-decorator /deep/ .label-text{
 
 }
 #landing .contacto > h2 {
- color: #B71C1C;
+  color: #B71C1C;
 }
 #send:hover {
   background-color: #B71C1C; 
@@ -125,4 +125,10 @@ span.invalid {
   font-size: 12px;
   font-family: 'Roboto';
 }
-
+paper-button.accept {
+  border:3px solid #b71c1c;
+  border-radius: 10px;
+  position:absolute;
+  bottom:60px;
+  left: 200px;
+}
