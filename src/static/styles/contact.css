@@ -3,6 +3,10 @@ html {
   background-size: cover;
   background-repeat: no-repeat;
 }
+.content {
+ margin-top: 150px; 
+  
+}
 .contacto{
   color: black;
   border-radius: 6px;

@@ -1,6 +1,6 @@
 angular.module('picbit').service('$backend', function () {
   'use strict';
-  this.endpoint = 'http://test-frontend.example-project-13.appspot.com';
+  this.endpoint = 'http://example-project-13.appspot.com';
 
   /* Envia el token y el identificador del token correspondiente a una red social */
   this.sendData = function (token, tokenId, redSocial, callback, errorCallback) {
@@ -15,7 +15,7 @@ angular.module('picbit').service('$backend', function () {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201) && callback) {
         callback(xhr.responseText);
       } else if (xhr.readyState === 4 && errorCallback) {
-        errorCallback(xhr.responseText);
+        errorCallback(xhr.responseText, xhr.status);
       }
     };
     xhr.send(params);
@@ -38,11 +38,31 @@ angular.module('picbit').service('$backend', function () {
       if (xhr.readyState === 4 && (xhr.status === 200) && callback) {
         callback(xhr.responseText);
       } else if (xhr.readyState === 4 && !(xhr.status === 201 && errorCallback)) {
-        errorCallback(xhr.responseText, xhr);
+        errorCallback(xhr.responseText, xhr.status);
       }
     };
     xhr.send(params);
   };
+
+  this.sendSub = function (name, sender, surname, callback, errorCallback) {
+    var xhr, uri, params;
+    xhr = new XMLHttpRequest();
+    uri = this.endpoint + '/api/subscriptions';
+    params = "name=" + name.value + "&email=" + sender.value + "&surname=" + surname.value;
+
+    xhr.open("POST", uri, true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 201 && callback) {
+        callback(xhr.responseText);
+      } else if (xhr.readyState === 4 && errorCallback) {
+        errorCallback(xhr.responseText, xhr.status);
+      }
+
+    };
+    xhr.send(params);
+  };
+
 
 }).service('$anchorSmoothScroll', function () {
   'use strict';
@@ -60,7 +80,7 @@ angular.module('picbit').service('$backend', function () {
     var leapY = stopY > startY ? startY + step : startY - step;
     var timer = 0;
     if (stopY > startY) {
-      for (var i=startY; i<stopY; i+=step ) {
+      for (var i=startY; i<stopY; i+=step) {
         setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
         leapY += step; if (leapY > stopY) leapY = stopY; timer++;
       } return;
