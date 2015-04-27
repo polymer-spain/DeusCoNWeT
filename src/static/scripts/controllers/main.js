@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name pruebaApp.controller:MainCtrl
@@ -8,8 +6,8 @@
  * Controller of the pruebaApp
  */
 
-angular.module('PolymerBricks')
-  .controller('MainCtrl', function ($scope, $location, $timeout) {
+angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend) {
+  'use strict';
   $scope.status = false;
 
   $scope.logged = function(e){
@@ -30,7 +28,7 @@ angular.module('PolymerBricks')
             $scope.$apply(function(){
               var response = JSON.parse(xhr.responseText);
               $scope.changeView('/user/'+e.detail.redSocial+'_'+response.id);
-              $scope.sendData(e.detail.token,response.id,e.detail.redSocial);
+              backend.sendData(e.detail.token,response.id,e.detail.redSocial);
             });
           } else if (xhr.readyState == 4) {
             console.log("[INFO]: Algo fue mal en google");
@@ -39,7 +37,7 @@ angular.module('PolymerBricks')
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
         $scope.changeView('/user/'+e.detail.redSocial+'_'+e.detail.userId);
-        $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
+        backend.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
       }
       // cambiamos el botton
       var button = document.querySelector('#nameId');
@@ -53,19 +51,6 @@ angular.module('PolymerBricks')
   };
 
 
-  $scope.sendData = function(token,tokenId,redSocial){
-    var xhr = new XMLHttpRequest();
-    var uri = 'http://example-project-13.appspot.com/api/oauth/'+redSocial;
-    var params = "token_id="+token+"&access_token="+tokenId;
-    console.log(params);
-    xhr.open("POST",uri,true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && !(xhr.status === 200 || xhr.status === 201))
-        console.log("[INFO]: Error al introducir datos en backend");
-    };
-    xhr.send(params); 
-  }
 
   $scope.changeView = function(view){
     $location.hash('');
