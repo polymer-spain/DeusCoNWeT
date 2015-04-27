@@ -33,9 +33,9 @@ def main():
 
 	# TEST 2
 	request_uri = basePath + "?action=login"
-	print "\nTEST 2: Haciendo petición POST a " + request_uri + " (login y actualizar credenciales)\n Status esperado: 200"
-	params = urllib.urlencode({'token_id': "idGoogle", 'access_token': "googleModifyTEST"})
-	make_request("POST", request_uri, params,200)	
+	print "\nTEST 2: Haciendo petición POST a " + request_uri + " (login de sesion iniciada anteriormente)\n Status esperado: 401"
+	params = urllib.urlencode({'token_id': "idGoogle", 'access_token': "googleERRORTEST"})
+	make_request("POST", request_uri, params,401)	
 
 	# TEST 3
 	request_uri = basePath + "?action=login"
@@ -51,10 +51,10 @@ def main():
 	make_request("POST", request_uri, params,400)
 
 	# TEST 5
-	# print "TEST 5: Haciendo petición POST a " + request_uri + "(logout con cookie de sesion)\n Status esperado: 200"
-	#request_uri = basePath + "?action=login"
-	#params = urllib.urlencode({'token_id': "idGoogle", 'access_token': "googleTEST"})
-	#make_request("POST", request_uri, params,201)
+	print "TEST 5: Haciendo petición POST a " + request_uri + "(logout con cookie de sesion)\n Status esperado: 200"
+	request_uri = basePath + "?action=login"
+	params = urllib.urlencode({'token_id': "idGoogle", 'access_token': "googleTEST"})
+	make_request("POST", request_uri, params,201)
 
 	# TEST 6
 	# Get (Sin cookie)
@@ -62,6 +62,13 @@ def main():
 	print "\nTEST 6: Haciendo petición GET a " + request_uri + " (obtener credenciales)\n Status esperado: 400"
 	params = urllib.urlencode({})
 	make_request("GET", request_uri, params,400)
+
+	# TEST 7
+	# Login (prueba de nueva sesión y actualizar credenciales)
+	request_uri = basePath + "?action=login"
+	print "\nTEST 7: Haciendo petición POST a " + request_uri + " (prueba de nueva sesión y actualizar credenciales)\n Status esperado: 200"
+	params = urllib.urlencode({'token_id': "idGoogle", 'access_token': "googleModifyTEST"})
+	make_request("POST", request_uri, params,200)	
 
 	# Cerramos conexión
 	connection.close()
