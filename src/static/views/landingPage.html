@@ -67,7 +67,7 @@
     <div class="content" oscuro=true>
       <div style="" horizontal center-justified layout>
         <div class='contacto'>
-          <h2>Suscríbete a la beta</h2>
+          <h2 style="text-decoration:underline">Suscríbete a la beta</h2>
           <div><paper-input-decorator autovalidate floatingLabel label="Nombre" error="Introduce un nombre">
             <input id="namesus" type="name" aria-label="required">
             </paper-input-decoratos></div>
@@ -87,9 +87,14 @@
     </div>
   </section>
 </div>
-<div ng-show="sended" vertical center layout class="popup">
-  <core-icon-button fill  raised style="position:absolute;right:0;top:0" ng-click="closeSended()" icon="close"></core-icon-button>
-  <p style="margin:80px auto;font-size:1.4em">Se ha suscrito correctamente</p>
+<div ng-show="sended" class="popup">
+  <div>
+    <core-icon-button fill  raised style="position:absolute;right:0;top:0" ng-click="closeSended()" icon="close"></core-icon-button>
+    <p style="margin:8px auto;font-size:1.4em">Se ha suscrito correctamente</p>
+  </div>
+  <div style="margin-top: 40px;">
+Se ha suscrito a la versión beta de PicBit.<br>Le iremos informando de las actualizaciones que se vayan introducciendo.
+  </div>
   <paper-button class="accept" ng-click="closeSended()">Aceptar</paper-button>
 
 </div>

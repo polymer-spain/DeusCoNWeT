@@ -129,6 +129,11 @@ paper-button.accept {
   border:3px solid #b71c1c;
   border-radius: 10px;
   position:absolute;
-  bottom:60px;
+  bottom:30px;
   left: 200px;
+}
+
+paper-button.accept:hover {
+  background-color: #b71c1c;
+  color:whitesmoke;
 }

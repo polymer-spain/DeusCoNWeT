@@ -8,8 +8,7 @@
  * Controller of the pruebaApp
  */
 
-angular.module('PolymerBricks')
-  .controller('MainCtrl', function ($scope, $location, $timeout) {
+angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $location, $timeout) {
   $scope.status = false;
   $scope.domain = $location.host();
   $scope.shadow = false;
@@ -17,18 +16,17 @@ angular.module('PolymerBricks')
 
 
 
-  $scope.logged = function(e){
-    $scope.$apply(function(){
+  $scope.logged = function (e) {
+    $scope.$apply(function () {
 
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
-      if (e.detail.redSocial === 'twitter'){
-        $scope.changeView('/user/'+e.detail.redSocial+'_'+e.detail.userId);
-      }
-      else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
+      if (e.detail.redSocial === 'twitter') {
+        $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
+      } else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
 
         var xhr = new XMLHttpRequest();
-        var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token='+e.detail.token;
+        var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
         xhr.open("GET",uri,true);
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4 && xhr.status === 200){
@@ -43,8 +41,8 @@ angular.module('PolymerBricks')
         }
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
-        $scope.changeView('/user/'+e.detail.redSocial+'_'+e.detail.userId);
-        $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
+        $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
+        $scope.sendData(e.detail.token, e.detail.userId, e.detail.redSocial);
       }
       // cambiamos el botton
       var button = document.querySelector('#nameId');
