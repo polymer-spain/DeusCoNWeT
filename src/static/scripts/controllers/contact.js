@@ -17,9 +17,12 @@ angular.module('picbit').controller('contactCtrl', function ($scope, $backend) {
     if (message.value && sender.checkValidity() && sender.value) {
 
       var callback = function () {
-        document.querySelector('#message').value = '';
+/*        document.querySelector('#message').value = '';
         document.querySelector('#sender').value = '';
-        document.querySelector('#subject').value = '';
+        document.querySelector('#subject').value = '';*/
+        message.value = '';
+        sender.value = '';
+        subject.value = '';
       }
       $backend.sendEmail(message.value, sender.value, subject.value, callback);
     }

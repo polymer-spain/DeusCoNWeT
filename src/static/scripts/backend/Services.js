@@ -1,66 +1,75 @@
-angular.module('picbit').service('$backend', function () {
+angular.module('picbit').service('$backend', function ($http) {
   'use strict';
-  this.endpoint = 'http://example-project-13.appspot.com';
+  this.endpoint = 'http://test-frontend.example-project-13.appspot.com';
 
   /* Envia el token y el identificador del token correspondiente a una red social */
   this.sendData = function (token, tokenId, redSocial, callback, errorCallback) {
-    var xhr, uri, params;
-    xhr = new XMLHttpRequest();
+    var request, uri, params;
     uri = this.endpoint + '/api/oauth/' + redSocial;
     params = "token_id=" + tokenId + "&access_token=" + token;
-
-    xhr.open("POST", uri, true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201) && callback) {
-        callback(xhr.responseText);
-      } else if (xhr.readyState === 4 && errorCallback) {
-        errorCallback(xhr.responseText, xhr.status);
-      }
+    request = {
+      method: 'post',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      data: params
     };
-    xhr.send(params);
+    $http(request).success(function (data) {
+      if (callback) {
+        callback(data);
+      }
+    }).error(function (data, status) {
+      if (errorCallback) {
+        errorCallback(data, status);
+      }
+    });
   };
 
   /* Contacto: envia un email al backend */
   this.sendEmail = function (message, sender, subject, callback, errorCallback) {
-    var xhr, uri, params;
-    xhr = new XMLHttpRequest();
+    var request, uri, params;
+
     uri = this.endpoint + '/api/contact';
-    params = "action=contact&message=" + message.value + "&sender=" + sender.value;
+    params = "action=contact&message=" + message + "&sender=" + sender;
 
     if (subject) {
       params += '&subject=' + subject;
     }
-
-    xhr.open("POST", uri, true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && (xhr.status === 200) && callback) {
-        callback(xhr.responseText);
-      } else if (xhr.readyState === 4 && !(xhr.status === 201 && errorCallback)) {
-        errorCallback(xhr.responseText, xhr.status);
-      }
+    request = {
+      method: 'post',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      data: params
     };
-    xhr.send(params);
+    $http(request).success(function (data) {
+      if (callback) {
+        callback(data);
+      }
+    }).error(function (data, status) {
+      if (errorCallback) {
+        errorCallback(data, status);
+      }
+    });
   };
 
   this.sendSub = function (name, sender, surname, callback, errorCallback) {
-    var xhr, uri, params;
-    xhr = new XMLHttpRequest();
+    var request, uri, params;
     uri = this.endpoint + '/api/subscriptions';
-    params = "name=" + name.value + "&email=" + sender.value + "&surname=" + surname.value;
-
-    xhr.open("POST", uri, true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 201 && callback) {
-        callback(xhr.responseText);
-      } else if (xhr.readyState === 4 && errorCallback) {
-        errorCallback(xhr.responseText, xhr.status);
-      }
-
+    params = "name=" + name + "&email=" + sender + "&surname=" + surname;
+    request = {
+      method: 'post',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      data: params
     };
-    xhr.send(params);
+    $http(request).success(function (data) {
+      if (callback) {
+        callback(data);
+      }
+    }).error(function (data, status) {
+      if (errorCallback) {
+        errorCallback(data, status);
+      }
+    });
   };
 
 
