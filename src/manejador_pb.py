@@ -661,9 +661,9 @@ class OAuthGithubHandler(webapp2.RequestHandler):
     # POST Method
     def post(self):
         """ Defines the flow of the process to get an access_token to use the Github API
-    Keyword arguments: 
-    self -- info about the request build by webapp2
-    """
+        Keyword arguments: 
+        self -- info about the request build by webapp2
+        """
 
         action = self.request.get('action', default_value='request_code'
                                   )
@@ -678,37 +678,31 @@ class OAuthGithubHandler(webapp2.RequestHandler):
         connection = httplib.HTTPSConnection(url)
         if action == 'request_token':
 
-      # Cogemos el codigo de la peticion
-
+            # Cogemos el codigo de la peticion
             code = self.request.get('code')
 
-      # Indicamos los parametros de la peticion a github
-
+            # Indicamos los parametros de la peticion a github
             params_token = urllib.urlencode({'client_id': client_id,
                     'client_secret': client_secret, 'code': code})
 
-      # Realizamos la peticion en la conexion
-
+            # Realizamos la peticion en la conexion
             connection.request('POST', access_token_url, params_token)
 
-      # Cogemos la respuesta de la peticion y realizamos un split
-      # para coger el valor del token
-
+            # Cogemos la respuesta de la peticion y realizamos un split
+            # para coger el valor del token
             response_token = connection.getresponse()
             data_token = response_token.read()
             access_token = data_token.split('&')
             access_token = access_token[0].split('=')[1]
 
-      # Gestion de la respuesta de webapp
-
+            # Gestion de la respuesta de webapp
             self.response.content_type = 'application/json'
             response = '{"token": "' + access_token + '"}'
             self.response.write(response)
             connection.close()
             self.response.set_status(200)
 
-      # Obtenemos los detalles del usuario autenticado
-
+            # Obtenemos los detalles del usuario autenticado
             connectionAPI = httplib.HTTPSConnection('api.github.com')
             headers = {'Accept': 'application/vnd.github.v3+json',
                        'User-Agent': 'PolymerBricks-App',
@@ -717,46 +711,26 @@ class OAuthGithubHandler(webapp2.RequestHandler):
             response = connectionAPI.getresponse()
             user_details = json.loads(response.read())
 
-      # Almacenamos el par id usuario/token autenticado
-
-            stored_credentials = Token.query(Token.id_git
-                    == str(user_details['id'])).get()
+            # Buscamos el par id usuario/token autenticado en la base
+            ndb_pb.buscaToken(str(user_details['id']), "github")
             if stored_credentials == None:
-
-        # Almacena las credenciales en una entidad Token
-        # TODO: Generar un id de usuario valido
-
-                user_credentials = Token(id_git=str(user_details['id'
-                        ]), token_git=access_token)
-                user_credentials.put()
-                response = {'username': user_credentials.nombre_usuario}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
+                # Almacena las credenciales en una entidad Token
+                user_credentials = ndb_pb.insertaUsuario('github',str(user_details['id']),
+                    access_token)
                 self.response.set_status(201)
             else:
-
-        # Almacenamos el access token recibido
-
-                stored_credentials.id_git = str(user_details['id'])
-                stored_credentials.token_git = access_token
-                stored_credentials.put()
-
-        # TODO: devolver el propietario de las claves
-
-                response = \
-                    {'username': stored_credentials.nombre_usuario}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
+                # Almacenamos el access token recibido
+                user_id = ndb_pb.modificaToken(str(user_details['id']),access_token, 'github')
                 self.response.set_status(200)
 
 
 class OauthLinkedinHandler(webapp2.RequestHandler):
-"""
-  Class that represents the Linkedin token resource. 
-  Methods:
-    get -- Returns the GooglePlus access_token and token_id for a user authenticated
-    post -- Creates or updates the pair of token_id and access_token for an user.
-  """
+    """
+    Class that represents the Linkedin token resource. 
+    Methods:
+        get -- Returns the GooglePlus access_token and token_id for a user authenticated
+        post -- Creates or updates the pair of token_id and access_token for an user.
+    """
 
     # GET Method
     def get(self):
@@ -782,18 +756,18 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
             self.response.set_status(400)
 
 
-  # POST Method
-  def post(self):
-    """ - Creates or updates the pair of token_id and access_token for an user.
-        Keyword arguments: 
-        self -- info about the request build by webapp2
-    """
-    # Gets the data from the request form
-    try:
-        access_token = self.request.POST['access_token']
-        token_id = self.request.POST['token_id']
+    # POST Method
+    def post(self):
+        """ - Creates or updates the pair of token_id and access_token for an user.
+            Keyword arguments: 
+            self -- info about the request build by webapp2
+        """
+        # Gets the data from the request form
+        try:
+            access_token = self.request.POST['access_token']
+            token_id = self.request.POST['token_id']
 
-        # Checks if the username was stored previously
+            # Checks if the username was stored previously
             stored_credentials =  ndb_pb.buscaToken(token_id, "linkedin")
             if stored_credentials == None:
                 # Stores the credentials in a Token Entity
