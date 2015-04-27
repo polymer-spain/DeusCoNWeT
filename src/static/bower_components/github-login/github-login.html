@@ -1,11 +1,22 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-ajax/core-ajax.html">
 <link rel="import" href="../paper-button/paper-button.html">
-
+<link rel="import" href="../core-icon/core-icon.html">
 <polymer-element name="github-login" attributes="client_id scope">
   <!-- Lo primero es el template -->
   <template>
     <style>
+		#loginGithub {
+  background: #393837;
+  color: white;
+  border-radius: 3px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-transform: none;
+  vertical-align: center;
+  width: 100%;
+}
     </style>
     <core-ajax
                id="githubcode" url="http://example-project-13.appspot.com/api/oauth/github"
@@ -19,7 +30,9 @@
                >
     </core-ajax>
 
-    <paper-button id="loginGithub" on-click="{{login}}">
+    <paper-button  id="loginGithub" on-click="{{login}}" >
+    		
+	<core-icon src='images/GitHub-Mark.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
       Sign in with GitHub
     </paper-button>
 

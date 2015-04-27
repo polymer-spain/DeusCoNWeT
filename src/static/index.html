@@ -21,31 +21,27 @@
       <img class="logo" src="images/logo.png">
 
       <h2 id="name" ng-click="changeView('/')" flex>	DEUS CoNWeT</h2>
-      <div style="border-right: 3px solid #B71C1C; padding-right: 10px">
-        <paper-button>Inicio</paper-button>
-        <paper-button>Sobre nosotros</paper-button>
-        <paper-button>Contactar</paper-button>
-      </div>
+
       
-  <polymer-element name="x-trigger" extends="core-icon-button" relative on-tap="{{toggle}}">
+  <polymer-element name="menu-desplegable" extends="core-icon-button" relative on-tap="{{toggle}}">
   <script>
     Polymer({
       toggle: function() {
         if (!this.dropdown) {
           this.dropdown = this.querySelector('core-dropdown');
-        }
-        this.dropdown && this.dropdown.toggle();
+        	}
+		  this.dropdown && this.dropdown.toggle();
       }
     });
   </script>
   </polymer-element>
   
-<x-trigger src="images/logo.png"><span style="padding-left: 3px;vertical-align:middle">Entrar</span>
+<menu-desplegable src="images/logo.png" id="mas"><span style="padding-left: 3px;vertical-align:middle">Más</span>
         <core-dropdown class="open-below">
-        <paper-button><span style="padding-left: 3px;vertical-align:middle">Contactar</span></paper-button><br>
-        <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Perfil</span></a></paper-button>
+			<paper-button><a style="text-decoration:none;color:#000;" href="/user/123123"><span style="padding-left: 3px;vertical-align:middle">Mi Home</span></a></paper-button><br>
+        <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Configurar Perfil</span></a></paper-button>
         </core-dropdown>
- </x-trigger>
+ </menu-desplegable>
 
       <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
         <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
@@ -69,7 +65,7 @@
 
       <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
       <div vertical center-justified layout class="button-login">
-        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://example-project-13.appspot.com/index.html"></google-login>
+        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://localhost:8080"></google-login>
         <twitter-login class="button-login"></twitter-login>
         <login-facebook class="button-login" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
       </div>
@@ -93,5 +89,6 @@
     <script src="scripts/controllers/profile.js"></script>    
     <script src="scripts/controllers/about.js"></script>
     <script src="scripts/controllers/contact.js"></script>
+    
   </body>
 </html>

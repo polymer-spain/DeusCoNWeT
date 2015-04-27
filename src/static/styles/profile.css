@@ -8,7 +8,8 @@ html {
   margin-top: 7%;
   padding: 1% 5% 2% 5%;
   font-size: 1.2em;
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#26000000',GradientType=1 );  IE6-9 fallback on horizontal gradient 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#26000000',GradientType=1 );
+
 }
 #email {
 	
@@ -50,7 +51,7 @@ select{
 	padding: 5px;
 	font-size: 13px;
 	line-height: 100%;
-	border: 1px solid #9d9d9d;
+	border: 1px solid rgba(255, 255, 255, 0.65);
 	border-radius: 0;
 	height: 30px;
 	margin-bottom: 5px;
@@ -77,9 +78,11 @@ select{
 			-moz-transition: all 0.3s ease-in;
 				-o-transition: all 0.3s ease-in;
 					transition: all 0.3s ease-in;
+		margin-top: 5px;
 		background: rgba(253, 244, 244, 0.67);	
 		width: 56%;
 		height: 40%;
+	 	min-width: 200px;
 		overflow: hidden;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
 		border-radius: 10px 10px 10px 10px;	
@@ -103,25 +106,51 @@ core-submenu::shadow #submenu {
   margin-left: 7px;
 }
 
-core-submenu::shadow #submenuItem {
-  margin-left: 25%;
+core-submenu::shadow #submenuItem::shadow #label {
+  margin: 0 auto;
 }
 
-login-facebook{
-	
-	width: 125%;
-}
+
 
 #label{
 	
 	margin-left: 25%;
 	
 }
-google-login{width: 125%;}
-twitter-login{width: 125%;}
-github-login{width: 125%;}
-linkedin-login{width: 125%;}
-instagram-login{width: 125%;}
+/*Ajuste tamaño botones*/
+login-facebook{min-width: 100%;}
+google-login{min-width: 100%;}
+twitter-login{min-width: 100%;}
+github-login{min-width: 100%;}
+linkedin-login{min-width: 100%;}
+instagram-login{min-width: 100%;}
+/*Ajuste textos botones*/
+google-login::shadow #button{ 
+
+	font-size: 17px;
+}
+login-facebook::shadow .login{ 
+
+	font-size: 17px;
+}
+twitter-login::shadow #TwitterButton{ 
+
+	font-size: 17px;
+}
+github-login::shadow #loginGithub{ 
+
+	font-size: 17px;
+}
+linkedin-login::shadow #LinkedinButton{ 
+
+	font-size: 17px;
+}
+instagram-login::shadow #InstagramButton{ 
+
+	font-size: 17px;
+}
+
+
 
 input[type=submit] {
 padding:5px 15px; background:#ccc; border:0 none;
@@ -170,6 +199,7 @@ option {
 	padding: 10px;
 }
 input:hover{
+
 	transform:scale(1.03,1.03);
     -webkit-transform:scale(1.03,1.03);
 

@@ -14,10 +14,13 @@ angular.module('PolymerBricks')
 
   $scope.logged = function(e){
     $scope.$apply(function(){
+		
 
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter'){
+		  	 if($location.pathname.indexOf("profile")!=0)
+		 		return
           $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
       }
       else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
@@ -29,8 +32,11 @@ angular.module('PolymerBricks')
           if (xhr.readyState == 4 && xhr.status === 200){
             $scope.$apply(function(){
               var response = JSON.parse(xhr.responseText);
-              $location.path('/user/'+e.detail.redSocial+'_'+response.id);
               $scope.sendData(e.detail.token,response.id,e.detail.redSocial);
+			  if($location.pathname.indexOf("profile")!=0)
+		 		return
+		      $location.path('/user/'+e.detail.redSocial+'_'+response.id);              
+
             });
           } else if (xhr.readyState == 4) {
             console.log("[INFO]: Algo fue mal en google");
@@ -38,8 +44,10 @@ angular.module('PolymerBricks')
         }
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
-          $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
           $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
+		  	  if($location.pathname.indexOf("profile")!=0)
+		 		return
+          $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
       }
       // cambiamos el botton
       var button = document.querySelector('#nameId');

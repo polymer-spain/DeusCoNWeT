@@ -84,11 +84,15 @@ limitations under the License.
 			tokenType:'',
 			expiresToken:'',
 			textLogin:'Sign in with Google+',
+			status:'',
 
 
 			ready : function(){
 				if (this.textLogin.length != 0) {
 					this.text = this.textLogin;
+				};
+				if (this.status == 'true') {
+				this.textLogin='Logged in with Google+';
 				};
 
 			},
@@ -120,7 +124,7 @@ limitations under the License.
 /*							back.$.button.className="disconnect";
 							back.textLogin='Log out';*/
 							win.close();
-
+							
 						}
 					} catch(e) {
 					}
