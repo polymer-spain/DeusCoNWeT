@@ -1055,6 +1055,7 @@ class OauthGooglePlusHandler(SessionHandler):
                 print "DEBUG: token_id: " + token_id
                 print "DEBUG: access_token: " + access_token
                 stored_credentials = ndb_pb.buscaToken(token_id, "google")
+                print stored_credentials
                 if stored_credentials == None:
                     # Generate a valid username for a new user      
                     user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
