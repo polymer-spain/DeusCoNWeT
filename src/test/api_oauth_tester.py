@@ -27,26 +27,26 @@ def main():
 	#Logins
 	# TEST 1
 	request_uri = basePath + "?action=login"
-	print "TEST 1: Haciendo petición POST a " + request_uri + " (login)\n Status esperado: 201"
+	print "\nTEST 1: Haciendo petición POST a " + request_uri + " (login)\n Status esperado: 201"
 	params = urllib.urlencode({'token_id': "idGoogle", 'access_token': "googleTEST"})
 	make_request("POST", request_uri, params,201)
 
 	# TEST 2
 	request_uri = basePath + "?action=login"
-	print "TEST 2: Haciendo petición POST a " + request_uri + " (login y actualizar credenciales)\n Status esperado: 200"
+	print "\nTEST 2: Haciendo petición POST a " + request_uri + " (login y actualizar credenciales)\n Status esperado: 200"
 	params = urllib.urlencode({'token_id': "idGoogle", 'access_token': "googleModifyTEST"})
 	make_request("POST", request_uri, params,200)	
 
 	# TEST 3
 	request_uri = basePath + "?action=login"
-	print "TEST 3: Haciendo petición POST a " + request_uri + " (login)\n Status esperado: 201"
+	print "\nTEST 3: Haciendo petición POST a " + request_uri + " (login)\n Status esperado: 201"
 	params = urllib.urlencode({'token_id': "idGoogle2", 'access_token': "googleTEST"})
 	make_request("POST", request_uri, params,201)
 
 	#Logouts
 	# TEST 4
 	request_uri = basePath + "?action=logout"
-	print "TEST 4: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 400"
+	print "\nTEST 4: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 400"
 	params = urllib.urlencode({})
 	make_request("POST", request_uri, params,400)
 
@@ -59,7 +59,7 @@ def main():
 	# TEST 6
 	# Get (Sin cookie)
 	request_uri = basePath + "?action=login"
-	print "TEST 6: Haciendo petición GET a " + request_uri + " (obtener credenciales)\n Status esperado: 400"
+	print "\nTEST 6: Haciendo petición GET a " + request_uri + " (obtener credenciales)\n Status esperado: 400"
 	params = urllib.urlencode({})
 	make_request("GET", request_uri, params,400)
 
