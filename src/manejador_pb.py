@@ -725,64 +725,63 @@ class OAuthGithubHandler(webapp2.RequestHandler):
 
 
 class OauthLinkedinHandler(webapp2.RequestHandler):
-    """
+  """
     Class that represents the Linkedin token resource. 
     Methods:
         get -- Returns the GooglePlus access_token and token_id for a user authenticated
         post -- Creates or updates the pair of token_id and access_token for an user.
-    """
-
-    # GET Method
-    def get(self):
-        """ - Returns the Linkedin access_token for a user authenticated
-        Keyword arguments: 
-        self -- info about the request build by webapp2
-        """
-        cookie_value = self.request.cookies.get('session')
-        if not cookie_value == None:
-            # Obtains info related to the user authenticated in the system
-            user = self.getUserInfo(cookie_value)
-            # Searchs for user's credentials 
-            user_credentials = ndb_pb.getToken(user,'linkedin')
-            if not user_credentials == None:
-                response = {'token_id': user_credentials.identificador,
-                            'access_token': user_credentials.token}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
-            else:
-                self.response.set_status(404)
-        else:
-            self.response.set_status(400)
+  """
+  # GET Method
+  def get(self):
+      """ - Returns the Linkedin access_token for a user authenticated
+      Keyword arguments: 
+      self -- info about the request build by webapp2
+      """
+      cookie_value = self.request.cookies.get('session')
+      if not cookie_value == None:
+          # Obtains info related to the user authenticated in the system
+          user = self.getUserInfo(cookie_value)
+          # Searchs for user's credentials 
+          user_credentials = ndb_pb.getToken(user,'linkedin')
+          if not user_credentials == None:
+              response = {'token_id': user_credentials.identificador,
+                          'access_token': user_credentials.token}
+              self.response.content_type = 'application/json'
+              self.response.write(json.dumps(response))
+              self.response.set_status(200)
+          else:
+              self.response.set_status(404)
+      else:
+          self.response.set_status(400)
 
 
     # POST Method
-    def post(self):
-        """ - Creates or updates the pair of token_id and access_token for an user.
-            Keyword arguments: 
-            self -- info about the request build by webapp2
-        """
-        # Gets the data from the request form
-        try:
-            access_token = self.request.POST['access_token']
-            token_id = self.request.POST['token_id']
+  def post(self):
+      """ - Creates or updates the pair of token_id and access_token for an user.
+          Keyword arguments: 
+          self -- info about the request build by webapp2
+      """
+      # Gets the data from the request form
+      try:
+          access_token = self.request.POST['access_token']
+          token_id = self.request.POST['token_id']
 
-            # Checks if the username was stored previously
-            stored_credentials =  ndb_pb.buscaToken(token_id, "linkedin")
-            if stored_credentials == None:
-                # Stores the credentials in a Token Entity
-                ndb_pb.insertaUsuario('linkedin', token_id,access_token)
-                self.response.set_status(201)
-            else:
-                # We store the new set of credentials
-                user_id = ndb_pb.modificaToken(token_id, access_token, 'linkedin')
-                self.response.set_status(200)
-        except KeyError:
-            response = \
-                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(400)
+          # Checks if the username was stored previously
+          stored_credentials =  ndb_pb.buscaToken(token_id, "linkedin")
+          if stored_credentials == None:
+              # Stores the credentials in a Token Entity
+              ndb_pb.insertaUsuario('linkedin', token_id,access_token)
+              self.response.set_status(201)
+          else:
+              # We store the new set of credentials
+              user_id = ndb_pb.modificaToken(token_id, access_token, 'linkedin')
+              self.response.set_status(200)
+      except KeyError:
+          response = \
+              {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+          self.response.content_type = 'application/json'
+          self.response.write(json.dumps(response))
+          self.response.set_status(400)
 
 
 class OAuthInstagramHandler(webapp2.RequestHandler):
