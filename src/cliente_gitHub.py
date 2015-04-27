@@ -27,7 +27,7 @@ params = urllib.urlencode({})
 # Other OAuth token posible 
 # "Authorization": "token 4b844fda635ed7e58460a1c65252df7090c38438"
 headers = {"Accept": "application/vnd.github.v3+json",
-"User-Agent": "PolymerBricks-App",
+"User-Agent": "PicBit-App",
 "Authorization": "token TOKEN_GITHUB"}
 
 # Opens the connection to the GitHub API endpoint

@@ -705,7 +705,7 @@ class OAuthGithubHandler(webapp2.RequestHandler):
             # Obtenemos los detalles del usuario autenticado
             connectionAPI = httplib.HTTPSConnection('api.github.com')
             headers = {'Accept': 'application/vnd.github.v3+json',
-                       'User-Agent': 'PolymerBricks-App',
+                       'User-Agent': 'PicBit-App',
                        'Authorization': 'token TOKEN_GITHUB'}
             connectionAPI.request('GET', '/user', params_token, headers)
             response = connectionAPI.getresponse()
