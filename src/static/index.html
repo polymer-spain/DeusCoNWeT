@@ -36,14 +36,18 @@
   </script>
   </polymer-element>
   
-<menu-desplegable src="images/logo.png" id="mas"><span style="padding-left: 3px;vertical-align:middle">Más</span>
+<menu-desplegable src="images/logo.png" id="mas" ng-show="status"><span style="padding-left: 3px;vertical-align:middle">Nombre Usuario</span>
         <core-dropdown class="open-below">
 			<paper-button><a style="text-decoration:none;color:#000;" href="/user/123123"><span style="padding-left: 3px;vertical-align:middle">Mi Home</span></a></paper-button><br>
-        <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Configurar Perfil</span></a></paper-button>
+        <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Configurar Perfil</span></a></paper-button><br>
+        
+        <paper-button  id="siginButton" ng-click="showPopup()" 
+ class="signin"> <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span> </paper-button>
+        
         </core-dropdown>
  </menu-desplegable>
 
-      <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
+      <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin" ng-show="status1">
         <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
       </core-icon-button>
       <core-icon-button icon="search" class=" search"></core-icon-button>

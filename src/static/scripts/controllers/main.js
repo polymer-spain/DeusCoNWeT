@@ -11,7 +11,7 @@
 angular.module('PolymerBricks')
   .controller('MainCtrl', function ($scope, $location, $timeout) {
   $scope.status = false;
-
+	$scope.status1 = true;
   $scope.logged = function(e){
     $scope.$apply(function(){
 		
@@ -57,6 +57,7 @@ angular.module('PolymerBricks')
       // button.src=""
       // Cambiamos a la funcion de logout
       $scope.status = true;
+		$scope.status1 = false;
     });
   };
 
@@ -84,6 +85,7 @@ angular.module('PolymerBricks')
     button.innerHTML="Entrar"
     $location.path('/');
     $scope.status = false;
+	  $scope.status1 = true;
   }
   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged',$scope.logged);
