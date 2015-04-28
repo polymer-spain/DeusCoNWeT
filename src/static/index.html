@@ -44,13 +44,13 @@
 			<paper-button><a style="text-decoration:none;color:#000;" href="/user/123123"><span style="padding-left: 3px;vertical-align:middle">Mi Home</span></a></paper-button><br>
         <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Configurar Perfil</span></a></paper-button><br>
         
-        <paper-button  id="siginButton" ng-click="showPopup()" 
+        <paper-button  id="siginButton" ng-click="showPopup($event)" 
  class="signin"> <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span> </paper-button>
         
         </core-dropdown>
  </menu-desplegable>
 
-      <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin" ng-show="status1">
+      <core-icon-button id="siginButton" ng-click="showPopup($event)" icon="social:person" class="signin" ng-show="status1">
         <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
       </core-icon-button>
       <core-icon-button icon="search" class=" search"></core-icon-button>
