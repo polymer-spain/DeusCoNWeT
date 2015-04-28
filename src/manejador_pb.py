@@ -1195,8 +1195,11 @@ class SubscriptionHandler(webapp2.RequestHandler):
             email = self.request.POST['email']
             name = self.request.POST['name']
             surname = self.request.POST['surname']
-            ndb_pb.nuevoUsuarioBeta(email, name, surname)
-            self.response.set_status(201)
+            if not ndb_pb.usuarioSuscrito(email):
+                ndb_pb.nuevoUsuarioBeta(email, name, surname)
+                self.response.set_status(201)
+            else:
+                self.response.set_status(200)
         except KeyError:
             response = {'error': 'You must provide an email, name and surname as params in the request'}
             self.response.content_type = 'application/json'
