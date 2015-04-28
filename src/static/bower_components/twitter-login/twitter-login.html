@@ -23,13 +23,13 @@ Element providing solution to no problem in particular.
 @status alpha
 @homepage http://polymerlabs.github.io/twitter-login
 -->
-<polymer-element name="twitter-login">
+<polymer-element name="twitter-login" atributes="endpoint">
 
 <template>
 
   <link rel="stylesheet" href="twitter-login.css">
   <core-ajax
-               id="requestToken" url="http://example-project-13.appspot.com/api/oauth/twitter"
+               id="requestToken" url={{endpoint}}
                method="GET"
                params='{
                       "action": "request_token"
@@ -58,6 +58,7 @@ Polymer({
        * @param {String} greeting Pass in a specific greeting.
        * @return {String} Returns a string greeting.
        */
+       endpoint:'',
        login: function(event, detail, sender) {
          this.$.requestToken.go();
       },
