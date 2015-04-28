@@ -2,18 +2,19 @@ html {
   background-image: url('../images/vias.jpg');
   background-size: contain;
   background-repeat: no-repeat;
-  overflow-y: hidden; 
 }
-#section1 {
+#landing {
+
+}
+#landing  #section1 {
   height: 100%;
   z-index:0;
 }
-
-.content {
+#landing > .content {
   font-size:16px;
   padding: 10px 50px 20px 50px;
 }
-.slogan {
+#landing  .slogan {
   width:400px;
   display:inline-block;
   min-width:300px;
@@ -21,43 +22,118 @@ html {
   text-align: center;
 }
 @media (min-width: 1400px) {
-  .content {
-    font-size: 25px;
+  #landing  .content {
+    font-size: 22px;
   }
-  .slogan {
-    font-size: 25px; 
+  #landing  .slogan {
+    font-size: 22px; 
   }
 }
-#section2{
+#landing #section2{
   padding-top: 80px;
   margin-top:35%;
   z-index:0;
 }
-#section3{
+#landing #section3{
   z-index:0;
   margin-top:45%;
   padding-top: 150px;
-  margin-bottom: 25%;
 }
-ul {
+
+#landing #section4 {
+  margin-top:50%;
+  margin-bottom: 50%; 
+}
+#landing ul {
   list-style: circle;
   font-size: 26px;
 }
-ul li[selected] {
+#landing ul li.selected {
   list-style:disc;
 }
 
-a {
+#landing a {
   color:white; 
 }
-a:visited {
+#landing a:visited {
   color:white;
 }
 
-section {
+#landing section {
   padding-top: 200px; 
 }
 
-#beta {
+#landing #beta {
   background-color:#B71C1C;
+}
+
+
+
+.contacto{
+  color: black;
+  padding: 15px 45px 10px;
+  background-color: #eee;
+  resize: both;
+}
+paper-input-decorator[focused] /deep/ .focused-underline {
+  background-color: #B71C1C; 
+}
+paper-input-decorator[focused] /deep/ .label-text{
+  color: black; 
+}
+paper-input-decorator /deep/ .label-text{
+  color: black; 
+}
+.contacto paper-input-decorator,
+.contacto paper-input {
+  width: 294px; 
+}
+
+
+#send {
+  float: right;
+  font-family: inherit;
+  border:2px solid #B71C1C;
+
+}
+#landing .contacto > h2 {
+  color: #B71C1C;
+}
+#send:hover {
+  background-color: #B71C1C; 
+  color:whitesmoke;
+}
+#landing .contacto > div > paper-input-decorator {
+  font-size: 16px;
+  padding: 2px;
+}
+#landing .contacto > div {
+  margin-top:20px;
+}
+#landing .contacto textarea {
+  width: 294px;
+  height: 150px;
+  max-width: 100%;
+  padding: 7px 6px;
+  border: none;
+  box-shadow:0 0 0 1.5px #ea5050;
+  margin: 5px 0;
+}
+
+span.invalid {
+  color: #B71C1C;
+  font-size: 12px;
+  font-family: 'Roboto';
+}
+paper-button.accept {
+  border:3px solid #b71c1c;
+  border-radius: 10px;
+  position:absolute;
+  bottom:30px;
+  left: 200px;
+}
+
+paper-button.accept:hover {
+  background-color: #b71c1c;
+  color:whitesmoke;
 }

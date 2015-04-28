@@ -1,3 +1,3 @@
-angular.module('PolymerBricks')
-  .controller('AboutCtrl', function($scope, $routeParams,$timeout) {
+angular.module('picbit')
+  .controller('aboutCtrl', function($scope, $routeParams,$timeout) {
 });

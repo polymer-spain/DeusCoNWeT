@@ -11,22 +11,32 @@ import urllib
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
 
-# Local imports
-import ndb_pb
-from ndb_pb import Componente, UserRating, Usuario, Grupo, Token
+# Inserts to the path the 'lib' directory
 
-import cliente_gitHub
-
-# Imports for TwitterHandler
 import sys
 sys.path.insert(1, 'lib/')
+
+# Local imports
+# Eliminados Tag y Release y Repo
+
+import ndb_pb
+from ndb_pb import UserRating, Usuario, Grupo, Token, Componente
+import cliente_gitHub
+
+# Import for twitter
+
 import oauth
 
 # Imports for ContactHandler
+
 from google.appengine.api import mail
 
+import cliente_gitHub
+
 # Global vars
-domain = "http://example-project-13.appspot.com"
+
+domain = 'http://example-project-13.appspot.com'
+
 
 class ComponentListHandler(webapp2.RequestHandler):
 
@@ -466,9 +476,9 @@ class UserHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
 
 
-
 class SessionHandler(webapp2.RequestHandler):
-  """
+
+    """
   Class that handles the session of the application
   Methods:
     login - Generates a valid hash for a given user_id
@@ -476,24 +486,25 @@ class SessionHandler(webapp2.RequestHandler):
     logout - Deletes the session for a given user
   """
 
-  def login(self, user_id):
-    cypher = hashlib.sha256(str(user_id))
-    hash_id = cypher.hexdigest()
+    def login(self, user_id):
+        cypher = hashlib.sha256(str(user_id))
+        hash_id = cypher.hexdigest()
+
     # Store in memcache hash-user_id pair
-    memcache.add(hash_id, user_id)
-    return hash_id
 
-  def getUserInfo(self, hashed_id):
-    user = memcache.get(hashed_id)
-    return user
+        memcache.add(hash_id, user_id)
+        return hash_id
 
-  def logout(self, hashed_id):
-    logout_status = False
-    status = memcache.delete(hashed_id)
-    if status == 2: 
-      logout_status = True
-    return logout_status
+    def getUserInfo(self, hashed_id):
+        user = memcache.get(hashed_id)
+        return user
 
+    def logout(self, hashed_id):
+        logout_status = False
+        status = memcache.delete(hashed_id)
+        if status == 2:
+            logout_status = True
+        return logout_status
 
 
 class OAuthTwitterHandler(SessionHandler):
@@ -559,13 +570,15 @@ class OAuthTwitterHandler(SessionHandler):
                 # Create Session
 
                 session_id = self.login(str(user_id.id()))
-                self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+                self.response.set_cookie('session', value=session_id,
+                        path='/', domain=domain, secure=True)
                 self.response.set_status(201)
 
             # Create Session
 
             session_id = self.login(stored_user)
-            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
+            self.response.set_cookie('session', value=session_id,
+                    path='/', domain=domain, secure=True)
             self.response.set_status(200)
         elif action == 'access_token' and not username == None:
 
@@ -935,7 +948,7 @@ class OauthFacebookHandler(webapp2.RequestHandler):
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
-        except:
+        except KeyError:
             response = \
                 {'error': 'You must provide a valid pair of access_token and token_id in the request'}
             self.response.content_type = 'application/json'
@@ -1046,7 +1059,9 @@ class OauthGooglePlusHandler(SessionHandler):
             self.response.set_status(400)
 
   # POST Method
+
     def post(self):
+
       # Gets the data from the request form
       action = self.request.get("action")
       if action == "login":
@@ -1083,16 +1098,19 @@ class OauthGooglePlusHandler(SessionHandler):
         cookie_value = self.request.cookies.get('session')
         print "Cookie value: " + cookie_value
         # Logout
-        logout_status = self.logout(cookie_value)
+
+            logout_status = self.logout(cookie_value)
+
         # Delete cookie
-        self.response.delete_cookie('session')
-        print "LOGOUT: " + str(logout_status)
-        self.response.set_status(200)
+
+            self.response.delete_cookie('session')
+            print 'LOGOUT: ' + str(logout_status)
+            self.response.set_status(200)
       else:
-        response = {'error': 'Invalid value for the action param'}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(400)
+            response = {'error': 'Invalid value for the action param'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
@@ -1120,32 +1138,60 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
         self.response.write(respuesta.content)
 
 
-class ContactFormsHandler(webapp2.RequestHandler):
+class ContactHandler(webapp2.RequestHandler):
+    """ Class that represent the contact resource, used for customer support.
+    Method:
+    post -- Sends an email to deus@conwet.com with the info specified in the request.
+    """
+    def post(self):
+        """ Sends an email to deus@conwet.com with the info specified in the request.
+            Keyword arguments: 
+                self -- info about the request built by webapp2
+        """
+        # Get params
+        # Subject is an optional param
+        try:
+            subject = self.request.POST['subject']
+            message = self.request.POST['message']
+            sender = self.request.POST['sender']
+            # Sends an email to deus@conwet
+            subject = 'Contacto: ' + subject + ', de: ' + sender
+            mail.send_mail('deus@conwet.com', 'deus@conwet.com', subject, message)
+            self.response.set_status(201)
+        except KeyError:
+            response = {'error': 'You must provide a sender and message param'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
+        
 
-  def post(self):
-    # Get params
-    action = self.request.get('action', default_value='')
-    if action == 'contact':
-      # Subject is an optional param
-      subject = self.request.get('subject', default_value='')
-      message = self.request.get('message', default_value='')
-      sender = self.request.get('sender', default_value='')
-      if not sender == '' and not message == '':
-        subject= 'Contacto: ' + subject + ' de: ' + sender
-        mail.send_mail('deus@conwet.com','deus@conwet.com' , subject, message)
-      else:
-        response = {'error': 'You must provide a sender and message param'}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(400)      
-
-    elif action == 'subscribe':
-      self.response.set_status(501)
-    else:
-      response = {'error': 'Invalid value for action param'}
-      self.response.content_type = 'application/json'
-      self.response.write(json.dumps(response))
-      self.response.set_status(400)      
+class SubscriptionHandler(webapp2.RequestHandler):
+    """ Handler for the subscription resource
+    Method:
+    post -- Creates a new subscription to the system.
+    """
+    
+    # POST Method
+    def post(self):
+        """ Creates a new subscription to the system.
+            Keyword arguments: 
+                self -- info about the request built by webapp2
+        """
+        try:
+            # Get params
+            email = self.request.POST['email']
+            name = self.request.POST['name']
+            surname = self.request.POST['surname']
+            if not ndb_pb.usuarioSuscrito(email):
+                ndb_pb.nuevoUsuarioBeta(email, name, surname)
+                self.response.set_status(201)
+            else:
+                self.response.set_status(200)
+        except KeyError:
+            response = {'error': 'You must provide an email, name and surname as params in the request'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))    
+            self.response.set_status(400)
 
 
 app = webapp2.WSGIApplication([
@@ -1159,5 +1205,6 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/facebook', OauthFacebookHandler),
     (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', OauthGooglePlusHandler),
-    (r'/api/contact', ContactFormsHandler),
+    (r'/api/contacts', ContactHandler),
+    (r'/api/subscriptions', SubscriptionHandler),
     ], debug=True)

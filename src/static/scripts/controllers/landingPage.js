@@ -7,54 +7,133 @@
  * # MainCtrl
  * Controller of the pruebaApp
  */
-angular.module('PolymerBricks')
-  .controller('landingCtrl', function ($scope,$location,$anchorScroll) {
-  'use strict';
 
-  $scope.selected = 1;
+angular.module('picbit').controller('landingCtrl', function ($scope,$timeout,$location,$anchorSmoothScroll) {
+  'use strict';
+  if ($location.hash() === 'section1') {
+    $scope.selected = 1;
+  } else if ($location.hash() === 'section2') {
+    $scope.selected = 2;
+  }
+  else if ($location.hash() === 'section3') {
+    $scope.selected = 3;
+  } else if ($location.hash() === 'section4') {
+    $scope.selected = 4;
+  }
+  else {
+    $scope.selected = 1;
+  }
 
   $scope.cambiarAnchor = function(section){
     $location.hash(section);
-    $anchorScroll();    
+    $anchorSmoothScroll.scrollTo(section);   
   };
-
-  $scope.setStyle = function(el,el2){
+  $scope.goto = function (section) {
+    $scope.selected = section;
+    $location.hash('section'+section);
+    $anchorScroll()
+  };
+  $scope.setStyle = function (el, el2){
     document.querySelector(el).removeAttribute('selected')
     document.querySelector(el2).setAttribute('selected',true);
 
   };
 
-  $scope.wheel = function(e) {
-    e.preventDefault();
-    document.onmousewheel = '';
-    var scrolled;
-    e.wheelDelta<0 ? scrolled=1 : scrolled=-1;
-    /* Section 1*/
-    if ($scope.selected===1 && e.wheelDelta<0) {
-      $scope.selected +=scrolled;
-      $scope.cambiarAnchor('section2'); 
-      $scope.setStyle('#disc1','#disc2');
-      /* Section 2*/
-    } else if ($scope.selected === 2) {
-      $scope.selected +=scrolled
-      $scope.cambiarAnchor('section'+$scope.selected); 
-      $scope.setStyle('#disc2','#disc'+$scope.selected);
-      /* Section 3*/
-    }else if ($scope.selected === 3 && e.wheelDelta>0) {
-      $scope.selected += scrolled;
-      $scope.cambiarAnchor('section2');
-      $scope.setStyle('#disc3','#disc2');
-    };
-    setTimeout(function(){
-      document.onmousewheel = $scope.wheel;
-    },500);
-  };
-  document.onmousewheel = $scope.wheel;
-  if ($location.path === '/')
-    $scope.cambiarAnchor('section1');
+  $scope.sub = function () {
+    var name, sender, surname, error;
+    name = document.querySelector('#namesus');
+    sender = document.querySelector('#sendersus');
+    surname = document.querySelector('#surnamesus');
+    error = document.querySelector('#invalid');
 
+    error.innerHTML = '';
+    if (!name.value) {
+      error.innerHTML = "* El nombre es obligatorio";
+    }
+
+    if (!surname.value) {
+      if (error.innerHTML) {
+        error.innerHTML +='<br>';
+      }
+      error.innerHTML += "* El apellido es obligatorio";
+    }
+
+    if (!sender.value || !sender.checkValidity()) {
+      if (error.innerHTML) {
+        error.innerHTML +='<br>';
+      }
+      error.innerHTML += "* El correo debe ser valido"
+    }
+
+    if (name.value && sender.checkValidity() && surname.value) {
+      var peticion, uri, params;
+      peticion = new XMLHttpRequest();
+      uri = 'http://test-frontend.example-project-13.appspot.com' + '/api/subscriptions';
+      params = "name=" + name.value + "&email=" + sender.value + "&surname=" + surname.value;
+
+      peticion.open("POST", uri, true);
+      peticion.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      peticion.onreadystatechange = function () {
+        if (peticion.readyState === 4 && (peticion.status === 201)) {
+          console.log('[INFO]: Todo fue bien');
+          name.value='';
+          sender.value='';
+          surname.value='';
+          $scope.$apply(function () { 
+            $scope.$parent.shadow = true;
+            $scope.$parent.sended = true;
+          });
+
+        } else if (peticion.readyState === 4 && (peticion.status === 200)) {
+          error.innerHTML="* Ya esta registrado para la beta";
+          name.value='';
+          sender.value='';
+          surname.value='';
+        } else if (peticion.readyState === 4 && !(peticion.status === 200 || peticion.status === 201)) {
+          console.log("[INFO]: Error al introducir datos en backend",peticion);
+        }
+      };
+      peticion.send(params);
+    }
+  };
+
+
+  $scope.wheel = function(e) {
+    $scope.$apply(function () {
+      e.preventDefault();
+      document.onmousewheel = '';
+      var scrolled;
+      e.wheelDelta<0 ? scrolled=1 : scrolled=-1;
+      /* Section 1*/
+      if ($scope.selected===1 && e.wheelDelta<0) {
+        $scope.selected +=scrolled;
+        $scope.cambiarAnchor('section2'); 
+        /* Section 2*/
+      } else if ($scope.selected === 2) {
+        $scope.selected +=scrolled
+
+        $scope.cambiarAnchor('section'+$scope.selected); 
+
+        /* Section 3*/
+      } else if ($scope.selected === 3) {
+        $scope.selected += scrolled;
+        $scope.cambiarAnchor('section'+$scope.selected);
+      } else if ($scope.selected === 4 && e.wheelDelta > 0) {
+        $scope.selected +=scrolled;
+        $scope.cambiarAnchor('section3');
+      };
+      document.onmousewheel = $scope.wheel;
+    });
+  };
+
+  document.onmousewheel = $scope.wheel;
+
+  $scope.closeSended = function() {
+    $scope.$parent.shadow = false;
+    $scope.$parent.sended = false;
+    $scope.goto(1);
+  };
   $scope.setSelected = function(sel){
-    $scope.setStyle('#disc'+$scope.selected,'#disc'+sel);
     $scope.selected = sel;
     $scope.cambiarAnchor("section"+sel);
   };

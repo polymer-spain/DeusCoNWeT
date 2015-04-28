@@ -3,22 +3,21 @@
   'use strict';
   /**
 	 * @ngdoc overview
-	 * @name PolymerBricks
+	 * @name picbit
 	 * @description
-	 * # PolymerBricks
+	 * # PicBit
 	 *
 	 * Main module of the application.
 	*/
   angular
-    .module('PolymerBricks', [
+    .module('picbit', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ng-polymer-elements',
-    'ui.bootstrap'
+    'ng-polymer-elements'
   ])
     .config(function ($locationProvider, $routeProvider,$httpProvider) {
 
@@ -33,7 +32,7 @@
     })
       .when('/about', {
       templateUrl: 'views/about.html',
-      controller: 'contactCtrl'
+      controller: 'aboutCtrl'
     })
       .when('/contact', {
       templateUrl: 'views/contact.html',
@@ -45,7 +44,7 @@
 	})
       .when('/privacy',{
       templateUrl: 'views/privacy.html',
-      controller: 'landingCtrl'
+      controller: 'privacyCtrl'
     })
       .otherwise({redirectTo: '/'});
     $locationProvider.html5Mode(true);
