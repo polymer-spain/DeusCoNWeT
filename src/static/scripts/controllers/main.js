@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name pruebaApp.controller:MainCtrl
@@ -8,7 +6,9 @@
  * Controller of the pruebaApp
  */
 
-angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $location, $timeout) {
+
+angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend) {
+  'use strict';
   $scope.status = false;
   $scope.domain = $location.host();
   $scope.shadow = false;
@@ -33,7 +33,7 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
             $scope.$apply(function(){
               var response = JSON.parse(xhr.responseText);
               $scope.changeView('/user/'+e.detail.redSocial+'_'+response.id);
-              $scope.sendData(e.detail.token,response.id,e.detail.redSocial);
+              backend.sendData(e.detail.token,response.id,e.detail.redSocial);
             });
           } else if (xhr.readyState == 4) {
             console.log("[INFO]: Algo fue mal en google");
@@ -54,16 +54,6 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
       $scope.status = true;
     });
   };
-
-
-  $scope.sendData = function (token, tokenId, redSocial) {
-    var xhr, uri, params;
-    xhr = new XMLHttpRequest();
-    uri = $scope.domain + '/api/oauth/' + redSocial;
-    params = "token_id=" + tokenId + "&access_token=" + token + "&action=login";
-    xhr.open("POST", uri, true);
-    xhr.withCredentials=true;
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201)) {

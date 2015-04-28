@@ -8,7 +8,7 @@
  * Controller of the pruebaApp
  */
 
-angular.module('PolymerBricks')
+angular.module('picbit')
 .controller('SearchCtrl', function ($scope) {
 
 	$scope.orderBy='asc';
@@ -48,7 +48,7 @@ angular.module('PolymerBricks')
 
 		if (validInput.validity.valid && validInput.inputValue!==null) {
 
-			google.appengine.api.polymerBricks.uploadComponent(validInput.inputValue);
+			google.appengine.api.picbit.uploadComponent(validInput.inputValue);
 		}
 	};
 });
