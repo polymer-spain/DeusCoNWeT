@@ -477,15 +477,16 @@ class UserHandler(webapp2.RequestHandler):
 class SessionHandler(webapp2.RequestHandler):
 
     """
-  Class that handles the session of the application
-  Methods:
-    login - Generates a valid hash for a given user_id
-    getUserInfo - Gets the info related to a logged user_id
-    logout - Deletes the session for a given user
-  """
+    Class that handles the session of the application
+    Methods:
+        login - Generates a valid hash for a given user_id
+        getUserInfo - Gets the info related to a logged user_id
+        logout - Deletes the session for a given user
+    """
 
     def login(self, user_id):
-        cypher = hashlib.sha256(str(user_id))
+        message = str(user_id + time.time()/1000)
+        cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
 
         # Store in memcache hash-user_id pair
@@ -847,7 +848,7 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
             self.response.set_status(400)
 
 
-class OauthFacebookHandler(webapp2.RequestHandler):
+class OauthFacebookHandler(SessionHandler):
     """
     Class that represents the FaceBook token resource. 
     Methods:
@@ -1168,7 +1169,7 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/linkedin', OauthLinkedinHandler),
     (r'/api/oauth/instagram', OAuthInstagramHandler),
     (r'/api/oauth/facebook', OauthFacebookHandler),
-    (r'/api/oauth/stackOverflow', OauthStackOverflowHandler),
+    (r'/api/oauth/stackoverflow', OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', OauthGooglePlusHandler),
     (r'/api/contact', ContactFormsHandler),
     ], debug=True)
