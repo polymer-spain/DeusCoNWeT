@@ -7,7 +7,7 @@
  */
 
 
-angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend) {
+angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend,$http) {
   'use strict';
   $scope.status = false;
   $scope.status1 = true;
@@ -22,8 +22,8 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
 
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
-      if (e.detail.redSocial === 'twitter'){
-        if($location.pathname.indexOf("profile")!=0)
+      if (e.detail.redSocial === 'twitter') {
+        if ($location.pathname.indexOf("profile") !== 0)
           return
           $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
       }
@@ -62,14 +62,22 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
       $scope.status1 = false;
     });
 
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201)) {
-        console.log(xhr);  
-      } else if (xhr.readyState === 4 && xhr.status !== 200) {
-        console.log("[INFO]: Error al introducir datos en backend");
-      };
-      xhr.send(params); 
-    }
+    $scope.sendData = function (token, tokenId, redSocial) {
+      var request, uri, params;
+      uri = $scope.domain + '/api/oauth/' + redSocial;    
+      params = "token_id=" + tokenId + "&access_token=" + token + "&action=login";
+      request = {
+        method:"post",
+        url: uri, 
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        data: params
+      }
+      $http(request).error(function (data,status) {
+        console.error('Error:' + status + ': no se enviaron datos al backend'); 
+      });
+
+    };
+
   };
   $scope.changeView = function(view){
     $location.hash('');
