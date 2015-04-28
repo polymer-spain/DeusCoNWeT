@@ -23,8 +23,8 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter'){
-		  	 if($location.pathname.indexOf("profile")!=0)
-		 		return
+        if($location.pathname.indexOf("profile")!=0)
+          return
           $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
       }
       else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
@@ -36,9 +36,9 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
             $scope.$apply(function(){
               var response = JSON.parse(xhr.responseText);
               $scope.sendData(e.detail.token,response.id,e.detail.redSocial);
-			  if($location.pathname.indexOf("profile")!=0)
-		 		return
-		      $location.path('/user/'+e.detail.redSocial+'_'+response.id);              
+              if($location.pathname.indexOf("profile")!=0)
+                return
+                $location.path('/user/'+e.detail.redSocial+'_'+response.id);              
             });
           } else if (xhr.readyState == 4) {
             console.log("[INFO]: Algo fue mal en google");
@@ -46,9 +46,9 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
         }
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
-          $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
-		  	  if($location.pathname.indexOf("profile")!=0)
-		 		return
+        $scope.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
+        if($location.pathname.indexOf("profile")!=0)
+          return
           $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
       }
       // cambiamos el botton
@@ -59,9 +59,8 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
       // button.src=""
       // Cambiamos a la funcion de logout
       $scope.status = true;
-		$scope.status1 = false;
+      $scope.status1 = false;
     });
-  };
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201)) {
@@ -83,7 +82,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     button.innerHTML="Entrar";
     $scope.changeView('/');
     $scope.status = false;
-	  $scope.status1 = true;
+    $scope.status1 = true;
   }
   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged',$scope.logged);

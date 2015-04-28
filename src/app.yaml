@@ -35,7 +35,8 @@ handlers:
 - url: /user/.*
   static_files: static/index.html
   upload: index\.html
-  
+- url: /
+  static_dir: static
 libraries:
 - name: webapp2
   version: latest

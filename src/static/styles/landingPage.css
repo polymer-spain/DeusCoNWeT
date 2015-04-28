@@ -1,6 +1,6 @@
 html {
   background-image: url('../images/vias.jpg');
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
 }
 #landing {
@@ -136,4 +136,24 @@ paper-button.accept {
 paper-button.accept:hover {
   background-color: #b71c1c;
   color:whitesmoke;
+}
+
+#landing.popup {
+  display: inline-block;
+  position:fixed;
+  top:0;
+  left:0;
+  border-radius: 3px;
+  right:0;
+  bottom:0;
+  padding:30px;
+  padding-top:0;
+  margin: auto;
+  color:brown;
+  background-color:whitesmoke;
+  background:solid;
+  height: 200px;
+  width: 400px;
+  z-index: 1;
+  text-align: center;
 }
