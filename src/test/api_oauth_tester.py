@@ -120,10 +120,20 @@ def main():
 		params = urllib.urlencode({})
 		make_request("GET", request_uri, params,400, None)
 
-		# TEST 4
+		# TEST 5
 		# TODO Get (Con Cookie)
 
 		print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
+
+	elif red_social == "github":
+		# Prueba de flujo de login completo
+		print "Accede a la siguiente dirección en tu navegador:"
+		request_uri = "/api/oauth/github?action=request_token"
+		params = urllib.urlencode({})
+		headers = {"User-Agent": "PicBit-App"}
+		connection.request("POST", request_uri, params, headers)
+  		response = connection.getresponse()
+  		responseData = response.read()
 
 	else:
 		print "Error: es obligatorio proporcionar un parámetro válido para indicar que red social se pretende testear"
