@@ -10,7 +10,7 @@ import hashlib
 import urllib
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
-import sys
+import sys, time
 sys.path.insert(1, 'lib/')
 
 # Local imports
@@ -574,7 +574,7 @@ class OAuthTwitterHandler(SessionHandler):
                 self.response.set_status(200)
 
             # Create Session
-            session_id = self.login(str(user_id.id()))
+            session_id = self.login(user_id.id())
             # Send session details to client in the channel created previously
             session_message = {'session_id': session_id}
             channel.send_message(auth_token, json.dumps(session_message))
@@ -897,7 +897,7 @@ class OauthFacebookHandler(SessionHandler):
                     # Generate a valid username for a new user in the user_credentials
                     user_id = ndb_pb.insertaUsuario('facebook',
                     token_id, access_token)
-                    session_id = self.login(str(user_id.id()))
+                    session_id = self.login(user_id.id())
 
                     # Returns the session cookie
                     self.response.set_cookie('session',
@@ -908,7 +908,7 @@ class OauthFacebookHandler(SessionHandler):
                     # We store the new set of credentials
                     user_id = ndb_pb.modificaToken(token_id,
                     access_token, 'facebook')
-                    session_id = self.login(str(user_id.id()))
+                    session_id = self.login(user_id.id())
 
                     # Returns the session cookie
                     self.response.set_cookie('session',
@@ -1058,7 +1058,7 @@ class OauthGooglePlusHandler(SessionHandler):
                 if stored_credentials == None:
                     # Generate a valid username for a new user      
                     user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
-                    session_id = self.login(str(user_id.id()))
+                    session_id = self.login(user_id.id())
                     
                     # Returns the session cookie
                     #self.response.set_cookie('session',value=session_id, secure=True)
@@ -1067,7 +1067,7 @@ class OauthGooglePlusHandler(SessionHandler):
                 else:
                     # We store the new set of credentials
                     user_id = ndb_pb.modificaToken(token_id,access_token, 'google')
-                    session_id = self.login(str(user_id.id()))
+                    session_id = self.login(user_id.id())
 
                     # Returns the session cookie
                     #self.response.set_cookie('session',value=session_id, secure=False)
