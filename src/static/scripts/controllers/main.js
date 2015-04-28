@@ -6,22 +6,27 @@
  * Controller of the pruebaApp
  */
 
+
 angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend) {
   'use strict';
   $scope.status = false;
+  $scope.domain = $location.host();
+  $scope.shadow = false;
+  $scope.sended = false;
 
-  $scope.logged = function(e){
-    $scope.$apply(function(){
+
+
+  $scope.logged = function (e) {
+    $scope.$apply(function () {
 
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
-      if (e.detail.redSocial === 'twitter'){
-        $scope.changeView('/user/'+e.detail.redSocial+'_'+e.detail.userId);
-      }
-      else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
+      if (e.detail.redSocial === 'twitter') {
+        $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
+      } else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
 
         var xhr = new XMLHttpRequest();
-        var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token='+e.detail.token;
+        var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
         xhr.open("GET",uri,true);
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4 && xhr.status === 200){
@@ -36,8 +41,8 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
         }
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
-        $scope.changeView('/user/'+e.detail.redSocial+'_'+e.detail.userId);
-        backend.sendData(e.detail.token,e.detail.userId,e.detail.redSocial);
+        $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
+        $scope.sendData(e.detail.token, e.detail.userId, e.detail.redSocial);
       }
       // cambiamos el botton
       var button = document.querySelector('#nameId');
@@ -50,8 +55,15 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     });
   };
 
-
-
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 201)) {
+        console.log(xhr);  
+      } else if (xhr.readyState === 4 && xhr.status !== 200) {
+        console.log("[INFO]: Error al introducir datos en backend");
+      };
+      xhr.send(params); 
+    }
+  };
   $scope.changeView = function(view){
     $location.hash('');
     $location.path(view); // path not hash
@@ -60,7 +72,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   $scope.logout = function() {
     var button = document.querySelector('#nameId');
     // Selecionar el nombre del usuario
-    button.innerHTML="Entrar"
+    button.innerHTML="Entrar";
     $scope.changeView('/');
     $scope.status = false;
   }
@@ -76,13 +88,16 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   $scope.popup = false;
 
   $scope.showPopup = function(){
-    if (!$scope.status)
+    if (!$scope.status) {
       $scope.popup = true;
-    else 
+      $scope.shadow = true;
+    } else {
       $scope.logout();
+    }
   };
   $scope.hidePopup = function(){
     $scope.popup = false;
+    $scope.shadow = false;
   };
 
 });

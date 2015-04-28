@@ -1,11 +1,14 @@
 angular.module('picbit').controller('contactCtrl', function ($scope, $backend) {
   'use strict';
 
+    
   $scope.sendEmail = function () {
-    var message = document.querySelector('#message');
-    var sender = document.querySelector('#sender');
-    var subject = document.querySelector('#subject');
-    var error = document.querySelector('#invalid');
+    var message, sender, subject, error;
+    message = document.querySelector('#message');
+    sender = document.querySelector('#sender');
+    subject = document.querySelector('#subject');
+    error = document.querySelector('#invalid');
+    
     error.innerHTML = '';
     if (!message.value) {
       error.innerHTML = "*El mensaje no debe estar vacio";

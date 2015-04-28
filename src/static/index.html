@@ -17,7 +17,7 @@
       <core-toolbar>
         <img class="logo" src="images/logo.png">
 
-        <h2 id="name" ng-click="changeView('/')" flex>	PicBit</h2>
+        <h2 id="name" ng-click="changeView('/')" flex>PicBit</h2>
 
         <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
           <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
@@ -34,18 +34,17 @@
 
       </div>
 
-      <div ng-show="popup" class="shadow"/>
+      <div ng-show="shadow" class="shadow"/>
       <div ng-show="popup" vertical center layout class="popup" id="popup">
         <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
 
         <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
         <div vertical center-justified layout class="button-login">
-          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://example-project-13.appspot.com/index.html"></google-login>
+          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://example-project-13.appspot.com"></google-login>
           <twitter-login class="button-login"></twitter-login>
           <login-facebook class="button-login" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
         </div>
       </div>
-
       <script src="bower_components/angular/angular.js"></script>
       <script src="bower_components/angular-resource/angular-resource.js"></script>
 
