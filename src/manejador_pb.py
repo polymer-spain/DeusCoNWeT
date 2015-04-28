@@ -1063,40 +1063,59 @@ class OauthGooglePlusHandler(SessionHandler):
     def post(self):
 
       # Gets the data from the request form
-      action = self.request.get("action")
-      if action == "login":
-        try:
-          access_token = self.request.POST['access_token']
-          token_id = self.request.POST['token_id']
+
+        action = self.request.get('action')
+        if action == 'login':
+            try:
+                access_token = self.request.POST['access_token']
+                token_id = self.request.POST['token_id']
+                print token_id
+
           # Checks if the username was stored previously
-          stored_credentials = ndb_pb.buscaToken(token_id, "google")
-          print stored_credentials
-          if stored_credentials == None:
-            # Generate a valid username for a new user      
-            user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
-            session_id = self.login(str(user_id.id()))
+
+                stored_credentials = ndb_pb.buscaToken(token_id,
+                        'google')
+                print stored_credentials
+                if stored_credentials == None:
+
+            # Generate a valid username for a new user
+
+                    user_id = ndb_pb.insertaUsuario('google', token_id,
+                            access_token)
+                    session_id = self.login(str(user_id.id()))
+
             # Returns the session cookie
-            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
-            self.response.set_status(201)
-          else:
+
+                    self.response.set_cookie('session',
+                            value=session_id, path='/', domain=domain,
+                            secure=True)
+                    self.response.set_status(201)
+                else:
+
             # We store the new set of credentials (change insertaUsuario)
-            user_id = ndb_pb.modificaToken(token_id, access_token, 'google')
-            session_id = self.login(str(user_id.id()))
+
+                    user_id = ndb_pb.modificaToken(token_id,
+                            access_token, 'google')
+                    session_id = self.login(str(user_id.id()))
+
             # Returns the session cookie
-            self.response.set_cookie("session", value=session_id, path="/", domain=domain, secure=True)
-            self.response.set_status(200)
 
-        except KeyError:
-          response = \
-          {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-          self.response.content_type = 'application/json'
-          self.response.write(json.dumps(response))
-          self.response.set_status(400)
+                    self.response.set_cookie('session',
+                            value=session_id, path='/', domain=domain,
+                            secure=True)
+                    self.response.set_status(200)
+            except KeyError:
 
-        
-      elif action == "logout":
-        cookie_value = self.request.cookies.get('session')
-        print "Cookie value: " + cookie_value
+                response = \
+                    {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        elif action == 'logout':
+
+            cookie_value = self.request.cookies.get('session')
+            print 'Cookie value: ' + cookie_value
+
         # Logout
 
             logout_status = self.logout(cookie_value)
@@ -1106,7 +1125,7 @@ class OauthGooglePlusHandler(SessionHandler):
             self.response.delete_cookie('session')
             print 'LOGOUT: ' + str(logout_status)
             self.response.set_status(200)
-      else:
+        else:
             response = {'error': 'Invalid value for the action param'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
@@ -1139,46 +1158,59 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
 
 class ContactHandler(webapp2.RequestHandler):
+
     """ Class that represent the contact resource, used for customer support.
     Method:
     post -- Sends an email to deus@conwet.com with the info specified in the request.
     """
+
     def post(self):
         """ Sends an email to deus@conwet.com with the info specified in the request.
             Keyword arguments: 
                 self -- info about the request built by webapp2
         """
+
         # Get params
         # Subject is an optional param
+
         try:
             subject = self.request.POST['subject']
             message = self.request.POST['message']
             sender = self.request.POST['sender']
+
             # Sends an email to deus@conwet
+
             subject = 'Contacto: ' + subject + ', de: ' + sender
-            mail.send_mail('deus@conwet.com', 'deus@conwet.com', subject, message)
+            mail.send_mail('deus@conwet.com', 'deus@conwet.com',
+                           subject, message)
             self.response.set_status(201)
         except KeyError:
-            response = {'error': 'You must provide a sender and message param'}
+            response = \
+                {'error': 'You must provide a sender and message param'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
             self.response.set_status(400)
-        
+
 
 class SubscriptionHandler(webapp2.RequestHandler):
+
     """ Handler for the subscription resource
     Method:
     post -- Creates a new subscription to the system.
     """
-    
+
     # POST Method
+
     def post(self):
         """ Creates a new subscription to the system.
             Keyword arguments: 
                 self -- info about the request built by webapp2
         """
+
         try:
+
             # Get params
+
             email = self.request.POST['email']
             name = self.request.POST['name']
             surname = self.request.POST['surname']
@@ -1188,9 +1220,10 @@ class SubscriptionHandler(webapp2.RequestHandler):
             else:
                 self.response.set_status(200)
         except KeyError:
-            response = {'error': 'You must provide an email, name and surname as params in the request'}
+            response = \
+                {'error': 'You must provide an email, name and surname as params in the request'}
             self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))    
+            self.response.write(json.dumps(response))
             self.response.set_status(400)
 
 
