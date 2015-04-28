@@ -15,6 +15,10 @@ handlers:
   static_files: static/index.html
   upload: index\.html
 
+- url: /en
+  static_files: static/views/en/index.html
+  upload: index_en\.html
+
 - url: /api/oauth
   script: manejador_pb.app
   secure: always

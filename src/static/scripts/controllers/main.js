@@ -1,8 +1,11 @@
-angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $location, $timeout, $http) {
+angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $location, $timeout, $http, $window) {
   'use strict';
 
-
-
+  if ($window.navigator.language !== 'es') {
+    $window.location.pathname = 'index_' + $window.navigator.language + '.html';
+    $scope.$apply();
+  }
+  
   $scope.status = false;
   $scope.domain = 'http://' + $location.host();
   $scope.logged = function (e) {
@@ -15,10 +18,10 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
         var uri, button;
         uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
         $http.get(uri).success(function (data) {
-            $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
-            $scope.sendData(e.detail.token, data.id, e.detail.redSocial);
+          $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
+          $scope.sendData(e.detail.token, data.id, e.detail.redSocial);
         }).error(function () {
-          console.error("Error al contactar con google");               
+          console.error("Error al contactar con google");
         });
       } else {
         $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
@@ -29,7 +32,7 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
 
     });
   };
-  $scope.logOutButton = function() {
+  $scope.logOutButton = function () {
     var button = document.querySelector('#nameId');
     button.innerHTML = "Desconectar";
     // Seleccionar la imagen del perfin
@@ -41,16 +44,16 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
 
   $scope.sendData = function (token, tokenId, redSocial) {
     var request, uri, params;
-    uri = $scope.domain + '/api/oauth/' + redSocial;    
+    uri = $scope.domain + '/api/oauth/' + redSocial;
     params = "token_id=" + tokenId + "&access_token=" + token + "&action=login";
     request = {
-      method:"post",
-      url: uri, 
+      method: "post",
+      url: uri,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
-    }
-    $http(request).error(function (data,status) {
-      console.error('Error:' + status ': no se enviaron datos al backend'); 
+    };
+    $http(request).error(function (data, status) {
+      console.error('Error:' + status + ': no se enviaron datos al backend');
     });
 
   };
@@ -105,10 +108,10 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
     }
     if (message.value && sender.checkValidity() && sender.value) {
       var uri, request;
-      uri = $scope.domain+'/api/contact';
+      uri = $scope.domain + '/api/contact';
       request = {
-        method:"post",
-        url: uri, 
+        method: "post",
+        url: uri,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         data: params
       };
