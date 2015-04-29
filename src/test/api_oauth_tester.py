@@ -19,10 +19,12 @@ def make_request(method, request_uri, params, status_ok, session):
   	responseData = response.read()
   	if not response.status == status_ok:
   		print "!!! STATUS: ERROR " + str(response.status)
+  		print "Datos de la respuesta"
   		print responseData
   	else:
   		print ">>> STATUS: OK"
   		session_cookie = response.getheader('Set-Cookie')
+  		print responseData
   		print session_cookie
   	return session_cookie
 
@@ -40,21 +42,21 @@ def main():
 		params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})
 		session = make_request("POST", request_uri, params, 201, None)
 
-		# # TEST 2
-		# request_uri = basePath + "?action=login"
-		# print "\nTEST 2: Haciendo petición POST a " + request_uri + " (login de sesion iniciada anteriormente)\n Status esperado: 200"
-		# token_id = "id" + red_social
-		# access_token = red_social + "ModifyTEST"
-		# params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})
-		# make_request("POST", request_uri, params,200, None)	
+		# TEST 2
+		request_uri = basePath + "?action=login"
+		print "\nTEST 2: Haciendo petición POST a " + request_uri + " (login de sesion iniciada anteriormente)\n Status esperado: 200"
+		token_id = "id" + red_social
+		access_token = red_social + "ModifyTEST"
+		params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})
+		make_request("POST", request_uri, params,200, None)	
 
-		# # TEST 3
-		# request_uri = basePath + "?action=login"
-		# print "\nTEST 3: Haciendo petición POST a " + request_uri + " (login)\n Status esperado: 201"
-		# token_id = "id" + red_social + "2"
-		# access_token = red_social + "TEST"
-		# params = urllib.urlencode({'token_id': token_id, 'access_token': access_token})
-		# make_request("POST", request_uri, params,201, None)
+		# TEST 3
+		request_uri = basePath + "?action=login"
+		print "\nTEST 3: Haciendo petición POST a " + request_uri + " (login)\n Status esperado: 201"
+		token_id = "id" + red_social + "2"
+		access_token = red_social + "TEST"
+		params = urllib.urlencode({'token_id': token_id, 'access_token': access_token})
+		make_request("POST", request_uri, params,201, None)
 
 		# TEST 4
 		# Obtener credenciales con cookie	
@@ -63,54 +65,63 @@ def main():
 		params = urllib.urlencode({})
 		make_request("GET", request_uri, params,200, session)		
 
-		# #Logouts
-		# # TEST 5
-		# request_uri = basePath + "?action=logout"
-		# print "\nTEST 5: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 400"
-		# params = urllib.urlencode({})
-		# make_request("POST", request_uri, params,400, None)
+		#Logouts
+		# TEST 5
+		request_uri = basePath + "?action=logout"
+		print "\nTEST 5: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 400"
+		params = urllib.urlencode({})
+		make_request("POST", request_uri, params,400, None)
 
-		# # TEST 6
-		# print "\nTEST 6: Haciendo petición POST a " + request_uri + " (logout con cookie de sesion)\n Status esperado: 200"
-		# # Se desloguea el usuario logueado en el test1
-		# request_uri = basePath + "?action=logout"
-		# make_request("POST", request_uri, params,200,session)
+		# TEST 6
+		print "\nTEST 6: Haciendo petición POST a " + request_uri + " (logout con cookie de sesion)\n Status esperado: 200"
+		# Se desloguea el usuario logueado en el test1
+		request_uri = basePath + "?action=logout"
+		make_request("POST", request_uri, params,200,session)
 		
-		# # TEST 7
-		# # Get (Sin cookie)
-		# request_uri = basePath
-		# print "\nTEST 7: Haciendo petición GET a " + request_uri + " (obtener credenciales sin cookie)\n Status esperado: 400"
-		# params = urllib.urlencode({})
-		# make_request("GET", request_uri, params,400, None)
+		# TEST 7
+		# Get (Sin cookie)
+		request_uri = basePath
+		print "\nTEST 7: Haciendo petición GET a " + request_uri + " (obtener credenciales sin cookie)\n Status esperado: 400"
+		params = urllib.urlencode({})
+		make_request("GET", request_uri, params,400, None)
 
-		# # TEST 8
-		# # Login (prueba de nueva sesión y actualizar credenciales)
-		# request_uri = basePath + "?action=login"
-		# print "\nTEST 8: Haciendo petición POST a " + request_uri + " (prueba de nueva sesión y actualizar credenciales)\n Status esperado: 200"
-		# token_id = "id" + red_social
-		# access_token = red_social + "Modify2TEST"
-		# params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})	
-		# make_request("POST", request_uri, params,200, None)
+		# TEST 8
+		# Login (prueba de nueva sesión y actualizar credenciales)
+		request_uri = basePath + "?action=login"
+		print "\nTEST 8: Haciendo petición POST a " + request_uri + " (prueba de nueva sesión y actualizar credenciales)\n Status esperado: 200"
+		token_id = "id" + red_social
+		access_token = red_social + "Modify2TEST"
+		params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})	
+		make_request("POST", request_uri, params,200, None)
 
 		# TODO TEST 9 
 		# Obtener credenciales con cookies antiguas
 		request_uri = basePath
-		print "\nTEST 9: Haciendo petición GET a " + request_uri + " (obtener credenciales sin cookie)\n Status esperado: 404"
+		print "\nTEST 9: Haciendo petición GET a " + request_uri + " (obtener credenciales con cookie antigua)\n Status esperado: 400"
 		params = urllib.urlencode({})
-		make_request("GET", request_uri, params,404, session)
+		make_request("GET", request_uri, params,400, session)
 
-		# # TODO TEST 10 
-		# # Logout con cookie antigua (tiene que borrar la cookie y devolver un 200)
-		# request_uri = basePath + "?action=logout"
-		# print "\nTEST 10: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 200"
-		# params = urllib.urlencode({})
-		# make_request("POST", request_uri, params,200, session)
+		# TODO TEST 10 
+		# Logout con cookie antigua (tiene que borrar la cookie y devolver un 200)
+		request_uri = basePath + "?action=logout"
+		print "\nTEST 10: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 200"
+		params = urllib.urlencode({})
+		make_request("POST", request_uri, params,200, session)
 
 		print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 
 	elif red_social=="stackoverflow" or red_social=="instagram" or red_social=="linkedin":
 		request_uri = "/api/oauth/" + red_social
 		session = None
+
+		# Iniciamos sesion en googleplus para realizar las pruebas
+		request_uri = "/api/oauth/googleplus?action=login"
+		print "\n PRETEST: Haciendo petición POST a " + request_uri + " (login)\n Ignorar el status de este caso"
+		token_id = "idgoogle"
+		access_token = "googleTEST"
+		params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})
+		session = make_request("POST", request_uri, params, 201, None)
+
 		# TEST 1
 		# Añadir credenciales nuevas al sistema
 		print "\nTEST 1: Haciendo petición POST a " + request_uri + " (añadir nuevo par de credenciales)\n Status esperado: 201"
@@ -141,6 +152,9 @@ def main():
 
 		# TEST 5
 		# TODO Get (Con Cookie)
+		print "\nTEST 5: Haciendo petición GET a " + request_uri + " (obtener credenciales con cookie)\n Status esperado: 200"
+		params = urllib.urlencode({})
+		make_request("GET", request_uri, params,200, session)	
 
 		print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 

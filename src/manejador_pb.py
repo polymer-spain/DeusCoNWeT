@@ -574,7 +574,7 @@ class OAuthTwitterHandler(SessionHandler):
                 self.response.set_status(200)
 
             # Create Session
-            session_id = self.login(user_id.id())
+            session_id = self.login(user_id)
             # Send session details to client in the channel created previously
             session_message = {'session_id': session_id}
             channel.send_message(auth_token, json.dumps(session_message))
@@ -584,18 +584,37 @@ class OAuthTwitterHandler(SessionHandler):
             if not cookie_value == None:
                 # Obtains info related to the user authenticated in the system
                 user = self.getUserInfo(cookie_value)
-                # Searchs for user's credentials 
-                user_credentials = ndb_pb.getToken(user,'twitter')
-                if not user_credentials == None:
-                    response = {'token_id': user_credentials.identificador, 
-                    'access_token': user_credentials.token}
+                print user
+                # Searchs for user's credentials
+                if not user == None:
+                    user_credentials = ndb_pb.getToken(user,'twitter')
+                    if not user_credentials == None:
+                        response = {'token_id': user_credentials.identificador,
+                        'access_token': user_credentials.token}
+                        self.response.content_type = 'application/json'
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(200)
+                    else:
+                        response = {'error': "The active user does not have a pair of token_id" + 
+                        "and access_token in googleplus stored in the system"}
+                        self.response.content_type = 'application/json'
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(404)
+                else:
+                    response = {'error': "The cookie session provided does not belongs to any active user"}
                     self.response.content_type = 'application/json'
                     self.response.write(json.dumps(response))
-                    self.response.set_status(200)
-                else:
-                    self.response.set_status(404)
+                    self.response.set_status(400)
             else:
+                response = {'error': "You must provide a session cookie"}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
                 self.response.set_status(400)
+        else:
+            response = {'error': "Invalid value for the action param"}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
     
     # POST Method
     def post(self):
@@ -646,16 +665,24 @@ class OAuthGithubHandler(webapp2.RequestHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            # Searchs for user's credentials 
-            user_credentials = ndb_pb.getToken(user,'github')
-            if not user_credentials == None:
-                response = {'token_id': user_credentials.identificador,
-                            'access_token': user_credentials.token}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            print user
+            # Searchs for user's credentials
+            if not user == None:
+                user_credentials = ndb_pb.getToken(user,'github')
+                if not user_credentials == None:
+                    response = {'token_id': user_credentials.identificador,
+                    'access_token': user_credentials.token}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                else:
+                    response = {'error': "The active user does not have a pair of token_id" + 
+                    "and access_token in googleplus stored in the system"}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
             else:
-                self.response.set_status(404)
+                self.response.set_status(400)
         else:
             self.response.set_status(400)
 
@@ -739,21 +766,29 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
       self -- info about the request build by webapp2
       """
       cookie_value = self.request.cookies.get('session')
-      if not cookie_value == None:
-          # Obtains info related to the user authenticated in the system
-          user = self.getUserInfo(cookie_value)
-          # Searchs for user's credentials 
-          user_credentials = ndb_pb.getToken(user,'linkedin')
-          if not user_credentials == None:
-              response = {'token_id': user_credentials.identificador,
-                          'access_token': user_credentials.token}
-              self.response.content_type = 'application/json'
-              self.response.write(json.dumps(response))
-              self.response.set_status(200)
-          else:
-              self.response.set_status(404)
-      else:
-          self.response.set_status(400)
+        if not cookie_value == None:
+            # Obtains info related to the user authenticated in the system
+            user = self.getUserInfo(cookie_value)
+            print user
+            # Searchs for user's credentials
+            if not user == None:
+                user_credentials = ndb_pb.getToken(user,'linkedin')
+                if not user_credentials == None:
+                    response = {'token_id': user_credentials.identificador,
+                    'access_token': user_credentials.token}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                else:
+                    response = {'error': "The active user does not have a pair of token_id" + 
+                    "and access_token in googleplus stored in the system"}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
+            else:
+                self.response.set_status(400)
+        else:
+            self.response.set_status(400)
 
 
     # POST Method
@@ -803,16 +838,24 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            # Searchs for user's credentials 
-            user_credentials = ndb_pb.getToken(user,'instagram')
-            if not user_credentials == None:
-                response = {'token_id': user_credentials.identificador,
-                            'access_token': user_credentials.token}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            print user
+            # Searchs for user's credentials
+            if not user == None:
+                user_credentials = ndb_pb.getToken(user,'instagram')
+                if not user_credentials == None:
+                    response = {'token_id': user_credentials.identificador,
+                    'access_token': user_credentials.token}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                else:
+                    response = {'error': "The active user does not have a pair of token_id" + 
+                    "and access_token in googleplus stored in the system"}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
             else:
-                self.response.set_status(404)
+                self.response.set_status(400)
         else:
             self.response.set_status(400)
 
@@ -867,16 +910,24 @@ class OauthFacebookHandler(SessionHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            # Searchs for user's credentials 
-            user_credentials = ndb_pb.getToken(user,'facebook')
-            if not user_credentials == None:
-                response = {'token_id': user_credentials.identificador,
-                            'access_token': user_credentials.token}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            print user
+            # Searchs for user's credentials
+            if not user == None:
+                user_credentials = ndb_pb.getToken(user,'facebook')
+                if not user_credentials == None:
+                    response = {'token_id': user_credentials.identificador,
+                    'access_token': user_credentials.token}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                else:
+                    response = {'error': "The active user does not have a pair of token_id" + 
+                    "and access_token in googleplus stored in the system"}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
             else:
-                self.response.set_status(404)
+                self.response.set_status(400)
         else:
             self.response.set_status(400)
 
@@ -897,7 +948,7 @@ class OauthFacebookHandler(SessionHandler):
                     # Generate a valid username for a new user in the user_credentials
                     user_id = ndb_pb.insertaUsuario('facebook',
                     token_id, access_token)
-                    session_id = self.login(user_id.id())
+                    session_id = self.login(user_id)
 
                     # Returns the session cookie
                     self.response.set_cookie('session',
@@ -962,16 +1013,24 @@ class OauthStackOverflowHandler(webapp2.RequestHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            # Searchs for user's credentials 
-            user_credentials = ndb_pb.getToken(user,'stackoverflow')
-            if not user_credentials == None:
-                response = {'token_id': user_credentials.identificador,
-                            'access_token': user_credentials.token}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            print user
+            # Searchs for user's credentials
+            if not user == None:
+                user_credentials = ndb_pb.getToken(user,'stackoverflow')
+                if not user_credentials == None:
+                    response = {'token_id': user_credentials.identificador,
+                    'access_token': user_credentials.token}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                else:
+                    response = {'error': "The active user does not have a pair of token_id" + 
+                    "and access_token in googleplus stored in the system"}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
             else:
-                self.response.set_status(404)
+                self.response.set_status(400)
         else:
             self.response.set_status(400)
 
@@ -1061,13 +1120,10 @@ class OauthGooglePlusHandler(SessionHandler):
                 access_token = self.request.POST['access_token']
                 token_id = self.request.POST['token_id']
                 # Checks if the username was stored previously
-                print "DEBUG: token_id: " + token_id
-                print "DEBUG: access_token: " + access_token
                 stored_credentials = ndb_pb.buscaToken(token_id, "google")
                 if stored_credentials == None:
                     # Generate a valid username for a new user      
                     user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
-                    print user_id
                     session_id = self.login(user_id)
                     
                     # Returns the session cookie
