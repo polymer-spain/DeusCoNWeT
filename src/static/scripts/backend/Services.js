@@ -6,7 +6,7 @@ angular.module('picbit').service('$backend', function ($http) {
   this.sendData = function (token, tokenId, redSocial, callback, errorCallback) {
     var request, uri, params;
     uri = this.endpoint + '/api/oauth/' + redSocial;
-    params = "token_id=" + tokenId + "&access_token=" + token;
+    params = "token_id=" + tokenId + "&access_token=" + token + "&action=login";
     request = {
       method: 'post',
       url: uri,
