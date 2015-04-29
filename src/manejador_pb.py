@@ -485,7 +485,7 @@ class SessionHandler(webapp2.RequestHandler):
     """
 
     def login(self, user_id):
-        message = str(user_id + time.time()/1000)
+        message = str(user_id.id() + time.time()/1000)
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
 
@@ -729,7 +729,7 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
   """
     Class that represents the Linkedin token resource. 
     Methods:
-        get -- Returns the GooglePlus access_token and token_id for a user authenticated
+        get -- Returns the Linkedin access_token and token_id for a user authenticated
         post -- Creates or updates the pair of token_id and access_token for an user.
   """
   # GET Method
@@ -1023,16 +1023,25 @@ class OauthGooglePlusHandler(SessionHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            # Searchs for user's credentials 
-            user_credentials = ndb_pb.getToken(user,'google')
-            if not user_credentials == None:
-                response = {'token_id': user_credentials.identificador,
-                            'access_token': user_credentials.token}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            print user
+            # Searchs for user's credentials
+            if not user == None:
+                #userKey = ndb.Key(ndb_pb.Usuario,str(user))
+                user_credentials = ndb_pb.getToken(user,'google')
+                if not user_credentials == None:
+                    response = {'token_id': user_credentials.identificador,
+                    'access_token': user_credentials.token}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                else:
+                    response = {'error': "The active user does not have a pair of token_id" + 
+                    "and access_token in googleplus stored in the system"}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
             else:
-                self.response.set_status(404)
+                self.response.set_status(400)
         else:
             self.response.set_status(400)
 
@@ -1058,7 +1067,8 @@ class OauthGooglePlusHandler(SessionHandler):
                 if stored_credentials == None:
                     # Generate a valid username for a new user      
                     user_id = ndb_pb.insertaUsuario('google', token_id,access_token)
-                    session_id = self.login(user_id.id())
+                    print user_id
+                    session_id = self.login(user_id)
                     
                     # Returns the session cookie
                     #self.response.set_cookie('session',value=session_id, secure=True)
@@ -1067,7 +1077,7 @@ class OauthGooglePlusHandler(SessionHandler):
                 else:
                     # We store the new set of credentials
                     user_id = ndb_pb.modificaToken(token_id,access_token, 'google')
-                    session_id = self.login(user_id.id())
+                    session_id = self.login(user_id)
 
                     # Returns the session cookie
                     #self.response.set_cookie('session',value=session_id, secure=False)
