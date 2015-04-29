@@ -22,7 +22,11 @@ angular.module('picbit')
     {name:'Patrick'},
     {name:'Samantha'}
   ];
-
+  $scope.twitter = {};
+  $scope.github = {};
+  $scope.twitter.token = '3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x';
+  $scope.github.username = 'mortega5'
+  
   $scope.menuStatus = false;
   $scope.showElement = false;
   $scope.listaOpciones = ['false','false','false'];
@@ -54,22 +58,22 @@ angular.module('picbit')
           document.querySelector('#arrowAdd').icon = "arrow-drop-up"
           else
             document.querySelector('#arrowAdd').icon = "arrow-drop-down"
-        break;
+            break;
       case 'delete':
         $scope.listaOpciones=['false',!$scope.listaOpciones[1],'false'];
         if (!$scope.listaOpciones[1])
           document.querySelector('#arrowDelete').icon = "arrow-drop-up"
           else
             document.querySelector('#arrowDelete').icon = "arrow-drop-down"
-        break;
+            break;
       case 'modify':
         $scope.listaOpciones=['false','false',!$scope.listaOpciones[2]];
         if (!$scope.listaOpciones[2])
-            document.querySelector('#arrowModify').icon = "arrow-drop-up"
+          document.querySelector('#arrowModify').icon = "arrow-drop-up"
           else
             document.querySelector('#arrowModify').icon = "arrow-drop-down"
-        
-        break;
+
+            break;
     }
   }
   $scope.hidelist = function(event) {

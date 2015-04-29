@@ -109,3 +109,10 @@ core-dropdown {
 .open-below {
   top: 38px;
 }
+footer {
+  position:fixed;
+  bottom:0;
+  padding:7px;width:100%;
+  background-color:rgba(0,0,0,0.5);
+  z-index: 2;
+}
