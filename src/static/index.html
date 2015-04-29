@@ -14,41 +14,42 @@
     <link rel="stylesheet" href="styles/landingPage.css">
     <link href='http://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'> 
 
-	
+
     <title>PicBit</title>
   </head>
 
   <body unresolved ng-app="picbit" ng-controller="MainCtrl" >
-   
+
     <core-toolbar>
       <img class="logo" src="images/logo.png">
 
-        <h2 id="name" ng-click="changeView('/')" flex>PicBit</h2>
+      <h2 id="name" ng-click="changeView('/')" flex>PicBit</h2>
 
-      
-  <polymer-element name="menu-desplegable" extends="core-icon-button" relative on-tap="{{toggle}}">
-  <script>
-    Polymer({
-      toggle: function() {
-        if (!this.dropdown) {
-          this.dropdown = this.querySelector('core-dropdown');
-        	}
-		  this.dropdown && this.dropdown.toggle();
-      }
-    });
-  </script>
-  </polymer-element>
-  
-<menu-desplegable src="images/logo.png" id="mas" ng-show="status"><span style="padding-left: 3px;vertical-align:middle">Nombre Usuario</span>
+
+      <polymer-element name="menu-desplegable" extends="core-icon-button" relative on-tap="{{toggle}}">
+        <script>
+          Polymer({
+            toggle: function() {
+              if (!this.dropdown) {
+                this.dropdown = this.querySelector('core-dropdown');
+              }
+              this.dropdown && this.dropdown.toggle();
+            }
+          });
+        </script>
+      </polymer-element>
+
+      <menu-desplegable src="images/logo.png" id="mas" ng-show="status"><span style="padding-left: 3px;vertical-align:middle">Nombre Usuario</span>
         <core-dropdown class="open-below">
-			<paper-button><a style="text-decoration:none;color:#000;" href="/user/123123"><span style="padding-left: 3px;vertical-align:middle">Mi Home</span></a></paper-button><br>
-        <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Configurar Perfil</span></a></paper-button><br>
-        
-        <paper-button  id="siginButton" ng-click="showPopup($event)" 
- class="signin"> <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span> </paper-button>
-        
+          
+          <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123"><span style="padding-left: 3px;vertical-align:middle">Mi Home</span></a></paper-button><br>
+          
+          <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Configurar Perfil</span></a></paper-button><br>
+
+          <paper-button  ng-click="showPopup($event)" class="signin"> <span style="padding-left: 3px;vertical-align:middle" id="nameId">Desconectar</span> </paper-button>
+
         </core-dropdown>
- </menu-desplegable>
+      </menu-desplegable>
 
       <core-icon-button id="siginButton" ng-click="showPopup($event)" icon="social:person" class="signin" ng-show="status1">
         <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
@@ -67,42 +68,43 @@
     </div>
 
 
-      <div ng-show="shadow" class="shadow"/>
-      <div ng-show="popup" vertical center layout class="popup" id="popup">
-        <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
+    <div ng-show="shadow" class="shadow"/>
+    <div ng-show="popup" vertical center layout class="popup" id="popup">
+      <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
 
 
-        <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
-        <div vertical center-justified layout class="button-login">
-          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://test-frontend.example-project-13.appspot.com"></google-login>
-          <twitter-login class="button-login" endpoint="http://test-frontend.example-project-13.appspot.com/api/oauth/twitter"/></twitter-login>
-          <login-facebook class="button-login" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
-        </div>
-      </div>
-      <script src="bower_components/angular/angular.js"></script>
-      <script src="bower_components/angular-resource/angular-resource.js"></script>
+      <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
+      <div vertical center-justified layout class="button-login">
+        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://test-frontend.example-project-13.appspot.com"></google-login>
+        <twitter-login class="button-login" endpoint="http://test-frontend.example-project-13.appspot.com/api/oauth/twitter"/></twitter-login>
+      <login-facebook class="button-login" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
+    </div>
+    </div>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.js"></script>
 
-      <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
 
-      <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 
-      <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
 
-      <script src="bower_components/angular-touch/angular-touch.js"></script>
+  <script src="bower_components/angular-touch/angular-touch.js"></script>
 
-      <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
 
-      <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
-      <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
+  <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
+  <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
 
-      <script src="scripts/app.js"></script>
-      <script src="scripts/backend/Services.js"></script>
-      <script src="scripts/controllers/main.js"></script>
-      <script src="scripts/controllers/landingPage.js"></script>
-      <script src="scripts/controllers/userHome.js"></script>
-      <script src="scripts/controllers/about.js"></script>
-      <script src="scripts/controllers/contact.js"></script>
-      <script src="scripts/controllers/privacy.js"></script>
-    </body>
-    </html>
+  <script src="scripts/app.js"></script>
+  <script src="scripts/backend/Services.js"></script>
+  <script src="scripts/controllers/main.js"></script>
+  <script src="scripts/controllers/landingPage.js"></script>
+  <script src="scripts/controllers/userHome.js"></script>
+  <script src="scripts/controllers/about.js"></script>
+  <script src="scripts/controllers/contact.js"></script>
+  <script src="scripts/controllers/profile.js"></script>
+  <script src="scripts/controllers/privacy.js"></script>
+  </body>
+</html>
 

@@ -23,7 +23,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter') {
-        if ($location.$path.indexOf("profile") !== 0) {
+        if ($location.$path.indexOf("profile") !== -1) {
           return
         }
         $location.path('/user/' + e.detail.redSocial + '_' + e.detail.userId);
@@ -36,7 +36,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
             $scope.$apply(function () {
               var response = JSON.parse(xhr.responseText);
               $scope.sendData(e.detail.token, response.id, e.detail.redSocial);
-              if ($location.$$path.indexOf("profile") !== 0) {
+              if ($location.$$path.indexOf("profile") !== -1) {
                 return;
               }
               $location.path('/user/' + e.detail.redSocial + '_' + response.id);
@@ -48,7 +48,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
         xhr.send();
       } else {// mandamos los datos si ya los tenemos
         $scope.sendData(e.detail.token, e.detail.userId, e.detail.redSocial);
-        if ($location.$$path.indexOf("profile")!=0){
+        if ($location.$$path.indexOf("profile") != -1){
           return
         }
         $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
@@ -109,7 +109,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     if (!$scope.status) {
       $scope.popup = true;
       $scope.shadow = true;
-    } else {
+    } else if (e.target.id !== 'eButton') {
       console.info(e);
       $scope.logout();
     }

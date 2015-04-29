@@ -88,15 +88,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       show: true,
       since_id: "",
       endpoint:'',
-      ready: function(event, detail, sender) {
-       if(this.endpoint){
-       this.$.requestTimeline.go(); }
-       
-      },
-               domReady: function(event, detail, sender) {
-       if(this.endpoint && !this.events){
-            this.$.requestTimeline.go(); }
-       
+      domReady: function(event, detail, sender) {
+        if (this.endpoint){
+          this.$.requestTimeline.go(); }
+
       },   
       /*Funcion que prepara los tweets antes de mostrarlos*/
       response: function(event, detail, sender) {
