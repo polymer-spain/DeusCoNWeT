@@ -13,7 +13,8 @@ body,html {
 }
 
 .view {
-  margin:100px 150px ;
+  margin:0px 150px;
+  margin-bottom: 50px;
 }
 
 core-toolbar {
@@ -90,6 +91,7 @@ paper-button {
 #name:hover{
   cursor: pointer;
 }
+<<<<<<< HEAD
 core-dropdown {
   position: absolute;
   top: 38px;
@@ -108,11 +110,14 @@ core-dropdown {
 
 .open-below {
   top: 38px;
+  color: black;
+  margin:0 20px;
 }
 footer {
   position:fixed;
   bottom:0;
-  padding:7px;width:100%;
+  padding:7px;
+  width:100%;
   background-color:rgba(0,0,0,0.5);
   z-index: 2;
 }

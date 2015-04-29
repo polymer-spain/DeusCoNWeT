@@ -29,10 +29,11 @@ Element providing solution to no problem in particular.
 
   <link rel="stylesheet" href="twitter-login.css">
   <core-ajax
-               id="requestToken" url={{endpoint}}
+               id="requestToken"
+               url="{{endpoint}}"
                method="GET"
                params='{
-                      "action": "request_token"
+                      "action": "login"
                     }'
                handleAs="json"
              on-core-response="{{authentication}}"
@@ -50,7 +51,7 @@ Element providing solution to no problem in particular.
 <script>
 
 Polymer({
-
+      endpoint:'',
       /**
        * The `sayHello` method will return a greeting.
        *

@@ -93,7 +93,18 @@ Element providing solution to no problem in particular.
         this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
       }
       // Call Github Api
-      this.$.request.go();
+      if (this.username) {
+        this.$.request.go();
+      }
+    },
+    domReady : function() {
+      if (this.token != '') {
+        this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
+      }
+      // Call Github Api
+      if (this.username) {
+        this.$.request.go();
+      }
     },
     response: function(event,detail,sender){
       // Github events
@@ -125,7 +136,7 @@ Element providing solution to no problem in particular.
         switch(list[i].type) {
           case "PushEvent":
             list[i].type = "Realizó un push sobre";
-            if (list[i].info){
+            if (list[i].info) {
               list[i].info = "Commit: \n "+list[i].payload.commits[0].message;
             };
             break;
@@ -156,10 +167,6 @@ Element providing solution to no problem in particular.
             break;
           case "PullRequestReviewCommentEvent":
             break;
-
-
-
-
         };
         var date = new Date(list[i].created_at);
         var month = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',

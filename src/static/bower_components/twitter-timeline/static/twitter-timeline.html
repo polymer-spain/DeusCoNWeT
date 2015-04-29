@@ -16,14 +16,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../paper-button/paper-button.html">
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-<polymer-element name="twitter-timeline" attributes="accessToken secretToken consumerKey consumerSecret count since_id endpoint">
+<polymer-element name="twitter-timeline" attributes="endpoint accessToken secretToken consumerKey consumerSecret count since_id">
+
   <template>
     <!-- Importacion del CSS a usar -->
     <link rel="stylesheet" href="twitter-timeline.css">
     <!-- Request a la api de twitter solicitando el timeline. Para ello son necesarios todos los tokens -->
     <core-ajax 
                id="requestTimeline"
-               url="{{endpoint}}"
+               url='{{ endpoint }}'
                method="GET"
                params='{
                        "access_token": "{{accessToken}}",
@@ -88,11 +89,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       show: true,
       since_id: "",
       endpoint:'',
-      domReady: function(event, detail, sender) {
-        if (this.endpoint){
-          this.$.requestTimeline.go(); }
+      ready: function(event, detail, sender) {
+        if (this.accesToken){
+          this.$.requestTimeline.go();
+        }
+      },
+      domReady: function(e,d,s) {
+        if (this.accessToken){
+          this.$.requestTimeline.go();
+        }
+      },
 
-      },   
       /*Funcion que prepara los tweets antes de mostrarlos*/
       response: function(event, detail, sender) {
         this.events = this.changeTime(sender.response);

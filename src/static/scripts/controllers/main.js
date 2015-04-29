@@ -1,25 +1,14 @@
-/**
- * @ngdoc function
- * @name pruebaApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the pruebaApp
- */
-
-
 angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend,$http) {
   'use strict';
   $scope.status = false;
   $scope.status1 = true;
-  $scope.domain = $location.host();
+  $scope.domain = 'http://' + $location.host();
   $scope.shadow = false;
   $scope.sended = false;
 
 
-
   $scope.logged = function (e) {
     $scope.$apply(function () {
-
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter') {
@@ -64,12 +53,12 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     });
   }
 
-  $scope.changeView = function(view){
+  $scope.changeView = function (view) {
     $location.hash('');
     $location.path(view); // path not hash
   };
 
-  $scope.logout = function() {
+  $scope.logout = function () {
     var button = document.querySelector('#nameId');
     // Selecionar el nombre del usuario
     button.innerHTML="Entrar";
@@ -77,6 +66,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     $scope.status = false;
     $scope.status1 = true;
   }
+
   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged', $scope.logged);
   document.querySelector('body').addEventListener('linkedin-logged', $scope.logged);
@@ -96,9 +86,43 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
       $scope.logout();
     }
   };
-  $scope.hidePopup = function(){
+  $scope.hidePopup = function () {
     $scope.popup = false;
     $scope.shadow = false;
   };
 
+  $scope.sendSub = function () {
+    var message, sender, subject, error;
+    message = document.querySelector('#message');
+    sender = document.querySelector('#sender');
+    subject = document.querySelector('#subject');
+    error = document.querySelector('#invalid');
+    error.innerHTML = '';
+    if (!message.value) {
+      error.innerHTML = "*El mensaje no debe estar vacio";
+    }
+
+    if (!sender.value || !sender.checkValidity()) {
+      error.innerHTML += "<br>*El email debe ser válido";
+    }
+    if (message.value && sender.checkValidity() && sender.value) {
+      var uri, request;
+      uri = $scope.domain+'/api/contact';
+      request = {
+        method:"post",
+        url: uri, 
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        data: params
+      };
+
+      $http(request).succes(function () {
+        console.info('Todo fue bien');
+        message.value = '';
+        sender.value = '';
+        subject.value = '';
+      }).error( function () {
+        console.error("Error al introducir datos en backend");
+      });
+    };
+  };
 });
