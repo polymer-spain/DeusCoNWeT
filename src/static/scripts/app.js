@@ -17,8 +17,7 @@
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ng-polymer-elements',
-    'ui.bootstrap'
+    'ng-polymer-elements'
   ])
     .config(function ($locationProvider, $routeProvider,$httpProvider) {
 
