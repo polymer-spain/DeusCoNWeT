@@ -12,7 +12,8 @@ handlers:
 - url: /
   static_files: static/index.html
   upload: index\.html
-
+  secure: always
+  
 - url: /api/oauth
   script: manejador_pb.app
   secure: always
@@ -35,8 +36,10 @@ handlers:
 - url: /user/.*
   static_files: static/index.html
   upload: index\.html
+  
 - url: /
   static_dir: static
+  secure: always
 libraries:
 - name: webapp2
   version: latest

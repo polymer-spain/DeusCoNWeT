@@ -99,9 +99,9 @@ angular.module('picbit').controller('landingCtrl', function ($scope,$timeout,$lo
 
 
   $scope.wheel = function(e) {
+    document.onmousewheel = '';
     $scope.$apply(function () {
       e.preventDefault();
-      document.onmousewheel = '';
       var scrolled;
       e.wheelDelta<0 ? scrolled=1 : scrolled=-1;
       /* Section 1*/
@@ -122,10 +122,8 @@ angular.module('picbit').controller('landingCtrl', function ($scope,$timeout,$lo
         $scope.selected +=scrolled;
         $scope.cambiarAnchor('section3');
       };
-      document.onmousewheel = $scope.wheel;
     });
   };
-
   document.onmousewheel = $scope.wheel;
 
   $scope.closeSended = function() {

@@ -7,12 +7,12 @@
     <link rel="shortcut icon" href="images/logo.png" />
     <meta name="description" content="">
     <base href="/#">
-    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/elements.html">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/landingPage.css">
-    <link href='http://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'> 
+    <link href='https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'> 
 
 
     <title>PicBit</title>
@@ -60,7 +60,7 @@
 
     <footer horizontal center-justified layout style="">
       <paper-button ng-click="changeView('/about')">Sobre nosotros</paper-button>
-      <paper-button ng-click="changeView('/contact')">Contactar</paper-button>
+      <paper-button><a href="https://mortega5.typeform.com/to/nRCzNz">Contactar</a></paper-button>
       <paper-button ng-click="changeView('/privacy')">Privacidad</paper-button>
     </footer>
     <div ng-view="" id="view" class="view">
@@ -75,8 +75,8 @@
 
       <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
       <div vertical center-justified layout class="button-login">
-        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://test-frontend.example-project-13.appspot.com"></google-login>
-        <twitter-login class="button-login" endpoint="http://test-frontend.example-project-13.appspot.com/api/oauth/twitter"/></twitter-login>
+        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="https://test-frontend-dot-example-project-13.appspot.com"></google-login>
+        <twitter-login class="button-login" endpoint="https://test-frontend-dot-example-project-13.appspot.com/api/oauth/twitter"/></twitter-login>
       <login-facebook class="button-login" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
     </div>
     </div>
@@ -94,7 +94,6 @@
   <script src="bower_components/angular-route/angular-route.js"></script>
 
   <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
-  <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
 
   <script src="scripts/app.js"></script>
   <script src="scripts/backend/Services.js"></script>
