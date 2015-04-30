@@ -1158,8 +1158,8 @@ class OauthGooglePlusHandler(SessionHandler):
                     session_id = self.login(user_id)
                     
                     # Returns the session cookie
-                    #self.response.set_cookie('session',value=session_id, secure=True)
-                    self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
+                    self.response.set_cookie('session',session_id, max_axe=360, path='/', domain=domain, secure=True)
+                    #self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
                     self.response.set_status(201)
                 else:
                     # We store the new set of credentials
@@ -1168,7 +1168,8 @@ class OauthGooglePlusHandler(SessionHandler):
 
                     # Returns the session cookie
                     #self.response.set_cookie('session',value=session_id, secure=False)
-                    self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
+                    #self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
+                    self.response.set_cookie('session',session_id, max_axe=360, path='/', domain=domain, secure=True)
                     self.response.set_status(200)
             except KeyError:
                 response = \
