@@ -485,7 +485,7 @@ class SessionHandler(webapp2.RequestHandler):
     """
 
     def login(self, user_id):
-        message = str(user_id.id() + time.time()/1000)
+        message = str(user_id.id()) + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
 
@@ -584,7 +584,6 @@ class OAuthTwitterHandler(SessionHandler):
             if not cookie_value == None:
                 # Obtains info related to the user authenticated in the system
                 user = self.getUserInfo(cookie_value)
-                print user
                 # Searchs for user's credentials
                 if not user == None:
                     user_credentials = ndb_pb.getToken(user,'twitter')
@@ -626,13 +625,11 @@ class OAuthTwitterHandler(SessionHandler):
         if action == 'logout':
             cookie_value = self.request.cookies.get('session')
             if not cookie_value == None:
-                print 'DEBUG: Cookie value: ' + cookie_value
                 # Logout
                 logout_status = self.logout(cookie_value)
 
                 # Delete cookie
                 self.response.delete_cookie('session')
-                print 'DEBUG: LOGOUT: ' + str(logout_status)
                 self.response.set_status(200)
             else:
                 response = \
@@ -665,7 +662,6 @@ class OAuthGithubHandler(webapp2.RequestHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            print user
             # Searchs for user's credentials
             if not user == None:
                 #userKey = ndb.Key(ndb_pb.Usuario,str(user))
@@ -768,41 +764,40 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
   """
   # GET Method
   def get(self):
-      """ - Returns the Linkedin access_token for a user authenticated
-      Keyword arguments: 
-      self -- info about the request build by webapp2
-      """
-        cookie_value = self.request.cookies.get('session')
-        if not cookie_value == None:
-            # Obtains info related to the user authenticated in the system
-            user = self.getUserInfo(cookie_value)
-            print user
-            # Searchs for user's credentials
-            if not user == None:
-                #userKey = ndb.Key(ndb_pb.Usuario,str(user))
-                user_credentials = ndb_pb.getToken(user,'linkedin')
-                if not user_credentials == None:
-                    response = {'token_id': user_credentials.identificador,
-                    'access_token': user_credentials.token}
-                    self.response.content_type = 'application/json'
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(200)
-                else:
-                    response = {'error': "The active user does not have a pair of token_id" + 
-                    "and access_token in linkedin stored in the system"}
-                    self.response.content_type = 'application/json'
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(404)
-            else:
-                response = {'error': "The cookie session provided does not belongs to any active user"}
+    """ - Returns the Linkedin access_token for a user authenticated
+    Keyword arguments: 
+    self -- info about the request build by webapp2
+    """
+    cookie_value = self.request.cookies.get('session')
+    if not cookie_value == None:
+        # Obtains info related to the user authenticated in the system
+        user = self.getUserInfo(cookie_value)
+        # Searchs for user's credentials
+        if not user == None:
+            #userKey = ndb.Key(ndb_pb.Usuario,str(user))
+            user_credentials = ndb_pb.getToken(user,'linkedin')
+            if not user_credentials == None:
+                response = {'token_id': user_credentials.identificador,
+                'access_token': user_credentials.token}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)
+                self.response.set_status(200)
+            else:
+                response = {'error': "The active user does not have a pair of token_id" + 
+                "and access_token in linkedin stored in the system"}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(404)
         else:
-            response = {'error': "You must provide a session cookie"}
+            response = {'error': "The cookie session provided does not belongs to any active user"}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
             self.response.set_status(400)
+    else:
+        response = {'error': "You must provide a session cookie"}
+        self.response.content_type = 'application/json'
+        self.response.write(json.dumps(response))
+        self.response.set_status(400)
 
 
     # POST Method
@@ -852,7 +847,6 @@ class OAuthInstagramHandler(webapp2.RequestHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            print user
             # Searchs for user's credentials
             if not user == None:
                 #userKey = ndb.Key(ndb_pb.Usuario,str(user))
@@ -930,7 +924,6 @@ class OauthFacebookHandler(SessionHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            print user
             # Searchs for user's credentials
             if not user == None:
                 #userKey = ndb.Key(ndb_pb.Usuario,str(user))
@@ -986,7 +979,7 @@ class OauthFacebookHandler(SessionHandler):
                     # We store the new set of credentials
                     user_id = ndb_pb.modificaToken(token_id,
                     access_token, 'facebook')
-                    session_id = self.login(user_id.id())
+                    session_id = self.login(user_id)
 
                     # Returns the session cookie
                     self.response.set_cookie('session',
@@ -1040,7 +1033,6 @@ class OauthStackOverflowHandler(webapp2.RequestHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            print user
             # Searchs for user's credentials
             if not user == None:
                 #userKey = ndb.Key(ndb_pb.Usuario,str(user))
@@ -1103,7 +1095,7 @@ class OauthGooglePlusHandler(SessionHandler):
     Methods:
         get -- Returns the GooglePlus access_token and token_id for a user authenticated
         post -- Creates or updates the pair of token_id and access_token for an user and
-                initiates a new session or destroy a session previously initialized.
+        initiates a new session or destroy a session previously initialized.
     """
     
     # GET Method
@@ -1116,7 +1108,6 @@ class OauthGooglePlusHandler(SessionHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-            print user
             # Searchs for user's credentials
             if not user == None:
                 #userKey = ndb.Key(ndb_pb.Usuario,str(user))
@@ -1192,7 +1183,6 @@ class OauthGooglePlusHandler(SessionHandler):
                 logout_status = self.logout(cookie_value)
                 # Delete cookie
                 self.response.delete_cookie('session')
-                print 'DEBUG: LOGOUT: ' + str(logout_status)
                 self.response.set_status(200)
             else:
                 response = \

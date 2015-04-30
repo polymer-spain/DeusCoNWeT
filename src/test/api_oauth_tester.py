@@ -7,9 +7,9 @@ import json
 # Uso: ./api_oauth_tester red_social
 
 connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
-headers = {"User-Agent": "PicBit-App"}
 
 def make_request(method, request_uri, params, status_ok, session):
+	headers = {"User-Agent": "PicBit-App"}
 	session_cookie = None
 	if not session == None:
 		headers['Cookie']  = session
@@ -23,9 +23,11 @@ def make_request(method, request_uri, params, status_ok, session):
   		print responseData
   	else:
   		print ">>> STATUS: OK"
-  		session_cookie = response.getheader('Set-Cookie')
-  		print responseData
-  		print session_cookie
+  	#print "Cookie de la peticion: " + str(headers['Cookie'])
+	session_cookie = response.getheader('Set-Cookie')
+	if not session_cookie == None:
+  		print "Cookie de la respuesta: " + session_cookie
+  	
   	return session_cookie
 
 def main():
