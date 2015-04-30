@@ -33,7 +33,7 @@ import cliente_gitHub
 
 # Global vars
 
-domain = 'example-project-13.appspot.com'
+domain = 'test-backend.example-project-13.appspot.com'
 
 
 class ComponentListHandler(webapp2.RequestHandler):
@@ -973,7 +973,7 @@ class OauthFacebookHandler(SessionHandler):
                     # Returns the session cookie
                     self.response.set_cookie('session',
                     value=session_id, path='/', domain=domain,
-                    secure=True)
+                    secure=False)
                     self.response.set_status(201)
                 else:
                     # We store the new set of credentials
@@ -984,7 +984,7 @@ class OauthFacebookHandler(SessionHandler):
                     # Returns the session cookie
                     self.response.set_cookie('session',
                     value=session_id, path='/', domain=domain,
-                    secure=True)
+                    secure=False)
                     self.response.set_status(200)
             except KeyError:
                 response = \
@@ -1158,7 +1158,7 @@ class OauthGooglePlusHandler(SessionHandler):
                     session_id = self.login(user_id)
                     
                     # Returns the session cookie
-                    self.response.set_cookie('session',session_id, max_axe=360, path='/', domain=domain, secure=True)
+                    self.response.set_cookie('session',session_id, path='/', domain=domain, secure=False)
                     #self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
                     self.response.set_status(201)
                 else:
@@ -1169,7 +1169,7 @@ class OauthGooglePlusHandler(SessionHandler):
                     # Returns the session cookie
                     #self.response.set_cookie('session',value=session_id, secure=False)
                     #self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
-                    self.response.set_cookie('session',session_id, max_axe=360, path='/', domain=domain, secure=True)
+                    self.response.set_cookie('session',session_id, path='/', domain=domain, secure=False)
                     self.response.set_status(200)
             except KeyError:
                 response = \

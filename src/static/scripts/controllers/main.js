@@ -50,7 +50,7 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
       data: params
     }
     $http(request).error(function (data,status) {
-      console.error('Error:' + status ': no se enviaron datos al backend'); 
+      console.error('Error:' + status + ': no se enviaron datos al backend'); 
     });
 
   };
