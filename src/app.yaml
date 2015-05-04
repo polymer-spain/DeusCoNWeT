@@ -1,5 +1,4 @@
 application: example-project-13
-
 version: test-backend
 runtime: python27
 threadsafe: true
@@ -14,6 +13,7 @@ handlers:
 - url: /
   static_files: static/index.html
   upload: index\.html
+  
 
 - url: /api/oauth
   script: manejador_pb.app
@@ -40,6 +40,7 @@ handlers:
   
 - url: /
   static_dir: static 
+  
 
 libraries:
 - name: webapp2

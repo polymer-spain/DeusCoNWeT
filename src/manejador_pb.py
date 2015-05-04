@@ -33,7 +33,7 @@ import cliente_gitHub
 
 # Global vars
 
-domain = 'test-backend.example-project-13.appspot.com'
+domain = 'example-project-13.appspot.com'
 
 
 class ComponentListHandler(webapp2.RequestHandler):
@@ -659,59 +659,50 @@ class OAuthGithubHandler(webapp2.RequestHandler):
         self -- info about the request build by webapp2
         """
         cookie_value = self.request.cookies.get('session')
-        if not cookie_value == None:
-            # Obtains info related to the user authenticated in the system
-            user = self.getUserInfo(cookie_value)
-            # Searchs for user's credentials
-            if not user == None:
-                #userKey = ndb.Key(ndb_pb.Usuario,str(user))
-                user_credentials = ndb_pb.getToken(user,'github')
-                if not user_credentials == None:
-                    response = {'token_id': user_credentials.identificador,
-                    'access_token': user_credentials.token}
-                    self.response.content_type = 'application/json'
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(200)
+        action = self.request.get('action', default_value='')
+        if action == 'credentials':        
+            if not cookie_value == None:
+                # Obtains info related to the user authenticated in the system
+                user = self.getUserInfo(cookie_value)
+                # Searchs for user's credentials
+                if not user == None:
+                    #userKey = ndb.Key(ndb_pb.Usuario,str(user))
+                    user_credentials = ndb_pb.getToken(user,'github')
+                    if not user_credentials == None:
+                        response = {'token_id': user_credentials.identificador,
+                        'access_token': user_credentials.token}
+                        self.response.content_type = 'application/json'
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(200)
+                    else:
+                        response = {'error': "The active user does not have a pair of token_id" + 
+                        "and access_token in github stored in the system"}
+                        self.response.content_type = 'application/json'
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(404)
                 else:
-                    response = {'error': "The active user does not have a pair of token_id" + 
-                    "and access_token in github stored in the system"}
+                    response = {'error': "The cookie session provided does not belongs to any active user"}
                     self.response.content_type = 'application/json'
                     self.response.write(json.dumps(response))
-                    self.response.set_status(404)
+                    self.response.set_status(400)
             else:
-                response = {'error': "The cookie session provided does not belongs to any active user"}
+                response = {'error': "You must provide a session cookie"}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
-        else:
-            response = {'error': "You must provide a session cookie"}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(400)
-
-    # POST Method
-    def post(self):
-        """ Defines the flow of the process to get an access_token to use the Github API
-        Keyword arguments: 
-        self -- info about the request build by webapp2
-        """
-
-        action = self.request.get('action', default_value='request_code'
-                                  )
-        url = 'github.com'
-        authorize_url = \
-            'http://github-login-lab.appspot.com/oauth/github?action=request_token'
-        access_token_url = '/login/oauth/access_token'
-        client_id = '1f21e4d820abd2cb5a7a'
-        client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
-        access_token = ''
-
-        connection = httplib.HTTPSConnection(url)
-        if action == 'request_token':
+        elif action == 'request_token':
+            url = 'github.com'
+            authorize_url = \
+            'http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token'
+            access_token_url = '/login/oauth/access_token'
+            client_id = '1f21e4d820abd2cb5a7a'
+            client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
+            access_token = ''
+            connection = httplib.HTTPSConnection(url)
 
             # Cogemos el codigo de la peticion
             code = self.request.get('code')
-
+            print code
             # Indicamos los parametros de la peticion a github
             params_token = urllib.urlencode({'client_id': client_id,
                     'client_secret': client_secret, 'code': code})
@@ -737,13 +728,14 @@ class OAuthGithubHandler(webapp2.RequestHandler):
             connectionAPI = httplib.HTTPSConnection('api.github.com')
             headers = {'Accept': 'application/vnd.github.v3+json',
                        'User-Agent': 'PicBit-App',
-                       'Authorization': 'token TOKEN_GITHUB'}
+                       'Authorization': 'token 1e08340dd4f61f571934c5b93127c3787c78ea6e'}
             connectionAPI.request('GET', '/user', params_token, headers)
             response = connectionAPI.getresponse()
-            user_details = json.loads(response.read())
-
+            aux = response.read()
+            user_details = json.loads(aux)
+            print aux
             # Buscamos el par id usuario/token autenticado en la base
-            ndb_pb.buscaToken(str(user_details['id']), "github")
+            stored_credentials = ndb_pb.buscaToken(str(user_details['id']), "github")
             if stored_credentials == None:
                 # Almacena las credenciales en una entidad Token
                 user_credentials = ndb_pb.insertaUsuario('github',str(user_details['id']),
@@ -753,6 +745,18 @@ class OAuthGithubHandler(webapp2.RequestHandler):
                 # Almacenamos el access token recibido
                 user_id = ndb_pb.modificaToken(str(user_details['id']),access_token, 'github')
                 self.response.set_status(200)
+        else:
+            self.response.set_status(400)
+            
+
+
+    # POST Method
+    def post(self):
+        """ Defines the flow of the process to get an access_token to use the Github API
+        Keyword arguments: 
+        self -- info about the request build by webapp2
+        """
+        pass
 
 
 class OauthLinkedinHandler(webapp2.RequestHandler):
