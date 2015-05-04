@@ -32,11 +32,12 @@
                 <div id="oculto"></div>
                 <core-submenu src="" label="Sign Redes Sociales"> 
                   <core-item label=""><login-facebook  class="button-login" key_app="1564153433801338" scope="public_profile,email"></login-facebook></core-item>
-                  <core-item label=""><google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="http://localhost:8080"></google-login></core-item>
-                  <core-item label=""><twitter-login class="button-login"></twitter-login></core-item>
-                  <core-item label=""><github-login></github-login></core-item>
-                  <core-item label=""><linkedin-login></linkedin-login></core-item>
-                  <core-item label=""><instagram-login></instagram-login></core-item>
+                  <core-item label=""><google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login></core-item>
+                  <core-item label=""><twitter-login class="button-login" endpoint="https://test-frontend-dot-example-project-13.appspot.com/api/oauth/twitter"></twitter-login></core-item>
+                  <core-item label=""><github-login scope="user:email" client_id="1f21e4d820abd2cb5a7a"></github-login></core-item>
+                  <core-item label=""> <linkedin-login apiKey="775t0r02k5gfre"></linkedin-login></core-item>
+                  <core-item label=""> <instagram-login clientId="34af286560fc492cbabc62285f098047" redirectUri="{{domain}}">
+                    </instagram-login></core-item>
                 </core-submenu>
 
               </core-menu>
