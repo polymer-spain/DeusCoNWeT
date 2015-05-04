@@ -4,19 +4,24 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
 
 
   $scope.status = false;
-  $scope.domain = 'http://' + $location.host();
+  $scope.domain = 'https://' + $location.host();
+  $scope.cookie = $scope.cookie | {};
+
+
   $scope.logged = function (e) {
     $scope.$apply(function () {
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter') {
+        /* Provisional hasta que se implemente el nombre de usuario */
         $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
       } else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
         var uri, button;
         uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
         $http.get(uri).success(function (data) {
-            $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
-            $scope.sendData(e.detail.token, data.id, e.detail.redSocial);
+          /* Provisional hasta que se implemente el nombre de usuario */
+          $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
+          $scope.sendData(e.detail.token, data.id, e.detail.redSocial);
         }).error(function () {
           console.error("Error al contactar con google");               
         });
