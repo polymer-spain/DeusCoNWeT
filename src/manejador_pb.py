@@ -692,8 +692,8 @@ class OAuthGithubHandler(webapp2.RequestHandler):
                 self.response.set_status(400)
         elif action == 'request_token':
             url = 'github.com'
-            authorize_url = \
-            'http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token'
+            #authorize_url = \
+            #'http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token'
             access_token_url = '/login/oauth/access_token'
             client_id = '1f21e4d820abd2cb5a7a'
             client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
@@ -728,7 +728,7 @@ class OAuthGithubHandler(webapp2.RequestHandler):
             connectionAPI = httplib.HTTPSConnection('api.github.com')
             headers = {'Accept': 'application/vnd.github.v3+json',
                        'User-Agent': 'PicBit-App',
-                       'Authorization': 'token 1e08340dd4f61f571934c5b93127c3787c78ea6e'}
+                       'Authorization': 'token 61412876c693ab6aa08a1e49656fcbe768318477'}
             connectionAPI.request('GET', '/user', params_token, headers)
             response = connectionAPI.getresponse()
             aux = response.read()
