@@ -77,7 +77,7 @@ Element providing solution to no problem in particular.
 				// More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
 				var script = document.createElement('script');
 				script.type ='text/javascript';
-				script.src = 'http://platform.linkedin.com/in.js'
+				script.src = 'https://platform.linkedin.com/in.js'
 				script.text = ' api_key:' + this.apiKey + '\nonLoad:    onLinkedInLoad\n   authorize: true\n  lang:      es_ES'
 				document.body.appendChild(script);
 				document.addEventListener("customLogin", function(){
