@@ -34,7 +34,7 @@ import cliente_gitHub
 
 # Global vars
 
-domain = 'test-frontend-dot-example-project-13.appspot.com'
+domain = 'example-project-13.appspot.com'
 
 
 class ComponentListHandler(webapp2.RequestHandler):
@@ -1099,7 +1099,7 @@ class OauthFacebookHandler(SessionHandler):
 
                     self.response.set_cookie('session',
                             value=session_id, path='/', domain=domain,
-                            secure=False)
+                            secure=True)
                     self.response.set_status(201)
                 else:
 
@@ -1113,7 +1113,7 @@ class OauthFacebookHandler(SessionHandler):
 
                     self.response.set_cookie('session',
                             value=session_id, path='/', domain=domain,
-                            secure=False)
+                            secure=True)
                     self.response.set_status(200)
             except KeyError:
                 response = \
@@ -1337,7 +1337,7 @@ class OauthGooglePlusHandler(SessionHandler):
                     # Returns the session cookie
 
                     self.response.set_cookie('session', session_id,
-                            path='/', domain=domain, secure=False)
+                            path='/', domain=domain, secure=True)
 
                     # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
 
@@ -1355,7 +1355,7 @@ class OauthGooglePlusHandler(SessionHandler):
                     # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
 
                     self.response.set_cookie('session', session_id,
-                            path='/', domain=domain, secure=False)
+                            path='/', domain=domain, secure=True)
                     self.response.set_status(200)
             except KeyError:
                 response = \
