@@ -40,7 +40,7 @@ angular.module('picbit').service('$backend', function ($http) {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
-    $http(request).success(function (data) {
+    $http(request).success(function (data, status) {
       if (callback) {
         callback(data);
       }
@@ -61,7 +61,7 @@ angular.module('picbit').service('$backend', function ($http) {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
-    $http(request).success(function (data) {
+    $http(request).success(function (data, status) {
       if (callback) {
         callback(data);
       }

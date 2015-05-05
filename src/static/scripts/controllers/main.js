@@ -90,39 +90,4 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     $scope.popup = false;
     $scope.shadow = false;
   };
-
-  $scope.sendSub = function () {
-    var message, sender, subject, error;
-    message = document.querySelector('#message');
-    sender = document.querySelector('#sender');
-    subject = document.querySelector('#subject');
-    error = document.querySelector('#invalid');
-    error.innerHTML = '';
-    if (!message.value) {
-      error.innerHTML = "*El mensaje no debe estar vacio";
-    }
-
-    if (!sender.value || !sender.checkValidity()) {
-      error.innerHTML += "<br>*El email debe ser válido";
-    }
-    if (message.value && sender.checkValidity() && sender.value) {
-      var uri, request;
-      uri = $scope.domain+'/api/contact';
-      request = {
-        method:"post",
-        url: uri, 
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        data: params
-      };
-
-      $http(request).succes(function () {
-        console.info('Todo fue bien');
-        message.value = '';
-        sender.value = '';
-        subject.value = '';
-      }).error( function () {
-        console.error("Error al introducir datos en backend");
-      });
-    };
-  };
 });
