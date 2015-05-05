@@ -822,20 +822,19 @@ class OAuthGithubHandler(SessionHandler):
 
 
 class OauthLinkedinHandler(SessionHandler):
-  """
+    """
     Class that represents the Linkedin token resource. 
     Methods:
         get -- Returns the Linkedin access_token and token_id for a user authenticated
         post -- Creates or updates the pair of token_id and access_token for an user.
-  """
+    """
 
-  # GET Method
-
+    # GET Method
     def get(self):
         """ - Returns the Linkedin access_token for a user authenticated
-    Keyword arguments: 
-    self -- info about the request build by webapp2
-    """
+        Keyword arguments: 
+        self -- info about the request build by webapp2
+        """
 
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
@@ -878,15 +877,13 @@ class OauthLinkedinHandler(SessionHandler):
             self.response.set_status(400)
 
     # POST Method
-
     def post(self):
         """ - Creates or updates the pair of token_id and access_token for an user.
           Keyword arguments: 
           self -- info about the request build by webapp2
-      """
+        """
 
-      # Gets the data from the request form
-
+        # Gets the data from the request form
         try:
             access_token = self.request.POST['access_token']
             token_id = self.request.POST['token_id']
@@ -917,7 +914,6 @@ class OauthLinkedinHandler(SessionHandler):
 
 
 class OAuthInstagramHandler(SessionHandler):
-
     """
     Class that represents the Instagram token resource. 
     Methods:
@@ -926,7 +922,6 @@ class OAuthInstagramHandler(SessionHandler):
     """
 
     # GET Method
-
     def get(self):
         """ - Returns the Instagram access_token for a user authenticated
         Keyword arguments: 
@@ -1182,8 +1177,7 @@ class OauthStackOverflowHandler(SessionHandler):
 
                 # userKey = ndb.Key(ndb_pb.Usuario,str(user))
 
-                user_credentials = ndb_pb.getToken(user, 'stackoverflow'
-                        )
+                user_credentials = ndb_pb.getToken(user, 'stackoverflow')
                 if not user_credentials == None:
                     print user_credentials
                     response = {'token_id': user_credentials.identificador,
@@ -1194,7 +1188,7 @@ class OauthStackOverflowHandler(SessionHandler):
                 else:
                     response = \
                         {'error': 'The active user does not have a pair of token_id' \
-                         + 'and access_token in stackoverflow stored in the system'}
+                         + ' and access_token in stackoverflow stored in the system'}
                     self.response.content_type = 'application/json'
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)

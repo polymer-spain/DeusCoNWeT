@@ -28,7 +28,7 @@ import webapp2
 rs_list = [
     'twitter',
     'facebook',
-    'stack-overflow',
+    'stackoverflow',
     'instagram',
     'linkedin',
     'google',
@@ -197,10 +197,11 @@ def getToken(entity_key, rs):  # FUNCIONA
     tokens = user.tokens
     res = None
     if not rs in rs_list:
-        return 'La red social no esta contemplada'
+      return 'La red social no esta contemplada'
     for token in tokens:
-        if token.nombre_rs == rs:
-            res = token
+      print "DEBUG: TOKEN ACTUAL ", token.nombre_rs 
+      if token.nombre_rs == rs:
+        res = token
 
     return res
 
