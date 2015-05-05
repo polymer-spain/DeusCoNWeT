@@ -39,7 +39,7 @@
         </script>
       </polymer-element>
 
-      <menu-desplegable src="images/logo.png" id="mas" ng-show="status"><span style="padding-left: 3px;vertical-align:middle">Nombre Usuario</span>
+      <menu-desplegable src="images/logo.png" id="mas" ng-show="status"><strong style="padding-left: 3px;vertical-align:middle">Nombre Usuario</strong>
         <core-dropdown class="open-below">
 
           <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123"><span style="padding-left: 3px;vertical-align:middle">Mi Home</span></a></paper-button><br>
@@ -73,15 +73,21 @@
       <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
 
 
-      <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
-      <div vertical center-justified layout class="button-login">
-        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="https://test-frontend-dot-example-project-13.appspot.com"></google-login>
-        <twitter-login class="button-login" endpoint="https://test-frontend-dot-example-project-13.appspot.com/api/oauth/twitter"/></twitter-login>
-      <login-facebook class="button-login" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
-    </div>
-    </div>
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-resource/angular-resource.js"></script>
+
+        <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
+        <div vertical center-justified layout class="button-login">
+        
+
+         <google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login>
+          <twitter-login class="button-login" endpoint="{{domain}}"></twitter-login>
+          <login-facebook class="button-login" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
+        </div>
+      </div>
+      <script src="bower_components/angular/angular.js"></script>
+      <script src="bower_components/angular-resource/angular-resource.js"></script>
+
+      <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+
 
   <script src="bower_components/angular-cookies/angular-cookies.js"></script>
 
@@ -93,8 +99,10 @@
 
   <script src="bower_components/angular-route/angular-route.js"></script>
 
+
   <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
 
+   
   <script src="scripts/app.js"></script>
   <script src="scripts/backend/Services.js"></script>
   <script src="scripts/controllers/main.js"></script>

@@ -39,7 +39,7 @@ handlers:
   
 - url: /
   static_dir: static
-  secure: always
+
 libraries:
 - name: webapp2
   version: latest

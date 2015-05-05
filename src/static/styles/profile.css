@@ -39,23 +39,25 @@ input{
 }
 .spans{
 
-  color:#171717;
-  margin: 10px;
+  color:#fff;
+  margin: 0px;
 }
 
 select{
 
-  width: 18.3%;
-  background: #F3F3F3;
-  color: #0d0d0d;
-  padding: 5px;
-  font-size: 13px;
-  line-height: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  border-radius: 0;
-  height: 30px;
-  margin-bottom: 5px;
-  margin-top: 3px;
+    width: 18.3%;
+	background: rgba(243, 243, 243, 0);
+	color: #0d0d0d;
+	padding: 5px;
+	font-size: 13px;
+	line-height: 100%;
+	border: 1px solid rgb(255, 255, 255);
+	border-radius: 0;
+	height: 30px;
+	margin-bottom: 5px;
+	margin-top: 3px;
+    background-color: transparent;
+
 }
 
 #pr{
@@ -170,7 +172,7 @@ input[type=submit]:hover{
 
 strong{
   font-size: 100%;
-  color:black;
+  color:white;
 
 }
 .SelectStyle {
@@ -182,21 +184,25 @@ strong{
 
 
 #sexo{
-  width: 57%;
-  background: #F3F3F3;
-  color: #0d0d0d;
-  padding: 5px;
-  font-size: 13px;
-  line-height: 100%;
-  border: 1px solid #9d9d9d;
-  border-radius: 0;
-  height: 30px;
-  margin-bottom: 5px;
-  margin-top: 3px;
-}
 
+	width: 57%;
+	background:  rgba(243, 243, 243, 0);
+	color: #0d0d0d;
+	padding: 5px;
+	font-size: 13px;
+	line-height: 100%;
+	border: 1px solid #fff;
+	border-radius: 0;
+	height: 30px;
+	margin-bottom: 5px;
+	margin-top: 3px;
+}
+ 
 option {
-  padding: 10px;
+	padding: 10px;
+   
+    background-color: transparent;
+
 }
 input:hover{
 
@@ -216,4 +222,111 @@ textarea:hover{
 
 }
 
+span{
+  
+  color: #393939;
+}
 
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+  
+
+    section {
+      padding: 20px 0;
+    }
+
+    section > div {
+      padding: 14px;
+      font-size: 16px;
+    }
+
+   
+      paper-input-decorator {
+        max-width: 55%;
+        
+      }
+
+      
+paper-input-decorator /deep/ .label-text {
+    
+    color: green;
+}
+paper-input-decorator /deep/ .error {
+   
+    color: #212121;
+}
+
+paper-input-decorator /deep/ ::-moz-placeholder {
+    color: green;
+}
+paper-input-decorator /deep/ :-ms-input-placeholder {
+    color: green;
+}
+
+paper-input-decorator /deep/ .unfocused-underline {
+    
+    background-color: green;
+}      
+      
+paper-input-decorator /deep/ ::-webkit-input-placeholder {
+    
+    color: rgb(255, 255, 255);
+}
+
+
+paper-input-decorator /deep/ .unfocused-underline {
+   
+    background-color: green;
+}
+
+paper-input-decorator.invalid[focused] /deep/ .floated-label .label-text,
+paper-input-decorator[focused] /deep/ .error {
+    
+    color: #cb1919;
+}
+
+paper-input-decorator.invalid /deep/ .focused-underline {
+  
+    background-color: #b90a0a;
+}
+      
+      
+      
+      
+    .constrained-height {
+      height: 15px;
+    }
+
+    .colored {
+      color: #0f9d58;
+    }
+
+  
+    .dropdown.colored::shadow #ripple,
+    .dropdown.colored::shadow #background {
+      border: 1px solid #0f9d58;
+      background-color: #b7e1cd;
+    }
+      
+   paper-dropdown-menu::shadow #label{
+     
+     
+     color: #fff;
+   }
+  
+   paper-dropdown-menu::shadow #arrow{
+     
+     
+     color: #fff;
+   }
+  
+  core-dropdown{
+ border-bottom: 1px solid #FFFFFF;}      
+
+      
+
+
+ 
+//////////////////////////////////////////////////////////////////////////////////////////////
