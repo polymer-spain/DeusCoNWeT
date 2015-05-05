@@ -1,19 +1,20 @@
-""" Copyright 2014 Luis Ruiz Ruiz
-    Copyright 2014 Ana Isabel Lopera Martinez
-    Copyright 2014 Miguel Ortega Moreno
-    Copyright 2014 Juan Francisco Salamanca Carmona
+"""
+  Copyright 2014 Juan Francisco Salamanca Carmona
+  Copyright 2014 Luis Ruiz Ruiz
+  Copyright 2014 Ana Isabel Lopera Martinez
+  Copyright 2014 Miguel Ortega Moreno
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 """
 
 from google.appengine.ext import ndb
@@ -23,32 +24,53 @@ import json
 """NDB Instances """
 
 class Usuario(ndb.Model):
-  # "Usuario"
+
+  # "Usuario Beta"
+
+  email_beta = ndb.StringProperty(required=True)
+  nombre_beta = ndb.StringProperty()
+  apellidos_beta = ndb.StringProperty()
+
+    # "Usuario"
+  
   email_usuario = ndb.StringProperty()
   telefono_usuario = ndb.IntegerProperty()
   descripcion_usuario = ndb.TextProperty()
   imagen_usuario = ndb.StringProperty()
+  
     #"Lista de redes"
+  
   nombre_rs_pertenece_usuario = ndb.StringProperty(repeated=True)
   siguiendo_rs_pertenece_usuario = ndb.IntegerProperty(repeated=True)
   seguidores_rs_pertenece_usuario = ndb.IntegerProperty(repeated=True)
   url_sig_rs_pertenece_usuario = ndb.StringProperty(repeated=True)
   url_seg_rs_pertenece_usuario = ndb.StringProperty(repeated=True)
+  
     # "lista_Grupos"
+  
   # lista_Usuarios_grupo_pertenece_usuario = ndb.StringProperty(repeated=True)
   nombre_grupo_pertenece_usuario = ndb.StringProperty(repeated=True)
   descripcion_grupo_pertenece_usuario = ndb.StringProperty(repeated=True)
+  
     # "Valoracion"
+  
   name_valorada = ndb.StringProperty(repeated=True)
   rating_value_valorada = ndb.FloatProperty(repeated=True)
+  
     # "componentes_usuario"
+  
   nombre_componente_usuario = ndb.StringProperty(repeated=True)
   x_componente_usuario = ndb.FloatProperty(repeated=True)
   y_componente_usuario = ndb.FloatProperty(repeated=True)
   url_componente_usuario = ndb.StringProperty(repeated=True)
   height_componente_usuario = ndb.StringProperty(repeated=True)
   width_componente_usuario = ndb.StringProperty(repeated=True)
+  input_type_componente = ndb.StringProperty(repeated=True)
+  output_type_componente = ndb.StringProperty(repeated=True)
+  listening_componente = ndb.StringProperty(repeated=True)
+  
     # "token_usuario"
+  
   id_fb_usuario = ndb.StringProperty()
   token_fb_usuario = ndb.StringProperty()
   id_tw_usuario = ndb.StringProperty()
@@ -64,10 +86,12 @@ class Usuario(ndb.Model):
   id_google_usuario = ndb.StringProperty()
   token_google_usuario = ndb.StringProperty()
 
-# Definicion de metodos para manejar la base de datos
-# Comprobado
-@ndb.transactional
-def insertarUsuario(rs, identificador, token, datos=None):
+#######################################################
+# Definicion de metodos para manejar la base de datos #
+#######################################################
+
+@ndb.transactional(xg=True)
+def insertaUsuario(rs, identificador, token, datos=None):
   usuario = Usuario()
   if rs == "facebook":
     usuario.nombre_rs_pertenece_usuario.append(rs)
@@ -112,8 +136,8 @@ def insertarUsuario(rs, identificador, token, datos=None):
   user_key = usuario.put()
 
   return user_key  
-#Comprobado
-def actualizarUsuario(user_key, datos):
+
+def actualizaUsuario(user_key, datos):
   usuario = user_key.get()
   if not datos == None: 
     if datos.has_key("email"):
@@ -126,8 +150,8 @@ def actualizarUsuario(user_key, datos):
       usuario.imagen_usuario = datos["imagen"]
   
   usuario.put()
-#Comprobado
-def buscarUsuario(user_key):
+
+def buscaUsuario(user_key):
   usuario = user_key.get()
   datos = {"email": usuario.email_usuario,
             "telefono": usuario.telefono_usuario,
@@ -138,8 +162,8 @@ def buscarUsuario(user_key):
   datos = json.dumps(datos)
 
   return datos
-#Comprobado
-def insertarToken(user_key, rs, token):
+
+def insertaToken(user_key, rs, token, id_usuario):
   usuario = user_key.get()
   if rs == "facebook":
     usuario.token_fb_usuario = token
@@ -159,8 +183,8 @@ def insertarToken(user_key, rs, token):
     return "La red social solicitada no esta contemplada"
 
   usuario.put()
-#Comprobado
-def modificarToken(user_key, rs, token):
+
+def modificaToken(user_key, token, rs):
   usuario = user_key.get()
   if rs == "facebook":
     usuario.token_fb_usuario = token
@@ -180,7 +204,7 @@ def modificarToken(user_key, rs, token):
     return "La red social solicitada no esta contemplada"
 
   usuario.put()
-#Comprobado
+
 def getToken(user_key, rs):
   usuario = user_key.get()
   res = ''
@@ -201,8 +225,8 @@ def getToken(user_key, rs):
   else:
     return "La red social solicitada no esta contemplada"
   return res
-# Comprobado
-def getTokenbyId(rs, identificador):
+
+def buscaToken(identificador, rs):
   if rs == "facebook":
     qry = Usuario.query(Usuario.nombre_rs_pertenece_usuario == "facebook")
     qry = qry.filter(Usuario.id_fb_usuario == identificador)
@@ -234,8 +258,8 @@ def getTokenbyId(rs, identificador):
   else:
     return "La red social solicitada no esta contemplada"
 
-#Comprobado
-def insertarIdRS(user_key, rs, id_user):
+
+def insertaIdRS(user_key, rs, id_user):
   usuario = user_key.get()
   if rs == "facebook":
     usuario.id_fb_usuario = id_user
@@ -255,7 +279,7 @@ def insertarIdRS(user_key, rs, id_user):
     return "La red social solicitada no esta contemplada"
   
   usuario.put()
-#Comprobado
+
 def getIdRS(user_key, rs):
   usuario = user_key.get()
   if rs == "facebook":
@@ -276,12 +300,12 @@ def getIdRS(user_key, rs):
     return "La red social solicitada no esta contemplada"
 
   return identificador
-# Comprobado
+
 # Obligatoria una descripcion, aunque esta sea vacia
 # En este modelo, este metodo es el mismo que se necesitaria en el caso de anadir un usuario
 # al grupo, ya que no hay entidad grupo y es cada usuario particular el que tiene costancia
 # de a que grupo pertenece
-def insertarGrupo(user_key, grupos=[], descripcion=[]):
+def insertaGrupo(user_key, grupos=[], descripcion=[]):
   usuario = user_key.get()
   if len(grupos) > 0:
     for grupo in grupos:
@@ -290,7 +314,7 @@ def insertarGrupo(user_key, grupos=[], descripcion=[]):
       usuario.descripcion_grupo_pertenece_usuario.append(desc)
   else:
     return "No se especifica ningun grupo que anadir"
-# Comprobado
+
 def addDescripcionAGrupo(user_key, nombre, descripcion):
   usuario = user_key.get()
   for i in range(0,len(usuario.nombre_grupo_pertenece_usuario)):
@@ -298,9 +322,9 @@ def addDescripcionAGrupo(user_key, nombre, descripcion):
       usuario.descripcion_grupo_pertenece_usuario[i] = descripcion
 
   usuario.put()
-#Comprobado
+
 # Solo devuelve el nombre, no la descripcion
-def buscarGrupo(user_key):
+def buscaGrupo(user_key):
   usuario = user_key.get()
   datos = {}
   contador = 0
@@ -314,8 +338,8 @@ def buscarGrupo(user_key):
       return json.dumps(res)
   else:
     return "No existen grupos para este usuario"
-# Comprobado
-def insertarRed(user_key, red, datos=None):
+
+def insertaRed(user_key, red, datos=None):
   usuario = user_key.get()
   usuario.nombre_rs_pertenece_usuario.append(red)
   i = len(usuario.nombre_rs_pertenece_usuario)-1
@@ -338,8 +362,8 @@ def insertarRed(user_key, red, datos=None):
        usuario.url_sig_rs_pertenece_usuario.append("")
   
   usuario.put()
-#Comprobado
-def buscarRed(user_key):
+
+def buscaRed(user_key):
   usuario = user_key.get()
   res = {}
   contador = 1
@@ -349,8 +373,8 @@ def buscarRed(user_key):
       contador += 1
 
   return json.dumps(res)
-# Comprobado
-def modificarRS(user_key, rs, seguidores=None, siguiendo=None, url_seguidores="", url_siguiendo=""):
+
+def modificaRS(user_key, rs, seguidores=None, siguiendo=None, url_seguidores="", url_siguiendo=""):
   usuario = user_key.get()
   encontrado = False
   for i in range(0,len(usuario.nombre_rs_pertenece_usuario)):
@@ -363,8 +387,8 @@ def modificarRS(user_key, rs, seguidores=None, siguiendo=None, url_seguidores=""
   usuario.put()
   if encontrado == False:
     return "No existe una red social con ese nombre"
-#Comprobado
-def insertarComponente(user_key, nombre, coord_x=0.0, coord_y=0.0, url="", height="", width=""):
+
+def insertaComponente(user_key, nombre, coord_x=0.0, coord_y=0.0, url="", height="", width="", entrada="", salida="", listening=""):
   usuario = user_key.get()
 
   usuario.nombre_componente_usuario.append(nombre)
@@ -373,10 +397,13 @@ def insertarComponente(user_key, nombre, coord_x=0.0, coord_y=0.0, url="", heigh
   usuario.url_componente_usuario.append(url)
   usuario.height_componente_usuario.append(height)
   usuario.width_componente_usuario.append(width)
+  usuario.input_type_componente.append(entrada)
+  usuario.output_type_componente.append(salida)
+  usuario.listening_componente.append(listening)
 
   usuario.put()
-#Comprobado
-def modificarComponente(user_key, nombre, datos):
+
+def modificaComponente(user_key, nombre, datos):
   usuario = user_key.get()
   encontrado = False
   for i in range(0,len(usuario.nombre_componente_usuario)):
@@ -392,11 +419,15 @@ def modificarComponente(user_key, nombre, datos):
         usuario.height_componente_usuario[i] = datos["height"]
       if datos.has_key("width"):
         usuario.width_componente_usuario[i] = datos["width"]
+      if datos.has_key("entrada"):
+        usuario.input_type_componente[i] = datos["entrada"]
+      if datos.has_key("salida"):
+        usuario.output_type_componente[i] = datos["salida"]
       return ""
   if encontrado == False:
     return "No existe un componente con ese nombre"
   usuario.put()
-#Comprobado
+
 def getComponente(user_key, nombre):
   usuario = user_key.get()
   encontrado = False
@@ -407,17 +438,59 @@ def getComponente(user_key, nombre):
               "coord_y": usuario.y_componente_usuario[i],
               "url": usuario.url_componente_usuario[i],
               "height": usuario.height_componente_usuario[i],
-              "width": usuario.width_componente_usuario[i]}
+              "width": usuario.width_componente_usuario[i],
+              "entrada": usuario.input_type_componente[i],
+              "salida": usuario.output_type_componente[i],
+              "escuchando": usuario.listening_componente[i]
+              }
       datos = json.dumps(datos)
       return datos
   if encontrado == False:
     return "No existe un componente con ese nombre"
 
+def addListening(user_key, nombre, events):
+  usuario = user_key.get()
+  for i in range(0,len(usuario.nombre_componente_usuario)):
+    if(usuario.nombre_componente_usuario[i] == nombre):
+      listening_componente[i]=events      
+
+  usuario.put()
+
+def nuevoUsuarioBeta(email, nombre, apellidos):
+  user_beta = Usuario()
+  user_beta.email_beta = email
+  user_beta.nombre_beta = nombre
+  user_beta.apellidos_beta = apellidos
+
+  user_beta.put()
+
+
+def getEmails():
+  users_beta = Usuario.query().fetch(100)
+  lista = []
+  for user in users_beta:
+    if not user.email_beta == "":
+      print(user.email_beta)
+      lista.append(user.email_beta)
+  return lista
+
+
+def usuarioSuscrito(email):
+  emails = getEmails()
+  if email in emails:
+    return True
+  else:
+    return False
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
     self.response.write('Ejecucion correcta\n')
 
+    # Insertar usuario beta
+    # key = nuevoUsuarioBeta("jfsalca", "JuanFran", "Salamanca")
+    # lista = usuarioSuscrito("jfsalcasda")
+    # self.response.write(lista)
+    
     # Insertar usuario
     # datos={"email":"jfsalca","telefono":667994811, "descripcion":"Prueba"}
     # key = insertarUsuario("facebook", "pepe_1", "token_1", datos)
