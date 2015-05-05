@@ -3,14 +3,14 @@
   'use strict';
   /**
 	 * @ngdoc overview
-	 * @name PolymerBricks
+	 * @name picbit
 	 * @description
-	 * # PolymerBricks
+	 * # PicBit
 	 *
 	 * Main module of the application.
 	*/
   angular
-    .module('PolymerBricks', [
+    .module('picbit', [
     'ngAnimate',
     'ngCookies',
     'ngResource',

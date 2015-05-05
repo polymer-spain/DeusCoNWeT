@@ -1,11 +1,18 @@
-angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $location, $timeout, $http) {
+/**
+ * @ngdoc function
+ * @name pruebaApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the pruebaApp
+ */
+
+
+angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend) {
   'use strict';
-
-
-
   $scope.status = false;
-  $scope.domain = 'https://' + $location.host();
-  $scope.cookie = $scope.cookie | {};
+  $scope.domain = $location.host();
+  $scope.shadow = false;
+  $scope.sended = false;
 
 
   $scope.logged = function (e) {
@@ -41,7 +48,6 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
     // button.src=""
     // Cambiamos a la funcion de logout
     $scope.status = true;
-
   };
 
   $scope.sendData = function (token, tokenId, redSocial) {
@@ -83,15 +89,17 @@ angular.module('PolymerBricks').controller('MainCtrl', function ($scope, $locati
 
   $scope.popup = false;
 
-  $scope.showPopup = function () {
+  $scope.showPopup = function(){
     if (!$scope.status) {
       $scope.popup = true;
+      $scope.shadow = true;
     } else {
       $scope.logout();
     }
   };
   $scope.hidePopup = function () {
     $scope.popup = false;
+    $scope.shadow = false;
   };
 
   $scope.sendSub = function () {

@@ -7,9 +7,10 @@
  * # SandboxCtrl
  * Controller of the polymerGeneratedAppApp
  */
-angular.module('PolymerBricks').controller('userHomeCtrl', function ($scope, $timeout) {
-/* Component list */
-  
+
+angular.module('picbit')
+  .controller('userHomeCtrl', function ($scope,$timeout) {
+
   $scope.list = [
     {name: 'John'},
     {name: 'Jessie'},
