@@ -644,7 +644,7 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.set_status(400)
 
 
-class OAuthGithubHandler(webapp2.RequestHandler):
+class OAuthGithubHandler(SessionHandler):
     """
         Class that will act as the handler to ask for the access_token to the GitHub API
         Method:
@@ -728,7 +728,7 @@ class OAuthGithubHandler(webapp2.RequestHandler):
             connectionAPI = httplib.HTTPSConnection('api.github.com')
             headers = {'Accept': 'application/vnd.github.v3+json',
                        'User-Agent': 'PicBit-App',
-                       'Authorization': 'token 61412876c693ab6aa08a1e49656fcbe768318477'}
+                       'Authorization': 'token GITHUB_TOKEN'}
             connectionAPI.request('GET', '/user', params_token, headers)
             response = connectionAPI.getresponse()
             aux = response.read()
@@ -759,7 +759,7 @@ class OAuthGithubHandler(webapp2.RequestHandler):
         pass
 
 
-class OauthLinkedinHandler(webapp2.RequestHandler):
+class OauthLinkedinHandler(SessionHandler):
   """
     Class that represents the Linkedin token resource. 
     Methods:
@@ -833,7 +833,7 @@ class OauthLinkedinHandler(webapp2.RequestHandler):
           self.response.set_status(400)
 
 
-class OAuthInstagramHandler(webapp2.RequestHandler):
+class OAuthInstagramHandler(SessionHandler):
     """
     Class that represents the Instagram token resource. 
     Methods:
@@ -1017,7 +1017,7 @@ class OauthFacebookHandler(SessionHandler):
             self.response.set_status(400)
 
 
-class OauthStackOverflowHandler(webapp2.RequestHandler):
+class OauthStackOverflowHandler(SessionHandler):
     """
         Class that represents the StackOverflow token resource. 
         Methods:
@@ -1042,6 +1042,7 @@ class OauthStackOverflowHandler(webapp2.RequestHandler):
                 #userKey = ndb.Key(ndb_pb.Usuario,str(user))
                 user_credentials = ndb_pb.getToken(user,'stackoverflow')
                 if not user_credentials == None:
+                    print user_credentials
                     response = {'token_id': user_credentials.identificador,
                     'access_token': user_credentials.token}
                     self.response.content_type = 'application/json'

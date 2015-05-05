@@ -18,18 +18,18 @@ def make_request(method, request_uri, params, status_ok, session):
 		print "HEADERS " + headers['Cookie']
 	connection.request(method, request_uri, params, headers)
   	response = connection.getresponse()
+	session_cookie = response.getheader('Set-Cookie')
   	responseData = response.read()
   	if not response.status == status_ok:
   		print "!!! STATUS: ERROR " + str(response.status)
-  		print "Datos de la respuesta"
+  		print "Datos de la respuesta: "
   		print responseData
   	else:
   		print ">>> STATUS: OK"
+  		print "RESPUESTA: ", responseData
   	#print "Cookie de la peticion: " + str(headers['Cookie'])
-	session_cookie = response.getheader('Set-Cookie')
 	if not session_cookie == None:
   		print "Cookie de la respuesta: " + session_cookie
-  	
   	return session_cookie
 
 def main():
@@ -115,7 +115,6 @@ def main():
 		print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 
 	elif red_social=="stackoverflow" or red_social=="instagram" or red_social=="linkedin":
-		request_uri = "/api/oauth/" + red_social
 		session = None
 
 		# Iniciamos sesion en googleplus para realizar las pruebas
@@ -126,13 +125,15 @@ def main():
 		params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})
 		session = make_request("POST", request_uri, params, 201, None)
 
+		# Tests a la API seleccionada
+		request_uri = "/api/oauth/" + red_social
 		# TEST 1
 		# Añadir credenciales nuevas al sistema
 		print "\nTEST 1: Haciendo petición POST a " + request_uri + " (añadir nuevo par de credenciales)\n Status esperado: 201"
 		token_id = "id" + red_social
 		access_token = red_social + "TEST"
 		params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})
-		session = make_request("POST", request_uri, params, 201, None)
+		make_request("POST", request_uri, params, 201, None)
 
 		# TEST 2
 		print "\nTEST 2: Haciendo petición POST a " + request_uri + " (actualizar credenciales)\n Status esperado: 200"
@@ -158,7 +159,7 @@ def main():
 		# TODO Get (Con Cookie)
 		print "\nTEST 5: Haciendo petición GET a " + request_uri + " (obtener credenciales con cookie)\n Status esperado: 200"
 		params = urllib.urlencode({})
-		make_request("GET", request_uri, params,200, session)	
+		make_request("GET", request_uri, params, 200, session)	
 
 		print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 
