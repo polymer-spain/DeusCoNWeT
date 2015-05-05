@@ -15,21 +15,21 @@ def make_request(method, request_uri, params, status_ok, session):
 	session_cookie = None
 	if not session == None:
 		headers['Cookie']  = session
-		print "HEADERS " + headers['Cookie']
+		print "\tHEADERS " + headers['Cookie']
 	connection.request(method, request_uri, params, headers)
   	response = connection.getresponse()
 	session_cookie = response.getheader('Set-Cookie')
   	responseData = response.read()
   	if not response.status == status_ok:
-  		print "!!! STATUS: ERROR " + str(response.status)
-  		print "Datos de la respuesta: "
+  		print "\t!!! STATUS: ERROR " + str(response.status)
+  		print "\tDatos de la respuesta: "
   		print responseData
   	else:
-  		print ">>> STATUS: OK"
-  		print "RESPUESTA: ", responseData
+  		print "\t>>> STATUS: OK"
+  		print "\tRESPUESTA: ", responseData
   	#print "Cookie de la peticion: " + str(headers['Cookie'])
 	if not session_cookie == None:
-  		print "Cookie de la respuesta: " + session_cookie
+  		print "\tCookie de la respuesta: " + session_cookie
   	return session_cookie
 
 def main():
@@ -112,7 +112,7 @@ def main():
 		params = urllib.urlencode({})
 		make_request("POST", request_uri, params,200, session)
 
-		print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
+		print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 
 	elif red_social=="stackoverflow" or red_social=="instagram" or red_social=="linkedin":
 		session = None
@@ -161,7 +161,7 @@ def main():
 		params = urllib.urlencode({})
 		make_request("GET", request_uri, params, 200, session)	
 
-		print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
+		print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 
 	else:
 		print "Error: es obligatorio proporcionar un parámetro válido para indicar que red social se pretende testear"
