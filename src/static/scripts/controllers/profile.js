@@ -27,37 +27,47 @@ angular.module('picbit')
 			  var googleplus="googleplus";
    			  console.log("googleplus");
 			  document.getElementById("google").status = '';
-			  
+			  document.getElementById("google").textLogin='Logged in with Google+';
+              document.getElementById("googleitem").style.display="none";
+            //  document.getElementById("google").className+=" disconnect"
 		  }
 		  if (e.detail.redSocial === 'facebook') {
 			  var facebook="facebook";
    			  console.log("facebook");
+            document.getElementById("facebook").status = '';
+            document.getElementById("facebookitem").style.display="none";
   
 		  }
 		  if (e.detail.redSocial === 'github') {
 				var github="github";
    				console.log("github");
+            document.getElementById("google").status = '';
+            document.getElementById("googleitem").style.display="none";
   
 		  }
 		  if (e.detail.redSocial === 'linkedin') {
 				var linkedin="linkedin";
    				console.log("linkedin");
+            document.getElementById("linkedin").status = '';
+            document.getElementById("linkedinitem").style.display="none";
   
 		  }
 		  if (e.detail.redSocial === 'instagram') {
 				var instagram="instagram"
    				console.log("instagram");
+            document.getElementById("instagram").status = '';
+            document.getElementById("instagramitem").style.display="none";
   
 		  }
 		  if (e.detail.redSocial === 'twitter') {
 				var twitter="twitter";
-   				console.log("twitter");
+   				console.log("twitter")
+             document.getElementById("twitter").status = '';
+document.getElementById("twitteritem").style.display="none";   
   
 		  }
 	
 		  };
-	
-	
 
   document.getElementById("pr").addEventListener('google-logged',$scope.takeInfoLog);
   document.getElementById("pr").addEventListener('facebook-logged',$scope.takeInfoLog);

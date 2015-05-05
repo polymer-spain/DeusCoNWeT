@@ -4,6 +4,13 @@ html {
   background-size: cover;
 
 }
+#todo{
+  
+  background: rgba(0, 0, 0, 0.51);
+ 
+  margin-top: 15%;
+  
+}
 .content {
   margin-top: 7%;
   padding: 1% 5% 2% 5%;
@@ -59,15 +66,22 @@ select{
     background-color: transparent;
 
 }
-
+section{
+  
+      margin-left: 8%;
+    margin-right: 8%;
+}
 #pr{
-
+  margin-left: 25%;
+  margin-right: 25%;
   position: relative;
 
 }
+/*
 #contenedor{
   margin-left: 35%
 }
+*/
 
 }
 #oculto{
@@ -81,9 +95,9 @@ select{
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
   margin-top: 5px;
-  background: rgba(253, 244, 244, 0.67);	
-  width: 56%;
-  height: 40%;
+  background: rgba(253, 244, 244, 0.54);	
+  width: 100%;
+  height: 30%;
   min-width: 200px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
@@ -249,27 +263,15 @@ span{
       }
 
       
-paper-input-decorator /deep/ .label-text {
-    
-    color: green;
-}
+
 paper-input-decorator /deep/ .error {
    
     color: #212121;
 }
 
-paper-input-decorator /deep/ ::-moz-placeholder {
-    color: green;
-}
-paper-input-decorator /deep/ :-ms-input-placeholder {
-    color: green;
-}
 
-paper-input-decorator /deep/ .unfocused-underline {
+
     
-    background-color: green;
-}      
-      
 paper-input-decorator /deep/ ::-webkit-input-placeholder {
     
     color: rgb(255, 255, 255);
@@ -296,7 +298,7 @@ paper-input-decorator.invalid /deep/ .focused-underline {
       
       
     .constrained-height {
-      height: 15px;
+      height: 150px;
     }
 
     .colored {
@@ -323,10 +325,41 @@ paper-input-decorator.invalid /deep/ .focused-underline {
    }
   
   core-dropdown{
- border-bottom: 1px solid #FFFFFF;}      
+   border-bottom: 1px solid #FFFFFF;
+  height: 132px;
+  
+  }      
+   
+google-login.disconnect::shadow #button{
+  
+  background: #393333;
+}
+ .login {
+     -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
+  background: rgba(244, 244, 244, 0.62);
+  color: white;
+  border-radius: 3px;
+  padding: 0;
+  cursor: pointer;
+  text-transform: none;
+  vertical-align: center;
+  width: 30%;
+  margin-left: 40%;
+  color:black;
+   
+}
 
-      
+.login:hover{
+  transform:scale(1.02,1.02);
+  -webkit-transform:scale(1.02,1.02);
 
-
- 
+}
+paper-input-decorator{
+  
+  max-width: 100%;
+  
+}
 //////////////////////////////////////////////////////////////////////////////////////////////

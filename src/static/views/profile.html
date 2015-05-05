@@ -1,13 +1,11 @@
 
 <link rel="stylesheet" href="styles/profile.css" />
-<div id="todo">
-  <div class="content" oscuro=true>
-    <h1 style="text-align:center; color:black;">Perfil</h1>
-    <div class="jumbotron text-center" id="pr">
 
+  <div class="content" oscuro=true id="pr" style="background:rgba(0, 0, 0, 0.46); margin-left:25%; margin-top:15%;">
+    
+  
+  <h1 style="margin-left: 35%;">Perfil</h1>
 
-	<div id = "contenedor">
-	
 
 
   <section>
@@ -33,11 +31,10 @@
     margin-top: 0px;
     margin-bottom: 00px;">
     </paper-input-decorator>
-  </section>
-  <paper-dropdown-menu label="Sexo" id="sex" style="margin-top: 0px; margin-bottom: 20px;">
+    <paper-dropdown-menu label="Sexo" id="sex" style="margin-top: 0px; margin-bottom: 20px;">
          <core-dropdown class="open-below dropdown" style="outline: none; box-sizing: border-box; margin-left: 0px; display: none;">
           <core-menu style="margin:0;">
-            <option value="0" selected="1">Sexo</option><option value="1">Mujer</option><option value="2">Hombre</option><option value="3">Otro</option>
+            <option value="0" selected="1">Sexo</option><option value="1">Mujer</option><option value="2">Hombre</option>
           </core-menu>
           </core-dropdown>
       </paper-dropdown-menu>
@@ -77,21 +74,28 @@
 
       <div id="oculto"></div>
         <core-submenu src="" label="Sign Redes Sociales"> 
-             <core-item label=""><login-facebook  class="button-login" key_app="1564153433801338" scope="public_profile,email"></login-facebook></core-item>
-                  <core-item label=""><google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login></core-item>
-                  <core-item label=""><twitter-login class="button-login" endpoint="https://test-frontend-dot-example-project-13.appspot.com/api/oauth/twitter"></twitter-login></core-item>
-                  <core-item label=""><github-login scope="user:email" client_id="1f21e4d820abd2cb5a7a"></github-login></core-item>
-                  <core-item label=""> <linkedin-login apiKey="775t0r02k5gfre"></linkedin-login></core-item>
-                  <core-item label=""> <instagram-login clientId="34af286560fc492cbabc62285f098047" redirectUri="{{domain}}">
-                    </instagram-login></core-item>
+            <core-item label="" id="facebookitem"><login-facebook  id ="facebook" class="button-login" key_app="928341650551653" scope="public_profile,email"></login-facebook></core-item>
+            <core-item label="" id="googleitem"><google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login></core-item>
+             <core-item label=""id="twitteritem"><twitter-login class="button-login" id ="twitter" endpoint="{{domain}}"
+                  ></twitter-login></core-item>
+             <core-item label=""id="githubitem"><github-login id ="github" scope="user:email" client_id="1f21e4d820abd2cb5a7a"></github-login></core-item>
+            <core-item label=""id="linkedinitem"> <linkedin-login id ="linkedin" apiKey="775t0r02k5gfre"></linkedin-login></core-item>
+            <core-item label=""id="instagramitem"> <instagram-login id ="instagram" clientId="34af286560fc492cbabc62285f098047" redirectUri="{{domain}}"></instagram-login></core-item>
       </core-submenu>
     </core-menu>
 </div >
 <br />
-<input type="submit" value="Guardar" ng-click="calC()"/>
-</div>
+<!--<input type="submit" value="Guardar" ng-click="calC()"/>-->
+<paper-button type="submit" id="but" ng-click="calC()" class="login" extends="input">
+    <core-icon icon="save" style="margin-right:5px;"></core-icon>Guardar
+		</paper-button>
+    
+  </section>
+  
+
 
 </div>
+
 
 
 
