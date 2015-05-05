@@ -1,12 +1,12 @@
 <link rel="stylesheet" href="styles/userHome.css">
 
-<div style="padding-top:60px;">
-  <img id="foto" src="http://minionslovebananas.com/images/check-in-minion.jpg">
+<div style="padding-top:150px;">
+  <img id="foto" src="../images/picture.png">
   <div horizontal around-justified layout>
 
-    <twitter-timeline style="color: black" accessToken={{twitter.token}} secretToken="VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY" consumerKey="J4bjMZmJ6hh7r0wlG9H90cgEe" consumerSecret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" endpoint="http://test-frontend.example-project-13.appspot.com/api/oauth/twitterTimeline" count="200"></twitter-timeline>
+    <twitter-timeline style="color: black" accessToken={{twitter.token}} secretToken="VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY" consumerKey="J4bjMZmJ6hh7r0wlG9H90cgEe" consumerSecret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" endpoint="{{domain}}/api/oauth/twitterTimeline" count="200"></twitter-timeline>
 
-    <github-events style="color:black" username="mortega5" token={{github.token}} mostrar=10></github-events>
+    <github-events style="color:black" username={{github.username}} token={{github.token}} mostrar=10></github-events>
 
     <div vertical layout end id="listOption" >
 

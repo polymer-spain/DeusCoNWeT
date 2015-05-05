@@ -5,7 +5,6 @@ html {
 }
 .content {
  margin-top: 150px; 
-  
 }
 .contacto{
   color: black;
@@ -16,7 +15,7 @@ html {
   box-shadow: 0 0 0 5px #EEF5F7 inset;
 }
 #email /deep/ paper-input-decorator /deep/ .unfocused-underline {
-   background-color: #ea5050; 
+  background-color: #ea5050; 
 }
 #email /deep/ paper-input-decorator[focused] /deep/ .focused-underline {
   background-color: #B71C1C; 
@@ -57,4 +56,3 @@ span.invalid {
   font-size: 12px;
   font-family: 'Roboto';
 }
-

@@ -1,12 +1,12 @@
 angular.module('picbit').service('$backend', function ($http) {
   'use strict';
-  this.endpoint = 'http://test-frontend.example-project-13.appspot.com';
+  this.endpoint = 'https://test-backend-dot-example-project-13.appspot.com';
 
   /* Envia el token y el identificador del token correspondiente a una red social */
   this.sendData = function (token, tokenId, redSocial, callback, errorCallback) {
     var request, uri, params;
     uri = this.endpoint + '/api/oauth/' + redSocial;
-    params = "token_id=" + tokenId + "&access_token=" + token;
+    params = "token_id=" + tokenId + "&access_token=" + token + "&action=login";
     request = {
       method: 'post',
       url: uri,
@@ -61,9 +61,9 @@ angular.module('picbit').service('$backend', function ($http) {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
-    $http(request).success(function (data) {
+    $http(request).success(function (data,status) {
       if (callback) {
-        callback(data);
+        callback(data,status);
       }
     }).error(function (data, status) {
       if (errorCallback) {

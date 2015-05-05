@@ -23,16 +23,16 @@ Element providing solution to no problem in particular.
 @status alpha
 @homepage http://polymerlabs.github.io/twitter-login
 -->
-<polymer-element name="twitter-login">
+<polymer-element name="twitter-login" attributes="endpoint">
 
 <template>
 
   <link rel="stylesheet" href="twitter-login.css">
   <core-ajax
-               id="requestToken" url="http://example-project-13.appspot.com/api/oauth/twitter"
+               id="requestToken" url="{{endpoint}}"
                method="GET"
                params='{
-                      "action": "request_token"
+                      "action": "login"
                     }'
                handleAs="json"
              on-core-response="{{authentication}}"
@@ -50,7 +50,7 @@ Element providing solution to no problem in particular.
 <script>
 
 Polymer({
-
+      endpoint:'',
       /**
        * The `sayHello` method will return a greeting.
        *
