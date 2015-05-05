@@ -10,7 +10,7 @@
 angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend, $http) {
   'use strict';
   $scope.status = false;
-  $scope.domain = $location.host();
+  $scope.domain = "https://" + $location.host();
   $scope.shadow = false;
   $scope.sended = false;
 
