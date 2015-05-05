@@ -65,17 +65,14 @@ angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $
 
     if (name.value && sender.checkValidity() && surname.value) {
       var callback, callbackError;
-      
+
       callback = function (data, status) {
         if (status === 201) {
           name.value = '';
           sender.value = '';
           surname.value = '';
-          $scope.$apply(function () {
-            $scope.$parent.shadow = true;
-            $scope.$parent.sended = true;
-          });
-
+          $scope.$parent.shadow = true;
+          $scope.$parent.sended = true;
         } else if (status === 200) {
           error.innerHTML = "* Ya esta registrado para la beta";
           name.value = '';
@@ -86,7 +83,7 @@ angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $
       callbackError = function () {
         error.innerHTML = "* Ahora mismo no podemos tratar su petición, intentelo mas tarde";
       };
-      $backend.sendSub(name, sender, surname, callback, callbackError);
+      $backend.sendSub(name.value, sender.value, surname.value, callback, callbackError);
     }
   };
 
@@ -115,6 +112,9 @@ angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $
         $scope.selected += scrolled;
         $scope.cambiarAnchor('section3');
       }
+      document.onmousewheel = $scope.wheel;
+
+
     });
   };
   document.onmousewheel = $scope.wheel;

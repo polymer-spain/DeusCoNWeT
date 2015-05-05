@@ -132,7 +132,7 @@ paper-button.accept {
   border-radius: 10px;
   position:absolute;
   bottom:30px;
-  left: 200px;
+  left: 150px;
 }
 
 paper-button.accept:hover {

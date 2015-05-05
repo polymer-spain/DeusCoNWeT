@@ -26,7 +26,7 @@
         <core-icon-button icon="search" class=" search"></core-icon-button>
 
       </core-toolbar>
-      
+
       <footer horizontal center-justified layout>
         <paper-button ng-click="changeView('/about')">Sobre nosotros</paper-button>
         <paper-button ng-click="changeView('/contact')">Contactar</paper-button>
@@ -36,13 +36,13 @@
 
       </div>
 
-      <div ng-show="shadow" class="shadow"/>
+      <div ng-show="shadow" class="shadow"></div>
       <div ng-show="popup" vertical center layout class="popup" id="popup">
         <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
 
         <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
         <div vertical center-justified layout class="button-login">
-          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback={{domain}}></google-login>
+          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login>
           <twitter-login class="button-login" endpoint='{{domain}}/api/oauth/twitter'></twitter-login>
           <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email"></login-facebook>
 
