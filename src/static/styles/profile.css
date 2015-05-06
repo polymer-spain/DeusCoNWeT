@@ -326,7 +326,8 @@ paper-input-decorator.invalid /deep/ .focused-underline {
   
   core-dropdown{
    border-bottom: 1px solid #FFFFFF;
-  height: 132px;
+   height: 132px;
+    padding-right: 20px;
   
   }      
    
