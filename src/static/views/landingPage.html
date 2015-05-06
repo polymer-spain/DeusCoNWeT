@@ -7,20 +7,24 @@
 
   <ul style="position:fixed;right:10px;top:45%;">
     <li id="disc1" ng-click="setSelected('1')" ng-class="{selected: isSelected(1)}"></li>
-    <li id="disc2"  ng-click="setSelected('2')" ng-class="{selected: isSelected(2)}"></li>
+    <li id="disc2" ng-click="setSelected('2')" ng-class="{selected: isSelected(2)}"></li>
     <li id="disc3" ng-click="setSelected('3')" ng-class="{selected: isSelected(3)}"></li>
+    <li id="disc4" ng-click="setSelected('4')" ng-class="{selected: isSelected(4)}"></li>
   </ul>
+
   <section id="section1">
     <div class="content" oscuro=true>
-      <h1 style="text-align:center">Bienvenido</h1>
+      <h1 style="text-align:center">{{language.title}}</h1>
       <div style="padding-top: 30px"horizontal layout>
         <div class="slogan">
-          <p>Mantente informado de toda la actividad en las redes de tus grupos de amigos</p>
-          <paper-button id="beta">Subcribirse a la beta</paper-button>
+          <p>{{language.slogan}}</p>
+          <p>{{language.soon}}</p>
+          <paper-button ng-click="changelanguage('en')">Prueba</paper-button>
+          <paper-button ng-click="goto(4)" id="beta">{{language.sub}}</paper-button>
         </div>
         <div style="display:inline-block;margin-left:40%;text-align:center">
-          <h3>Accede con tu red social</h3>
-          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
+          <h3>{{language.entry}}</h3>
+          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">{{language.login}}</paper-button>
           <br>
         </div>
       </div>
@@ -63,4 +67,38 @@
       </div>
     </div>
   </section>
+  <section id="section4">
+    <div class="content" oscuro=true>
+      <div style="" horizontal center-justified layout>
+        <div class='contacto'>
+          <h2 style="text-decoration:underline">Suscríbete a la beta</h2>
+          <div><paper-input-decorator autovalidate floatingLabel label="Nombre" error="Introduce un nombre">
+            <input id="namesus" type="name" aria-label="required">
+            </paper-input-decoratos></div>
+          <div><paper-input-decorator autovalidate floatingLabel label="Apellido" error="Introduce un apellido">
+            <input id="surnamesus" type="name" aria-label="required">
+            </paper-input-decoratos></div>
+          <div><paper-input-decorator autovalidate floatingLabel label="Email" error="Debe ser un correo real">
+            <input id="sendersus" type="email" aria-label="required">
+            </paper-input-decoratos></div>
+          <div style="margin-top:30px">
+            <span class="invalid" id="invalid"></span><paper-button ng-click="sub()" id="send">
+            Enviar
+            </paper-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div ng-show="sended" class="popup">
+  <div>
+    <core-icon-button fill  raised style="position:absolute;right:0;top:0" ng-click="closeSended()" icon="close"></core-icon-button>
+    <p style="margin:8px auto;font-size:1.4em">Se ha suscrito correctamente</p>
+  </div>
+  <div style="margin-top: 40px;">
+    Se ha suscrito a la versión beta de PicBit.<br>Le iremos informando de las actualizaciones que se vayan introducciendo.
+  </div>
+  <paper-button class="accept" ng-click="closeSended()">Aceptar</paper-button>
+
 </div>

@@ -7,8 +7,10 @@
  * # SandboxCtrl
  * Controller of the polymerGeneratedAppApp
  */
-angular.module('PolymerBricks').controller('userHomeCtrl', function ($scope, $timeout) {
-/* Component list */
+
+angular.module('picbit')
+  .controller('userHomeCtrl', function ($scope,$timeout) {
+
   $scope.list = [
     {name: 'John'},
     {name: 'Jessie'},
@@ -21,11 +23,14 @@ angular.module('PolymerBricks').controller('userHomeCtrl', function ($scope, $ti
     {name: 'Patrick'},
     {name: 'Samantha'}
   ];
+  
   /* Network infomation */
   $scope.twitter = {};
   $scope.github = {};
   $scope.twitter.token = '3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x';
   $scope.github.username = 'mortega5'
+  
+  /* Authentication */
   
   $scope.menuStatus = false;
   $scope.showElement = false;

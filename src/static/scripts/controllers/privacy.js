@@ -8,7 +8,7 @@
  * Controller of the pruebaApp
  */
 
-angular.module('PolymerBricks')
+angular.module('picbit')
   .controller('privacyCtrl', function($scope, $routeParams,$timeout) {
   $scope.mailTo = function () {
 

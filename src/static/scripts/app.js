@@ -3,69 +3,47 @@
   'use strict';
   /**
 	 * @ngdoc overview
-	 * @name PolymerBricks
+	 * @name picbit
 	 * @description
-	 * # PolymerBricks
+	 * # PicBit
 	 *
 	 * Main module of the application.
 	*/
   angular
-    .module('PolymerBricks', [
+    .module('picbit', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ng-polymer-elements',
-    'ui.bootstrap'
+    'ng-polymer-elements'
   ])
     .config(function ($locationProvider, $routeProvider,$httpProvider) {
 
     $routeProvider
     /* Español */
       .when('/', {
-      templateUrl: 'views/es/landingPage.html',
+      templateUrl: 'views/landingPage.html',
       controller: 'landingCtrl'
     })
       .when('/user/:userId', {
-      templateUrl: 'views/es/userHome.html',
+      templateUrl: 'views/userHome.html',
       controller: 'userHomeCtrl'
     })
       .when('/about', {
-      templateUrl: 'views/es/about.html',
+      templateUrl: 'views/about.html',
       controller: 'aboutCtrl'
     })
       .when('/contact', {
-      templateUrl: 'views/es/contact.html',
+      templateUrl: 'views/contact.html',
       controller: 'contactCtrl'
     })
       .when('/privacy',{
-      templateUrl: 'views/es/privacy.html',
+      templateUrl: 'views/privacy.html',
       controller: 'privacyCtrl'
     })
 
-    /* Ingles */
-      .when('/en', {
-      templateUrl: 'views/en/landingPage.html',
-      controller: 'landingCtrl'
-    })
-      .when('/en/user/:userId', {
-      templateUrl: 'views/en/userHome.html',
-      controller: 'userHomeCtrl'
-    })
-      .when('/en/about', {
-      templateUrl: 'views/en/about.html',
-      controller: 'aboutCtrl'
-    })
-      .when('/en/contact', {
-      templateUrl: 'views/es/contact.html',
-      controller: 'contactCtrl'
-    })
-      .when('/en/privacy',{
-      templateUrl: 'views/en/privacy.html',
-      controller: 'privacyCtrl'
-    })
     /* Por defecto */
       .otherwise({redirectTo: '/'})
     ;
