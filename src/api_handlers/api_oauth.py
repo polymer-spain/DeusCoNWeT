@@ -21,12 +21,14 @@
 
 import webapp2
 import json
+import os, yaml
 import httplib
 import hashlib
 import urllib
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
 import time
+import ndb_pb
 from ndb_pb import Token, Usuario
 
 # Imports for TwitterHandler
@@ -34,14 +36,21 @@ import oauth
 from google.appengine.api import channel
 
 # Import config vars
-import ConfigParser
-configParser = ConfigParser.RawConfigParser()   
-configFilePath = r'config.cfg'
-configParser.read(configFilePath)
-domain = configParser.get('app_data', 'domain')
+# import ConfigParser
+# configParser = ConfigParser.RawConfigParser()   
+# configFilePath = r'config.cfg'
+# configParser.read(configFilePath)
+# domain = configParser.get('app_data', 'domain')
+
+# Import config vars
+basepath = os.path.dirname(__file__)
+configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+with open(configFile, 'r') as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+domain = cfg['domain']
 
 class SessionHandler(webapp2.RequestHandler):
-
     """
     Class that handles the session of the application
     Methods:
