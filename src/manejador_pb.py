@@ -24,6 +24,7 @@ import re
 # Import API handlers
 import sys
 sys.path.insert(1, 'api_handlers/')
+sys.path.insert(1, 'api_handlers/lib/')
 import api_usuarios, api_componentes, api_oauth, api_contacto
 
 

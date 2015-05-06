@@ -30,16 +30,15 @@ import time
 from ndb_pb import Token, Usuario
 
 # Imports for TwitterHandler
-import sys
-sys.path.insert(1, 'lib/')
 import oauth
 from google.appengine.api import channel
 
 # Import config vars
-from config import Config
-f = file('config.cfg')
-cfg = Config(f)
-
+import ConfigParser
+configParser = ConfigParser.RawConfigParser()   
+configFilePath = r'config.cfg'
+configParser.read(configFilePath)
+domain = configParser.get('app_data', 'domain')
 
 class SessionHandler(webapp2.RequestHandler):
 
@@ -664,7 +663,7 @@ class OauthFacebookHandler(SessionHandler):
                     # Returns the session cookie
 
                     self.response.set_cookie('session',
-                            value=session_id, path='/', domain=cfg.domain,
+                            value=session_id, path='/', domain=domain,
                             secure=True)
                     self.response.set_status(201)
                 else:
@@ -678,7 +677,7 @@ class OauthFacebookHandler(SessionHandler):
                     # Returns the session cookie
 
                     self.response.set_cookie('session',
-                            value=session_id, path='/', domain=cfg.domain,
+                            value=session_id, path='/', domain=domain,
                             secure=True)
                     self.response.set_status(200)
             except KeyError:
@@ -903,7 +902,7 @@ class OauthGooglePlusHandler(SessionHandler):
                     # Returns the session cookie
 
                     self.response.set_cookie('session', session_id,
-                            path='/', domain=cfg.domain, secure=True)
+                            path='/', domain=domain, secure=True)
 
                     # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
 
@@ -921,7 +920,7 @@ class OauthGooglePlusHandler(SessionHandler):
                     # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
 
                     self.response.set_cookie('session', session_id,
-                            path='/', domain=cfg.domain, secure=True)
+                            path='/', domain=domain, secure=True)
                     self.response.set_status(200)
             except KeyError:
                 response = \
