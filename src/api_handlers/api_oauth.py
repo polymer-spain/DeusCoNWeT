@@ -36,13 +36,6 @@ import oauth
 from google.appengine.api import channel
 
 # Import config vars
-# import ConfigParser
-# configParser = ConfigParser.RawConfigParser()   
-# configFilePath = r'config.cfg'
-# configParser.read(configFilePath)
-# domain = configParser.get('app_data', 'domain')
-
-# Import config vars
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
 with open(configFile, 'r') as ymlfile:
@@ -65,7 +58,6 @@ class SessionHandler(webapp2.RequestHandler):
         hash_id = cypher.hexdigest()
 
         # Store in memcache hash-user_id pair
-
         memcache.add(hash_id, user_id)
         return hash_id
 
@@ -115,61 +107,52 @@ class OAuthTwitterHandler(SessionHandler):
             'https://api.twitter.com/oauth/request_token'
         base_authorization_url = \
             'https://api.twitter.com/oauth/authorize'
-
+        callback_uri = 'https://' + domain + '/api/oauth/twitter?action=authorization'
         client = oauth.TwitterClient(consumer_key, consumer_secret,
-                'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
-                )
+                callback_uri)
 
         if action == 'login':
             self.response.content_type = 'application/json'
 
             # Creates a channel to send the session details once the oauth flow is completed
-
             auth_token = client._get_auth_token()
-            token = channel.create_channel(auth_token)
+            print auth_token
+            token = channel.create_channel("TEST")
 
             response = {'oauth_url': client.get_authorization_url(),
-                        'token': token}
+                        'token': "TEST"}
+            
             self.response.write(json.dumps(response))
         elif action == 'authorization':
 
             # Gets the params in the request
-
             auth_token = self.request.get('oauth_token')
             auth_verifier = self.request.get('oauth_verifier')
-
+            
+            
             # Retrieves user info
-
             user_info = client.get_user_info(auth_token,
                     auth_verifier=auth_verifier)
 
             # Query for the stored user
-
-            stored_user = ndb_pb.buscaToken(token_id, 'twitter')
-
+            stored_user = ndb_pb.buscaToken(user_info['username'], 'twitter')
             if stored_user == None:
-
                 # We store the user id and token into a Token Entity
-
-                user_id = ndb_pb.insertaUsuario('Twitter',
+                user_id = ndb_pb.insertaUsuario('twitter',
                         user_info['username'], user_info['token'])
                 self.response.set_status(201)
             else:
-
                 # We store the new user's access_token
-
-                user_id = ndb_pb.modificaToken(token_id, access_token,
-                        'google')
+                user_id = ndb_pb.modificaToken(user_info['username'], user_info['token'],
+                        'twitter')
                 self.response.set_status(200)
 
             # Create Session
-
             session_id = self.login(user_id)
 
             # Send session details to client in the channel created previously
-
             session_message = {'session_id': session_id}
-            channel.send_message(auth_token,
+            channel.send_message("TEST",
                                  json.dumps(session_message))
         elif action == 'credentials' and not username == None:
 
