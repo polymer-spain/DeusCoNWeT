@@ -143,12 +143,12 @@ class OAuthTwitterHandler(SessionHandler):
             # Create Session
             session_id = self.login(user_id)
             # Stores in memcache the session id associated with the oauth_verifier
-            key_verifier = "oauth_verifier_" + oauth_verifier
+            key_verifier = "oauth_verifier_" + auth_verifier
             memcache.add(key_verifier, session_id)
             
         elif action == 'login':
-            oauth_verifier = self.request.get('oauth_verifier', default='')
-            if not oauth_token_verifier == '':
+            oauth_verifier = self.request.get('oauth_verifier', default_value='None')
+            if not oauth_verifier == '':
                 key_verifier = "oauth_verifier_" + oauth_verifier
                 session_id = memcache.get(key_verifier)
                 if not session_id == None:
@@ -158,11 +158,11 @@ class OAuthTwitterHandler(SessionHandler):
                     memcache.delete(key_verifier)
                     self.response.set_status(200)
                 else:
-                response = \
-                {'error': 'There isn\'t any session in the system for the oauth_verifier value specified'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(404)    
+                    response = \
+                    {'error': 'There isn\'t any session in the system for the oauth_verifier value specified'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)    
             else:
                 response = \
                 {'error': 'You must specify a value for the oauth_verifier param in the request'}

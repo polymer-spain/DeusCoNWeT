@@ -40,7 +40,7 @@ Element providing solution to no problem in particular.
     </core-ajax>
 
     <core-ajax
-               id="requestToken" url="{{endpoint}}"
+               id="requestCookie" url="{{endpoint}}"
                method="GET"
                params='{
                        "action": "login",
@@ -82,7 +82,6 @@ Element providing solution to no problem in particular.
        * @return {String} Returns a string greeting.
        */
       authentication: function(event, detail, sender) {
-        this.fire('twitter-cookie',{token:detail.response.token});
         var oauth_url = detail.response.oauth_url;
         var win  = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
         var back = this;
@@ -90,14 +89,23 @@ Element providing solution to no problem in particular.
         var pollTimer  =  window.setInterval(function() {
           try {
             if(win.document.URL.indexOf('example-project-13') != -1){
+              var ulr, patron, exp;
+              url =   win.document.URL;
+              patron = "oauth_verifier"+"=([^&#]*)";
+              exp = new RegExp(patron);
+              // Ponemos en valor en una variable de la ventana principal
+              back.oauth_verifier = exp.exec(url)[1];
+              back.$.requestCookie.go();
               window.clearInterval(pollTimer);
               back.fire('twitter-logged',{token:detail.response.token,redSocial:'twitter'});
-              win.close()
+              win.close();
             }
           } catch(e) {
           }
         }, 100);
-      }
+      },
+      cookie: function(e,d,s) {
+      },
     });
 
   </script>
