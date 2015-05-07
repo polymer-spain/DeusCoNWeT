@@ -120,7 +120,7 @@ class OAuthTwitterHandler(SessionHandler):
             token = channel.create_channel("TEST")
 
             response = {'oauth_url': client.get_authorization_url(),
-                        'token': "TEST"}
+                        'token': token}
             
             self.response.write(json.dumps(response))
         elif action == 'authorization':
