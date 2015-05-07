@@ -21,6 +21,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter') {
         /* Provisional hasta que se implemente el nombre de usuario */
+
         $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
       } else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
         var uri, button;
@@ -60,6 +61,21 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     $scope.changeView('/');
     $scope.status = false;
   };
+
+  $scope.channel = function(e,d,s){
+    var channel, socket, callback;
+    channel = new goog.appengine.Channel(e.detail.token);
+    socket = channel.open();
+    callback = function () {
+      
+    };
+    
+    socket.onopen = function(){console.info('socket abierto')};
+    socket.onmessage = function(e){console.info('mensaje del socket',e)};
+    socket.onerror = function(e){console.info('El socket recibio error',e)}; 
+    socket.onclose = function(e){console.info('el socket se cerro',e)};
+  }
+
   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged', $scope.logged);
   document.querySelector('body').addEventListener('linkedin-logged', $scope.logged);
@@ -68,7 +84,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   document.querySelector('body').addEventListener('twitter-logged', $scope.logged);
   document.querySelector('body').addEventListener('facebook-logged', $scope.logged);
   document.querySelector('body').addEventListener('sof-logged', $scope.logged);
-
+  document.querySelector('body').addEventListener('twitter-cookie', $scope.channel);
   $scope.popup = false;
 
   $scope.showPopup = function () {
