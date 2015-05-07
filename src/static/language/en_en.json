@@ -1,4 +1,5 @@
 {
+  "lenguage":"Lenguage",
   "title": "Welcome to PicBit",
   "login": "Log In",
   "entry": "Sign In with your Social Network",
@@ -10,5 +11,9 @@
   "about":"about us",
   "privacy":"privacy",
   "about_first" :"Deus is a work group who is mainly working with Google tecnologies, particularly those most innovative: GO! programming lenguage, web components Polymer, GoogleCloud (CloudSQL y Cloud Datastore), AppEngine or Google Analytics.",
-  "about_second" : "It arised as a platform to educate students in leading tecnologies, deal with investigation projects and, at the same time, give them a first contact with the work environment. Currently, it has several Final Dissertation and Practicum students working in differents areas."
+  "about_second" : "It arised as a platform to educate students in leading tecnologies, deal with investigation projects and, at the same time, give them a first contact with the work environment. Currently, it has several Final Dissertation and Practicum students working in differents areas.",
+  "lang": {
+    "es":"Spanish",
+    "en":"English"
+  }
 }

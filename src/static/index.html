@@ -23,10 +23,20 @@
         <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
           <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.login}}</span>
         </core-icon-button>
-        <paper-button id="siginButton" ng-click="changelanguage()" icon="social:person" class="signin">
-          <span style="padding-left: 3px;vertical-align:middle" id="nameId">Lenguage</span>
-        </paper-button>
-        <core-icon-button icon="search" class=" search"></core-icon-button>
+        <!--        <paper-button id="siginButton" ng-click="changelanguage()" icon="social:person" class="signin">
+<span style="padding-left: 3px;vertical-align:middle" id="nameId">Lenguage</span>
+</paper-button>-->
+
+        <core-dropdown-menu label="Language" id="language">
+          <core-dropdown class="dropdown">
+            <core-menu>
+              <core-item class="first" ng-show="language_selected">{{language_selected}}</core-item>
+              <core-item horizontal center-justified layout ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
+              <core-item horizontal center-justified layout ng-click="changelanguage('en')">{{language.lang.en}}</core-item>
+            </core-menu>
+          </core-dropdown>
+        </core-dropdown-menu>
+        <core-icon-button icon="search" class="search"></core-icon-button>
 
       </core-toolbar>
 

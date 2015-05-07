@@ -15,19 +15,23 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   $scope.sended = false;
   $scope.language = $scope.language || {};
   $scope.idioma = 'es'
+  $scope.language_selected =''
 
-  $scope.changelanguage = function () {
+
+  $scope.changelanguage = function (language) {
     var file;
+    $scope.idioma = language
     file = $scope.idioma === 'es' ? 'es_es.json' : 'en_en.json';
-    $scope.idioma = $scope.idioma === 'es' ? 'en' : 'es';
     $http.get('../../language/' + file ).success(function (data) {
-      $scope.language = data; 
-      console.log(data);
+      $scope.language = data;
+      $scope.language_selected = data.lang[language];
+      document.querySelector('#language').$.label.innerHTML = data.lang[language];
     }).error( function (data, status) {
       console.error(data,status);
     });
   };
-  
+  /* Monitorizamos el lenguage */
+
   if ($window.navigator.language === 'es') {
     $http.get('../../language/es_es.json').success(function (data){
       $scope.language = data; 
