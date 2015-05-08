@@ -120,12 +120,12 @@ class OAuthTwitterHandler(SessionHandler):
 
             # Gets the params in the request
             auth_token = self.request.get('oauth_token')
-            auth_verifier = self.request.get('oauth_verifier')
+            oauth_verifier = self.request.get('oauth_verifier')
             
             
             # Retrieves user info
             user_info = client.get_user_info(auth_token,
-                    auth_verifier=auth_verifier)
+                    auth_verifier=oauth_verifier)
 
             # Query for the stored user
             stored_user = ndb_pb.buscaToken(user_info['username'], 'twitter')
@@ -144,29 +144,32 @@ class OAuthTwitterHandler(SessionHandler):
 
             # Create Session
             session_id = self.login(user_id)
-            # Stores in memcache the session id associated with the oauth_verifier
+            # Stores in memcache the session id associated with the oauth_verifierj
             key_verifier = "oauth_verifier_" + oauth_verifier
             data = {'session_id': session_id, 'response_status': response_status}
             memcache.add(key_verifier, data)
-            
+                        
         elif action == 'login':
             # TODO: data!!
-            oauth_verifier = self.request.get('oauth_verifier', default='')
-            if not oauth_token_verifier == '':
+            oauth_verifier = self.request.get('oauth_verifier', default_value='None')
+            if not oauth_verifier == '':
                 key_verifier = "oauth_verifier_" + oauth_verifier
-                session_id = memcache.get(key_verifier)
-                if not session_id == None:
+                data = memcache.get(key_verifier)
+                print type(data)
+                if not data == None:
+                    session_id = data['session_id']
+                    response_status = data['response_status']
                     # Set the cookie session with the session id stored in the system
                     self.response.set_cookie('session', value=session_id, path='/', domain=domain,secure=True)                    
                     # Delete the key-value for the pair oauth_verifier-session_id stored in memcache
                     memcache.delete(key_verifier)
-                    self.response.set_status(200)
+                    self.response.set_status(response_status)
                 else:
-                response = \
-                {'error': 'There isn\'t any session in the system for the oauth_verifier value specified'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(404)    
+                    response = \
+                    {'error': 'There isn\'t any session in the system for the oauth_verifier value specified'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)    
             else:
                 response = \
                 {'error': 'You must specify a value for the oauth_verifier param in the request'}
