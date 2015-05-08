@@ -133,20 +133,24 @@ class OAuthTwitterHandler(SessionHandler):
                 # We store the user id and token into a Token Entity
                 user_id = ndb_pb.insertaUsuario('twitter',
                         user_info['username'], user_info['token'])
-                self.response.set_status(201)
+                response_status = 201
+                self.response.set_status(response_status)
             else:
                 # We store the new user's access_token
                 user_id = ndb_pb.modificaToken(user_info['username'], user_info['token'],
                         'twitter')
-                self.response.set_status(200)
+                response_status = 200
+                self.response.set_status(response_status)
 
             # Create Session
             session_id = self.login(user_id)
             # Stores in memcache the session id associated with the oauth_verifier
             key_verifier = "oauth_verifier_" + oauth_verifier
-            memcache.add(key_verifier, session_id)
+            data = {'session_id': session_id, 'response_status': response_status}
+            memcache.add(key_verifier, data)
             
         elif action == 'login':
+            # TODO: data!!
             oauth_verifier = self.request.get('oauth_verifier', default='')
             if not oauth_token_verifier == '':
                 key_verifier = "oauth_verifier_" + oauth_verifier
