@@ -6,17 +6,22 @@
   </head>
   <body>
     <polymer-element name="login-facebook" attributes="key_app scope">   
-      <template> 
+      <template id="template"> 
         <link rel="stylesheet" href="login-facebook.css">
-        <paper-button id="boton-facebook" on-click="{{login}}" class="login">
+        <paper-button id="boton-facebook" hidden?="{{loged}}" on-click="{{login}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
           Sign in with Facebook
+        </paper-button>
+        <paper-button id="prueba" hidden?="{{!loged}}" on-click="{{login}}" class="login">
+          <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
+          Log out with Facebook
         </paper-button>
       </template> 
       <script>  
         Polymer('login-facebook',{ 
           key_app:'',
           scope:'',
+          loged: false,
           //Se realizara la carga del SDK de Facebook
           ready: function(){
             var script = document.createElement('script');
@@ -28,11 +33,12 @@ js = d.createElement(s); js.id = id;\
 js.src = '//connect.facebook.net/en_US/sdk.js';\
 fjs.parentNode.insertBefore(js, fjs);\
 }(document, 'script', 'facebook-jssdk'));\
-"
-document.body.appendChild(script);
+";
+            document.body.appendChild(script);
           },  
           //Se incializa la api
-          login:function() {  
+          login:function() {
+            var back = this;
             FB.init({
               appId      : this.key_app,//Key App
               cookie     : true,  // enable cookies to allow the server to 
@@ -41,9 +47,11 @@ document.body.appendChild(script);
             });
             //Se realiza el login con los permisos requeridos para la app
             FB.login(function(response) {
-              this.acToken=response.authResponse.accessToken;
-              this.userId = response.authResponse.userID;
-              document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});
+              back.acToken=response.authResponse.accessToken;
+              back.userId = response.authResponse.userID;
+              back.loged = true;
+              // Force Polymer to refresh template
+              /*              document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});*/
             }, {scope: this.scope});
           } 
         });     
