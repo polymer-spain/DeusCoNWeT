@@ -34,14 +34,15 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   if ($window.navigator.language === 'es') {
     $http.get('../../language/es_es.json').success(function (data){
       $scope.language = data; 
-      $scope.language_selected = data.language;
+      $scope.language_selected = data.lang.es;
     }).error( function (data, status) {
       console.error(data,status);
     });
   } else {
 
     $http.get('../../language/en_en.json').success(function (data){
-      $scope.language = data; 
+      $scope.language = data;
+      $scope.language_selected = data.lang.en;
     }).error( function (data, status) {
       console.error(data,status);
     });

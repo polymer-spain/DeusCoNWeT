@@ -20,21 +20,20 @@
 
         <h2 id="name" ng-click="changeView('/')" flex>PicBit</h2>
 
+
+        <core-dropdown-menu id="language" label="{{language_selected}}" style="outline:none;margin-right:40px">
+          <core-dropdown class="lang-menu dropdown" >
+            <core-menu vertical layout>
+              <core-item center ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
+              <core-item center ng-click="changelanguage('en')">{{language.lang.en}}</core-item>
+            </core-menu>
+          </core-dropdown>
+        </core-dropdown-menu>
         <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
           <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.login}}</span>
         </core-icon-button>
 
-      
-        <core-dropdown-menu id="language" label="{{language_selected}}" style="outline:none">
-          <core-dropdown class="lang-menu dropdown" >
-            <core-menu vertical layout>
-                <core-item center ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
-                <core-item center ng-click="changelanguage('en')">{{language.lang.en}}</core-item>
-            </core-menu>
-          </core-dropdown>
-        </core-dropdown-menu>
-
-        <core-icon-button icon="search" class="search"></core-icon-button>
+        <!--<core-icon-button icon="search" class="search"></core-icon-button>-->
 
       </core-toolbar>
 
