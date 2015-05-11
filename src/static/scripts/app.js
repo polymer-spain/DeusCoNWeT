@@ -31,11 +31,12 @@
       controller: 'userHomeCtrl',
       resolve: {
         auth: ["$q", function($q){
-          var cookie, session, patron;
+          var cookie, session, patron, exp;
           cookie = document.cookie;
           patron = "session"+"=([^&#]*)";
-          patron = new RegExp(patron);
-          session = exp.exec(cookie)[1];
+          exp = new RegExp(patron);
+          session = exp.exec(cookie);
+          session = session ? session[1] : undefined;
           
           if (session) {
             return $q.when(cookie);

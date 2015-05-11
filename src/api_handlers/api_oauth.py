@@ -117,7 +117,7 @@ class OAuthTwitterHandler(SessionHandler):
             'https://api.twitter.com/oauth/authorize'
 
         client = oauth.TwitterClient(consumer_key, consumer_secret,
-                'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
+                'https://' + domain + '/api/oauth/twitter?action=authorization'
                 )
 
         if action == 'login':

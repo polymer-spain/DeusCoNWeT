@@ -27,8 +27,10 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
         uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
         $http.get(uri).success(function (data) {
           /* Provisional hasta que se implemente el nombre de usuario */
-          $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
-          $backend.sendData(e.detail.token, data.id, e.detail.redSocial);
+          
+          $backend.sendData(e.detail.token, data.id, e.detail.redSocial,function(){
+            $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
+          });
         });
       } else {
         $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);

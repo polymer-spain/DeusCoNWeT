@@ -1,6 +1,6 @@
 angular.module('picbit').service('$backend', function ($http) {
   'use strict';
-  this.endpoint = 'https://example-project-13.appspot.com';
+  this.endpoint = 'https://test-frontend-dot-example-project-13.appspot.com';
 
   /* Envia el token y el identificador del token correspondiente a una red social */
   this.sendData = function (token, tokenId, redSocial, callback, errorCallback) {
