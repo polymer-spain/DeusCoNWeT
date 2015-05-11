@@ -1,5 +1,5 @@
 {
-  "lenguage":"Lenguage",
+  "language":"Language",
   "title": "Welcome to PicBit",
   "login": "Log In",
   "entry": "Sign In with your Social Network",
@@ -15,5 +15,11 @@
   "lang": {
     "es":"Spanish",
     "en":"English"
+  },
+    "user_action": {
+    "add":"Add",
+    "delete": "Delete",
+    "modify": "Modify",
+    "help": "Help"
   }
 }

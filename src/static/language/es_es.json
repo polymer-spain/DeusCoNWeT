@@ -1,5 +1,5 @@
 {
-  "lenguage":"Idioma",
+  "language":"Idioma",
   "title": "Bienvenido a PicBit",
   "login": "Entrar",
   "entry": "Accede con tu Red Social",
@@ -15,5 +15,11 @@
   "lang": {
     "es":"Español",
     "en":"Inglés"
+  },
+  "user_action": {
+    "add" : "Añadir",
+    "delete": "Borrar",
+    "modify": "Modificar",
+    "help": "Ayuda"
   }
 }
