@@ -105,6 +105,10 @@ Element providing solution to no problem in particular.
         }, 100);
       },
       cookie: function(e,d,s) {
+        var response, code;
+        response = d.response;
+        code = d.xhr.status;
+        back.fire('twitter-login-status',{response:response, status:code});
       },
     });
 
