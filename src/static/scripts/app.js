@@ -28,7 +28,18 @@
     })
       .when('/user/:userId', {
       templateUrl: 'views/userHome.html',
-      controller: 'userHomeCtrl'
+      controller: 'userHomeCtrl',
+      resolve: {
+        auth: ["$q", function($q){
+          var cookie = $cookies.getCookie('session')
+
+          if (cookie) {
+            return $q.when(cookie);
+          } else {
+            return $q.reject({authenticated: false})
+          }
+        }]
+      }
     })
       .when('/about', {
       templateUrl: 'views/about.html',
