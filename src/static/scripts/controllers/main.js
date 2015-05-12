@@ -7,7 +7,7 @@
  */
 
 
-angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend, $http) {
+angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend, $http, $cookie) {
   'use strict';
   $scope.status = false;
   $scope.domain = "https://" + $location.host();
@@ -28,7 +28,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
         uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
         $http.get(uri).success(function (data) {
           /* Provisional hasta que se implemente el nombre de usuario */
-          
+
           $backend.sendData(e.detail.token, data.id, e.detail.redSocial,function(){
             $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
           });
@@ -62,6 +62,9 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     button.innerHTML = "Entrar";
     $scope.changeView('/');
     $scope.status = false;
+
+    // eliminamos la cookie
+    $backend.logout();
   };
 
    /* Escuhas de los botones*/
@@ -86,4 +89,8 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     $scope.popup = false;
     $scope.shadow = false;
   };
+
+  if ($cookie.get('session')) {
+    $scope.logOutButton();
+  }
 });
