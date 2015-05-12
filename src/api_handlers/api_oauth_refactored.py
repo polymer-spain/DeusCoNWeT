@@ -119,6 +119,75 @@ class OAuthLoginHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(400)
 
+    def post_credentials(self, social_network):
+        # Gets the data from the request form
+        action = self.request.get('action')
+        if action == 'login':
+            try:
+                access_token = self.request.POST['access_token']
+                token_id = self.request.POST['token_id']
+
+                # Checks if the username was stored previously
+
+                stored_credentials = ndb_pb.buscaToken(token_id,
+                        social_network)
+                if stored_credentials == None:
+
+                    # Generate a valid username for a new user
+
+                    user_id = ndb_pb.insertaUsuario(social_network, token_id,
+                            access_token)
+                    session_id = self.login(user_id)
+
+                    # Returns the session cookie
+
+                    self.response.set_cookie('session', session_id,
+                            path='/', domain=domain, secure=True)
+
+                    # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
+
+                    self.response.set_status(201)
+                else:
+
+                    # We store the new set of credentials
+
+                    user_id = ndb_pb.modificaToken(token_id,
+                            access_token, social_network)
+                    session_id = self.login(user_id)
+
+                    # Returns the session cookie
+                    # self.response.set_cookie('session',value=session_id, secure=False)
+                    # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
+
+                    self.response.set_cookie('session', session_id,
+                            path='/', domain=domain, secure=True)
+                    self.response.set_status(200)
+            except KeyError:
+                response = \
+                    {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        elif action == 'logout':
+            cookie_value = self.request.cookies.get('session')
+            if not cookie_value == None:
+                # Logout
+                logout_status = self.logout(cookie_value)
+                # Delete cookie
+                self.response.delete_cookie('session')
+                self.response.set_status(200)
+            else:
+                response = \
+                    {'error': 'This request requires a secure_cookie with the session identifier'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        else:
+            response = {'error': 'Invalid value for the action param'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
+
 
 class OAuthHandler(SessionHandler):
     def get_credentials(self, social_network):
@@ -328,7 +397,6 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.set_status(400)
 
     # POST Method
-
     def post(self):
         """ Destroys the session previously initialized in the system
             Keyword arguments: 
@@ -341,11 +409,9 @@ class OAuthTwitterHandler(SessionHandler):
             if not cookie_value == None:
 
                 # Logout
-
                 logout_status = self.logout(cookie_value)
 
                 # Delete cookie
-
                 self.response.delete_cookie('session')
                 self.response.set_status(200)
             else:
@@ -495,16 +561,6 @@ class OAuthGithubHandler(SessionHandler):
         else:
             self.response.set_status(400)
 
-    # POST Method
-
-    def post(self):
-        """ Defines the flow of the process to get an access_token to use the Github API
-        Keyword arguments: 
-        self -- info about the request build by webapp2
-        """
-
-        pass
-
 
 class OauthLinkedinHandler(OAuthHandler):
     """
@@ -514,7 +570,7 @@ class OauthLinkedinHandler(OAuthHandler):
         post -- Creates or updates the pair of token_id and access_token for an user.
     """
 
-    # GET Method
+    # GET Methodo
     def get(self):
         self.get_credentials('linkedin')
 
@@ -547,7 +603,7 @@ class OAuthInstagramHandler(OAuthHandler):
         self.post_credentials('instagram')
 
 
-class OauthFacebookHandler(SessionHandler):
+class OauthFacebookHandler(OAuthLoginHandler):
 
     """
     Class that represents the FaceBook token resource. 
@@ -564,121 +620,11 @@ class OauthFacebookHandler(SessionHandler):
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
-
-        cookie_value = self.request.cookies.get('session')
-        if not cookie_value == None:
-
-            # Obtains info related to the user authenticated in the system
-
-            user = self.getUserInfo(cookie_value)
-
-            # Searchs for user's credentials
-
-            if not user == None:
-
-                # userKey = ndb.Key(ndb_pb.Usuario,str(user))
-
-                user_credentials = ndb_pb.getToken(user, 'facebook')
-                if not user_credentials == None:
-                    response = \
-                        {'token_id': user_credentials.identificador,
-                         'access_token': user_credentials.token}
-                    self.response.content_type = 'application/json'
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(200)
-                else:
-                    response = \
-                        {'error': 'The active user does not have a pair of token_id' \
-                         + 'and access_token in facebook stored in the system'}
-                    self.response.content_type = 'application/json'
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(404)
-            else:
-                response = \
-                    {'error': 'The cookie session provided does not belongs to any active user'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        else:
-            response = {'error': 'You must provide a session cookie'}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(400)
-
+        self.get_credentials('facebook')
+       
     # POST Method
-
     def post(self):
-        action = self.request.get('action')
-        if action == 'login':
-
-            # Gets the data from the request form
-
-            try:
-                access_token = self.request.POST['access_token']
-                token_id = self.request.POST['token_id']
-
-                # Checks if the username was stored previously
-
-                stored_credentials = ndb_pb.buscaToken(token_id,
-                        'facebook')
-                if stored_credentials == None:
-
-                    # Stores the credentials in a Token Entity
-                    # Generate a valid username for a new user in the user_credentials
-
-                    user_id = ndb_pb.insertaUsuario('facebook',
-                            token_id, access_token)
-                    session_id = self.login(user_id)
-
-                    # Returns the session cookie
-
-                    self.response.set_cookie('session',
-                            value=session_id, path='/', domain=domain,
-                            secure=True)
-                    self.response.set_status(201)
-                else:
-
-                    # We store the new set of credentials
-
-                    user_id = ndb_pb.modificaToken(token_id,
-                            access_token, 'facebook')
-                    session_id = self.login(user_id)
-
-                    # Returns the session cookie
-
-                    self.response.set_cookie('session',
-                            value=session_id, path='/', domain=domain,
-                            secure=True)
-                    self.response.set_status(200)
-            except KeyError:
-                response = \
-                    {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        elif action == 'logout':
-            cookie_value = self.request.cookies.get('session')
-            if not cookie_value == None:
-
-                # Logout
-
-                logout_status = self.logout(cookie_value)
-
-                # Delete cookie
-
-                self.response.delete_cookie('session')
-                self.response.set_status(200)
-            else:
-                response = \
-                    {'error': 'This request requires a secure_cookie with the session identifier'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        else:
-            response = {'error': 'Invalid value for the action param'}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(400)
+        self.post_credentials('facebook')
 
 
 class OauthStackOverflowHandler(OAuthHandler):
@@ -692,7 +638,6 @@ class OauthStackOverflowHandler(OAuthHandler):
     """
 
     # GET Method
-
     def get(self):
         """ - Returns the StackOverflow access_token for a user authenticated
             Keyword arguments: 
@@ -701,7 +646,6 @@ class OauthStackOverflowHandler(OAuthHandler):
         self.get_credentials('stackoverflow')
 
     # POST Method
-
     def post(self):
         """ Creates or updates the pair of token_id and access_token for an user.        
         Keyword arguments: 
@@ -709,7 +653,7 @@ class OauthStackOverflowHandler(OAuthHandler):
         """
         self.post_credentials('stackoverflow')
 
-class OauthGooglePlusHandler(SessionHandler):
+class OauthGooglePlusHandler(OAuthLoginHandler):
 
     """
     Class that represents the GooglePlus token resource. 
@@ -720,16 +664,14 @@ class OauthGooglePlusHandler(SessionHandler):
     """
 
     # GET Method
-
     def get(self):
         """ - Returns the GooglePlus access_token and token_id for a user authenticated
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
-
+        self.get_credentials('google')
         
     # POST Method
-
     def post(self):
         """ - It performs two possible actions:
             Login: Creates or updates the pair of token_id and access_token for an user.
@@ -738,80 +680,9 @@ class OauthGooglePlusHandler(SessionHandler):
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
+        self.post_credentials('google')
 
-        # Gets the data from the request form
-
-        action = self.request.get('action')
-        if action == 'login':
-            try:
-                access_token = self.request.POST['access_token']
-                token_id = self.request.POST['token_id']
-
-                # Checks if the username was stored previously
-
-                stored_credentials = ndb_pb.buscaToken(token_id,
-                        'google')
-                if stored_credentials == None:
-
-                    # Generate a valid username for a new user
-
-                    user_id = ndb_pb.insertaUsuario('google', token_id,
-                            access_token)
-                    session_id = self.login(user_id)
-
-                    # Returns the session cookie
-
-                    self.response.set_cookie('session', session_id,
-                            path='/', domain=domain, secure=True)
-
-                    # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
-
-                    self.response.set_status(201)
-                else:
-
-                    # We store the new set of credentials
-
-                    user_id = ndb_pb.modificaToken(token_id,
-                            access_token, 'google')
-                    session_id = self.login(user_id)
-
-                    # Returns the session cookie
-                    # self.response.set_cookie('session',value=session_id, secure=False)
-                    # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
-
-                    self.response.set_cookie('session', session_id,
-                            path='/', domain=domain, secure=True)
-                    self.response.set_status(200)
-            except KeyError:
-                response = \
-                    {'error': 'You must provide a valid pair of access_token and token_id in the request'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        elif action == 'logout':
-            cookie_value = self.request.cookies.get('session')
-            if not cookie_value == None:
-
-                # Logout
-
-                logout_status = self.logout(cookie_value)
-
-                # Delete cookie
-
-                self.response.delete_cookie('session')
-                self.response.set_status(200)
-            else:
-                response = \
-                    {'error': 'This request requires a secure_cookie with the session identifier'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        else:
-            response = {'error': 'Invalid value for the action param'}
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
-            self.response.set_status(400)
-
+        
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
     def get(self):
