@@ -9,11 +9,13 @@
 
 angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend, $http, $window) {
   'use strict';
-  $scope.status = false;
-  $scope.domain = "https://" + $location.host();
-  $scope.shadow = false;
-  $scope.sended = false;
+  
+  $scope.status = false; // Registr el stado de logueado
+  $scope.domain = "https://" + $location.host(); // Dominio bajo el que ejecutamos
+  $scope.shadow = false; // Sombra del popup
+  $scope.sended = false; // popup de notificar
   $scope.idioma = 'es'
+  
   $scope.changelanguage = function (language) {
     var file;
 
@@ -74,7 +76,6 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   };
   $scope.logOutButton = function () {
     var button = document.querySelector('#nameId');
-    button.innerHTML = "Desconectar";
     // Seleccionar la imagen del perfin
     // button.src=""
     // Cambiamos a la funcion de logout
@@ -89,7 +90,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   $scope.logout = function () {
     var button = document.querySelector('#nameId');
     // Selecionar el nombre del usuario
-    button.innerHTML = "Entrar";
+    
     $scope.changeView('/');
     $scope.status = false;
   };

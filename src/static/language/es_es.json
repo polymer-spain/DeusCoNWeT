@@ -2,6 +2,7 @@
   "language":"Idioma",
   "title": "Bienvenido a PicBit",
   "login": "Entrar",
+  "logout": "Desconectar",
   "entry": "Accede con tu Red Social",
   "select_network": "Selecciona tu red social",
   "slogan": "Mantente informado de toda la actividad en las redes de tus grupos de amigos",

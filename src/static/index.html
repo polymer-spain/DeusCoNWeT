@@ -29,8 +29,11 @@
             </core-menu>
           </core-dropdown>
         </core-dropdown-menu>
-        <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
+        <core-icon-button ng-show="!status" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
           <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.login}}</span>
+        </core-icon-button>
+        <core-icon-button ng-show="status" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
+          <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.logout}}</span>
         </core-icon-button>
 
         <!--<core-icon-button icon="search" class="search"></core-icon-button>-->

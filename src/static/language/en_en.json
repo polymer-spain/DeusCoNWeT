@@ -2,6 +2,7 @@
   "language":"Language",
   "title": "Welcome to PicBit",
   "login": "Log In",
+  "logout": "Log out",
   "entry": "Sign In with your Social Network",
   "select_network": "Select your social network",
   "slogan": "Stay tuned on the activity of your friends in social networks",
