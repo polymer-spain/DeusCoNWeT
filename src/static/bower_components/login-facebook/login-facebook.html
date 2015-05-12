@@ -5,6 +5,7 @@
     <link rel="import" href="../paper-button/paper-button.html">
   </head>
   <body>
+
     <polymer-element name="login-facebook" attributes="key_app scope">   
       <template id="template"> 
         <link rel="stylesheet" href="login-facebook.css">
@@ -12,48 +13,85 @@
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
           Sign in with Facebook
         </paper-button>
-        <paper-button id="prueba" hidden?="{{!loged}}" on-click="{{login}}" class="login">
+        <paper-button id="prueba" hidden?="{{!loged}}" on-click="{{logout}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
           Log out with Facebook
         </paper-button>
       </template> 
-      <script>  
+      
+       <script>  
         Polymer('login-facebook',{ 
           key_app:'',
+          textlogin:'LogIn in with Facebook',
           scope:'',
           loged: false,
-          //Se realizara la carga del SDK de Facebook
+////////////////////////////////     ready      ////////////////////////////////////////////////////////////  
           ready: function(){
+            //Se realizara la carga del SDK de Facebook
             var script = document.createElement('script');
             script.type = "text/javascript";
             script.text = "	(function(d, s, id) { \
-var js, fjs = d.getElementsByTagName(s)[0];\
-if (d.getElementById(id)) return;\
-js = d.createElement(s); js.id = id;\
-js.src = '//connect.facebook.net/en_US/sdk.js';\
-fjs.parentNode.insertBefore(js, fjs);\
-}(document, 'script', 'facebook-jssdk'));\
-";
-            document.body.appendChild(script);
-          },  
-          //Se incializa la api
-          login:function() {
+                          var js, fjs = d.getElementsByTagName(s)[0];\
+                          if (d.getElementById(id)) return;\
+                          js = d.createElement(s); js.id = id;\
+                          js.src = '//connect.facebook.net/en_US/sdk.js';\
+                          fjs.parentNode.insertBefore(js, fjs);\
+                          }(document, 'script', 'facebook-jssdk'));\
+                          ";
+                          document.body.appendChild(script);
+          }, 
+////////////////////////////////     domReady      ////////////////////////////////////////////////////////////  
+          
+         domReady: function() { 
+         var back = this;
+         FB.init({//Se incia variables necesarias
+                appId      : this.key_app,//Key App
+                cookie     : true,
+                status     : true,// enable cookies to allow the server to 
+                xfbml      : true,  // parse social plugins on this page
+                version    : 'v2.2' // use version 2.2
+              });
+           
+             FB.getLoginStatus(function(response) {
+                if (response && response.status === 'connected') {
+                      this.estado= response.status;
+                     back.loged = true;
+                  } else{
+                     back.loged = false;
+                    
+                    
+                  }
+              });     
+         },
+
+////////////////////////////////     LOGIN      ////////////////////////////////////////////////////////////    
+
+          login:function() { 
             var back = this;
-            FB.init({
-              appId      : this.key_app,//Key App
-              cookie     : true,  // enable cookies to allow the server to 
-              xfbml      : true,  // parse social plugins on this page
-              version    : 'v2.2' // use version 2.2
-            });
-            //Se realiza el login con los permisos requeridos para la app
             FB.login(function(response) {
               back.acToken=response.authResponse.accessToken;
               back.userId = response.authResponse.userID;
               back.loged = true;
-              // Force Polymer to refresh template
-              /*              document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});*/
-            }, {scope: this.scope});
+              this.acToken=response.authResponse.accessToken;
+              this.userId = response.authResponse.userID;
+              document.querySelector('login-facebook').fire('facebook-logged',                {token:this.acToken,redSocial:'facebook',userId:this.userId});}, {scope: this.scope});
+           
+          
+            
+          }, 
+////////////////////////////////    LOGOUT     ////////////////////////////////////////////////////////////         
+         
+          logout:function() {          
+            var back = this;
+            FB.getLoginStatus(function(response) {
+                if (response && response.status === 'connected') {
+                      FB.logout(function(response) {
+                          back.loged = false;
+                      });
+                  }
+              });
           } 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////                
         });     
       </script>  
     </polymer-element>

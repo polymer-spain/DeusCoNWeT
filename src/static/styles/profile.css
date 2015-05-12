@@ -7,7 +7,6 @@ html {
 #todo{
   
   background: rgba(0, 0, 0, 0.51);
- 
   margin-top: 15%;
   
 }
@@ -77,13 +76,9 @@ section{
   position: relative;
 
 }
-/*
-#contenedor{
-  margin-left: 35%
-}
-*/
 
-}
+
+
 #oculto{
 
   display: none;
@@ -96,7 +91,7 @@ section{
   transition: all 0.3s ease-in;
   margin-top: 5px;
   background: rgba(253, 244, 244, 0.54);	
-  width: 100%;
+  width: 95%;
   height: 30%;
   min-width: 200px;
   overflow: hidden;
@@ -140,17 +135,15 @@ twitter-login{min-width: 100%;}
 github-login{min-width: 100%;}
 linkedin-login{min-width: 100%;}
 instagram-login{min-width: 100%;}
+logout-facebook{min-width: 100%;}
 /*Ajuste textos botones*/
 google-login::shadow #button{ 
-
   font-size: 17px;
 }
 login-facebook::shadow .login{ 
-
   font-size: 17px;
 }
 twitter-login::shadow #TwitterButton{ 
-
   font-size: 17px;
 }
 github-login::shadow #loginGithub{ 
@@ -162,6 +155,11 @@ linkedin-login::shadow #LinkedinButton{
   font-size: 17px;
 }
 instagram-login::shadow #InstagramButton{ 
+
+  font-size: 17px;
+}
+
+logout-facebook::shadow #facebookOut{ 
 
   font-size: 17px;
 }
@@ -319,23 +317,26 @@ paper-input-decorator.invalid /deep/ .focused-underline {
    }
   
    paper-dropdown-menu::shadow #arrow{
-     
-     
+     -webkit-transition: all 0.3s ease-in;
+    -moz-transition: all 0.3s ease-in;
+    -o-transition: all 0.3s ease-in;
      color: #fff;
    }
   
   core-dropdown{
+    
    border-bottom: 1px solid #FFFFFF;
    height: 132px;
     padding-right: 20px;
   
   }      
-   
+
+
 google-login.disconnect::shadow #button{
   
   background: #393333;
 }
- .login {
+ .login  {
      -webkit-transition: all 0.3s ease-in;
   -moz-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
