@@ -20,7 +20,7 @@
     'ng-polymer-elements'
   ]);
   app.config(function ($locationProvider, $routeProvider,$httpProvider) {
-
+    $httpProvider.defaults.withCredentials = true;
     $routeProvider
       .when('/', {
       templateUrl: 'views/landingPage.html',
@@ -30,16 +30,12 @@
       templateUrl: 'views/userHome.html',
       controller: 'userHomeCtrl',
       resolve: {
-        auth: ["$q", function($q){
-          var cookie, session, patron, exp;
-          cookie = document.cookie;
-          patron = "session"+"=([^&#]*)";
-          exp = new RegExp(patron);
-          session = exp.exec(cookie);
-          session = session ? session[1] : undefined;
+        auth: ["$q", "$cookie", function($q, $cookie){
+          
+          var session = $cookie.get('session');
           
           if (session) {
-            return $q.when(cookie);
+            return $q.when(session);
           } else {
             return $q.reject({authenticated: false})
           }
