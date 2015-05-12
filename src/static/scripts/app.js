@@ -9,8 +9,8 @@
 	 *
 	 * Main module of the application.
 	*/
-  angular
-    .module('picbit', [
+  var app = angular
+  .module('picbit', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
@@ -18,8 +18,8 @@
     'ngSanitize',
     'ngTouch',
     'ng-polymer-elements'
-  ])
-    .config(function ($locationProvider, $routeProvider,$httpProvider) {
+  ]);
+  app.config(function ($locationProvider, $routeProvider,$httpProvider) {
 
     $routeProvider
       .when('/', {
@@ -31,9 +31,14 @@
       controller: 'userHomeCtrl',
       resolve: {
         auth: ["$q", function($q){
-          var cookie = $cookies.getCookie('session')
-
-          if (cookie) {
+          var cookie, session, patron, exp;
+          cookie = document.cookie;
+          patron = "session"+"=([^&#]*)";
+          exp = new RegExp(patron);
+          session = exp.exec(cookie);
+          session = session ? session[1] : undefined;
+          
+          if (session) {
             return $q.when(cookie);
           } else {
             return $q.reject({authenticated: false})
@@ -57,10 +62,13 @@
     ;
     $locationProvider.html5Mode(true)
   });
-  document.addEventListener('polymer-ready', function() {
-    // Perform some behaviour
 
-  });
-  // wrap document so it plays nice with other libraries
+  app.run(["$rootScope", "$location", function($rootScope, $location) {
+    $rootScope.$on("$routeChangeError", function(event, current, previous, eventObj) {
+      if (eventObj.authenticated === false) {
+        $location.path("/");
+      }
+    });
+  }]);
 
 })(wrap(document));
