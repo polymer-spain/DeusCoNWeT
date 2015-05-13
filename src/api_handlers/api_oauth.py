@@ -109,12 +109,8 @@ class OAuthTwitterHandler(SessionHandler):
             'https://api.twitter.com/oauth/authorize'
         callback_uri = 'https://' + domain + '/api/oauth/twitter?action=authorization'
         client = oauth.TwitterClient(consumer_key, consumer_secret,
-<<<<<<< HEAD
-                callback_uri)
-=======
                 'https://' + domain + '/api/oauth/twitter?action=authorization'
                 )
->>>>>>> 7fc843be00e48ba2425d6f71e4aece9245e8187f
 
         if action == 'request_token':
             self.response.content_type = 'application/json'
