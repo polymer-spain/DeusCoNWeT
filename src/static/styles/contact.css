@@ -1,6 +1,7 @@
 html {
   background-image: url('../images/beach.jpg');
-  background-size: cover;
+   background-size: 100% 100%;
+  background-attachment: fixed;
   background-repeat: no-repeat;
 }
 .content {
