@@ -21,7 +21,8 @@
 
 import webapp2
 import json
-import os, yaml
+import os
+import yaml
 import httplib
 import hashlib
 import urllib
@@ -32,25 +33,29 @@ import ndb_pb
 from ndb_pb import Token, Usuario
 
 # Imports for TwitterHandler
+
 import oauth
 from google.appengine.api import channel
 
 # Import config vars
 # import ConfigParser
-# configParser = ConfigParser.RawConfigParser()   
+# configParser = ConfigParser.RawConfigParser()
 # configFilePath = r'config.cfg'
 # configParser.read(configFilePath)
 # domain = configParser.get('app_data', 'domain')
 
 # Import config vars
+
 basepath = os.path.dirname(__file__)
-configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+configFile = os.path.abspath(os.path.join(basepath, 'config.yaml'))
 with open(configFile, 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
 domain = cfg['domain']
 
+
 class SessionHandler(webapp2.RequestHandler):
+
     """
     Class that handles the session of the application
     Methods:
@@ -80,14 +85,19 @@ class SessionHandler(webapp2.RequestHandler):
             logout_status = True
         return logout_status
 
+
 class OAuthLoginHandler(SessionHandler):
+
     def get_credentials(self, social_network):
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
+
             # Obtains info related to the user authenticated in the system
+
             user = self.getUserInfo(cookie_value)
 
             # Searchs for user's credentials
+
             if not user == None:
 
                 # userKey = ndb.Key(ndb_pb.Usuario,str(user))
@@ -103,7 +113,8 @@ class OAuthLoginHandler(SessionHandler):
                 else:
                     response = \
                         {'error': 'The active user does not have a pair of token_id' \
-                         + ' and access_token in ' +  social_network +' stored in the system'}
+                         + ' and access_token in ' + social_network \
+                         + ' stored in the system'}
                     self.response.content_type = 'application/json'
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
@@ -120,7 +131,9 @@ class OAuthLoginHandler(SessionHandler):
             self.response.set_status(400)
 
     def post_credentials(self, social_network):
+
         # Gets the data from the request form
+
         action = self.request.get('action')
         if action == 'login':
             try:
@@ -135,8 +148,8 @@ class OAuthLoginHandler(SessionHandler):
 
                     # Generate a valid username for a new user
 
-                    user_id = ndb_pb.insertaUsuario(social_network, token_id,
-                            access_token)
+                    user_id = ndb_pb.insertaUsuario(social_network,
+                            token_id, access_token)
                     session_id = self.login(user_id)
 
                     # Returns the session cookie
@@ -171,11 +184,20 @@ class OAuthLoginHandler(SessionHandler):
         elif action == 'logout':
             cookie_value = self.request.cookies.get('session')
             if not cookie_value == None:
+
                 # Logout
+
                 logout_status = self.logout(cookie_value)
+<<<<<<< HEAD
                 # Invalidate cookie
                 self.response.set_cookie('session', session_id,
                             path='/',max_age=0 ,domain=domain, secure=True)
+=======
+
+                # Delete cookie
+
+                self.response.delete_cookie('session')
+>>>>>>> 7fff029cdf8c252402dd5a3552f8b2966780937f
                 self.response.set_status(200)
             else:
                 response = \
@@ -191,6 +213,7 @@ class OAuthLoginHandler(SessionHandler):
 
 
 class OAuthHandler(SessionHandler):
+
     def get_credentials(self, social_network):
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
@@ -233,14 +256,17 @@ class OAuthHandler(SessionHandler):
             self.response.set_status(400)
 
     def post_credentials(self, social_network):
+
         # Gets the data from the request form
+
         try:
             access_token = self.request.POST['access_token']
             token_id = self.request.POST['token_id']
 
           # Checks if the username was stored previously
 
-            stored_credentials = ndb_pb.buscaToken(token_id, social_network)
+            stored_credentials = ndb_pb.buscaToken(token_id,
+                    social_network)
             if stored_credentials == None:
 
               # Stores the credentials in a Token Entity
@@ -261,6 +287,7 @@ class OAuthHandler(SessionHandler):
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
             self.response.set_status(400)
+
 
 class OAuthTwitterHandler(SessionHandler):
 
@@ -398,6 +425,7 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.set_status(400)
 
     # POST Method
+
     def post(self):
         """ Destroys the session previously initialized in the system
             Keyword arguments: 
@@ -410,9 +438,15 @@ class OAuthTwitterHandler(SessionHandler):
             if not cookie_value == None:
 
                 # Logout
+
                 logout_status = self.logout(cookie_value)
 
                 # TODO: Invalidate the cookie
+<<<<<<< HEAD
+=======
+                # Delete cookie
+
+>>>>>>> 7fff029cdf8c252402dd5a3552f8b2966780937f
                 self.response.delete_cookie('session')
                 self.response.set_status(200)
             else:
@@ -564,6 +598,7 @@ class OAuthGithubHandler(SessionHandler):
 
 
 class OauthLinkedinHandler(OAuthHandler):
+
     """
     Class that represents the Linkedin token resource. 
     Methods:
@@ -572,14 +607,18 @@ class OauthLinkedinHandler(OAuthHandler):
     """
 
     # GET Methodo
+
     def get(self):
         self.get_credentials('linkedin')
 
     # POST Method
+
     def post(self):
         self.post_credentials('linkedin')
 
+
 class OAuthInstagramHandler(OAuthHandler):
+
     """
     Class that represents the Instagram token resource. 
     Methods:
@@ -588,19 +627,23 @@ class OAuthInstagramHandler(OAuthHandler):
     """
 
     # GET Method
+
     def get(self):
         """ - Returns the Instagram access_token for a user authenticated
         Keyword arguments: 
         self -- info about the request build by webapp2
         """
+
         self.get_credentials('instagram')
-    
+
     # POST Method
+
     def post(self):
         """ - Creates or updates the pair of token_id and access_token for an user.
             Keyword arguments: 
             self -- info about the request build by webapp2
         """
+
         self.post_credentials('instagram')
 
 
@@ -621,14 +664,17 @@ class OauthFacebookHandler(OAuthLoginHandler):
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
+
         self.get_credentials('facebook')
-       
+
     # POST Method
+
     def post(self):
         self.post_credentials('facebook')
 
 
 class OauthStackOverflowHandler(OAuthHandler):
+
     """
         Class that represents the StackOverflow token resource. 
         Methods:
@@ -639,20 +685,25 @@ class OauthStackOverflowHandler(OAuthHandler):
     """
 
     # GET Method
+
     def get(self):
         """ - Returns the StackOverflow access_token for a user authenticated
             Keyword arguments: 
             self -- info about the request build by webapp2
         """
+
         self.get_credentials('stackoverflow')
 
     # POST Method
+
     def post(self):
         """ Creates or updates the pair of token_id and access_token for an user.        
         Keyword arguments: 
             self -- info about the request built by webapp2
         """
+
         self.post_credentials('stackoverflow')
+
 
 class OauthGooglePlusHandler(OAuthLoginHandler):
 
@@ -665,14 +716,17 @@ class OauthGooglePlusHandler(OAuthLoginHandler):
     """
 
     # GET Method
+
     def get(self):
         """ - Returns the GooglePlus access_token and token_id for a user authenticated
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
+
         self.get_credentials('google')
-        
+
     # POST Method
+
     def post(self):
         """ - It performs two possible actions:
             Login: Creates or updates the pair of token_id and access_token for an user.
@@ -681,9 +735,10 @@ class OauthGooglePlusHandler(OAuthLoginHandler):
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
+
         self.post_credentials('google')
 
-        
+
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
     def get(self):
@@ -707,3 +762,5 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
                                 additional_params={'count': count},
                                 protected=True)
         self.response.write(respuesta.content)
+
+
