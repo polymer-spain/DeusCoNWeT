@@ -188,16 +188,9 @@ class OAuthLoginHandler(SessionHandler):
                 # Logout
 
                 logout_status = self.logout(cookie_value)
-<<<<<<< HEAD
                 # Invalidate cookie
-                self.response.set_cookie('session', session_id,
+                self.response.set_cookie('session', cookie_value,
                             path='/',max_age=0 ,domain=domain, secure=True)
-=======
-
-                # Delete cookie
-
-                self.response.delete_cookie('session')
->>>>>>> 7fff029cdf8c252402dd5a3552f8b2966780937f
                 self.response.set_status(200)
             else:
                 response = \
@@ -442,11 +435,7 @@ class OAuthTwitterHandler(SessionHandler):
                 logout_status = self.logout(cookie_value)
 
                 # TODO: Invalidate the cookie
-<<<<<<< HEAD
-=======
                 # Delete cookie
-
->>>>>>> 7fff029cdf8c252402dd5a3552f8b2966780937f
                 self.response.delete_cookie('session')
                 self.response.set_status(200)
             else:
