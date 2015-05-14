@@ -25,7 +25,7 @@ import re
 import sys
 sys.path.insert(1, 'api_handlers/')
 sys.path.insert(1, 'api_handlers/lib/')
-import api_usuarios, api_componentes, api_oauth, api_contacto
+import api_usuarios, api_componentes, api_oauth, api_contacto, api_oauth_refactored
 
 
 app = webapp2.WSGIApplication([
@@ -33,14 +33,14 @@ app = webapp2.WSGIApplication([
     (r'/api/componentes/(.*)', api_componentes.ComponentHandler),
     (r'/api/usuarios', api_usuarios.UserListHandler),
     (r'/api/usuarios/(.*)', api_usuarios.UserHandler),
-    (r'/api/oauth/twitterTimeline', api_oauth.OAuthTwitterTimelineHandler),
-    (r'/api/oauth/twitter', api_oauth.OAuthTwitterHandler),
-    (r'/api/oauth/github', api_oauth.OAuthGithubHandler),
-    (r'/api/oauth/linkedin', api_oauth.OauthLinkedinHandler),
-    (r'/api/oauth/instagram', api_oauth.OAuthInstagramHandler),
-    (r'/api/oauth/facebook', api_oauth.OauthFacebookHandler),
-    (r'/api/oauth/stackoverflow', api_oauth.OauthStackOverflowHandler),
-    (r'/api/oauth/googleplus', api_oauth.OauthGooglePlusHandler),
+    (r'/api/oauth/twitterTimeline', api_oauth_refactored.OAuthTwitterTimelineHandler),
+    (r'/api/oauth/twitter', api_oauth_refactored.OAuthTwitterHandler),
+    (r'/api/oauth/github', api_oauth_refactored.OAuthGithubHandler),
+    (r'/api/oauth/linkedin', api_oauth_refactored.OauthLinkedinHandler),
+    (r'/api/oauth/instagram', api_oauth_refactored.OAuthInstagramHandler),
+    (r'/api/oauth/facebook', api_oauth_refactored.OauthFacebookHandler),
+    (r'/api/oauth/stackoverflow', api_oauth_refactored.OauthStackOverflowHandler),
+    (r'/api/oauth/googleplus', api_oauth_refactored.OauthGooglePlusHandler),
     (r'/api/contacts', api_contacto.ContactHandler),
     (r'/api/subscriptions', api_contacto.SubscriptionHandler),
     ], debug=True)
