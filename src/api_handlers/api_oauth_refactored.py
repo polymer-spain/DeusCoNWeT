@@ -28,7 +28,7 @@ import hashlib
 import urllib
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
-import time
+import time, datetime
 import ndb_pb
 from ndb_pb import Token, Usuario
 
@@ -190,7 +190,7 @@ class OAuthLoginHandler(SessionHandler):
                 logout_status = self.logout(cookie_value)
                 # Invalidate cookie
                 self.response.set_cookie('session', cookie_value,
-                            path='/',max_age=0 ,domain=domain, secure=True)
+                            path='/',expires=datetime.datetime.now(), domain=domain, secure=True)
                 self.response.set_status(200)
             else:
                 response = \
@@ -418,7 +418,6 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.set_status(400)
 
     # POST Method
-
     def post(self):
         """ Destroys the session previously initialized in the system
             Keyword arguments: 
@@ -429,14 +428,11 @@ class OAuthTwitterHandler(SessionHandler):
         if action == 'logout':
             cookie_value = self.request.cookies.get('session')
             if not cookie_value == None:
-
                 # Logout
-
                 logout_status = self.logout(cookie_value)
-
-                # TODO: Invalidate the cookie
-                # Delete cookie
-                self.response.delete_cookie('session')
+                # Invalidate the cookie
+                self.response.set_cookie('session', cookie_value,
+                            path='/',expires=datetime.datetime.now(), domain=domain, secure=True)
                 self.response.set_status(200)
             else:
                 response = \
