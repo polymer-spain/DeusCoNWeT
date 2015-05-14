@@ -108,7 +108,7 @@ Element providing solution to no problem in particular.
         var response, code;
         response = d.response;
         code = d.xhr.status;
-        back.fire('twitter-login-status',{response:response, status:code});
+        this.fire('twitter-login-status',{response:response, status:code});
       },
     });
 
