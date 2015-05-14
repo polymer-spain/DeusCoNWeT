@@ -34,10 +34,30 @@ limitations under the License.
 <polymer-element name="google-login" attributes="callback clientID scope textLogin">
 	<template>
 		<link rel="stylesheet" href="google-login.css">
-		<paper-button hidden?="{{acToken==undefined}}" id="button" on-click="{{login}}" class="login">
+		<paper-button hidden?="{{logged}}" id="button" on-click="{{login}}" class="login">
 			<core-icon src="https://i.imgur.com/FM5Nzy7.png"></core-icon>
 			{{textLogin}}
 		</paper-button>
+		<paper-button hidden?="{{!logged}}" id="button" on-click="{{logout}}{{removerToken}}" class="login">
+			<core-icon src="https://i.imgur.com/FM5Nzy7.png"></core-icon>
+			SignOut in with Google+
+		</paper-button>
+		
+		   <core-ajax id="request"
+				   method="GET"
+				   url="https://accounts.google.com/o/oauth2/revoke?"
+				   params='{"token":"{{acToken}}"}'
+				   ></core-ajax>
+
+		   <core-ajax id="request1"
+				   method="GET"
+				   url="https://www.googleapis.com/oauth2/v1/userinfo?"
+				   params='{"access_token":"{{acToken}}"}'
+				   handleAs="json"
+				   on-core-response="{{yesToken}}"
+				   on-core-error="{{noToken}}"
+				   ></core-ajax>
+		
 	</template>
 
 	<script src="https://apis.google.com/js/client:plusone.js?onload=signinCallback"></script>
@@ -80,21 +100,19 @@ limitations under the License.
      * @attribute acToken
      * @type string
      */
-			acToken:'',
+			acToken:'ya29.cwFLIiQT-FKj6H33BrOr0uxICgqAw2dumh-8mwDra8tQgplLBw4hkDOBTnlSMcWxvynA2oRb0aAJ8w',
 			tokenType:'',
 			expiresToken:'',
 			textLogin:'Sign in with Google+',
 			status:'',
+            logged:false,
 
 
 			ready : function(){
 				if (this.textLogin.length != 0) {
 					this.text = this.textLogin;
 				};
-				if (this.status == 'true') {
-				this.textLogin='Logged in with Google+';
-				};
-
+              this.comprobarToken();
 			},
 
 			/**
@@ -106,7 +124,7 @@ limitations under the License.
 		 */
 			login: function() {
 
-
+                var back1 = this;
 				var _url = this.OAUTHURL + 'scope=' + this.scope + '&client_id=' + this.clientID + '&redirect_uri=' + this.callback + '&response_type=code token id_token gsession';
 				var win  = window.open(_url, "Google+ Login", 'width=800, height=600');
 				var back = this;
@@ -123,6 +141,8 @@ limitations under the License.
 							back.fire('google-logged',{token: back.acToken,redSocial:'googleplus'});
 /*							back.$.button.className="disconnect";
 							back.textLogin='Log out';*/
+                            console.log(back.acToken);
+                            back1.logged=true;
 							win.close();
 							
 						}
@@ -133,5 +153,54 @@ limitations under the License.
 				//	window.location.assign(this.callback);
 
 			},
+          
+          
+          logout: function() {
+            var back = this;
+            var back1 = this;
+            var _url='http://accounts.google.com/Logout'
+            var win  = window.open(_url, "Google+ Logout", 'width=800, height=600');
+            var pollTimer  =  window.setInterval(function() {
+					try {
+
+						if (win.document.URL.indexOf('ServiceLogin') == -1) {
+							window.clearInterval(pollTimer);
+							back1.logged=false;
+							win.close();
+						}
+					} catch(e) {
+					}
+				}, 100);
+            
+          
+          
+          
+          },
+            removerToken:function(){
+              
+              this.$.request.go();
+              
+            },
+          
+            comprobarToken:function(){
+  
+              this.$.request1.go();
+              
+            },
+          
+
+	        yesToken: function(event,detail,sender){//mirar si el token sigue accesible
+            var back1 = this;
+            back1.logged=true;
+
+		},
+          
+	        noToken: function(event,detail,sender){//mirar si el token es no accesible
+			var back1 = this;
+            back1.logged=false;
+		}
+          
+          
+          
 		});
 	</script>
