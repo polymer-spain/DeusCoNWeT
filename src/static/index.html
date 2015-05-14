@@ -24,13 +24,13 @@
         <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
           <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
         </core-icon-button>
-        <core-icon-button icon="search" class=" search"></core-icon-button>
+        <!--<core-icon-button icon="search" class=" search"></core-icon-button>-->
 
       </core-toolbar>
 
       <footer horizontal center-justified layout>
         <paper-button ng-click="changeView('/about')">Sobre nosotros</paper-button>
-        <paper-button ng-click="changeView('/contact')">Contactar</paper-button>
+        <paper-button><a href="https://mortega5.typeform.com/to/nRCzNz">Contactar</a></paper-button>
         <paper-button ng-click="changeView('/privacy')">Privacidad</paper-button>
       </footer>
       <div ng-view="" id="view" class="view">
