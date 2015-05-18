@@ -47,42 +47,16 @@ class ComponentListHandler(webapp2.RequestHandler):
       self -- info about the request build by webapp2
     """
 
-    # Get the params in the request
-
-        user = self.request.get('user', default_value='none')
-        sortBy = self.request.get('sortBy', default_value='stars')
-        query = self.request.get('query', default_value='none')
-        orderBy = self.request.get('orderBy', default_value='desc')
-
-    # Get all the components stored in the Datastore
-
-        results = Repo.query().fetch()
-
-    # Build the response
-
-        componentList = []
-        for item in results:
-            rating = 0
-            if not user == 'none':
-                componentRating = \
-                    UserRating.query(ndb.AND(UserRating.google_user_id
-                        == user, UserRating.repo_full_name_id
-                        == item.full_name_id)).get()
-                if not componentRating == None:
-                    rating = componentRating.rating_value
-            component = {
-                'componentId': item.full_name_id,
-                'name': item.name_repo,
-                'author': item.owner.login,
-                'description': item.description,
-                'nStars': item.stars,
-                'starRate': item.reputation,
-                'nForks': item.forks,
-                'userRating': rating,
-                }
-            componentList.append(component)
+    # Get the cookie in the request
+    cookie_value = self.request.cookies.get('session')
+    
+    if cookie_value == None:
+        
         self.response.content_type = 'application/json'
         self.response.write(json.dumps(componentList))
+        self.request.set_status(200)
+    else:
+        
 
   # POST Method
 
