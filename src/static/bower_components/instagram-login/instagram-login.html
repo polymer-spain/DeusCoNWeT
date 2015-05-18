@@ -1,22 +1,22 @@
 <!--
-    @license
-    Copyright (c) 2015 Ana Isabel Lopera Martínez
-    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-    Code distributed by Google as part of the polymer project is also
-    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-  -->
-  <link rel="import" href="../polymer/polymer.html">
-  <link rel="import" href="../paper-button/paper-button.html">
-  <link rel="import" href="../core-icon/core-icon.html">
+@license
+Copyright (c) 2015 Ana Isabel Lopera Martínez
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../core-icon/core-icon.html">
 
 <!--
 Web component for login instagram button.
 
 ##### Example
 
-    <instagram-login></instagram-login>
+<instagram-login></instagram-login>
 
 @element instagram-login
 @blurb Web component for login instagram button.
@@ -25,24 +25,29 @@ Web component for login instagram button.
 -->
 <polymer-element name="instagram-login" attributes="clientId redirectUri">
 
-<template>
+  <template>
+    <link rel="stylesheet" href="instagram-login.css">
+    <paper-button id="InstagramButton" hidden?="{{logueado}}" on-click="{{login}}">
+      <core-icon src="ig-badge-48.png" style="width: 24px; height: 24px;"></core-icon>
+      Log in with Instagram
+    </paper-button>
 
-  <link rel="stylesheet" href="instagram-login.css">
-  <paper-button id="InstagramButton" on-click="{{login}}">
-  <core-icon src="ig-badge-48.png" style="width: 24px; height: 24px;"></core-icon>
-  Sign in with Instagram</paper-button>
-</template>
+    <paper-button id="InstagramButton" hidden?="{{!logueado}}" on-click="{{logout}}">
+      <core-icon src="ig-badge-48.png" style="width: 24px; height: 24px;"></core-icon>
+      Log out with Instagram
+    </paper-button>
+  </template>
 
-<script>
-
-Polymer({
+  <script>
+    Polymer({
+      logueado: false,
       /**
        * The `clientId` attribute is the client_Id defined in the Instagram App
        * @attribute clientId
        * @type string
        * @default ''
        */
-       clientId: '',
+      clientId: '',
 
       /**
        * The `redirectUri` attribute is the callback url define in the Instagram App
@@ -50,16 +55,16 @@ Polymer({
        * @type string
        * @default ''
        */
-       redirectUri: '',
+      redirectUri: '',
 
-       /**
+      /**
        * The `access_token` property is returned when the login process is completed
        * @property access_token
        * @type string
        * @default ''
        */
-       access_token: '',
-       userId:'',
+      access_token: '',
+      userId:'',
       /**
        * The `login` method opens a window to instagram authorization page to
        * complete the login process. Called when when is pressed the InstagramButton
@@ -69,7 +74,7 @@ Polymer({
        * @param {String} sender
        * @return {void}
        */
-       login: function(event, detail, sender) {
+      login: function(event, detail, sender) {
         var oauth_url = "https://instagram.com/oauth/authorize?client_id=" + this.clientId
         + "&redirect_uri=" + this.redirectUri + "&response_type=token";
         var win = window.open(oauth_url, "Autoriza la aplicación",'width=800, height=600');
@@ -84,17 +89,21 @@ Polymer({
               back.access_token = exp.exec(url)[1];
               var splited = back.access_token.split('.');
               back.userId = splited[0];
-          
+
               back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram',userId:back.userId});
               win.close();
+              back.logueado = true;
             }
           }catch(e){
 
           }
         }, 100);
+      },
+      logout: function(event, detail, sender){
+        var win = window.open("https://instagram.com/accounts/logout/",'width=800, height=600');
+        var polTimer = window.setInterval(function(){}, 100);
+        back.logueado = false;
       }
     });
-
-</script>
-
+  </script>
 </polymer-element>

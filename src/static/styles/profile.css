@@ -1,33 +1,19 @@
-
 html {
   background: url('../images/background.jpg') no-repeat;
   background-size: cover;
+  background-attachment: fixed;
+}
 
-}
-#todo{
-  
-  background: rgba(0, 0, 0, 0.51);
-  margin-top: 15%;
-  
-}
 .content {
-  margin-top: 7%;
   padding: 1% 5% 2% 5%;
   font-size: 1.2em;
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#26000000',GradientType=1 );
-
+  background:rgba(0, 0, 0, 0.46);
+  margin-top: 160px;
+  margin-left: 25%;
+  margin-right: 25%;
+  position: relative;
 }
-#email {
 
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -o-appearance: none;
-  height: 25px;
-  width: 56%;
-  background: #fff;
-  color: #000;
-}
 .nom{
   appearance: none;
   -webkit-appearance: none;
@@ -38,57 +24,26 @@ html {
   background: #fff;
   color: #000;
 }
+
 input{
-
   margin-bottom: 10px;
-
 }
-.spans{
 
+.spans{
   color:#fff;
   margin: 0px;
 }
 
-select{
-
-    width: 18.3%;
-	background: rgba(243, 243, 243, 0);
-	color: #0d0d0d;
-	padding: 5px;
-	font-size: 13px;
-	line-height: 100%;
-	border: 1px solid rgb(255, 255, 255);
-	border-radius: 0;
-	height: 30px;
-	margin-bottom: 5px;
-	margin-top: 3px;
-    background-color: transparent;
-
-}
 section{
-  
-      margin-left: 8%;
-    margin-right: 8%;
+  margin-left: 8%;
+  margin-right: 8%;
 }
-#pr{
-  margin-left: 25%;
-  margin-right: 25%;
-  position: relative;
-
-}
-
-
 
 #oculto{
-
   display: none;
 }
 
 #redes{	
-  -webkit-transition: all 0.3s ease-in;
-  -moz-transition: all 0.3s ease-in;
-  -o-transition: all 0.3s ease-in;
-  transition: all 0.3s ease-in;
   margin-top: 5px;
   background: rgba(253, 244, 244, 0.54);	
   width: 95%;
@@ -101,18 +56,10 @@ section{
   color: #000;
 }
 
-
-#redes:hover{
-  transform:scale(1.02,1.02);
-  -webkit-transform:scale(1.02,1.02);
-
-}
-
-
 core-item{
   margin-top: 5px;
-
 }
+
 core-submenu::shadow #submenu {
   margin-left: 7px;
 }
@@ -121,13 +68,6 @@ core-submenu::shadow #submenuItem::shadow #label {
   margin: 0 auto;
 }
 
-
-
-#label{
-
-  margin-left: 25%;
-
-}
 /*Ajuste tamaño botones*/
 login-facebook{min-width: 100%;}
 google-login{min-width: 100%;}
@@ -136,6 +76,7 @@ github-login{min-width: 100%;}
 linkedin-login{min-width: 100%;}
 instagram-login{min-width: 100%;}
 logout-facebook{min-width: 100%;}
+
 /*Ajuste textos botones*/
 google-login::shadow #button{ 
   font-size: 17px;
@@ -147,24 +88,17 @@ twitter-login::shadow #TwitterButton{
   font-size: 17px;
 }
 github-login::shadow #loginGithub{ 
-
   font-size: 17px;
 }
 linkedin-login::shadow #LinkedinButton{ 
-
   font-size: 17px;
 }
 instagram-login::shadow #InstagramButton{ 
-
   font-size: 17px;
 }
-
 logout-facebook::shadow #facebookOut{ 
-
   font-size: 17px;
 }
-
-
 
 input[type=submit] {
   padding:5px 15px; background:#ccc; border:0 none;
@@ -176,168 +110,88 @@ input[type=submit] {
 }
 
 input[type=submit]:hover{
-
   transform:scale(1.02,1.02);
   -webkit-transform:scale(1.02,1.02);
-
 }
 
-strong{
-  font-size: 100%;
-  color:white;
-
-}
-.SelectStyle {
-  width: 220px;
-  position: relative;
+.sex{
+  max-height: 110px;
 }
 
-
-
-
-#sexo{
-
-	width: 57%;
-	background:  rgba(243, 243, 243, 0);
-	color: #0d0d0d;
-	padding: 5px;
-	font-size: 13px;
-	line-height: 100%;
-	border: 1px solid #fff;
-	border-radius: 0;
-	height: 30px;
-	margin-bottom: 5px;
-	margin-top: 3px;
-}
- 
 option {
-	padding: 10px;
-   
-    background-color: transparent;
-
+  padding: 10px;
+  background-color: transparent;
 }
-input:hover{
 
-  transform:scale(1.03,1.03);
-  -webkit-transform:scale(1.03,1.03);
-
-}
 select:hover{
   transform:scale(1.03,1.03);
   -webkit-transform:scale(1.03,1.03);
-
 }
 
-textarea:hover{
-  transform:scale(1.03,1.03);
-  -webkit-transform:scale(1.03,1.03);
-
+section {
+  padding: 20px 0;
 }
 
-span{
-  
-  color: #393939;
+section > div {
+  padding: 14px;
+  font-size: 16px;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-  
-
-    section {
-      padding: 20px 0;
-    }
-
-    section > div {
-      padding: 14px;
-      font-size: 16px;
-    }
-
-   
-      paper-input-decorator {
-        max-width: 55%;
-        
-      }
-
-      
+paper-input-decorator {
+  max-width: 55%;
+}
 
 paper-input-decorator /deep/ .error {
-   
-    color: #212121;
+  color: #212121;
 }
 
-
-
-    
 paper-input-decorator /deep/ ::-webkit-input-placeholder {
-    
-    color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
-
 
 paper-input-decorator /deep/ .unfocused-underline {
-   
-    background-color: green;
+  background-color: green;
 }
 
 paper-input-decorator.invalid[focused] /deep/ .floated-label .label-text,
+
 paper-input-decorator[focused] /deep/ .error {
-    
-    color: #cb1919;
+  color: #cb1919;
 }
 
 paper-input-decorator.invalid /deep/ .focused-underline {
-  
-    background-color: #b90a0a;
+  background-color: #b90a0a;
 }
-      
-      
-      
-      
-    .constrained-height {
-      height: 150px;
-    }
 
-    .colored {
-      color: #0f9d58;
-    }
+.dropdown.colored::shadow #ripple,
+.dropdown.colored::shadow #background {
+  border: 1px solid #0f9d58;
+  background-color: #b7e1cd;
+}
 
-  
-    .dropdown.colored::shadow #ripple,
-    .dropdown.colored::shadow #background {
-      border: 1px solid #0f9d58;
-      background-color: #b7e1cd;
-    }
-      
-   paper-dropdown-menu::shadow #label{
-     
-     
-     color: #fff;
-   }
-  
-   paper-dropdown-menu::shadow #arrow{
-     -webkit-transition: all 0.3s ease-in;
-    -moz-transition: all 0.3s ease-in;
-    -o-transition: all 0.3s ease-in;
-     color: #fff;
-   }
-  
-  core-dropdown{
-    
-   border-bottom: 1px solid #FFFFFF;
-   height: 132px;
-    padding-right: 20px;
-  
-  }      
+paper-dropdown-menu::shadow #label{
+  color: #fff;
+}
 
+paper-dropdown-menu::shadow #arrow{
+  -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  color: #fff;
+}
+
+core-dropdown{
+  border-bottom: 1px solid #FFFFFF;
+  height: 132px;
+  padding-right: 20px;
+}      
 
 google-login.disconnect::shadow #button{
-  
   background: #393333;
 }
- .login  {
-     -webkit-transition: all 0.3s ease-in;
+
+.login  {
+  -webkit-transition: all 0.3s ease-in;
   -moz-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
@@ -351,17 +205,13 @@ google-login.disconnect::shadow #button{
   width: 30%;
   margin-left: 40%;
   color:black;
-   
 }
 
 .login:hover{
   transform:scale(1.02,1.02);
   -webkit-transform:scale(1.02,1.02);
+}
 
-}
 paper-input-decorator{
-  
   max-width: 100%;
-  
 }
-//////////////////////////////////////////////////////////////////////////////////////////////
