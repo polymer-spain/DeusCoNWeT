@@ -1,0 +1,201 @@
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../core-ajax/core-ajax.html">
+<link rel="import" href="../../core-icon/core-icon.html">
+<link rel="import" href="../../core-icons/core-icons.html">
+<link rel="import" href="../../core-icon-button/core-icon-button.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+<polymer-element name="twitter-timeline" attributes="endpoint accessToken secretToken consumerKey consumerSecret count since_id">
+  <template>
+    <!-- Importacion del CSS a usar -->
+    <link rel="stylesheet" href="twitter-timeline.css">
+    <!-- Request a la api de twitter solicitando el timeline. Para ello son necesarios todos los tokens -->
+    <core-ajax 
+               id="requestTimeline"
+               url='{{ endpoint }}'
+               method="GET"
+               params='{
+                       "access_token": "{{accessToken}}",
+                       "secret_token": "{{secretToken}}",
+                       "consumer_key": "{{consumerKey}}",
+                       "consumer_secret": "{{consumerSecret}}",
+                       "count": "{{count}}"
+                       }'
+               handleAs='json'
+               on-core-response="{{response}}"
+               >
+    </core-ajax>
+    <paper-shadow>
+      <!-- Cabecera -->
+      <paper-shadow>
+        <div id ="cabecera" horizontal center-justified layout>
+          <p flex style="text-align:center; padding-left:50px">Tu Timeline</p>
+          <core-icon-button class="boton_refrescar" icon="refresh" on-click={{refrescar}}></core-icon-button>
+        </div>
+      </paper-shadow>
+      <!-- Timeline box -->
+      <div style="overflow-y: auto;max-height: 400px">
+        <template id="contenido" is="auto-binding" repeat="{{evento,index in events}}">
+          <ul class="box" >
+            <!-- Imagen de la persona que publica -->
+            <core-icon  src="{{evento.user.profile_image_url_https}}" class="imgEvent">
+            </core-icon>
+            <!-- Cabecera de la publicacion -->
+            <div style="text-align: left">
+              <a class="nounderline" href="https://twitter.com/{{evento.user.screen_name}}" target='_blank'>
+                <span class="fullname">{{evento.user.name}}</span>
+                <span class="username">@{{evento.user.screen_name}}</span>
+              </a>
+              <template if=!{{evento.retweeted_status}}>
+                <a class="nounderline time" href="https://twitter.com/{{evento.id}}/status/{{evento.id_str}}" target='_blank'>
+                  <span>{{evento.tiempo}}</span>
+                </a>
+              </template>
+              <template else={{evento.retweeted_status}}>
+                <a class="nounderline time"
+                   href="https://twitter.com/{{evento.retweeted_status.id}}/status/{{evento.retweeted_status.id_str}}" target='_blank'>
+                  <p>{{evento.tiempo}}</p>
+                </a>
+              </template>
+            </div>
+            <p class="texto" id="texto{{index}}" onload="{{cambiar(evento,index)}}"></p>
+          </ul>
+        </template>
+        <template if="{{ show}}">
+          <ul class="box boton"  on-click={{mostrar}}>
+            <span>Mostrar más</span>
+          </ul>
+        </template>
+      </div>
+      <div id="fin"></div>
+    </paper-shadow>
+  </template>
+
+  <script>
+    Polymer({
+      index: 0,
+      show: true,
+      since_id: "",
+      endpoint:'',
+      ready: function(event, detail, sender) {
+        if (this.accesToken && this.endpoint){
+          this.$.requestTimeline.go();
+        }
+      },
+      domReady: function(e,d,s) {
+        if (this.accessToken && this.endpoint){
+          this.$.requestTimeline.go();
+        }
+      },
+
+      /*Funcion que prepara los tweets antes de mostrarlos*/
+      response: function(event, detail, sender) {
+        this.events = this.changeTime(sender.response);
+        this.events = this.parsear(this.events)
+        this.mostrar()
+      },
+      /*Funcion que inyecta el codigo html del tweet para que se pueda visualizar*/
+      cambiar: function(evento,index){
+        if(index!=undefined){
+          this.injectBoundHTML(evento.text, this.$.contenido.parentNode.children[1+index].children[2])
+        }
+      },
+      /*Funcion que se encarga de la paginación de los tweets*/
+      mostrar: function(){
+        var tweets = new Array();
+        if (this.events.length - this.index >= 20){
+          for(i = 0; i<this.index+20;i++){
+            tweets[i] = this.events[i];
+          }
+          this.index += 20;
+          if (this.events.length - this.index < 20)
+            this.show = false;
+          var t = this.$.contenido;                
+          t.events = tweets;
+        }
+      },
+      /*Funcion que se encarga del refresco de los tweets cuando el usuario lo solicita*/
+      refrescar: function(){
+        this.$.requestTimeline.go();
+      },
+      /*Funcion que muestra el tiempo que hace desde que se publicó un tweet*/
+      changeTime: function(list){
+        for (i=0;i<list.length;i++){
+          var date = new Date(list[i].created_at);
+          var current_date = new Date();
+          if((current_date.getDay() - date.getDay()) == 0 ){
+            if((current_date.getHours() - date.getHours()) == 0 ){
+              if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
+                list[i].tiempo = current_date.getSeconds() - date.getSeconds()+" segundos"
+              }
+              else{
+                list[i].tiempo = current_date.getMinutes() - date.getMinutes()+" minutos";
+              }
+            }
+            else{
+              if (current_date.getHours() - date.getHours() == 1)
+                list[i].tiempo = current_date.getHours() - date.getHours()+" hora";
+              else
+                list[i].tiempo = current_date.getHours() - date.getHours()+" horas";
+            }
+          }
+          else if( (current_date.getDay() - date.getDay()) < 15 ){
+            list[i].tiempo = current_date.getDay() - date.getDay()+" dias";
+          }
+          else{
+            var month = ['Enero','Febrero','Marzo','Abril', 'Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            list[i].tiempo = date.getDate()+" de "+month[date.getMonth()]+" de "+date.getFullYear();
+          }
+        }
+        return list;
+      },
+      /*Funcion padre que parsea el texto del tweet*/
+      parsear: function(lista){
+        for(i = 0; i < lista.length; i++){
+          if(lista[i].retweeted_status){
+            lista[i].text = this.parseURL(lista[i].retweeted_status.text);
+            lista[i].text = this.parseUsername(lista[i].text);
+            lista[i].text = this.parseHashtag(lista[i].text);
+          }
+          else{
+            lista[i].text = this.parseURL(lista[i].text);
+            lista[i].text = this.parseUsername(lista[i].text);
+            lista[i].text = this.parseHashtag(lista[i].text);
+          }
+        }
+        return lista;
+      },
+      /*Parseo de las urls de dentro de los tweets*/
+      parseURL: function(tweet) {
+        return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+          return '<a href='+url+' target="_blank">'+url+'</a>'
+        })
+      },
+      /*Parseo de los nombres de usuario de dentro de los tweets*/
+      parseUsername: function(tweet) {
+        return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
+          var username = u.replace("@","")
+          return '<a href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
+        })
+      },
+      /*Parseo de los hastaghs de dentro de los tweets*/
+      parseHashtag: function(tweet) {
+        return tweet.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
+          var tag = t.replace("#","")
+          return '<a href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
+        });
+      },
+    })
+  </script>
+</polymer-element>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="images/logo.png" />
+    <meta name="description" content="">
+    <base href="/#">
+    <title>PicBit</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="elements/elements.html">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/landingPage.css">
+    <link href='https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'>    
+    <body unresolved ng-app="picbit" ng-controller="MainCtrl" >
+
+      <core-toolbar>
+        <img class="logo" src="images/logo.png">
+
+        <h2 id="name" ng-click="changeView('/')" flex>PicBit</h2>
+
+        <core-icon-button id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
+          <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
+        </core-icon-button>
+        <core-icon-button icon="search" class=" search"></core-icon-button>
+
+      </core-toolbar>
+
+      <footer horizontal center-justified layout>
+        <paper-button ng-click="changeView('/about')">Sobre nosotros</paper-button>
+        <paper-button ng-click="changeView('/contact')">Contactar</paper-button>
+        <paper-button ng-click="changeView('/privacy')">Privacidad</paper-button>
+      </footer>
+      <div ng-view="" id="view" class="view">
+
+      </div>
+
+      <div ng-show="shadow" class="shadow"></div>
+      <div ng-show="popup" vertical center layout class="popup" id="popup">
+        <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
+
+        <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
+        <div vertical center-justified layout class="button-login">
+          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login>
+          <twitter-login class="button-login" endpoint='{{domain}}/api/oauth/twitter'></twitter-login>
+          <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email"></login-facebook>
+
+        </div>
+      </div>
+      <script src="bower_components/angular/angular.js"></script>
+      <script src="bower_components/angular-resource/angular-resource.js"></script>
+
+      <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+
+      <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+
+      <script src="bower_components/angular-animate/angular-animate.js"></script>
+
+      <script src="bower_components/angular-touch/angular-touch.js"></script>
+
+      <script src="bower_components/angular-route/angular-route.js"></script>
+
+      <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
+
+      <script src="scripts/app.js"></script>
+      <script src="scripts/backend/Services.js"></script>
+      <script src="scripts/controllers/main.js"></script>
+      <script src="scripts/controllers/landingPage.js"></script>
+      <script src="scripts/controllers/userHome.js"></script>
+      <script src="scripts/controllers/about.js"></script>
+      <script src="scripts/controllers/contact.js"></script>
+      <script src="scripts/controllers/privacy.js"></script>
+    </body>
+    </html>
