@@ -117,7 +117,7 @@ angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $
 
     });
   };
-  document.onmousewheel = $scope.wheel;
+  /*document.onmousewheel = $scope.wheel;*/
 
   $scope.closeSended = function () {
     $scope.$parent.shadow = false;
