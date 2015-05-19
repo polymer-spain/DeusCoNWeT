@@ -28,7 +28,8 @@ import hashlib
 import urllib
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
-import time, datetime
+import time
+import datetime
 import ndb_pb
 from ndb_pb import Token, Usuario
 
@@ -188,9 +189,18 @@ class OAuthLoginHandler(SessionHandler):
                 # Logout
 
                 logout_status = self.logout(cookie_value)
+
                 # Invalidate cookie
-                self.response.set_cookie('session', cookie_value,
-                            path='/',expires=datetime.datetime.now(), domain=domain, secure=True)
+
+                self.response.set_cookie(
+                    'session',
+                    cookie_value,
+                    path='/',
+                    expires=datetime.datetime.now(),
+                    domain=domain,
+                    secure=True,
+                    )
+
                 self.response.set_status(200)
             else:
                 response = \
@@ -316,62 +326,95 @@ class OAuthTwitterHandler(SessionHandler):
             'https://api.twitter.com/oauth/request_token'
         base_authorization_url = \
             'https://api.twitter.com/oauth/authorize'
-
+        callback_uri = 'https://' + domain \
+            + '/api/oauth/twitter?action=authorization'
         client = oauth.TwitterClient(consumer_key, consumer_secret,
-                'http://example-project-13.appspot.com/api/oauth/twitter?action=authorization'
-                )
+                callback_uri)
 
-        if action == 'login':
+        if action == 'request_token':
             self.response.content_type = 'application/json'
+            response = {'oauth_url': client.get_authorization_url()}
 
-            # Creates a channel to send the session details once the oauth flow is completed
-
-            auth_token = client._get_auth_token()
-            token = channel.create_channel(auth_token)
-
-            response = {'oauth_url': client.get_authorization_url(),
-                        'token': token}
             self.response.write(json.dumps(response))
         elif action == 'authorization':
 
             # Gets the params in the request
 
             auth_token = self.request.get('oauth_token')
-            auth_verifier = self.request.get('oauth_verifier')
+            oauth_verifier = self.request.get('oauth_verifier')
 
             # Retrieves user info
 
             user_info = client.get_user_info(auth_token,
-                    auth_verifier=auth_verifier)
+                    auth_verifier=oauth_verifier)
 
             # Query for the stored user
 
-            stored_user = ndb_pb.buscaToken(token_id, 'twitter')
-
+            stored_user = ndb_pb.buscaToken(user_info['username'],
+                    'twitter')
             if stored_user == None:
 
                 # We store the user id and token into a Token Entity
 
-                user_id = ndb_pb.insertaUsuario('Twitter',
+                user_id = ndb_pb.insertaUsuario('twitter',
                         user_info['username'], user_info['token'])
-                self.response.set_status(201)
+                response_status = 201
+                self.response.set_status(response_status)
             else:
 
                 # We store the new user's access_token
 
-                user_id = ndb_pb.modificaToken(token_id, access_token,
-                        'google')
-                self.response.set_status(200)
+                user_id = ndb_pb.modificaToken(user_info['username'],
+                        user_info['token'], 'twitter')
+                response_status = 200
+                self.response.set_status(response_status)
 
             # Create Session
 
             session_id = self.login(user_id)
 
-            # Send session details to client in the channel created previously
+            # Stores in memcache the session id associated with the oauth_verifierj
 
-            session_message = {'session_id': session_id}
-            channel.send_message(auth_token,
-                                 json.dumps(session_message))
+            key_verifier = 'oauth_verifier_' + oauth_verifier
+            data = {'session_id': session_id,
+                    'response_status': response_status}
+            memcache.add(key_verifier, data)
+        elif action == 'login':
+
+            # TODO: data!!
+
+            oauth_verifier = self.request.get('oauth_verifier',
+                    default_value='None')
+            if not oauth_verifier == '':
+                key_verifier = 'oauth_verifier_' + oauth_verifier
+                data = memcache.get(key_verifier)
+                print type(data)
+                if not data == None:
+                    session_id = data['session_id']
+                    response_status = data['response_status']
+
+                    # Set the cookie session with the session id stored in the system
+
+                    self.response.set_cookie('session',
+                            value=session_id, path='/', domain=domain,
+                            secure=True)
+
+                    # Delete the key-value for the pair oauth_verifier-session_id stored in memcache
+
+                    memcache.delete(key_verifier)
+                    self.response.set_status(response_status)
+                else:
+                    response = \
+                        {'error': 'There isn\'t any session in the system for the oauth_verifier value specified'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
+            else:
+                response = \
+                    {'error': 'You must specify a value for the oauth_verifier param in the request'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
         elif action == 'credentials' and not username == None:
 
             cookie_value = self.request.cookies.get('session')
@@ -418,6 +461,7 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.set_status(400)
 
     # POST Method
+
     def post(self):
         """ Destroys the session previously initialized in the system
             Keyword arguments: 
@@ -428,11 +472,22 @@ class OAuthTwitterHandler(SessionHandler):
         if action == 'logout':
             cookie_value = self.request.cookies.get('session')
             if not cookie_value == None:
+
                 # Logout
+
                 logout_status = self.logout(cookie_value)
+
                 # Invalidate the cookie
-                self.response.set_cookie('session', cookie_value,
-                            path='/',expires=datetime.datetime.now(), domain=domain, secure=True)
+
+                self.response.set_cookie(
+                    'session',
+                    cookie_value,
+                    path='/',
+                    expires=datetime.datetime.now(),
+                    domain=domain,
+                    secure=True,
+                    )
+
                 self.response.set_status(200)
             else:
                 response = \
