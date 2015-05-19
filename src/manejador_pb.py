@@ -41,6 +41,8 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/twitter/(.*)', api_oauth_refactored.TwitterHandler),
     (r'/api/oauth/twitter/login', api_oauth_refactored.TwitterLoginHandler),
     (r'/api/oauth/twitter/logout', api_oauth_refactored.TwitterLogoutHandler),
+    (r'/api/oauth/twitter/authorization', api_oauth_refactored.TwitterAuthorizationHandler),
+    (r'/api/oauth/twitter/requestToken', api_oauth_refactored.TwitterRequestLoginHandler),
 
     (r'/api/oauth/facebook', api_oauth_refactored.FacebookContainerHandler),
     (r'/api/oauth/facebook/(.*)', api_oauth_refactored.FacebookHandler),

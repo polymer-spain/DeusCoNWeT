@@ -224,6 +224,63 @@ class OAuthCredentialsContainerHandler(SessionHandler):
             self.response.set_status(400)
 
 
+# Handler that manages the callback from Twitter as a final step of the oauth flow
+class TwitterAuthorizationHandler(webapp2.RequestHandler):
+    def get(self):
+        # Gets the params in the request
+        auth_token = self.request.get('oauth_token')
+        oauth_verifier = self.request.get('oauth_verifier')
+
+        # Retrieves user info
+        user_info = client.get_user_info(auth_token,
+                auth_verifier=oauth_verifier)
+
+        # Query for the stored user
+        stored_user = ndb_pb.buscaToken(user_info['username'],
+                'twitter')
+        if stored_user == None:
+
+            # We store the user id and token into a Token Entity
+            user_id = ndb_pb.insertaUsuario('twitter',
+                    user_info['username'], user_info['token'])
+            response_status = 201
+            self.response.set_status(response_status)
+        else:
+
+            # We store the new user's access_token
+            user_id = ndb_pb.modificaToken(user_info['username'],
+                    user_info['token'], 'twitter')
+            response_status = 200
+            self.response.set_status(response_status)
+
+        # Create Session
+        session_id = self.login(user_id)
+
+        # Stores in memcache the session id associated with the oauth_verifierj
+        key_verifier = 'oauth_verifier_' + oauth_verifier
+        data = {'session_id': session_id,
+                'response_status': response_status}
+        memcache.add(key_verifier, data)
+
+# Handler that manages the first step in the Twitter login flow 
+# (obtain the request token and request url to initiate the login in client)
+class TwitterRequestLoginHandler(webapp2.RequestHandler):
+    def get(self):
+        consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
+        consumer_secret = \
+            'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
+        request_token_url = \
+            'https://api.twitter.com/oauth/request_token'
+        base_authorization_url = \
+            'https://api.twitter.com/oauth/authorize'
+        callback_uri = 'https://' + domain \
+            + '/api/oauth/twitter?action=authorization'
+        client = oauth.TwitterClient(consumer_key, consumer_secret,
+                callback_uri)
+        self.response.content_type = 'application/json'
+        response = {'oauth_url': client.get_authorization_url()}
+        self.response.write(json.dumps(response))
+
 # Handlers that identifies resource containers for a social network 
 
 class FacebookContainerHandler(OAuthCredentialsContainerHandler):
@@ -307,6 +364,7 @@ class TwitterHandler(OauthCredentialsHandler):
 
 
 # Handlers for the login flow in a given network
+
 class FacebookLoginHandler(OauthLoginHandler):
     def post(self):
         self.post_login('facebook')
