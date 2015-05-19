@@ -100,9 +100,11 @@ Web component for login instagram button.
         }, 100);
       },
       logout: function(event, detail, sender){
-        var win = window.open("https://instagram.com/accounts/logout/",'width=800, height=600');
-        var polTimer = window.setInterval(function(){}, 100);
-        back.logueado = false;
+        var back = this;
+        var win = window.open("https://instagram.com/accounts/logout/",'width=800, height=600')
+        var polTimer = window.setInterval(function(){win.close()}, 100)
+
+        back.logueado = false
       }
     });
   </script>
