@@ -56,6 +56,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter') {
         /* Provisional hasta que se implemente el nombre de usuario */
+
         $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
       } else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
         var uri, button;
@@ -94,7 +95,8 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
     $scope.changeView('/');
     $scope.status = false;
   };
-  /* Escuhas de los botones*/
+
+   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged', $scope.logged);
   document.querySelector('body').addEventListener('linkedin-logged', $scope.logged);
   document.querySelector('body').addEventListener('github-logged', $scope.logged);
@@ -102,7 +104,6 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   document.querySelector('body').addEventListener('twitter-logged', $scope.logged);
   document.querySelector('body').addEventListener('facebook-logged', $scope.logged);
   document.querySelector('body').addEventListener('sof-logged', $scope.logged);
-
   $scope.popup = false;
 
   $scope.showPopup = function () {
