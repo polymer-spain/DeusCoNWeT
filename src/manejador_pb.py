@@ -25,7 +25,7 @@ import re
 import sys
 sys.path.insert(1, 'api_handlers/')
 sys.path.insert(1, 'api_handlers/lib/')
-import api_usuarios, api_componentes, api_oauth, api_contacto, api_oauth_refactored
+import api_usuarios, api_componentes, api_contacto, api_oauth_refactored
 
 
 app = webapp2.WSGIApplication([
