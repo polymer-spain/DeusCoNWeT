@@ -21,12 +21,6 @@ Los miembros de este grupo son:
 
 Antes de desplegar el portal es necesario configurar los dominios en los que se va a ejecutar, es decir, hay que especificar la direccion sobre la que la vamos a ejecutar. Para ello es necesario cambiar los siguientes ficheros:
 
-#### [Service.js](https://github.com/polymer-spain/DeusCoNWeT/blob/develop/src/static/scripts/backend/Services.js)
-
-Es necesario cambiar la variable `this.endpoint` indicando cual es la direccion donde se encuentra nuestro servicio de backend:
-```javascript
-    this.endpoint = "https://example-project-13.appspot.com"
-```
 
 #### [Config.yaml](https://github.com/polymer-spain/DeusCoNWeT/blob/develop/src/api_handlers/config.yaml)
 
