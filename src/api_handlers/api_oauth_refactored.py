@@ -72,7 +72,6 @@ class SessionHandler(webapp2.RequestHandler):
         hash_id = cypher.hexdigest()
 
         # Store in memcache hash-user_id pair
-
         memcache.add(hash_id, user_id)
         return hash_id
 
@@ -190,6 +189,10 @@ class OauthCredentialsHandler(SessionHandler):
         self.response.write(json.dumps(response))
         self.response.set_status(400)
 
+    # TODO!
+    def delete_credentials(self, social_network):
+        pass
+
 
 class OAuthCredentialsContainerHandler(SessionHandler):
     def post_credentials(self, social_network):
@@ -257,29 +260,50 @@ class FacebookHandler(OauthCredentialsHandler):
     def get(self):
         self.get_credentials("facebook")
 
+    def delete(self):
+        self.delete_credentials("facebook")
+
 class GitHubHandler(OauthCredentialsHandler):
     def get(self):
         self.get_credentials("github")
+
+    def delete(self):
+        self.delete_credentials("github")
 
 class GoogleplusHandler(OauthCredentialsHandler):
     def get(self):
         self.get_credentials("google")
 
+    def delete(self):
+        self.delete_credentials("google")
+
 class InstagramHandler(OauthCredentialsHandler):
     def get(self):
         self.get_credentials("instagram")
+
+    def delete(self):
+        self.delete_credentials("instagram")
 
 class LinkedinHandler(OauthCredentialsHandler):
     def get(self):
         self.get_credentials("linkedin")
 
+    def delete(self):
+        self.delete_credentials("linkedin")
+
 class StackOverflowHandler(OauthCredentialsHandler):
     def get(self):
         self.get_credentials("stackoverflow")
 
+    def delete(self):
+        self.delete_credentials("stackoverflow")
+
 class TwitterHandler(OauthCredentialsHandler):
     def get(self):
         self.get_credentials("twitter")
+
+    def delete(self):
+        self.delete_credentials("twitter")
 
 
 # Handlers for the login flow in a given network
@@ -340,6 +364,3 @@ class GoogleplusLogoutHandler(OauthLogoutHandler):
 class TwitterLogoutHandler(SessionHandler):
     def post(self):
         self.post_logout('google')
-
-
-# TODO Operaciones de desconexión de red social
