@@ -33,19 +33,10 @@ import ndb_pb
 from ndb_pb import Token, Usuario
 
 # Imports for TwitterHandler
-
 import oauth
 from google.appengine.api import channel
 
 # Import config vars
-# import ConfigParser
-# configParser = ConfigParser.RawConfigParser()
-# configFilePath = r'config.cfg'
-# configParser.read(configFilePath)
-# domain = configParser.get('app_data', 'domain')
-
-# Import config vars
-
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, 'config.yaml'))
 with open(configFile, 'r') as ymlfile:
@@ -224,9 +215,282 @@ class OAuthCredentialsContainerHandler(SessionHandler):
             self.response.set_status(400)
 
 
+# HANDLERS FOR RESOURCES RELATED TO FACEBOOK
+class FacebookHandler(OauthCredentialsHandler):
+    """
+    Class that represents the Facebook token resource. 
+    Methods:
+        get -- Returns the Facebook access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Facebook for the user authenticated
+    """
+    def get(self):
+        self.get_credentials("facebook")
+
+    def delete(self):
+        self.delete_credentials("facebook")
+
+class FacebookLoginHandler(OauthLoginHandler):
+    """ This class is a resource that represents the login 
+    action using the Facebook credentials to autenticate in PicBit 
+    """
+    def post(self):
+        self.post_login('facebook')
+
+class FacebookLogoutHandler(OauthLogoutHandler):
+    """ This class is a resource that represents the logout 
+    action using the Facebook credentials to autenticate in PicBit 
+    """
+    def post(self):
+        self.post_logout('facebook')
+
+# HANDLERS FOR RESOURCES RELATED TO GITHUB
+class GitHubHandler(OauthCredentialsHandler):
+    """
+    Class that represents the GitHub token resource. 
+    Methods:
+        get -- Returns the GitHub access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in GitHub for the user authenticated
+    """
+    def get(self):
+        self.get_credentials("github")
+
+    def delete(self):
+        self.delete_credentials("github")
+
+
+class GitHubContainerHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Github credentials resource. 
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+    """
+    def post(self):
+        url = 'github.com'
+        # authorize_url = \
+        # 'http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token'
+        access_token_url = '/login/oauth/access_token'
+        client_id = '1f21e4d820abd2cb5a7a'
+        client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
+        access_token = ''
+        connection = httplib.HTTPSConnection(url)
+
+        # Cogemos el codigo de la peticion
+        code = self.request.get('code')
+
+        # Indicamos los parametros de la peticion a github
+        params_token = urllib.urlencode({'client_id': client_id,
+                'client_secret': client_secret, 'code': code})
+
+        # Realizamos la peticion en la conexion
+        connection.request('POST', access_token_url, params_token)
+
+        # Cogemos la respuesta de la peticion y realizamos un split
+        # para coger el valor del token
+        response_token = connection.getresponse()
+        data_token = response_token.read()
+        access_token = data_token.split('&')
+        access_token = access_token[0].split('=')[1]
+
+        # Gestion de la respuesta de webapp
+        self.response.content_type = 'application/json'
+        response = '{"token": "' + access_token + '"}'
+        self.response.write(response)
+        connection.close()
+        self.response.set_status(200)
+
+        # Obtenemos los detalles del usuario autenticado
+        connectionAPI = httplib.HTTPSConnection('api.github.com')
+        headers = {'Accept': 'application/vnd.github.v3+json',
+                   'User-Agent': 'PicBit-App',
+                   'Authorization': 'token GITHUB_TOKEN'}
+        connectionAPI.request('GET', '/user', params_token, headers)
+        response = connectionAPI.getresponse()
+        aux = response.read()
+        user_details = json.loads(aux)
+        print aux
+
+        # Buscamos el par id usuario/token autenticado en la base
+        stored_credentials = ndb_pb.buscaToken(str(user_details['id'
+                ]), 'github')
+        if stored_credentials == None:
+
+            # Almacena las credenciales en una entidad Token
+            user_credentials = ndb_pb.insertaUsuario('github',
+                    str(user_details['id']), access_token)
+            self.response.set_status(201)
+        else:
+
+            # Almacenamos el access token recibido
+            user_id = ndb_pb.modificaToken(str(user_details['id']),
+                    access_token, 'github')
+            self.response.set_status(200)
+    else:
+        self.response.set_status(400)
+
+
+# HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
+class GoogleplusHandler(OauthCredentialsHandler):
+    """
+    Class that represents the Instagram token resource. 
+    Methods:
+        get -- Returns the Instagram access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Instagram for the user authenticated
+    """
+    def get(self):
+        self.get_credentials("google")
+
+    def delete(self):
+        self.delete_credentials("google")
+
+class GoogleplusLoginHandler(OauthLoginHandler):
+    """ This class is a resource that represents the login 
+    action using the GooglePlus credentials to autenticate in PicBit 
+    """
+    def post(self):
+        self.post_login('google')
+
+
+class GoogleplusLogoutHandler(OauthLogoutHandler):
+    """ This class is a resource that represents the logout
+    action using the GooglePlus credentials to autenticate in PicBit 
+    """
+    def post(self):
+        self.post_logout('google')
+
+
+# HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
+class InstagramHandler(OauthCredentialsHandler):
+    """
+    Class that represents the Instagram token resource. 
+    Methods:
+        get -- Returns the Instagram access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Instagram for the user authenticated
+    """
+    def get(self):
+        self.get_credentials("instagram")
+
+    def delete(self):
+        self.delete_credentials("instagram")
+
+class InstagramContainerHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Instagram credentials resource. 
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+    """
+    def post(self):
+        self.post_credentials('instagram')
+
+
+# HANDLERS FOR RESOURCES RELATED TO LINKEDIN
+class LinkedinHandler(OauthCredentialsHandler):
+    """
+    Class that represents the Linkedin token resource. 
+    Methods:
+        get -- Returns the Linkedin access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Linkedin for the user authenticated
+    """
+    def get(self):
+        self.get_credentials("linkedin")
+
+    def delete(self):
+        self.delete_credentials("linkedin")
+
+class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Linkedin credentials resource. 
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+    """
+    def post(self):
+        self.post_credentials('linkedin')
+
+
+# HANDLERS FOR RESOURCES RELATED TO STACKOVERFLOW
+class StackOverflowHandler(OauthCredentialsHandler):
+    """
+    Class that represents the StackOverflow token resource. 
+    Methods:
+        get -- Returns the StackOverflow access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in StackOverflow for the user authenticated
+    """
+    def get(self):
+        self.get_credentials("stackoverflow")
+
+    def delete(self):
+        self.delete_credentials("stackoverflow")
+
+class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Stackoverflow credentials resource. 
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+    """
+    def post(self):
+        self.post_credentials('stackoverflow')
+
+# HANDLERS FOR RESOURCES RELATED TO TWITTER
+# Handler that manages the first step in the Twitter login flow 
+# (obtain the request token and request url to initiate the login in client)
+class TwitterRequestLoginHandler(webapp2.RequestHandler):
+    """ This resource represents the first step in the Twitter
+        login flow, in which the server must request to Twitter a 
+        request_token that identifies the login flow in a temporal way
+        and provides the url in which the user must access and authorize
+        the access of his/her credentials.
+        It is the first step in a login flow of three steps. 
+        The second step is performed in frontend and the third step is a
+        callback received from Twitter endpoint.
+    """
+    def get(self):
+        """ Handles the first step in the Twitter login flow
+        Keyword arguments: 
+        self -- info about the request build by webapp2
+        """
+        # Configuration params in order to perform the request to Twitter
+        consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
+        consumer_secret = \
+            'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
+        request_token_url = \
+            'https://api.twitter.com/oauth/request_token'
+        base_authorization_url = \
+            'https://api.twitter.com/oauth/authorize'
+        callback_uri = 'https://' + domain \
+            + '/api/oauth/twitter?action=authorization'
+        # Request to Twitter the request_token and authorization URL
+        client = oauth.TwitterClient(consumer_key, consumer_secret,
+                callback_uri)
+        # Return the authorization URL
+        self.response.content_type = 'application/json'
+        response = {'oauth_url': client.get_authorization_url()}
+        self.response.write(json.dumps(response))
+
+
 # Handler that manages the callback from Twitter as a final step of the oauth flow
 class TwitterAuthorizationHandler(webapp2.RequestHandler):
+        """ This class is a resource that represents the authorization
+        step in the Twitter Login flow, in which the Twitter Endpoint returns
+        asyncronously the credentials for the user authenticated in the flow.
+        It is the third step in a login flow of three steps.  
+        """
+
     def get(self):
+        """ Manages the callback from Twitter in the Twitter oauth flow.
+        Keyword arguments: 
+        self -- info about the request built by webapp2
+        """
         # Gets the params in the request
         auth_token = self.request.get('oauth_token')
         oauth_verifier = self.request.get('oauth_verifier')
@@ -262,165 +526,16 @@ class TwitterAuthorizationHandler(webapp2.RequestHandler):
                 'response_status': response_status}
         memcache.add(key_verifier, data)
 
-# Handler that manages the first step in the Twitter login flow 
-# (obtain the request token and request url to initiate the login in client)
-class TwitterRequestLoginHandler(webapp2.RequestHandler):
-    def get(self):
-        consumer_key = 'tuprQMrGCdGyz7QDVKdemEWXl'
-        consumer_secret = \
-            'byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm'
-        request_token_url = \
-            'https://api.twitter.com/oauth/request_token'
-        base_authorization_url = \
-            'https://api.twitter.com/oauth/authorize'
-        callback_uri = 'https://' + domain \
-            + '/api/oauth/twitter?action=authorization'
-        client = oauth.TwitterClient(consumer_key, consumer_secret,
-                callback_uri)
-        self.response.content_type = 'application/json'
-        response = {'oauth_url': client.get_authorization_url()}
-        self.response.write(json.dumps(response))
-
-
-# Handlers that identifies resource containers for a social network 
-
-class GitHubContainerHandler(OAuthCredentialsContainerHandler):
-    def post(self):
-        url = 'github.com'
-        # authorize_url = \
-        # 'http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token'
-
-        access_token_url = '/login/oauth/access_token'
-        client_id = '1f21e4d820abd2cb5a7a'
-        client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
-        access_token = ''
-        connection = httplib.HTTPSConnection(url)
-
-        # Cogemos el codigo de la peticion
-
-        code = self.request.get('code')
-        print code
-
-        # Indicamos los parametros de la peticion a github
-
-        params_token = urllib.urlencode({'client_id': client_id,
-                'client_secret': client_secret, 'code': code})
-
-        # Realizamos la peticion en la conexion
-
-        connection.request('POST', access_token_url, params_token)
-
-        # Cogemos la respuesta de la peticion y realizamos un split
-        # para coger el valor del token
-
-        response_token = connection.getresponse()
-        data_token = response_token.read()
-        access_token = data_token.split('&')
-        access_token = access_token[0].split('=')[1]
-
-        # Gestion de la respuesta de webapp
-
-        self.response.content_type = 'application/json'
-        response = '{"token": "' + access_token + '"}'
-        self.response.write(response)
-        connection.close()
-        self.response.set_status(200)
-
-        # Obtenemos los detalles del usuario autenticado
-
-        connectionAPI = httplib.HTTPSConnection('api.github.com')
-        headers = {'Accept': 'application/vnd.github.v3+json',
-                   'User-Agent': 'PicBit-App',
-                   'Authorization': 'token GITHUB_TOKEN'}
-        connectionAPI.request('GET', '/user', params_token, headers)
-        response = connectionAPI.getresponse()
-        aux = response.read()
-        user_details = json.loads(aux)
-        print aux
-
-        # Buscamos el par id usuario/token autenticado en la base
-
-        stored_credentials = ndb_pb.buscaToken(str(user_details['id'
-                ]), 'github')
-        if stored_credentials == None:
-
-            # Almacena las credenciales en una entidad Token
-
-            user_credentials = ndb_pb.insertaUsuario('github',
-                    str(user_details['id']), access_token)
-            self.response.set_status(201)
-        else:
-
-            # Almacenamos el access token recibido
-
-            user_id = ndb_pb.modificaToken(str(user_details['id']),
-                    access_token, 'github')
-            self.response.set_status(200)
-    else:
-        self.response.set_status(400)
-
-
-class InstagramContainerHandler(OAuthCredentialsContainerHandler):
-    def post(self):
-        self.post_credentials('instagram')
-
-class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
-    def post(self):
-        self.post_credentials('linkedin')
-
-class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
-    def post(self):
-        self.post_credentials('stackoverflow')
-
-class TwitterContainerHandler(OAuthCredentialsContainerHandler):
-    def post(self):
-        self.post_credentials('twitter')
-
-
-# Handlers that represents the credentials for a given social network
-class FacebookHandler(OauthCredentialsHandler):
-    def get(self):
-        self.get_credentials("facebook")
-
-    def delete(self):
-        self.delete_credentials("facebook")
-
-class GitHubHandler(OauthCredentialsHandler):
-    def get(self):
-        self.get_credentials("github")
-
-    def delete(self):
-        self.delete_credentials("github")
-
-class GoogleplusHandler(OauthCredentialsHandler):
-    def get(self):
-        self.get_credentials("google")
-
-    def delete(self):
-        self.delete_credentials("google")
-
-class InstagramHandler(OauthCredentialsHandler):
-    def get(self):
-        self.get_credentials("instagram")
-
-    def delete(self):
-        self.delete_credentials("instagram")
-
-class LinkedinHandler(OauthCredentialsHandler):
-    def get(self):
-        self.get_credentials("linkedin")
-
-    def delete(self):
-        self.delete_credentials("linkedin")
-
-class StackOverflowHandler(OauthCredentialsHandler):
-    def get(self):
-        self.get_credentials("stackoverflow")
-
-    def delete(self):
-        self.delete_credentials("stackoverflow")
 
 class TwitterHandler(OauthCredentialsHandler):
+     """
+    Class that represents the Twitter token resource. 
+    Methods:
+        get -- Returns the Twitter access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Twitter for the user authenticated
+    """
     def get(self):
         self.get_credentials("twitter")
 
@@ -428,17 +543,20 @@ class TwitterHandler(OauthCredentialsHandler):
         self.delete_credentials("twitter")
 
 
-# Handlers for the login flow in a given network
-
-class FacebookLoginHandler(OauthLoginHandler):
+class TwitterContainerHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Twitter credentials resource. 
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+    """
     def post(self):
-        self.post_login('facebook')
+        self.post_credentials('twitter')
 
-class GoogleplusLoginHandler(OauthLoginHandler):
-    def post(self):
-        self.post_login('google')
 
 class TwitterLoginHandler(SessionHandler):
+    """ This class is a resource that represents the login 
+    action using the Twitter credentials to autenticate in PicBit 
+    """
     def post(self):
         # TODO: data!!
         oauth_verifier = self.request.get('oauth_verifier',
@@ -471,16 +589,9 @@ class TwitterLoginHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(400)
 
-
-# Handlers for the logout flow in a given network
-class FacebookLogoutHandler(OauthLogoutHandler):
-    def post(self):
-        self.post_logout('facebook')
-
-class GoogleplusLogoutHandler(OauthLogoutHandler):
-    def post(self):
-        self.post_logout('google')
-
 class TwitterLogoutHandler(SessionHandler):
+    """ This class is a resource that represents the logout 
+    action using the Twitter credentials to autenticate in PicBit 
+    """
     def post(self):
         self.post_logout('google')
