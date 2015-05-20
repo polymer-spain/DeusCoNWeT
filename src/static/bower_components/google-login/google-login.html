@@ -34,11 +34,11 @@ limitations under the License.
 <polymer-element name="google-login" attributes="callback clientID scope textLogin">
 	<template>
 		<link rel="stylesheet" href="google-login.css">
-		<paper-button hidden?="{{logged}}" id="button" on-click="{{login}}" class="login">
+		<paper-button hidden?="{{logged}}" id="buttonL" on-click="{{login}}" class="login">
 			<core-icon src="https://i.imgur.com/FM5Nzy7.png"></core-icon>
 			{{textLogin}}
 		</paper-button>
-		<paper-button hidden?="{{!logged}}" id="button" on-click="{{logout}}{{removerToken}}" class="login">
+		<paper-button hidden?="{{!logged}}" id="buttonO" on-click="{{logout}}{{removerToken}}" class="login">
 			<core-icon src="https://i.imgur.com/FM5Nzy7.png"></core-icon>
 			SignOut in with Google+
 		</paper-button>
@@ -100,7 +100,8 @@ limitations under the License.
      * @attribute acToken
      * @type string
      */
-			acToken:'ya29.cwFLIiQT-FKj6H33BrOr0uxICgqAw2dumh-8mwDra8tQgplLBw4hkDOBTnlSMcWxvynA2oRb0aAJ8w',
+          
+			acToken:'ya29.eAFJFj6bWDM5KxL8CTXuOBdRkPtxIp8_AkexJw5VnvL6mP9Qu0_8x7GwwRqLo_xWJva6SBHZhF8ftg',
 			tokenType:'',
 			expiresToken:'',
 			textLogin:'Sign in with Google+',
@@ -139,8 +140,6 @@ limitations under the License.
 							var exp = new RegExp(patron);
 							back.acToken = exp.exec(url)[1];0
 							back.fire('google-logged',{token: back.acToken,redSocial:'googleplus'});
-/*							back.$.button.className="disconnect";
-							back.textLogin='Log out';*/
                             console.log(back.acToken);
                             back1.logged=true;
 							win.close();

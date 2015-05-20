@@ -27,11 +27,15 @@ Element providing solution to no problem in particular.
 
 	<template>
 		<link rel="stylesheet" href="linkedin-login.css">
-		<paper-toast text="Iniciando sesión..." id="toastMessage"></paper-toast>
-		<paper-button id="LinkedinButton" on-click="{{login}}">
+		<paper-button id="LinkedinButton" on-click="{{login}}" hidden?="{{logged}}">
 		<core-icon src='linkedin_white_silhouet.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
 		
 		Sign in with Linkedin
+		</paper-button>
+		<paper-button id="LinkedinButton1" on-click="{{logout}}" hidden?="{{!logged}}">
+		<core-icon src='linkedin_white_silhouet.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
+		
+		Logout in with Linkedin
 		</paper-button>
 		<content></content>
 	</template>
@@ -41,6 +45,7 @@ Element providing solution to no problem in particular.
 		// Setup an event listener to make an API call once auth is complete
 		function onLinkedInLoad(){
 			IN.Event.on(IN, "customLogin", getProfileData);
+        
 		}
 
 		// Handle the successful return from the API call
@@ -70,27 +75,57 @@ Element providing solution to no problem in particular.
 		Polymer({
 
 			apiKey: '',
+            logged:'',
 
 			ready: function() {
 				// Ready is a lifecycle callback.
 				// You can do setup work in here.
 				// More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
 				var script = document.createElement('script');
+                var back = this;
 				script.type ='text/javascript';
 				script.src = 'https://platform.linkedin.com/in.js'
 				script.text = ' api_key:' + this.apiKey + '\nonLoad:    onLinkedInLoad\n   authorize: true\n  lang:      es_ES'
+                script.id = "scriptlinkedin"
 				document.body.appendChild(script);
 				document.addEventListener("customLogin", function(){
 					IN.API.Raw("/people/~").result(onSuccess).error(onError);
-				})
+				})     
+                setTimeout(function(){back.inicializar(back)}, 3000);
+
 			},
+            
+          
+          inicializar: function(scope) { 
+            
+                
+                var estado=IN.User.isAuthorized();
+                if(estado){
+                   scope.logged=true;
+                  
+                  
+                }else{
+                  scope.logged=false;
+                 
+                }
+             
+
+              ;},
 
 			login: function(){
-				this.$.toastMessage.show();
+                
+                this.logged=true;
 				var authevent = new CustomEvent("customLogin", {});
 				document.dispatchEvent(authevent);
-				//document.getElementById("toastMessage").setAttribute("text","Sesión iniciada con éxito");
-			}
+			},
+          	logout: function(){
+                
+                
+                IN.User.logout(function() {
+                      });
+              this.logged=false;
+			},
+          
 		});
 
 	</script>

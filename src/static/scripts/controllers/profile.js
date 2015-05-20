@@ -26,6 +26,8 @@ angular.module('picbit')
 		  
 		  if (e.detail.redSocial === 'googleplus') {
 			  var googleplus="googleplus";
+              var acToken=e.detail.token;
+            
 		  }
 		  if (e.detail.redSocial === 'facebook') {
 			  var facebook="facebook";

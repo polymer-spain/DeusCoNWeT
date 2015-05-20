@@ -13,7 +13,7 @@
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
           Sign in with Facebook
         </paper-button>
-        <paper-button id="prueba" hidden?="{{!loged}}" on-click="{{logout}}" class="login">
+        <paper-button id="logout" hidden?="{{!loged}}" on-click="{{logout}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
           Log out with Facebook
         </paper-button>
@@ -39,6 +39,7 @@
                           }(document, 'script', 'facebook-jssdk'));\
                           ";
                           document.body.appendChild(script);
+
           }, 
 ////////////////////////////////     domReady      ////////////////////////////////////////////////////////////  
           
@@ -49,7 +50,7 @@
                 cookie     : true,
                 status     : true,// enable cookies to allow the server to 
                 xfbml      : true,  // parse social plugins on this page
-                version    : 'v2.2' // use version 2.2
+                version    : 'v2.3' // use version 2.2
               });
            
              FB.getLoginStatus(function(response) {
