@@ -7,15 +7,15 @@
  */
 
 
-angular.module('picbit').controller('MainCtrl', function ($scope, $location, $backend, $http, $window, $cookie) {
+angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend, $http, $window) {
   'use strict';
-
+  
   $scope.status = false; // Registr el stado de logueado
   $scope.domain = "https://" + $location.host(); // Dominio bajo el que ejecutamos
   $scope.shadow = false; // Sombra del popup
   $scope.sended = false; // popup de notificar
   $scope.idioma = 'es'
-
+  
   $scope.changelanguage = function (language) {
     var file;
 
@@ -49,7 +49,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ba
       console.error(data,status);
     });
   }
-
+  
   $scope.logged = function (e) {
     $scope.$apply(function () {
 
@@ -91,32 +91,12 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ba
   $scope.logout = function () {
     var button = document.querySelector('#nameId');
     // Selecionar el nombre del usuario
-
+    
     $scope.changeView('/');
     $scope.status = false;
   };
-  
-  $scope.showPopup = function () {
-    if (!$scope.status) {
-      $scope.popup = true;
-      $scope.shadow = true;
-    } else {
-      //$scope.changeView('/user/' + $backend.getUser());
-      $scope.changeView('user/213');
-    }
-  };
-  $scope.hidePopup = function () {
-    $scope.popup = false;
-    $scope.shadow = false;
-  };
 
-  /* Gestiona la sesion, mantiene logueado */
-  if ($cookie.get('session')) {
-    $scope.logOutButton();
-    //$scope.changeView('/user/' + $backend.getUser());
-  }
-
-  /* Escuhas de los botones*/
+   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged', $scope.logged);
   document.querySelector('body').addEventListener('linkedin-logged', $scope.logged);
   document.querySelector('body').addEventListener('github-logged', $scope.logged);
@@ -126,5 +106,17 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ba
   document.querySelector('body').addEventListener('sof-logged', $scope.logged);
   $scope.popup = false;
 
-
+  $scope.showPopup = function () {
+    if (!$scope.status) {
+      $scope.popup = true;
+      $scope.shadow = true;
+    } else {
+      $scope.logout();
+    }
+  };
+  $scope.hidePopup = function () {
+    $scope.popup = false;
+    $scope.shadow = false;
+  };
 });
+

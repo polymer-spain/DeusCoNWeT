@@ -7,7 +7,7 @@
  */
 
 
-angular.module('picbit').controller('MainCtrl', function ($scope, $location, $backend, $http, $window, $cookie) {
+angular.module('picbit').controller('MainCtrl', function ($scope, $location, $backend, $http, $cookie, $window) {
   'use strict';
 
   $scope.status = false; // Registr el stado de logueado
@@ -50,21 +50,23 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ba
     });
   }
 
+  /* Funcion que trata cuando un usuario a terminado el flujo de registro */
+
   $scope.logged = function (e) {
     $scope.$apply(function () {
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter') {
         /* Provisional hasta que se implemente el nombre de usuario */
-
         $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
       } else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
         var uri, button;
         uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
         $http.get(uri).success(function (data) {
           /* Provisional hasta que se implemente el nombre de usuario */
-          $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
-          $backend.sendData(e.detail.token, data.id, e.detail.redSocial);
+          $backend.sendData(e.detail.token, data.id, e.detail.redSocial,function(){
+            $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
+          });
         });
       } else {
         $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
@@ -91,30 +93,11 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ba
   $scope.logout = function () {
     var button = document.querySelector('#nameId');
     // Selecionar el nombre del usuario
-
     $scope.changeView('/');
     $scope.status = false;
+    // eliminamos la cookie
+    $backend.logout();
   };
-  
-  $scope.showPopup = function () {
-    if (!$scope.status) {
-      $scope.popup = true;
-      $scope.shadow = true;
-    } else {
-      //$scope.changeView('/user/' + $backend.getUser());
-      $scope.changeView('user/213');
-    }
-  };
-  $scope.hidePopup = function () {
-    $scope.popup = false;
-    $scope.shadow = false;
-  };
-
-  /* Gestiona la sesion, mantiene logueado */
-  if ($cookie.get('session')) {
-    $scope.logOutButton();
-    //$scope.changeView('/user/' + $backend.getUser());
-  }
 
   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged', $scope.logged);
@@ -126,5 +109,25 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ba
   document.querySelector('body').addEventListener('sof-logged', $scope.logged);
   $scope.popup = false;
 
-
+  $scope.showPopup = function () {
+    if (!$scope.status) {
+      $scope.popup = true;
+      $scope.shadow = true;
+    } else if ($scope.status){
+      //$scope.changeView('/user/' + $backend.getUser());
+      $scope.changeView('user/123');
+    };
+  };
+  $scope.hidePopup = function () {
+    $scope.popup = false;
+    $scope.shadow = false;
+  };
+  /* Gestiona la sesion, mantiene logueado */
+  if ($cookie.get('session')) {
+    $scope.logOutButton();
+    //$scope.changeView('/user/' + $backend.getUser());
+    if ($location.path === '/') {
+      $scope.changeView('user/123');
+    };
+  }
 });
