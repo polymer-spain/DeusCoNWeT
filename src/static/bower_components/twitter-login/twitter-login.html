@@ -52,10 +52,9 @@ Element providing solution to no problem in particular.
     <content></content>
   </template>
 
-
   <script>
-
     Polymer({
+
       endpoint:'',
       /**
        * The `sayHello` method will return a greeting.
@@ -76,13 +75,12 @@ Element providing solution to no problem in particular.
        * @return {String} Returns a string greeting.
        */
       authentication: function(event, detail, sender) {
+        console.log("Hola...")
         var oauth_url = detail.response.oauth_url;
         var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
-        console.log(win)
         var back = this;
         var pollTimer = window.setInterval(function() {
           try {
-            console.log(win.document.URL)
             if(win.document.URL.indexOf('example-project-13') != -1){
               window.clearInterval(pollTimer);
               back.fire('twitter-logged',{token:'',redSocial:'twitter'});

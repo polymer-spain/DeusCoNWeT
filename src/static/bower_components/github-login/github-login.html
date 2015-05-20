@@ -6,20 +6,21 @@
   <!-- Lo primero es el template -->
   <template>
     <style>
-		#loginGithub {
-  background: #393837;
-  color: white;
-  border-radius: 3px;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  text-transform: none;
-  vertical-align: center;
-  width: 100%;
-}
+      #loginGithub {
+        background: #393837;
+        color: white;
+        border-radius: 3px;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        text-transform: none;
+        vertical-align: center;
+        width: 100%;
+      }
     </style>
     <core-ajax
-               id="githubcode" url="http://example-project-13.appspot.com/api/oauth/github"
+               id="githubcode"
+               url="https://example-project-13.appspot.com/api/oauth/github"
                method="POST"
                params='{
                        "action": "request_token",
@@ -31,8 +32,8 @@
     </core-ajax>
 
     <paper-button  id="loginGithub" on-click="{{login}}" >
-    		
-	<core-icon src='images/GitHub-Mark.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
+
+      <core-icon src='images/GitHub-Mark.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
       Sign in with GitHub
     </paper-button>
 
@@ -44,8 +45,8 @@
       code:'',
       scope:'',
       response: function(e, d, s){
-          this.accessToken = s.response;
-          this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
+        this.accessToken = s.response;
+        this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
       },
       login: function(event, detail, sender){
         // Generamos la direccion donde vamos a realizar la peticion
@@ -68,10 +69,10 @@
               window.clearInterval(pollTimer);
               // Sacamos el codigo mediante expresion regular
               var url =   win.document.URL;
-							var patron = "code"+"=([^&#]*)";
-							var exp = new RegExp(patron);
+              var patron = "code"+"=([^&#]*)";
+              var exp = new RegExp(patron);
               // Ponemos en valor en una variable de la ventana principal
-							back.code = exp.exec(url)[1];
+              back.code = exp.exec(url)[1];
               // Llamamos a backend para que obtenga el token
               back.$.githubcode.go();
               win.close();

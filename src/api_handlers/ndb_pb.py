@@ -28,7 +28,7 @@ import webapp2
 rs_list = [
     'twitter',
     'facebook',
-    'stack-overflow',
+    'stackoverflow',
     'instagram',
     'linkedin',
     'google',
@@ -207,10 +207,11 @@ def getToken(entity_key, rs):  # FUNCIONA
     tokens = user.tokens
     res = None
     if not rs in rs_list:
-        return 'La red social no esta contemplada'
+      return 'La red social no esta contemplada'
     for token in tokens:
-        if token.nombre_rs == rs:
-            res = token
+      print "DEBUG: TOKEN ACTUAL ", token.nombre_rs 
+      if token.nombre_rs == rs:
+        res = token
 
     return res
 
@@ -239,218 +240,146 @@ def buscaUsuario(entity_key):  # FUNCIONA
 # FUNCIONA
 
 @ndb.transactional(xg=True)
-def insertaUsuario(
-    rs,
-    ide,
-    token,
-    datos=None,
-    ):
 
-    usuario = Usuario()
-    token = Token(identificador=ide, token=token, nombre_rs=rs)
-    token.put()
-    usuario.tokens.append(token)
-    if not datos == None:
-        if datos.has_key('email'):
-            usuario.email = datos['email']
-        if datos.has_key('telefono'):
-            usuario.telefono = datos['telefono']
-        if datos.has_key('descripcion'):
-            usuario.descripcion = datos['descripcion']
-        if datos.has_key('imagen'):
-            usuario.imagen = datos['imagen']
+def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
+  usuario = Usuario()
+  token = Token(identificador=ide, token=token, nombre_rs=rs)
+  token.put()
+  usuario.tokens.append(token)
+  if not datos == None:
+    if datos.has_key("email"):
+      usuario.email = datos["email"]
+    if datos.has_key("telefono"):
+      usuario.telefono = datos["telefono"]
+    if datos.has_key("descripcion"):
+      usuario.descripcion = datos["descripcion"]
+    if datos.has_key("imagen"):
+      usuario.imagen = datos["imagen"]
 
-    user_key = usuario.put()
+  user_key = usuario.put()
 
-    return user_key
+  return user_key
 
 
-def actualizaUsuario(entity_key, datos):
-    usuario = entity_key.get()
-    if has_key('email'):
-        usuario.email = datos['email']
-    if has_key('telefono'):
-        usuario.telefono = datos['telefono']
-    if has_key('descripcion'):
-        usuario.descripcion = datos['descripcion']
-    if has_key('imagen'):
-        usuario.imagen = datos['imagen']
+def actualizaUsuario(entity_key, datos): #FUNCIONA
+  usuario = entity_key.get()
+  if datos.has_key("email"):
+    usuario.email = datos["email"]
+  if datos.has_key("telefono"):
+    usuario.telefono = datos["telefono"]
+  if datos.has_key("descripcion"):
+    usuario.descripcion = datos["descripcion"]
+  if datos.has_key("imagen"):
+    usuario.imagen = datos["imagen"]
 
-    usuario.put()
+  usuario.put()
 
+def insertaToken(entity_key, rs, token, id_usuario): #FUNCIONA
+  user = entity_key.get()
+  tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
+  user.tokens.append(tok_aux)
+  user.put()
 
-# FUNCIONA
+def insertaGrupo(entity_key, nombre, datos=None): #FUNCIONA
+  usuario = entity_key.get()
+  grupo = Grupo(nombre_grupo=nombre)
+  users = ""
+  
+  if not datos == None:
+    if datos.has_key("descripcion"): grupo.descripcion = datos["descripcion"]
+    if datos.has_key("usuarios"):
+      for user in datos["usuarios"]:
+        users += user + ", "
 
-def insertaToken(
-    entity_key,
-    rs,
-    token,
-    id_usuario,
-    ):
+  grupo.lista_Usuarios = users
+  usuario.lista_Grupos.append(grupo)
+  usuario.put()
 
-    user = entity_key.get()
-    tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
-    user.tokens.append(tok_aux)
-    user.put()
+def addUsuarioAGrupo(entity_key, nombre_grupo, usuario): #FUNCIONA
+  user = entity_key.get()
+  grupos = user.lista_Grupos
 
+  for grupo in grupos:
+    if grupo.nombre_grupo == nombre_grupo:
+      grupo.lista_Usuarios += usuario
 
-def actualizaUsuario(entity_key, datos):  # FUNCIONA
-    usuario = entity_key.get()
-    if datos.has_key('email'):
-        usuario.email = datos['email']
-    if datos.has_key('telefono'):
-        usuario.telefono = datos['telefono']
-    if datos.has_key('descripcion'):
-        usuario.descripcion = datos['descripcion']
-    if datos.has_key('imagen'):
-        usuario.imagen = datos['imagen']
+def addDescripcionAGrupo(entity_key, nombre, descripcion): #FUNCIONA
+  usuario = entity_key.get()
+  grupos = usuario.lista_Grupos
 
-    usuario.put()
+  for grupo in grupos:
+    if grupo.nombre_grupo == nombre:
+      grupo.descripcion = descripcion
 
+  usuario.put()
 
-def insertaToken(  # FUNCIONA
-    entity_key,
-    rs,
-    token,
-    id_usuario,
-    ):
+def buscaGrupos(entity_key): #FUNCIONA
+  user = entity_key.get()
+  res = {}
+  contador = 1
+  if user.lista_Grupos:
+    for grupo in user.lista_Grupos:
+      res[contador] = grupo.nombre_grupo
+      contador += 1
 
-    user = entity_key.get()
-    tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
-    user.tokens.append(tok_aux)
-    user.put()
+  return json.dumps(res)
 
+def insertaRed(entity_key, nombre, datos=None): # FUNCIONA
+  usuario = entity_key.get()
+  user_social = UsuarioSocial(nombre_rs=nombre)
+  if not datos == None:
+    if datos.has_key("siguiendo"):
+      user_social.siguiendo = datos["siguiendo"]
+    if datos.has_key("seguidores"):
+      user_social.seguidores = datos["seguidores"]
+    if datos.has_key("url_seg"):
+      user_social.url_seg = datos["url_seg"]
+    if datos.has_key("url_sig"):
+      user_social.url_sig = datos["url_sig"]
 
-def insertaGrupo(entity_key, nombre, datos=None):  # FUNCIONA
-    usuario = entity_key.get()
-    grupo = Grupo(nombre_grupo=nombre)
-    users = ''
+  usuario.lista_Redes.append(user_social)
+  usuario.put()
+    
 
-    if not datos == None:
-        if datos.has_key('descripcion'):
-            grupo.descripcion = datos['descripcion']
-        if datos.has_key('usuarios'):
-            for user in datos['usuarios']:
-                users += user + ', '
+def buscaRed(entity_key): # FUNCIONA
+  usuario = entity_key.get()
+  res = {}
+  contador = 1
+  if usuario.lista_Redes:
+    for red in usuario.lista_Redes:
+      res[contador] = red.nombre_rs
+      contador += 1
 
-    grupo.lista_Usuarios = users
-    usuario.lista_Grupos.append(grupo)
-    usuario.put()
+  return json.dumps(res)
 
+def insertarComponente(entity_key, nombre, entrada, salida, coord_x=0, coord_y=0, url="", height="", width="", listening=""): # FUNCIONA
+  usuario = entity_key.get()
+  componente = Componente(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width, input_type=entrada, output_type=salida, listening=listening)
+  usuario.componentes.append(componente)
 
-def addUsuarioAGrupo(entity_key, nombre_grupo, usuario):  # FUNCIONA
-    user = entity_key.get()
-    grupos = user.lista_Grupos
+  usuario.put()
 
-    for grupo in grupos:
-        if grupo.nombre_grupo == nombre_grupo:
-            grupo.lista_Usuarios += usuario
+def modificarComponente(entity_key, nombre, datos): #FUNCIONA
+  usuario = entity_key.get()
+  comps = usuario.componentes
+  for comp in comps:
+    if comp.nombre == nombre:
+      if datos.has_key("x"):
+        comp.x = datos["x"]
+      if datos.has_key("y"):
+        comp.y = datos["y"]
+      if datos.has_key("url"):
+        comp.url = datos["url"]
+      if datos.has_key("height"):
+        comp.height = datos["height"]
+      if datos.has_key("width"):
+        comp.width = datos["width"]
+      if datos.has_key("entrada"):
+        comp.input_type = datos["entrada"]
+      if datos.has_key("salida"):
+        comp.output_type = datos["salida"]
 
-
-def addDescripcionAGrupo(entity_key, nombre, descripcion):  # FUNCIONA
-    usuario = entity_key.get()
-    grupos = usuario.lista_Grupos
-
-    for grupo in grupos:
-        if grupo.nombre_grupo == nombre:
-            grupo.descripcion = descripcion
-
-    usuario.put()
-
-
-def buscaGrupos(entity_key):  # FUNCIONA
-    user = entity_key.get()
-    res = {}
-    contador = 1
-    if user.lista_Grupos:
-        for grupo in user.lista_Grupos:
-            res[contador] = grupo.nombre_grupo
-            contador += 1
-
-    return json.dumps(res)
-
-
-def insertaRed(entity_key, nombre, datos=None):  # FUNCIONA
-    usuario = entity_key.get()
-    user_social = UsuarioSocial(nombre_rs=nombre)
-    if not datos == None:
-        if datos.has_key('siguiendo'):
-            user_social.siguiendo = datos['siguiendo']
-        if datos.has_key('seguidores'):
-            user_social.seguidores = datos['seguidores']
-        if datos.has_key('url_seg'):
-            user_social.url_seg = datos['url_seg']
-        if datos.has_key('url_sig'):
-            user_social.url_sig = datos['url_sig']
-
-    usuario.lista_Redes.append(user_social)
-    usuario.put()
-
-
-def buscaRed(entity_key):  # FUNCIONA
-    usuario = entity_key.get()
-    res = {}
-    contador = 1
-    if usuario.lista_Redes:
-        for red in usuario.lista_Redes:
-            res[contador] = red.nombre_rs
-            contador += 1
-
-    return json.dumps(res)
-
-
-def insertarComponente(  # FUNCIONA
-    entity_key,
-    nombre,
-    entrada,
-    salida,
-    coord_x=0,
-    coord_y=0,
-    url='',
-    height='',
-    width='',
-    listening='',
-    ):
-
-    usuario = entity_key.get()
-    componente = Componente(
-        nombre=nombre,
-        x=coord_x,
-        y=coord_y,
-        url=url,
-        height=height,
-        width=width,
-        input_type=entrada,
-        output_type=salida,
-        listening=listening,
-        )
-    usuario.componentes.append(componente)
-
-    usuario.put()
-
-
-def modificarComponente(entity_key, nombre, datos):  # FUNCIONA
-    usuario = entity_key.get()
-    comps = usuario.componentes
-    for comp in comps:
-        if comp.nombre == nombre:
-            if datos.has_key('x'):
-                comp.x = datos['x']
-            if datos.has_key('y'):
-                comp.y = datos['y']
-            if datos.has_key('url'):
-                comp.url = datos['url']
-            if datos.has_key('height'):
-                comp.height = datos['height']
-            if datos.has_key('width'):
-                comp.width = datos['width']
-            if datos.has_key('entrada'):
-                comp.input_type = datos['entrada']
-            if datos.has_key('salida'):
-                comp.output_type = datos['salida']
-
-    usuario.put()
-
+  usuario.put()
 
 def addListening(entity_key, nombre, events):
     usuario = entity_key.get()
@@ -461,7 +390,6 @@ def addListening(entity_key, nombre, events):
                 comp.listening += event + ''
 
     usuario.put()
-
 
 def getComponente(entity_key, nombre):  # FUNCIONA
     user = entity_key.get()

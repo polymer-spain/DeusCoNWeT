@@ -7,15 +7,15 @@
     <link rel="shortcut icon" href="images/logo.png" />
     <meta name="description" content="">
     <base href="/#">
+
+    <title>PicBit</title>
+
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/elements.html">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/landingPage.css">
     <link href='https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'> 
-
-
-    <title>PicBit</title>
   </head>
 
   <body unresolved ng-app="picbit" ng-controller="MainCtrl" >
@@ -54,7 +54,6 @@
       <core-icon-button id="siginButton" ng-click="showPopup($event)" icon="social:person" class="signin" ng-show="status1">
         <span style="padding-left: 3px;vertical-align:middle" id="nameId">Entrar</span>
       </core-icon-button>
-      <core-icon-button icon="search" class=" search"></core-icon-button>
 
     </core-toolbar>
 
@@ -71,18 +70,14 @@
     <div ng-show="shadow" class="shadow"/>
     <div ng-show="popup" vertical center layout class="popup" id="popup">
       <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
-
-
-
         <span style="margin:7% 10%;font-size:1.4em">Selecciona tu red social</span>
         <div vertical center-justified layout class="button-login">
-        
+          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login>
+          <twitter-login class="button-login" endpoint='{{domain}}/api/oauth/twitter'></twitter-login>
+          <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email"></login-facebook>
 
-         <google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login>
-          <twitter-login class="button-login" endpoint="{{domain}}"></twitter-login>
-          <login-facebook class="button-login" key_app="1797546760469675" scope="public_profile,email"></login-facebook>
+
         </div>
-      </div>
       <script src="bower_components/angular/angular.js"></script>
       <script src="bower_components/angular-resource/angular-resource.js"></script>
 
@@ -101,6 +96,7 @@
 
 
   <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
+
 
    
   <script src="scripts/app.js"></script>

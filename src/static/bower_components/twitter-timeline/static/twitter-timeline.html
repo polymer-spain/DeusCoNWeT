@@ -90,12 +90,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       since_id: "",
       endpoint:'',
       ready: function(event, detail, sender) {
-        if (this.accesToken){
+
+        if (this.accesToken && this.endpoint){
+
           this.$.requestTimeline.go();
         }
       },
       domReady: function(e,d,s) {
-        if (this.accessToken){
+
+        if (this.accessToken && this.endpoint){
           this.$.requestTimeline.go();
         }
       },

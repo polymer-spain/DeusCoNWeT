@@ -1,5 +1,7 @@
 application: example-project-13
+
 version: test-frontend2
+
 runtime: python27
 threadsafe: true
 api_version: 1
@@ -9,6 +11,7 @@ handlers:
 - url: /favicon\.ico
   static_files: ../favicon.ico
   upload: favicon\.ico
+
 - url: /
   static_files: static/index.html
   upload: index\.html
@@ -28,17 +31,26 @@ handlers:
 - url: /privacy
   static_files: static/index.html
   upload: index\.html
+  secure: always
+
   
 - url: /contact
   static_files: static/index.html
   upload: index\.html
+  secure: always
+
 
 - url: /user/.*
   static_files: static/index.html
   upload: index\.html
+  secure: always
   
 - url: /
-  static_dir: static
+
+  static_dir: static 
+  secure: always
+  
+
 
 libraries:
 - name: webapp2

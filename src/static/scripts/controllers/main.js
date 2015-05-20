@@ -3,6 +3,7 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   $scope.status = false;
   $scope.status1 = true;
   $scope.domain = 'https://' + $location.host();
+
   $scope.shadow = false;
   $scope.sended = false;
 
@@ -12,47 +13,41 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
 
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === 'twitter') {
-        if ($location.$path.indexOf("profile") !== -1) {
-          $location.path('/user/' + e.detail.redSocial + '_' + e.detail.userId);
+        /* Provisional hasta que se implemente el nombre de usuario */
+        if ($location.$$path.indexOf("profile") === -1) {
+          $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
         }
-
       } else if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
-
-        var uri, callback;
+        var uri, button;
         uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
-        callback = function (data) {
+        $http.get(uri).success(function (data) {
+          /* Provisional hasta que se implemente el nombre de usuario */
+          if ($location.$$path.indexOf("profile") === -1){
 
-          $backend.sendData(e.detail.token, data.id, e.detail.redSocial);
-          if ($location.$$path.indexOf("profile") === -1) {
-            $location.path('/user/' + e.detail.redSocial + '_' + data.id); 
+            $scope.changeView('/user/' + e.detail.redSocial + '_' + data.id);
           }
-
-        };
-        $http.get(uri)
-          .success(callback)
-          .error(function (data, status){
-          console.error("Error ",status,": ",data);
+          $backend.sendData(e.detail.token, data.id, e.detail.redSocial);
         });
-
-      } else {// mandamos los datos si ya los tenemos
-        $backend.sendData(e.detail.token, e.detail.userId, e.detail.redSocial);
+      } else {
         if ($location.$$path.indexOf("profile") === -1){
-          $location.path('/user/'+e.detail.redSocial+'_'+e.detail.userId);
-        }
 
+          $scope.changeView('/user/' + e.detail.redSocial + '_' + e.detail.userId);
+        }
+        $backend.sendData(e.detail.token, e.detail.userId, e.detail.redSocial);
       }
       // cambiamos el botton
-      var button = document.querySelector('#nameId');
-      // Selecionar el nombre del usuario
-      button.innerHTML="Desconectar"
-      // Seleccionar la imagen del perfin
-      // button.src=""
-      // Cambiamos a la funcion de logout
-      $scope.status = true;
-      $scope.status1 = false;
-    });
-  }
+      $scope.logOutButton();
 
+    });
+  };
+  $scope.logOutButton = function () {
+    var button = document.querySelector('#nameId');
+    button.innerHTML = "Desconectar";
+    // Seleccionar la imagen del perfin
+    // button.src=""
+    // Cambiamos a la funcion de logout
+    $scope.status = true;
+  };
   $scope.changeView = function (view) {
     $location.hash('');
     $location.path(view); // path not hash
@@ -61,11 +56,11 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   $scope.logout = function () {
     var button = document.querySelector('#nameId');
     // Selecionar el nombre del usuario
-    button.innerHTML="Entrar";
+    button.innerHTML = "Entrar";
     $scope.changeView('/');
     $scope.status = false;
     $scope.status1 = true;
-  }
+  };
 
   /* Escuhas de los botones*/
   document.querySelector('body').addEventListener('google-logged', $scope.logged);
@@ -78,7 +73,9 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
 
   $scope.popup = false;
 
+
   $scope.showPopup = function(e){
+
     if (!$scope.status) {
       $scope.popup = true;
       $scope.shadow = true;

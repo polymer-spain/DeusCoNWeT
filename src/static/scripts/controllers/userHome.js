@@ -7,7 +7,9 @@
  * # SandboxCtrl
  * Controller of the polymerGeneratedAppApp
  */
+
 angular.module('picbit').controller('userHomeCtrl', function ($scope,$timeout) {
+
   $scope.list = [
     {name: 'John'},
     {name: 'Jessie'},
@@ -22,11 +24,12 @@ angular.module('picbit').controller('userHomeCtrl', function ($scope,$timeout) {
   ];
   
   /* Network infomation */
-
   $scope.twitter = {};
   $scope.github = {};
   $scope.twitter.token = '3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x';
   $scope.github.username = 'mortega5'
+  
+  /* Authentication */
   
   $scope.menuStatus = false;
   $scope.showElement = false;

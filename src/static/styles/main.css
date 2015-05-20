@@ -50,7 +50,6 @@ paper-button {
   background-color: #B71C1C;
 }
 .popup {
-  display: inline-block;
   position:fixed;
   top:0;
   left:0;
@@ -62,7 +61,6 @@ paper-button {
   margin: auto;
   color:brown;
   background-color:whitesmoke;
-  background:solid;
   height: 250px;
   width: 300px;
   z-index: 1;
@@ -91,6 +89,7 @@ paper-button {
 #name:hover{
   cursor: pointer;
 }
+
 core-dropdown {
   position: absolute;
   top: 38px;
@@ -120,11 +119,13 @@ paper-button > a:visited {
   color: black;
   margin:0 20px;
 }
+
 footer {
   position:fixed;
   bottom:0;
   padding:7px;
   width:100%;
   background-color:rgba(0,0,0,0.5);
-  z-index: 2;
+
+  z-index: 1;
 }
