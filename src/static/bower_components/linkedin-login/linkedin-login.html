@@ -45,7 +45,17 @@ Element providing solution to no problem in particular.
 		// Setup an event listener to make an API call once auth is complete
 		function onLinkedInLoad(){
 			IN.Event.on(IN, "customLogin", getProfileData);
-        
+            var estado=IN.User.isAuthorized();
+            var scope=document.querySelector("linkedin-login");
+                if(estado){
+                   scope.logged=true;
+                  console.log(IN.User.isAuthorized());
+                  
+                }else{
+                  scope.logged=false;
+                 
+                }
+           
 		}
 
 		// Handle the successful return from the API call
@@ -55,6 +65,7 @@ Element providing solution to no problem in particular.
 			var exp = new RegExp(patron);
 			var acToken = exp.exec(url)[1];
 			document.querySelector('linkedin-login').fire('linkedin-logged',{token:acToken,redSocial:'linkedin',userId:data.id});
+  
 		}
 
 		//Handle an error response from the API call
@@ -91,23 +102,23 @@ Element providing solution to no problem in particular.
 				document.addEventListener("customLogin", function(){
 					IN.API.Raw("/people/~").result(onSuccess).error(onError);
 				})     
-                setTimeout(function(){back.inicializar(back)}, 3000);
+               // setTimeout(function(){back.inicializar(back)}, 3000);
 
 			},
             
           
           inicializar: function(scope) { 
             
-                
                 var estado=IN.User.isAuthorized();
                 if(estado){
                    scope.logged=true;
-                  
+                  console.log(IN.User.isAuthorized());
                   
                 }else{
                   scope.logged=false;
                  
                 }
+
              
 
               ;},

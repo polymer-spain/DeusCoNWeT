@@ -38,14 +38,14 @@
                           fjs.parentNode.insertBefore(js, fjs);\
                           }(document, 'script', 'facebook-jssdk'));\
                           ";
-                          document.body.appendChild(script);
+            script.onload=function(){console.log('hola  ')};
+            document.body.appendChild(script);
 
           }, 
 ////////////////////////////////     domReady      ////////////////////////////////////////////////////////////  
           
-         domReady: function() { 
-         var back = this;
-         FB.init({//Se incia variables necesarias
+         incializar: function() { 
+             FB.init({//Se incia variables necesarias
                 appId      : this.key_app,//Key App
                 cookie     : true,
                 status     : true,// enable cookies to allow the server to 
