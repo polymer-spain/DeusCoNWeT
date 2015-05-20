@@ -40,6 +40,9 @@ Web component for login instagram button.
 
   <script>
     Polymer({
+      /* Hay que comprobar si hay datos del
+      usuario en la base de datos para saber
+      si esta logueado o no */
       logueado: false,
       /**
        * The `clientId` attribute is the client_Id defined in the Instagram App
@@ -100,6 +103,7 @@ Web component for login instagram button.
         }, 100);
       },
       logout: function(event, detail, sender){
+        /* Borrar datos de la base de datos */
         var back = this;
         var win = window.open("https://instagram.com/accounts/logout/",'width=800, height=600')
         var polTimer = window.setInterval(function(){win.close()}, 100)

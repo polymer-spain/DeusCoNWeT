@@ -56,6 +56,10 @@ Element providing solution to no problem in particular.
     Polymer({
 
       endpoint:'',
+      /* Hay que comprobar si hay datos del
+      usuario en la base de datos para saber
+      si esta logueado o no */
+      logueado: false,
       /**
        * The `sayHello` method will return a greeting.
        *
@@ -93,6 +97,7 @@ Element providing solution to no problem in particular.
       },
       /* Borrar todo relacionado en base de datos */
       logout: function(event, detail, sender){
+        /* Borrar datos de la base de datos */
         var back = this;
         back.logueado = false
       }

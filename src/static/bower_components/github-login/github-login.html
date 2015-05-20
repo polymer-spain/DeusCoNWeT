@@ -2,7 +2,7 @@
 <link rel="import" href="../core-ajax/core-ajax.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../core-icon/core-icon.html">
-<polymer-element name="github-login" attributes="client_id scope">
+<polymer-element name="github-login" attributes="endpoint client_id scope">
   <!-- Lo primero es el template -->
   <template>
     <style>
@@ -20,7 +20,7 @@
     </style>
     <core-ajax
                id="githubcode"
-               url="https://example-project-13.appspot.com/api/oauth/github"
+               url="{{endpoint}}+/api/oauth/github"
                method="POST"
                params='{
                        "action": "request_token",
@@ -31,16 +31,25 @@
                >
     </core-ajax>
 
-    <paper-button  id="loginGithub" on-click="{{login}}" >
-
+    <paper-button  id="loginGithub" hidden?={{logueado}} on-click="{{login}}" >
       <core-icon src='images/GitHub-Mark.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
-      Sign in with GitHub
+      Log in with GitHub
     </paper-button>
+    <paper-button  id="loginGithub" hidden?={{!logueado}} on-click="{{logout}}" >
+      <core-icon src='images/GitHub-Mark.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
+      Log out with GitHub
+    </paper-button>
+
 
   </template>
   <!-- Después va el script, en JS, que añade la lógica -->
   <script>
     Polymer({
+      /* Hay que comprobar si hay datos del
+      usuario en la base de datos para saber
+      si esta logueado o no */
+      logueado: false,
+      endpoint: '',
       accessToken: '',
       code:'',
       scope:'',
@@ -49,11 +58,12 @@
         this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
       },
       login: function(event, detail, sender){
+        console.log(this.endpoint)
         // Generamos la direccion donde vamos a realizar la peticion
         var url = 'https://github.com/login/oauth/authorize?';
         url += 'scope='+this.scope;
         url+='&client_id='+this.client_id;
-        url+='&redirect_uri='+'http://example-project-13.appspot.com/index.html';
+        url+='&redirect_uri='+this.endpoint;
         // Guardamos en una variable el scope de la ventana principal
         var back = this;
         // Abrimos la ventana para que se realice la autenticacion
@@ -75,6 +85,7 @@
               back.code = exp.exec(url)[1];
               // Llamamos a backend para que obtenga el token
               back.$.githubcode.go();
+              back = true
               win.close();
             }
           } catch (e) {
@@ -82,6 +93,11 @@
           }
         }, 100);
       },
+      logout: function(e,d,s){
+        /* Borrar datos de la base de datos */
+        var back = this;
+        back.logueado = false
+      }
     });
   </script>
 </polymer-element>
