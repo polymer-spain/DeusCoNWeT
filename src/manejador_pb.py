@@ -44,12 +44,10 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/twitter/authorization', api_oauth_refactored.TwitterAuthorizationHandler),
     (r'/api/oauth/twitter/requestToken', api_oauth_refactored.TwitterRequestLoginHandler),
 
-    (r'/api/oauth/facebook', api_oauth_refactored.FacebookContainerHandler),
     (r'/api/oauth/facebook/(.*)', api_oauth_refactored.FacebookHandler),
     (r'/api/oauth/facebook/login', api_oauth_refactored.FacebookLoginHandler),
     (r'/api/oauth/facebook/logout', api_oauth_refactored.FacebookLogoutHandler),
     
-    (r'/api/oauth/googleplus', api_oauth_refactored.GooglePlusContainerHandler),
     (r'/api/oauth/googleplus/(.*)', api_oauth_refactored.GooglePlusHandler),
     (r'/api/oauth/googleplus/login', api_oauth_refactored.GooglePlusLoginHandler),
     (r'/api/oauth/googleplus/logout', api_oauth_refactored.GooglePlusLogoutHandler),

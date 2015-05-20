@@ -281,19 +281,84 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         response = {'oauth_url': client.get_authorization_url()}
         self.response.write(json.dumps(response))
 
-# Handlers that identifies resource containers for a social network 
 
-class FacebookContainerHandler(OAuthCredentialsContainerHandler):
-    def post(self):
-        self.post_credentials('facebook')
+# Handlers that identifies resource containers for a social network 
 
 class GitHubContainerHandler(OAuthCredentialsContainerHandler):
     def post(self):
-        self.post_credentials('github')
+        url = 'github.com'
+        # authorize_url = \
+        # 'http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token'
 
-class GoogleplusContainerHandler(OAuthCredentialsContainerHandler):
-    def post(self):
-        self.post_credentials('google')
+        access_token_url = '/login/oauth/access_token'
+        client_id = '1f21e4d820abd2cb5a7a'
+        client_secret = 'b24d6b5f298e85514bebc70abcbf100a8ef8a5f4'
+        access_token = ''
+        connection = httplib.HTTPSConnection(url)
+
+        # Cogemos el codigo de la peticion
+
+        code = self.request.get('code')
+        print code
+
+        # Indicamos los parametros de la peticion a github
+
+        params_token = urllib.urlencode({'client_id': client_id,
+                'client_secret': client_secret, 'code': code})
+
+        # Realizamos la peticion en la conexion
+
+        connection.request('POST', access_token_url, params_token)
+
+        # Cogemos la respuesta de la peticion y realizamos un split
+        # para coger el valor del token
+
+        response_token = connection.getresponse()
+        data_token = response_token.read()
+        access_token = data_token.split('&')
+        access_token = access_token[0].split('=')[1]
+
+        # Gestion de la respuesta de webapp
+
+        self.response.content_type = 'application/json'
+        response = '{"token": "' + access_token + '"}'
+        self.response.write(response)
+        connection.close()
+        self.response.set_status(200)
+
+        # Obtenemos los detalles del usuario autenticado
+
+        connectionAPI = httplib.HTTPSConnection('api.github.com')
+        headers = {'Accept': 'application/vnd.github.v3+json',
+                   'User-Agent': 'PicBit-App',
+                   'Authorization': 'token GITHUB_TOKEN'}
+        connectionAPI.request('GET', '/user', params_token, headers)
+        response = connectionAPI.getresponse()
+        aux = response.read()
+        user_details = json.loads(aux)
+        print aux
+
+        # Buscamos el par id usuario/token autenticado en la base
+
+        stored_credentials = ndb_pb.buscaToken(str(user_details['id'
+                ]), 'github')
+        if stored_credentials == None:
+
+            # Almacena las credenciales en una entidad Token
+
+            user_credentials = ndb_pb.insertaUsuario('github',
+                    str(user_details['id']), access_token)
+            self.response.set_status(201)
+        else:
+
+            # Almacenamos el access token recibido
+
+            user_id = ndb_pb.modificaToken(str(user_details['id']),
+                    access_token, 'github')
+            self.response.set_status(200)
+    else:
+        self.response.set_status(400)
+
 
 class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     def post(self):
@@ -385,15 +450,12 @@ class TwitterLoginHandler(SessionHandler):
             if not data == None:
                 session_id = data['session_id']
                 response_status = data['response_status']
-
                 # Set the cookie session with the session id stored in the system
-
                 self.response.set_cookie('session',
                         value=session_id, path='/', domain=domain,
                         secure=True)
 
                 # Delete the key-value for the pair oauth_verifier-session_id stored in memcache
-
                 memcache.delete(key_verifier)
                 self.response.set_status(response_status)
             else:
