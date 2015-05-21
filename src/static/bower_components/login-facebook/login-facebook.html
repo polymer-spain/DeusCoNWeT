@@ -11,63 +11,61 @@
         <link rel="stylesheet" href="login-facebook.css">
         <paper-button id="boton-facebook" hidden?="{{loged}}" on-click="{{login}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
+          Log in with Facebook
+        </paper-button>
 
-          Sign in with Facebook
-        </paper-button>
-        <paper-button id="prueba" hidden?="{{!loged}}" on-click="{{logout}}" class="login">
+        <paper-button id="logout" hidden?="{{!loged}}" on-click="{{logout}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
-          Log out with Facebook
+          Log out from Facebook
         </paper-button>
+
       </template> 
-      
-       <script>  
+
+      <script>
         Polymer('login-facebook',{ 
           key_app:'',
           textlogin:'LogIn in with Facebook',
           scope:'',
           loged: false,
-////////////////////////////////     ready      ////////////////////////////////////////////////////////////  
+          estado:'',//Se obtiene de la Base de Datos
+
           ready: function(){
             //Se realizara la carga del SDK de Facebook
             var script = document.createElement('script');
             script.type = "text/javascript";
             script.text = "	(function(d, s, id) { \
-                          var js, fjs = d.getElementsByTagName(s)[0];\
-                          if (d.getElementById(id)) return;\
-                          js = d.createElement(s); js.id = id;\
-                          js.src = '//connect.facebook.net/en_US/sdk.js';\
-                          fjs.parentNode.insertBefore(js, fjs);\
-                          }(document, 'script', 'facebook-jssdk'));\
-                          ";
-                          document.body.appendChild(script);
-          }, 
-////////////////////////////////     domReady      ////////////////////////////////////////////////////////////  
-          
-         domReady: function() { 
-         var back = this;
-         FB.init({//Se incia variables necesarias
-                appId      : this.key_app,//Key App
-                cookie     : true,
-                status     : true,// enable cookies to allow the server to 
-                xfbml      : true,  // parse social plugins on this page
-                version    : 'v2.2' // use version 2.2
-              });
-           
-             FB.getLoginStatus(function(response) {
-                if (response && response.status === 'connected') {
-                      this.estado= response.status;
-                     back.loged = true;
-                  } else{
-                     back.loged = false;
-                    
-                    
-                  }
-              });     
-         },
+var js, fjs = d.getElementsByTagName(s)[0];\
+if (d.getElementById(id)) return;\
+js = d.createElement(s); js.id = id;\
+js.src = '//connect.facebook.net/en_US/sdk.js';\
+fjs.parentNode.insertBefore(js, fjs);\
+}(document, 'script', 'facebook-jssdk'));\
+";
+            document.body.appendChild(script);
 
-////////////////////////////////     LOGIN      ////////////////////////////////////////////////////////////    
+          },
 
-          login:function() { 
+          domReady: function() {
+            //Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro
+            //          var back=this;
+            //          var estadoF=this.estado;
+            //          if (estadoF == true) {
+            //                     back.loged = true;
+            //                  } else{
+            //                     back.loged = false;
+            //                  }
+
+          },
+
+          login:function() {
+            FB.init({//Se incia variables necesarias
+              appId      : this.key_app,//Key App
+              cookie     : true,
+              status     : true,// enable cookies to allow the server to
+              xfbml      : true,  // parse social plugins on this page
+              version    : 'v2.3' // use version 2.2
+            });
+
             var back = this;
             FB.login(function(response) {
               back.acToken=response.authResponse.accessToken;
@@ -75,24 +73,27 @@
               back.loged = true;
               this.acToken=response.authResponse.accessToken;
               this.userId = response.authResponse.userID;
-              document.querySelector('login-facebook').fire('facebook-logged',                {token:this.acToken,redSocial:'facebook',userId:this.userId});}, {scope: this.scope});
-           
-          
-            
+              document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});}, {scope: this.scope});
           }, 
-////////////////////////////////    LOGOUT     ////////////////////////////////////////////////////////////         
-         
-          logout:function() {          
+
+          logout:function() {
+            FB.init({//Se incia variables necesarias
+              appId      : this.key_app,//Key App
+              cookie     : true,
+              status     : true,// enable cookies to allow the server to
+              xfbml      : true,  // parse social plugins on this page
+              version    : 'v2.3' // use version 2.2
+            });
+
             var back = this;
             FB.getLoginStatus(function(response) {
-                if (response && response.status === 'connected') {
-                      FB.logout(function(response) {
-                          back.loged = false;
-                      });
-                  }
-              });
-          } 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////                
+              if (response && response.status === 'connected') {
+                FB.logout(function(response) {
+                  back.loged = false;
+                });
+              }
+            });
+          }
         });     
       </script>  
     </polymer-element>
