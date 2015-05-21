@@ -14,9 +14,11 @@
           Log in with Facebook
         </paper-button>
 
+
         <paper-button id="logout" hidden?="{{!loged}}" on-click="{{logout}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
           Log out from Facebook
+
         </paper-button>
 
       </template> 
@@ -34,6 +36,7 @@
             var script = document.createElement('script');
             script.type = "text/javascript";
             script.text = "	(function(d, s, id) { \
+
 var js, fjs = d.getElementsByTagName(s)[0];\
 if (d.getElementById(id)) return;\
 js = d.createElement(s); js.id = id;\
@@ -65,6 +68,7 @@ fjs.parentNode.insertBefore(js, fjs);\
               xfbml      : true,  // parse social plugins on this page
               version    : 'v2.3' // use version 2.2
             });
+
 
             var back = this;
             FB.login(function(response) {
