@@ -15,7 +15,7 @@
         </paper-button>
         <paper-button id="logout" hidden?="{{!loged}}" on-click="{{logout}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
-          Log out with Facebook
+         Sign Out in with Facebook
         </paper-button>
       </template> 
       
@@ -25,7 +25,9 @@
           textlogin:'LogIn in with Facebook',
           scope:'',
           loged: false,
+          estado:'',//Se obtiene de la Base de Datos
 ////////////////////////////////     ready      ////////////////////////////////////////////////////////////  
+          
           ready: function(){
             //Se realizara la carga del SDK de Facebook
             var script = document.createElement('script');
@@ -38,14 +40,28 @@
                           fjs.parentNode.insertBefore(js, fjs);\
                           }(document, 'script', 'facebook-jssdk'));\
                           ";
-            script.onload=function(){console.log('hola  ')};
             document.body.appendChild(script);
 
           }, 
+                
 ////////////////////////////////     domReady      ////////////////////////////////////////////////////////////  
           
-         incializar: function() { 
-             FB.init({//Se incia variables necesarias
+         domReady: function() { 
+//Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro                               
+//          var back=this;
+//          var estadoF=this.estado;
+//          if (estadoF == true) {
+//                     back.loged = true;
+//                  } else{
+//                     back.loged = false;
+//                  }
+
+         },
+
+////////////////////////////////     LOGIN      ////////////////////////////////////////////////////////////    
+
+          login:function() {
+                FB.init({//Se incia variables necesarias
                 appId      : this.key_app,//Key App
                 cookie     : true,
                 status     : true,// enable cookies to allow the server to 
@@ -53,21 +69,6 @@
                 version    : 'v2.3' // use version 2.2
               });
            
-             FB.getLoginStatus(function(response) {
-                if (response && response.status === 'connected') {
-                      this.estado= response.status;
-                     back.loged = true;
-                  } else{
-                     back.loged = false;
-                    
-                    
-                  }
-              });     
-         },
-
-////////////////////////////////     LOGIN      ////////////////////////////////////////////////////////////    
-
-          login:function() { 
             var back = this;
             FB.login(function(response) {
               back.acToken=response.authResponse.accessToken;
@@ -81,8 +82,16 @@
             
           }, 
 ////////////////////////////////    LOGOUT     ////////////////////////////////////////////////////////////         
-         
-          logout:function() {          
+          
+          logout:function() { 
+                FB.init({//Se incia variables necesarias
+                appId      : this.key_app,//Key App
+                cookie     : true,
+                status     : true,// enable cookies to allow the server to 
+                xfbml      : true,  // parse social plugins on this page
+                version    : 'v2.3' // use version 2.2
+              });
+           
             var back = this;
             FB.getLoginStatus(function(response) {
                 if (response && response.status === 'connected') {

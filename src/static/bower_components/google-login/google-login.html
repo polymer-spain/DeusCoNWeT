@@ -38,9 +38,9 @@ limitations under the License.
 			<core-icon src="https://i.imgur.com/FM5Nzy7.png"></core-icon>
 			{{textLogin}}
 		</paper-button>
-		<paper-button hidden?="{{!logged}}" id="buttonO" on-click="{{logout}}{{removerToken}}" class="login">
+		<paper-button hidden?="{{!logged}}" id="buttonO" on-click="{{logout}}" class="login">
 			<core-icon src="https://i.imgur.com/FM5Nzy7.png"></core-icon>
-			SignOut in with Google+
+			Sign Out in with Google+
 		</paper-button>
 		
 		   <core-ajax id="request"
@@ -48,16 +48,7 @@ limitations under the License.
 				   url="https://accounts.google.com/o/oauth2/revoke?"
 				   params='{"token":"{{acToken}}"}'
 				   ></core-ajax>
-
-		   <core-ajax id="request1"
-				   method="GET"
-				   url="https://www.googleapis.com/oauth2/v1/userinfo?"
-				   params='{"access_token":"{{acToken}}"}'
-				   handleAs="json"
-				   on-core-response="{{yesToken}}"
-				   on-core-error="{{noToken}}"
-				   ></core-ajax>
-		
+	
 	</template>
 
 	<script src="https://apis.google.com/js/client:plusone.js?onload=signinCallback"></script>
@@ -101,19 +92,23 @@ limitations under the License.
      * @type string
      */
           
-			acToken:'ya29.eAFJFj6bWDM5KxL8CTXuOBdRkPtxIp8_AkexJw5VnvL6mP9Qu0_8x7GwwRqLo_xWJva6SBHZhF8ftg',
+			acToken:'',
 			tokenType:'',
 			expiresToken:'',
 			textLogin:'Sign in with Google+',
-			status:'',
             logged:false,
-
+            estado:'',//Se obtiene de la Base de Datos
 
 			ready : function(){
-				if (this.textLogin.length != 0) {
-					this.text = this.textLogin;
-				};
-              this.comprobarToken();
+            //Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro  
+//          var back=this;
+//          var estadoF=this.estado;
+//          if (estadoF == true) {
+//                     back.logged = true;
+//                  } else{
+//                     back.logged = false;
+//                  }
+              
 			},
 
 			/**
@@ -149,8 +144,6 @@ limitations under the License.
 					}
 				}, 100);
 
-				//	window.location.assign(this.callback);
-
 			},
           
           
@@ -171,34 +164,10 @@ limitations under the License.
 					}
 				}, 100);
             
-          
+           this.$.request.go();
           
           
           },
-            removerToken:function(){
-              
-              this.$.request.go();
-              
-            },
-          
-            comprobarToken:function(){
-  
-              this.$.request1.go();
-              
-            },
-          
-
-	        yesToken: function(event,detail,sender){//mirar si el token sigue accesible
-            var back1 = this;
-            back1.logged=true;
-
-		},
-          
-	        noToken: function(event,detail,sender){//mirar si el token es no accesible
-			var back1 = this;
-            back1.logged=false;
-		}
-          
           
           
 		});
