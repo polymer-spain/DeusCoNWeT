@@ -109,10 +109,10 @@ input[type=submit] {
   border: 1px solid while;
 }
 
-input[type=submit]:hover{
-  transform:scale(1.02,1.02);
-  -webkit-transform:scale(1.02,1.02);
-}
+/*input[type=submit]:hover{
+transform:scale(1.02,1.02);
+-webkit-transform:scale(1.02,1.02);
+}*/
 
 .sex{
   max-height: 110px;
@@ -123,10 +123,10 @@ option {
   background-color: transparent;
 }
 
-select:hover{
-  transform:scale(1.03,1.03);
-  -webkit-transform:scale(1.03,1.03);
-}
+/*select:hover{
+transform:scale(1.03,1.03);
+-webkit-transform:scale(1.03,1.03);
+}*/
 
 section {
   padding: 20px 0;
@@ -191,26 +191,28 @@ google-login.disconnect::shadow #button{
 }
 
 .login  {
-  -webkit-transition: all 0.3s ease-in;
+  background: rgba(244, 244, 244, 0.62);
+  text-transform: capitalize;
+  color:black;
+  font-size: 90%;
+  border-radius: 5px;
+  /*-webkit-transition: all 0.3s ease-in;
   -moz-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
-  background: rgba(244, 244, 244, 0.62);
+  vertical-align: center;
   color: white;
-  border-radius: 3px;
   padding: 0;
   cursor: pointer;
   text-transform: none;
-  vertical-align: center;
   width: 30%;
-  margin-left: 40%;
-  color:black;
+  margin-left: 40%;*/
 }
 
-.login:hover{
-  transform:scale(1.02,1.02);
-  -webkit-transform:scale(1.02,1.02);
-}
+/*.login:hover{
+transform:scale(1.02,1.02);
+-webkit-transform:scale(1.02,1.02);
+}*/
 
 paper-input-decorator{
   max-width: 100%;
