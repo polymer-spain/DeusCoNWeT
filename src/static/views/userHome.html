@@ -18,7 +18,7 @@
 
       <div id="add" ng-class="{hidden: isMenuHidden('add')}">
         <core-icon icon="add-box" ng-click="setSelected('add')"></core-icon>
-        <span  ng-show="showElement?true:showSingle=='add'" ng-click="setList('add')"> Añadir</span>
+        <span  ng-show="showElement?true:showSingle=='add'" ng-click="setList('add')">{{language.user_action.add}}</span>
         <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" ng-click="setList('add')" icon="arrow-drop-down" style="float:right">
         </core-icon>
 
@@ -31,7 +31,7 @@
 
       <div id="delete" ng-class="{hidden: isMenuHidden('delete')}">
         <core-icon  icon="delete" ng-click="setSelected('delete')"></core-icon>
-        <span ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')"> Borrar</span>
+        <span ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')"> {{language.user_action.delete}}</span>
         <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" ng-click="setList('delete')" id="arrow" icon="arrow-drop-down" style="float:right">
         </core-icon>
 
@@ -44,7 +44,7 @@
 
       <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
         <core-icon  icon="create" ng-click="setSelected('modify')"></core-icon>
-        <span ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')"> Modificar</span>
+        <span ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')"> {{language.user_action.modify}}</span>
         <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" ng-click="setList('modify')" icon="arrow-drop-down" style="float:right">
         </core-icon>
         <div id="list" class="animate-show" ng-show="!hidelist('modify')">
@@ -56,7 +56,7 @@
 
       <div id="help" ng-class="{hidden: isMenuHidden('help')}">
         <core-icon icon="help"></core-icon>
-        <span ng-show="showElement">Ayuda</span>
+        <span ng-show="showElement">{{language.user_action.help}}</span>
       </div>
     </div>
   </div>

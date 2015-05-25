@@ -9,8 +9,8 @@
 	 *
 	 * Main module of the application.
 	*/
-  angular
-    .module('picbit', [
+  var app = angular
+  .module('picbit', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
@@ -18,17 +18,30 @@
     'ngSanitize',
     'ngTouch',
     'ng-polymer-elements'
-  ])
-    .config(function ($locationProvider, $routeProvider,$httpProvider) {
-
+  ]);
+  app.config(function ($locationProvider, $routeProvider,$httpProvider) {
+    $httpProvider.defaults.withCredentials = true;
     $routeProvider
+    /* Español */
       .when('/', {
       templateUrl: 'views/landingPage.html',
       controller: 'landingCtrl'
     })
       .when('/user/:userId', {
       templateUrl: 'views/userHome.html',
-      controller: 'userHomeCtrl'
+      controller: 'userHomeCtrl',
+      resolve: {
+        auth: ["$q", "$cookie", function($q, $cookie){
+
+          var session = $cookie.get('session');
+
+          if (session) {
+            return $q.when(session);
+          } else {
+            return $q.reject({authenticated: false})
+          }
+        }]
+      }
     })
       .when('/about', {
       templateUrl: 'views/about.html',
@@ -40,20 +53,36 @@
     })
       .when('/user/:userId/profile', {
       templateUrl: 'views/profile.html',
-      controller: 'ProfileCtrl'
-	})
+      controller: 'ProfileCtrl',
+      /* Para poder editar el perfil en localhost
+    resolve: {
+        auth: ["$q", "$cookie", function($q, $cookie){
+
+          var session = $cookie.get('session');
+
+          if (session) {
+            return $q.when(session);
+          } else {
+            return $q.reject({authenticated: false})
+          }
+        }]
+      }*/
+    })
       .when('/privacy',{
       templateUrl: 'views/privacy.html',
       controller: 'privacyCtrl'
     })
-      .otherwise({redirectTo: '/'});
-    $locationProvider.html5Mode(true);
+    /* Por defecto */
+      .otherwise({redirectTo: '/'})
+    ;
+    $locationProvider.html5Mode(true)
   });
-  document.addEventListener('polymer-ready', function() {
-    // Perform some behaviour
 
-  });
-	
-  // wrap document so it plays nice with other libraries
-
+  app.run(["$rootScope", "$location", function($rootScope, $location) {
+    $rootScope.$on("$routeChangeError", function(event, current, previous, eventObj) {
+      if (eventObj.authenticated === false) {
+        $location.path("/");
+      }
+    });
+  }]);
 })(wrap(document));

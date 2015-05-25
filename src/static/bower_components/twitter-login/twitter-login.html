@@ -33,10 +33,21 @@ Element providing solution to no problem in particular.
                url="{{endpoint}}"
                method="GET"
                params='{
-                       "action": "login"
+                       "action": "request_token"
                        }'
                handleAs="json"
                on-core-response="{{authentication}}"
+               >
+    </core-ajax>
+    <core-ajax
+               id="requestCookie" url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "action": "login",
+                       "oauth_verifier":"{{oauth_verifier}}"
+                       }'
+               handleAs="json"
+               on-core-response="{{cookie}}"
                >
     </core-ajax>
 
@@ -44,65 +55,82 @@ Element providing solution to no problem in particular.
       <core-icon src='twitter_logo.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
       Log in with Twitter
     </paper-button>
-
-    <paper-button id="TwitterButton" hidden?="{{!logueado}}" on-click="{{logout}}">
-      <core-icon src='twitter_logo.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
-      Log out from Twitter
-    </paper-button>
     <content></content>
   </template>
 
-  <script>
-    Polymer({
+  <paper-button id="TwitterButton" hidden?="{{!logueado}}" on-click="{{logout}}">
+    <core-icon src='twitter_logo.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
+    Log out from Twitter
+  </paper-button>
+  <content></content>
+  </template>
 
-      endpoint:'',
-      /* Hay que comprobar si hay datos del
+<script>
+  Polymer({
+    endpoint:'',
+    /* Hay que comprobar si hay datos del
       usuario en la base de datos para saber
       si esta logueado o no */
-      logueado: false,
-      /**
+    logueado: false,
+    /**
        * The `sayHello` method will return a greeting.
        *
        * @method sayHello
        * @param {String} greeting Pass in a specific greeting.
        * @return {String} Returns a string greeting.
        */
-      login: function(event, detail, sender) {
-        this.$.requestToken.go();
-      },
+    login: function(event, detail, sender) {
+      this.$.requestToken.go();
+    },
 
-      /**
+    /**
        * The `sayHello` method will return a greeting.
        *
        * @method sayHello
        * @param {String} greeting Pass in a specific greeting.
        * @return {String} Returns a string greeting.
        */
-      authentication: function(event, detail, sender) {
-        console.log("Hola...")
-        var oauth_url = detail.response.oauth_url;
-        var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
-        var back = this;
-        var pollTimer = window.setInterval(function() {
-          try {
-            if(win.document.URL.indexOf('example-project-13') != -1){
-              window.clearInterval(pollTimer);
-              back.fire('twitter-logged',{token:'',redSocial:'twitter'});
-              win.close()
-              back.logueado = true
-            }
-          } catch(e) {
+    authentication: function(event, detail, sender) {
+      console.log("Hola...")
+      var oauth_url = detail.response.oauth_url;
+      var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
+      var back = this;
+      var pollTimer  =  window.setInterval(function() {
+        try {
+          if(win.document.URL.indexOf('example-project-13') != -1){
+            var ulr, patron, exp;
+            url =   win.document.URL;
+            patron = "oauth_verifier"+"=([^&#]*)";
+            exp = new RegExp(patron);
+            // Ponemos en valor en una variable de la ventana principal
+            back.oauth_verifier = exp.exec(url)[1];
+            back.$.requestCookie.go();
+            window.clearInterval(pollTimer);
+            back.fire('twitter-logged',{token:'',redSocial:'twitter'});
+            win.close()
+            back.logueado = true
           }
-        }, 100);
-      },
-      /* Borrar todo relacionado en base de datos */
-      logout: function(event, detail, sender){
-        /* Borrar datos de la base de datos */
-        var back = this;
-        back.logueado = false
-      }
-    });
+        } catch(e) {
+        }
+      }, 100);
+    },
 
-  </script>
+    /* Borrar todo relacionado en base de datos */
+    logout: function(event, detail, sender){
+      /* Borrar datos de la base de datos */
+      var back = this;
+      back.logueado = false
+    },
+
+    cookie: function(e,d,s) {
+      var response, code;
+      response = d.response;
+      code = d.xhr.status;
+      this.fire('twitter-login-status',{response:response, status:code});
+    },
+
+  });
+
+</script>
 
 </polymer-element>

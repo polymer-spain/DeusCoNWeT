@@ -33,6 +33,11 @@ core-toolbar {
     padding: 15px 30px; 
   }
 }
+
+.signin:hover {
+  background-color: #B71C1C;
+  border-radius: 8px;
+}
 .logo {
   height: 50px;
   cursor: pointer;
@@ -128,4 +133,48 @@ footer {
   background-color:rgba(0,0,0,0.5);
 
   z-index: 1;
+}
+core-dropdown-menu {
+  background-color: inherit;
+  font-size: 16px;
+  min-width: 80px;
+  cursor: pointer;
+  padding:2px 5px;
+}
+core-dropdown-menu /deep/ core-dropdown {
+  box-sizing: border-box;
+  background-color: #eee;
+  color: #000;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  min-width: 80px;
+
+}
+core-dropdown-menu /deep/ core-dropdown /deep/ core-item:hover{
+  background-color: #bbb;
+}
+core-dropdown.lang-menu {
+  top: 23px;
+}
+
+core-dropdown-menu /deep/ core-item {
+  padding:10px 4px;
+}
+select.language:after {
+  fill:none; 
+  border: none;
+}
+select.language {
+  font-size: 16px;
+  font-family: inherit;
+  border: none;
+  background-color:transparent;
+  color:inherit;
+  outline: none;
+  cursor: pointer;
+}
+select.language > option {
+  color:black;
+  font-weight: bold;
+  background-color:transparent;
 }

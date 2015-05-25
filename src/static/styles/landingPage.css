@@ -1,7 +1,8 @@
 html {
-  background-image: url('../images/vias.jpg');
-  background-size: cover;
+  background-image: url('../images/beach.jpg');
+  background-size: 100% 100%;
   background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 #landing {
 
@@ -19,6 +20,10 @@ html {
   display:inline-block;
   min-width:300px;
   font-size: 20px;
+  text-align: center;
+}
+#landing .content h1 {
+  font-size: 45px;
   text-align: center;
 }
 @media (min-width: 1400px) {
@@ -139,24 +144,10 @@ paper-button.accept:hover {
   background-color: #b71c1c;
   color:whitesmoke;
 }
-/*
-#landing.popup {
-  display: inline-block;
-  position:fixed;
-  top:0;
-  left:0;
-  border-radius: 3px;
-  right:0;
-  bottom:0;
-  padding:30px;
-  padding-top:0;
-  margin: auto;
-  color:brown;
-  background-color:whitesmoke;
-  background:solid;
-  height: 200px;
-  width: 400px;
-  z-index: 1;
-  text-align: center;
+a {
+  color: inherit;
+  text-decoration: none;
 }
-*/
+a:visited {
+  color: inherit;
+}

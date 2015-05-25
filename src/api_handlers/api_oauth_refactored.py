@@ -21,36 +21,42 @@
 
 import webapp2
 import json
-import os, yaml
+import os
+import yaml
 import httplib
 import hashlib
 import urllib
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
 import time
+import datetime
 import ndb_pb
 from ndb_pb import Token, Usuario
 
 # Imports for TwitterHandler
+
 import oauth
 from google.appengine.api import channel
 
 # Import config vars
 # import ConfigParser
-# configParser = ConfigParser.RawConfigParser()   
+# configParser = ConfigParser.RawConfigParser()
 # configFilePath = r'config.cfg'
 # configParser.read(configFilePath)
 # domain = configParser.get('app_data', 'domain')
 
 # Import config vars
+
 basepath = os.path.dirname(__file__)
-configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+configFile = os.path.abspath(os.path.join(basepath, 'config.yaml'))
 with open(configFile, 'r') as ymlfile:
     cfg = yaml.load(ymlfile)
 
 domain = cfg['domain']
 
+
 class SessionHandler(webapp2.RequestHandler):
+
     """
     Class that handles the session of the application
     Methods:
@@ -80,14 +86,19 @@ class SessionHandler(webapp2.RequestHandler):
             logout_status = True
         return logout_status
 
+
 class OAuthLoginHandler(SessionHandler):
+
     def get_credentials(self, social_network):
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
+
             # Obtains info related to the user authenticated in the system
+
             user = self.getUserInfo(cookie_value)
 
             # Searchs for user's credentials
+
             if not user == None:
 
                 # userKey = ndb.Key(ndb_pb.Usuario,str(user))
@@ -103,7 +114,8 @@ class OAuthLoginHandler(SessionHandler):
                 else:
                     response = \
                         {'error': 'The active user does not have a pair of token_id' \
-                         + ' and access_token in ' +  social_network +' stored in the system'}
+                         + ' and access_token in ' + social_network \
+                         + ' stored in the system'}
                     self.response.content_type = 'application/json'
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
@@ -120,7 +132,9 @@ class OAuthLoginHandler(SessionHandler):
             self.response.set_status(400)
 
     def post_credentials(self, social_network):
+
         # Gets the data from the request form
+
         action = self.request.get('action')
         if action == 'login':
             try:
@@ -135,8 +149,8 @@ class OAuthLoginHandler(SessionHandler):
 
                     # Generate a valid username for a new user
 
-                    user_id = ndb_pb.insertaUsuario(social_network, token_id,
-                            access_token)
+                    user_id = ndb_pb.insertaUsuario(social_network,
+                            token_id, access_token)
                     session_id = self.login(user_id)
 
                     # Returns the session cookie
@@ -171,10 +185,22 @@ class OAuthLoginHandler(SessionHandler):
         elif action == 'logout':
             cookie_value = self.request.cookies.get('session')
             if not cookie_value == None:
+
                 # Logout
+
                 logout_status = self.logout(cookie_value)
-                # Delete cookie
-                self.response.delete_cookie('session')
+
+                # Invalidate cookie
+
+                self.response.set_cookie(
+                    'session',
+                    cookie_value,
+                    path='/',
+                    expires=datetime.datetime.now(),
+                    domain=domain,
+                    secure=True,
+                    )
+
                 self.response.set_status(200)
             else:
                 response = \
@@ -190,6 +216,7 @@ class OAuthLoginHandler(SessionHandler):
 
 
 class OAuthHandler(SessionHandler):
+
     def get_credentials(self, social_network):
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
@@ -232,14 +259,17 @@ class OAuthHandler(SessionHandler):
             self.response.set_status(400)
 
     def post_credentials(self, social_network):
+
         # Gets the data from the request form
+
         try:
             access_token = self.request.POST['access_token']
             token_id = self.request.POST['token_id']
 
           # Checks if the username was stored previously
 
-            stored_credentials = ndb_pb.buscaToken(token_id, social_network)
+            stored_credentials = ndb_pb.buscaToken(token_id,
+                    social_network)
             if stored_credentials == None:
 
               # Stores the credentials in a Token Entity
@@ -260,6 +290,7 @@ class OAuthHandler(SessionHandler):
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
             self.response.set_status(400)
+
 
 class OAuthTwitterHandler(SessionHandler):
 
@@ -295,62 +326,95 @@ class OAuthTwitterHandler(SessionHandler):
             'https://api.twitter.com/oauth/request_token'
         base_authorization_url = \
             'https://api.twitter.com/oauth/authorize'
-
+        callback_uri = 'https://' + domain \
+            + '/api/oauth/twitter?action=authorization'
         client = oauth.TwitterClient(consumer_key, consumer_secret,
                 'https://'+domain+'/api/oauth/twitter?action=authorization'
                 )
-
-        if action == 'login':
+        if action == 'request_token':
             self.response.content_type = 'application/json'
+            response = {'oauth_url': client.get_authorization_url()}
 
-            # Creates a channel to send the session details once the oauth flow is completed
-
-            auth_token = client._get_auth_token()
-            token = channel.create_channel(auth_token)
-
-            response = {'oauth_url': client.get_authorization_url(),
-                        'token': token}
             self.response.write(json.dumps(response))
         elif action == 'authorization':
 
             # Gets the params in the request
 
             auth_token = self.request.get('oauth_token')
-            auth_verifier = self.request.get('oauth_verifier')
+            oauth_verifier = self.request.get('oauth_verifier')
 
             # Retrieves user info
 
             user_info = client.get_user_info(auth_token,
-                    auth_verifier=auth_verifier)
+                    auth_verifier=oauth_verifier)
 
             # Query for the stored user
 
-            stored_user = ndb_pb.buscaToken(token_id, 'twitter')
-
+            stored_user = ndb_pb.buscaToken(user_info['username'],
+                    'twitter')
             if stored_user == None:
 
                 # We store the user id and token into a Token Entity
 
-                user_id = ndb_pb.insertaUsuario('Twitter',
+                user_id = ndb_pb.insertaUsuario('twitter',
                         user_info['username'], user_info['token'])
-                self.response.set_status(201)
+                response_status = 201
+                self.response.set_status(response_status)
             else:
 
                 # We store the new user's access_token
 
-                user_id = ndb_pb.modificaToken(token_id, access_token,
-                        'google')
-                self.response.set_status(200)
+                user_id = ndb_pb.modificaToken(user_info['username'],
+                        user_info['token'], 'twitter')
+                response_status = 200
+                self.response.set_status(response_status)
 
             # Create Session
 
             session_id = self.login(user_id)
 
-            # Send session details to client in the channel created previously
+            # Stores in memcache the session id associated with the oauth_verifierj
 
-            session_message = {'session_id': session_id}
-            channel.send_message(auth_token,
-                                 json.dumps(session_message))
+            key_verifier = 'oauth_verifier_' + oauth_verifier
+            data = {'session_id': session_id,
+                    'response_status': response_status}
+            memcache.add(key_verifier, data)
+        elif action == 'login':
+
+            # TODO: data!!
+
+            oauth_verifier = self.request.get('oauth_verifier',
+                    default_value='None')
+            if not oauth_verifier == '':
+                key_verifier = 'oauth_verifier_' + oauth_verifier
+                data = memcache.get(key_verifier)
+                print type(data)
+                if not data == None:
+                    session_id = data['session_id']
+                    response_status = data['response_status']
+
+                    # Set the cookie session with the session id stored in the system
+
+                    self.response.set_cookie('session',
+                            value=session_id, path='/', domain=domain,
+                            secure=True)
+
+                    # Delete the key-value for the pair oauth_verifier-session_id stored in memcache
+
+                    memcache.delete(key_verifier)
+                    self.response.set_status(response_status)
+                else:
+                    response = \
+                        {'error': 'There isn\'t any session in the system for the oauth_verifier value specified'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
+            else:
+                response = \
+                    {'error': 'You must specify a value for the oauth_verifier param in the request'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
         elif action == 'credentials' and not username == None:
 
             cookie_value = self.request.cookies.get('session')
@@ -397,6 +461,7 @@ class OAuthTwitterHandler(SessionHandler):
             self.response.set_status(400)
 
     # POST Method
+
     def post(self):
         """ Destroys the session previously initialized in the system
             Keyword arguments: 
@@ -409,11 +474,21 @@ class OAuthTwitterHandler(SessionHandler):
             if not cookie_value == None:
 
                 # Logout
+
                 logout_status = self.logout(cookie_value)
 
-                # Delete cookie
+                # Invalidate the cookie
 
-                self.response.delete_cookie('session')
+                self.response.set_cookie(
+                    'session',
+                    cookie_value,
+                    path='/',
+                    expires=datetime.datetime.now(),
+                    domain=domain,
+                    secure=True,
+                    )
+
+
                 self.response.set_status(200)
             else:
                 response = \
@@ -564,6 +639,7 @@ class OAuthGithubHandler(SessionHandler):
 
 
 class OauthLinkedinHandler(OAuthHandler):
+
     """
     Class that represents the Linkedin token resource. 
     Methods:
@@ -572,14 +648,18 @@ class OauthLinkedinHandler(OAuthHandler):
     """
 
     # GET Methodo
+
     def get(self):
         self.get_credentials('linkedin')
 
     # POST Method
+
     def post(self):
         self.post_credentials('linkedin')
 
+
 class OAuthInstagramHandler(OAuthHandler):
+
     """
     Class that represents the Instagram token resource. 
     Methods:
@@ -588,19 +668,23 @@ class OAuthInstagramHandler(OAuthHandler):
     """
 
     # GET Method
+
     def get(self):
         """ - Returns the Instagram access_token for a user authenticated
         Keyword arguments: 
         self -- info about the request build by webapp2
         """
+
         self.get_credentials('instagram')
-    
+
     # POST Method
+
     def post(self):
         """ - Creates or updates the pair of token_id and access_token for an user.
             Keyword arguments: 
             self -- info about the request build by webapp2
         """
+
         self.post_credentials('instagram')
 
 
@@ -621,14 +705,17 @@ class OauthFacebookHandler(OAuthLoginHandler):
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
+
         self.get_credentials('facebook')
-       
+
     # POST Method
+
     def post(self):
         self.post_credentials('facebook')
 
 
 class OauthStackOverflowHandler(OAuthHandler):
+
     """
         Class that represents the StackOverflow token resource. 
         Methods:
@@ -639,20 +726,25 @@ class OauthStackOverflowHandler(OAuthHandler):
     """
 
     # GET Method
+
     def get(self):
         """ - Returns the StackOverflow access_token for a user authenticated
             Keyword arguments: 
             self -- info about the request build by webapp2
         """
+
         self.get_credentials('stackoverflow')
 
     # POST Method
+
     def post(self):
         """ Creates or updates the pair of token_id and access_token for an user.        
         Keyword arguments: 
             self -- info about the request built by webapp2
         """
+
         self.post_credentials('stackoverflow')
+
 
 class OauthGooglePlusHandler(OAuthLoginHandler):
 
@@ -665,14 +757,17 @@ class OauthGooglePlusHandler(OAuthLoginHandler):
     """
 
     # GET Method
+
     def get(self):
         """ - Returns the GooglePlus access_token and token_id for a user authenticated
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
+
         self.get_credentials('google')
-        
+
     # POST Method
+
     def post(self):
         """ - It performs two possible actions:
             Login: Creates or updates the pair of token_id and access_token for an user.
@@ -681,9 +776,10 @@ class OauthGooglePlusHandler(OAuthLoginHandler):
         Keyword arguments: 
         self -- info about the request built by webapp2
         """
+
         self.post_credentials('google')
 
-        
+
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
     def get(self):
@@ -707,3 +803,5 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
                                 additional_params={'count': count},
                                 protected=True)
         self.response.write(respuesta.content)
+
+

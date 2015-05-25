@@ -57,3 +57,5 @@ libraries:
   version: latest
 - name: ssl
   version: latest
+- name: pycrypto
+  version: latest
