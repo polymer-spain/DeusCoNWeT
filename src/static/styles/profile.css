@@ -141,27 +141,25 @@ paper-input-decorator {
   max-width: 55%;
 }
 
-paper-input-decorator /deep/ .error {
+/*paper-input-decorator /deep/ .error {
   color: #212121;
-}
+}*/
 
 paper-input-decorator /deep/ ::-webkit-input-placeholder {
   color: rgb(255, 255, 255);
 }
 
 paper-input-decorator /deep/ .unfocused-underline {
-  background-color: green;
+  background-color: deeppink;
 }
 
-paper-input-decorator.invalid[focused] /deep/ .floated-label .label-text,
-
-paper-input-decorator[focused] /deep/ .error {
-  color: #cb1919;
+paper-input-decorator.invalid[focused] /deep/ .floated-label .label-text{
+  color: forestgreen;
 }
 
-paper-input-decorator.invalid /deep/ .focused-underline {
-  background-color: #b90a0a;
-}
+/*paper-input-decorator.invalid /deep/ .focused-underline {
+  background-color: deeppink;
+}*/
 
 .dropdown.colored::shadow #ripple,
 .dropdown.colored::shadow #background {
