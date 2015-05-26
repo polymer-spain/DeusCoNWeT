@@ -17,6 +17,10 @@ polyfill-next-selector { content: ':host > h2'; }
   color: blue;
 }
 
+#TwitterButton[sort=true]{
+	background: red;
+}
+
 #TwitterButton{
 	background: #00B0ED;
 	color: #fff;
@@ -27,6 +31,13 @@ polyfill-next-selector { content: ':host > h2'; }
 	text-transform: none;
 	vertical-align: center;
   width: 100%;
+}
+
+#TwitterButton2{
+	background: #00B0ED;
+	border-radius: 3px;
+	cursor: pointer;
+	vertical-align: center;
 }
 
 core-icon{

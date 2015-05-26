@@ -2,7 +2,7 @@
 <link rel="import" href="../core-ajax/core-ajax.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../core-icon/core-icon.html">
-<polymer-element name="github-login" attributes="endpoint client_id scope">
+<polymer-element name="github-login" attributes="endpoint client_id scope logged">
   <!-- Lo primero es el template -->
   <template>
     <style>
@@ -20,7 +20,7 @@
     </style>
     <core-ajax
                id="githubcode"
-               url="{{endpoint}}+/api/oauth/github"
+               url="{{endpoint}}/api/oauth/github"
                method="POST"
                params='{
                        "action": "request_token",
@@ -31,11 +31,11 @@
                >
     </core-ajax>
 
-    <paper-button  id="loginGithub" hidden?={{logueado}} on-click="{{login}}" >
+    <paper-button  id="loginGithub" hidden?={{logged}} on-click="{{login}}" >
       <core-icon src='images/GitHub-Mark.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
       Log in with GitHub
     </paper-button>
-    <paper-button  id="loginGithub" hidden?={{!logueado}} on-click="{{logout}}" >
+    <paper-button  id="loginGithub" hidden?={{!logged}} on-click="{{logout}}" >
       <core-icon src='images/GitHub-Mark.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
       Log out from GitHub
     </paper-button>
@@ -48,7 +48,7 @@
       /* Hay que comprobar si hay datos del
       usuario en la base de datos para saber
       si esta logueado o no */
-      logueado: false,
+      logged: false,
       endpoint: '',
       accessToken: '',
       code:'',
@@ -57,8 +57,8 @@
         this.accessToken = s.response;
         this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
       },
+
       login: function(event, detail, sender){
-        console.log(this.endpoint)
         // Generamos la direccion donde vamos a realizar la peticion
         var url = 'https://github.com/login/oauth/authorize?';
         url += 'scope='+this.scope;
@@ -85,18 +85,16 @@
               back.code = exp.exec(url)[1];
               // Llamamos a backend para que obtenga el token
               back.$.githubcode.go();
-              back = true
+              this.logged = true;
               win.close();
             }
           } catch (e) {
-
           }
         }, 100);
       },
-      logout: function(e,d,s){
-        /* Borrar datos de la base de datos */
+      logout: function(event, detail, sender){
         var back = this;
-        back.logueado = false
+        this.logged = false;
       }
     });
   </script>

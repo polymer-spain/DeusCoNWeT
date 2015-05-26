@@ -1,217 +1,56 @@
 html {
-  background: url('../images/background.jpg') no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
+	background: url('../images/background.jpg') no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
 }
 
 .content {
-  padding: 1% 5% 2% 5%;
-  font-size: 1.2em;
-  background:rgba(0, 0, 0, 0.46);
-  margin-top: 160px;
-  margin-left: 25%;
-  margin-right: 25%;
-  position: relative;
+	color: black;
+	margin-top: 150px;
+	height: 100%;
+	width:100;
 }
 
-.nom{
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -o-appearance: none;
-  height: 25px;
-  width: 27.2%;
-  background: #fff;
-  color: #000;
+/*Texto a introducir*/
+.formulario{
+	color: black;
 }
 
-input{
-  margin-bottom: 10px;
+/*Transicion texto*/
+.formulario /deep/ #labelText {
+	color: whitesmoke;
 }
 
-.spans{
-  color:#fff;
-  margin: 0px;
+/*Color letra*/
+.formulario /deep/ ::-webkit-input-placeholder {
+	color: whitesmoke;
 }
 
-section{
-  margin-left: 8%;
-  margin-right: 8%;
+.formulario /deep/ ::-moz-input-placeholder {
+	color: yellow;
 }
 
-#oculto{
-  display: none;
+.formulario /deep/ ::-ms-input-placeholder {
+	color: yellow;
 }
 
-#redes{	
-  margin-top: 5px;
-  background: rgba(253, 244, 244, 0.54);	
-  width: 95%;
-  height: 30%;
-  min-width: 200px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
-  border-radius: 10px 10px 10px 10px;	
-  border: 2px solid black;
-  color: #000;
+/*Texto despues transicion*/
+.formulario /deep/ .floated-label #floatedLabelText{
+	color: whitesmoke;
 }
 
-core-item{
-  margin-top: 5px;
+.formulario /deep/ #underline .unfocused-underline{
+	background-color: black;
 }
 
-core-submenu::shadow #submenu {
-  margin-left: 7px;
+.formulario /deep/ #underline .focused-underline{
+	background-color: black;
 }
 
-core-submenu::shadow #submenuItem::shadow #label {
-  margin: 0 auto;
+#dcha{
+	margin-left: 75px;
 }
 
-/*Ajuste tamaño botones*/
-login-facebook{min-width: 100%;}
-google-login{min-width: 100%;}
-twitter-login{min-width: 100%;}
-github-login{min-width: 100%;}
-linkedin-login{min-width: 100%;}
-instagram-login{min-width: 100%;}
-logout-facebook{min-width: 100%;}
-
-/*Ajuste textos botones*/
-google-login::shadow #button{ 
-  font-size: 17px;
-}
-login-facebook::shadow .login{ 
-  font-size: 17px;
-}
-twitter-login::shadow #TwitterButton{ 
-  font-size: 17px;
-}
-github-login::shadow #loginGithub{ 
-  font-size: 17px;
-}
-linkedin-login::shadow #LinkedinButton{ 
-  font-size: 17px;
-}
-instagram-login::shadow #InstagramButton{ 
-  font-size: 17px;
-}
-logout-facebook::shadow #facebookOut{ 
-  font-size: 17px;
-}
-
-input[type=submit] {
-  padding:5px 15px; background:#ccc; border:0 none;
-  cursor:pointer;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.91); 
-  margin-left: 21%;
-  border: 1px solid while;
-}
-
-/*input[type=submit]:hover{
-transform:scale(1.02,1.02);
--webkit-transform:scale(1.02,1.02);
-}*/
-
-.sex{
-  max-height: 110px;
-}
-
-option {
-  padding: 10px;
-  background-color: transparent;
-}
-
-/*select:hover{
-transform:scale(1.03,1.03);
--webkit-transform:scale(1.03,1.03);
-}*/
-
-section {
-  padding: 20px 0;
-}
-
-section > div {
-  padding: 14px;
-  font-size: 16px;
-}
-
-paper-input-decorator {
-  max-width: 55%;
-}
-
-/*paper-input-decorator /deep/ .error {
-  color: #212121;
-}*/
-
-paper-input-decorator /deep/ ::-webkit-input-placeholder {
-  color: rgb(255, 255, 255);
-}
-
-paper-input-decorator /deep/ .unfocused-underline {
-  background-color: deeppink;
-}
-
-paper-input-decorator.invalid[focused] /deep/ .floated-label .label-text{
-  color: forestgreen;
-}
-
-/*paper-input-decorator.invalid /deep/ .focused-underline {
-  background-color: deeppink;
-}*/
-
-.dropdown.colored::shadow #ripple,
-.dropdown.colored::shadow #background {
-  border: 1px solid #0f9d58;
-  background-color: #b7e1cd;
-}
-
-paper-dropdown-menu::shadow #label{
-  color: #fff;
-}
-
-paper-dropdown-menu::shadow #arrow{
-  -webkit-transition: all 0.3s ease-in;
-  -moz-transition: all 0.3s ease-in;
-  -o-transition: all 0.3s ease-in;
-  color: #fff;
-}
-
-core-dropdown{
-  border-bottom: 1px solid #FFFFFF;
-  height: 132px;
-  padding-right: 20px;
-}      
-
-google-login.disconnect::shadow #button{
-  background: #393333;
-}
-
-.login  {
-  background: rgba(244, 244, 244, 0.62);
-  text-transform: capitalize;
-  color:black;
-  font-size: 90%;
-  border-radius: 5px;
-  /*-webkit-transition: all 0.3s ease-in;
-  -moz-transition: all 0.3s ease-in;
-  -o-transition: all 0.3s ease-in;
-  transition: all 0.3s ease-in;
-  vertical-align: center;
-  color: white;
-  padding: 0;
-  cursor: pointer;
-  text-transform: none;
-  width: 30%;
-  margin-left: 40%;*/
-}
-
-/*.login:hover{
-transform:scale(1.02,1.02);
--webkit-transform:scale(1.02,1.02);
-}*/
-
-paper-input-decorator{
-  max-width: 100%;
+#izq{
+	margin-right: 75px;
 }

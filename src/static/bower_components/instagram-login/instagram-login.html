@@ -23,16 +23,16 @@ Web component for login instagram button.
 @status beta
 @homepage http://polymerlabs.github.io/instagram-login
 -->
-<polymer-element name="instagram-login" attributes="clientId redirectUri">
+<polymer-element name="instagram-login" attributes="clientId redirectUri logged">
 
   <template>
     <link rel="stylesheet" href="instagram-login.css">
-    <paper-button id="InstagramButton" hidden?="{{logueado}}" on-click="{{login}}">
+    <paper-button id="InstagramButton" hidden?="{{logged}}" on-click="{{login}}">
       <core-icon src="ig-badge-48.png" style="width: 24px; height: 24px;"></core-icon>
       Log in with Instagram
     </paper-button>
 
-    <paper-button id="InstagramButton" hidden?="{{!logueado}}" on-click="{{logout}}">
+    <paper-button id="InstagramButton" hidden?="{{!logged}}" on-click="{{logout}}">
       <core-icon src="ig-badge-48.png" style="width: 24px; height: 24px;"></core-icon>
       Log out from Instagram
     </paper-button>
@@ -43,7 +43,7 @@ Web component for login instagram button.
       /* Hay que comprobar si hay datos del
       usuario en la base de datos para saber
       si esta logueado o no */
-      logueado: false,
+      logged: false, // Parametro que se recibe de la base de datos
       /**
        * The `clientId` attribute is the client_Id defined in the Instagram App
        * @attribute clientId
@@ -95,7 +95,7 @@ Web component for login instagram button.
 
               back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram',userId:back.userId});
               win.close();
-              back.logueado = true;
+              back.logged = true;
             }
           }catch(e){
 
@@ -105,10 +105,7 @@ Web component for login instagram button.
       logout: function(event, detail, sender){
         /* Borrar datos de la base de datos */
         var back = this;
-        var win = window.open("https://instagram.com/accounts/logout/",'width=800, height=600')
-        var polTimer = window.setInterval(function(){win.close()}, 100)
-
-        back.logueado = false
+        back.logged = false
       }
     });
   </script>

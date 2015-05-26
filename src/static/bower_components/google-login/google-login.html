@@ -28,9 +28,16 @@ limitations under the License.
 @status beta
 @homepage https://github.com/Mortega5/google-login
 -->
-<polymer-element name="google-login" attributes="callback clientID scope textLogin">
+<polymer-element name="google-login" attributes="callback clientID scope textLogin logged">
   <template>
     <link rel="stylesheet" href="google-login.css">
+    <core-ajax id="request"
+               method="GET"
+               url="https://accounts.google.com/o/oauth2/revoke?"
+               params='{"token":"{{acToken}}"}'
+               >
+    </core-ajax>
+
     <paper-button hidden?="{{logged}}" id="buttonL" on-click="{{login}}" class="login">
       <core-icon src="https://i.imgur.com/FM5Nzy7.png"></core-icon>
       Log in with Google+
@@ -41,20 +48,13 @@ limitations under the License.
       Log out from Google+
     </paper-button>
 
-    <core-ajax id="request"
-               method="GET"
-               url="https://accounts.google.com/o/oauth2/revoke?"
-               params='{"token":"{{acToken}}"}'
-               >
-    </core-ajax>
 
   </template>
 
-  <script src="https://apis.google.com/js/client:plusone.js?onload=signinCallback"></script>
+  <!--  <script src="https://apis.google.com/js/client:plusone.js?onload=signinCallback"></script>-->
   <script>
     Polymer({
       /**
-
      * Callback al que se va a dirigir una vez
      * realizado el callback (requerido, pero no utilizado)
      *
@@ -91,7 +91,7 @@ limitations under the License.
      * @attribute acToken
      * @type string
      */
-
+      logged:false, // Parametro que se recibe de la base de datos
       acToken:'',
       tokenType:'',
       expiresToken:'',
@@ -99,8 +99,8 @@ limitations under the License.
       logged:false,
       estado:'',//Se obtiene de la Base de Datos
 
-      ready : function(){
-        /*Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro
+      /*      ready : function(){
+        Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro
       var back=this;
       var estadoF=this.estado;
       if (estadoF == true) {
@@ -108,8 +108,8 @@ limitations under the License.
       } else{
         back.logged = false;
       }
-      */
-      },
+
+      },*/
 
       /**
 		 * Funcion que realiza el login con google+
@@ -119,7 +119,6 @@ limitations under the License.
 		 *
 		 */
       login: function() {
-        var back1 = this;
         var _url = this.OAUTHURL + 'scope=' + this.scope + '&client_id=' + this.clientID + '&redirect_uri=' + this.callback + '&response_type=code token id_token gsession';
         var win  = window.open(_url, "Google+ Login", 'width=800, height=600');
         var back = this;
@@ -132,7 +131,7 @@ limitations under the License.
               var exp = new RegExp(patron);
               back.acToken = exp.exec(url)[1];0
               back.fire('google-logged',{token: back.acToken,redSocial:'googleplus'});
-              back1.logged=true;
+              back.logged=true;
               win.close();
             }
           } catch(e) {
@@ -142,20 +141,7 @@ limitations under the License.
 
       logout: function() {
         var back = this;
-        var back1 = this;
-        var _url='http://accounts.google.com/Logout'
-        var win  = window.open(_url, "Google+ Logout", 'width=800, height=600');
-        var pollTimer  =  window.setInterval(function() {
-          try {
-            if (win.document.URL.indexOf('ServiceLogin') == -1) {
-              window.clearInterval(pollTimer);
-              back1.logged=false;
-              win.close();
-            }
-          } catch(e) {
-          }
-        }, 100);
-        this.$.request.go();
+        back.logged=false;
       },
     });
   </script>

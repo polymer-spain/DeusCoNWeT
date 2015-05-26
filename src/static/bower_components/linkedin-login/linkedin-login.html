@@ -98,27 +98,18 @@ Element providing solution to no problem in particular.
         document.addEventListener("customLogin", function(){
           IN.API.Raw("/people/~").result(onSuccess).error(onError);
         })
-
-        //Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro
-        //          var back=this;
-        //          var estadoF=this.estado;
-        //          if (estadoF == true) {
-        //                     back.logged = true;
-        //                  } else{
-        //                     back.logged = false;
-        //                  }
       },
 
       login: function(){
-        this.logged=true;
+        var back = this;
         var authevent = new CustomEvent("customLogin", {});
         document.dispatchEvent(authevent);
+        back.logged=true;
       },
 
       logout: function(){
-        IN.User.logout(function() {
-        });
-        this.logged=false;
+        var back = this;
+        back.logged=false;
       },
     });
 

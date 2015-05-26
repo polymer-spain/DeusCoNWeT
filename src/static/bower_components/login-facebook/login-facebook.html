@@ -6,16 +6,16 @@
   </head>
   <body>
 
-    <polymer-element name="login-facebook" attributes="key_app scope">   
+    <polymer-element name="login-facebook" attributes="key_app scope logged">
       <template id="template"> 
         <link rel="stylesheet" href="login-facebook.css">
-        <paper-button id="boton-facebook" hidden?="{{loged}}" on-click="{{login}}" class="login">
+        <paper-button id="boton-facebook" hidden?="{{logged}}" on-click="{{login}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
           Log in with Facebook
         </paper-button>
 
 
-        <paper-button id="logout" hidden?="{{!loged}}" on-click="{{logout}}" class="login">
+        <paper-button id="logout" hidden?="{{!logged}}" on-click="{{logout}}" class="login">
           <core-icon src="images/login-facebook.png" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
           Log out from Facebook
 
@@ -25,6 +25,7 @@
 
       <script>
         Polymer('login-facebook',{ 
+          logged: false, // Parametro que se recibe de la base de datos
           key_app:'',
           textlogin:'LogIn in with Facebook',
           scope:'',
@@ -47,7 +48,7 @@ fjs.parentNode.insertBefore(js, fjs);\
 
           },
 
-          domReady: function() {
+          /*          domReady: function() {
             //Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro
             //          var back=this;
             //          var estadoF=this.estado;
@@ -57,7 +58,7 @@ fjs.parentNode.insertBefore(js, fjs);\
             //                     back.loged = false;
             //                  }
 
-          },
+          },*/
 
           login:function() {
             FB.init({//Se incia variables necesarias
@@ -73,29 +74,15 @@ fjs.parentNode.insertBefore(js, fjs);\
             FB.login(function(response) {
               back.acToken=response.authResponse.accessToken;
               back.userId = response.authResponse.userID;
-              back.loged = true;
+              back.logged = true
               this.acToken=response.authResponse.accessToken;
               this.userId = response.authResponse.userID;
               document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});}, {scope: this.scope});
           }, 
 
           logout:function() {
-            FB.init({//Se incia variables necesarias
-              appId      : this.key_app,//Key App
-              cookie     : true,
-              status     : true,// enable cookies to allow the server to
-              xfbml      : true,  // parse social plugins on this page
-              version    : 'v2.3' // use version 2.2
-            });
-
             var back = this;
-            FB.getLoginStatus(function(response) {
-              if (response && response.status === 'connected') {
-                FB.logout(function(response) {
-                  back.loged = false;
-                });
-              }
-            });
+            back.logged = false;
           }
         });     
       </script>  
