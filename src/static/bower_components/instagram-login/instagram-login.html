@@ -27,21 +27,21 @@ Web component for login instagram button.
 
 	<template>
 		<link rel="stylesheet" href="instagram-login.css">
-		<paper-button class="InstagramButton" tittle="Instagram" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
+		<paper-button class="InstagramButton" title="Instagram" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
 			<core-icon src="instagram-login.png" class="icono"></core-icon>
 			Log in with Instagram
 		</paper-button>
 
-		<paper-button class="InstagramButton desconectar" tittle="Instagram" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+		<paper-button class="InstagramButton desconectar" title="Instagram" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
 			<core-icon src="instagram-login.png" class="icono"></core-icon>
 			Log out from Instagram
 		</paper-button>
 
-		<paper-button class="InstagramButton2" tittle="Instagram" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
+		<paper-button class="InstagramButton2" title="Instagram" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
 			<core-icon src="instagram-login.png" class="icono"></core-icon>
 		</paper-button>
 
-		<paper-button class="InstagramButton2 desconectar" tittle="Instagram" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
+		<paper-button class="InstagramButton2 desconectar" title="Instagram" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
 			<core-icon src="instagram-login.png" class="icono"></core-icon>
 		</paper-button>
 	</template>
