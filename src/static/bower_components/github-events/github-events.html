@@ -32,150 +32,153 @@ Element providing solution to no problem in particular.
 @status alpha
 @homepage http://Mortega5.github.io/github-events
 -->
-<polymer-element name="github-events" attributes="mostrar username token">
-  <template>
-    <link rel="stylesheet" href="github-events.css">
-    <core-ajax id="request"
-               method="GET"
-               url="https://api.github.com/users/{{username}}/received_events"
-               params='{"page":"{{page}}","per_page":"{{mostrar}}"}'
-               handleAs="json"
-               on-core-response="{{response}}"
-               ></core-ajax>
-    </core-ajax>
-  <paper-shadow z=2>
-    <core-icon src="foto.png" style="width: 100px;height: 50px;display:inline-block;float:left"></core-icon>
-    <div id ="cabecera">
-      <p style="padding-left: 170px">Últimos eventos</p>
-    </div>
-    <template if="{{show}}">
-      <ul class="box" style="border-bottom: 5px solid rgba(24, 41, 49, 0.67);cursor:wait;text-align:center">
-        <p>Loading...</p>
-      </ul>
-    </template>
+<polymer-element name="github-events" attributes="per_page username token">
+	<template>
+		<link rel="stylesheet" href="github-events.css">
+		<core-ajax id="request"
+							 method="GET"
+							 url="https://api.github.com/users/{{username}}/received_events"
+							 params='{"page":"{{page}}","per_page":"{{per_page}}"}'
+							 handleAs="json"
+							 on-core-response="{{response}}"
+							 ></core-ajax>
+		</core-ajax>
+	<paper-shadow z=2>
+		<core-icon src="foto.png" style="width: 100px;height: 50px;display:inline-block;float:left"></core-icon>
+		<core-icon-button class="boton_refrescar" style="display:inline-block; float: right; padding-top: 12px" icon="refresh" on-click={{load}}></core-icon-button>
+		<div id ="cabecera">
+			<p style="padding-left: 170px">Últimos eventos</p>
+		</div>
 
-    <div style="overflow-y: scroll;max-height: 400px" id="scrollControl">
-      <template id="contenido" is="auto-binding" repeat="{{events}}">
-        <ul class="box">
-          <div style="text-align: center">
-            <core-icon  src="{{actor.avatar_url}}" class="imgEvent" alt="hola">
-            </core-icon>
-            <a href="https://github.com/{{actor.login}}" style="color: black"><span class="name" >{{actor.login}}</span></a>
-          </div>
-          </br>
-        </br>
-      <p>{{type}} <a target="_blank"href="https://github.com/{{repo.name}}"><span style="font-style: italic">{{repo.name}}</span></a></p>
-      <a href="https://github.com/{{repo.name}}/commits/{{payload.commits[0].sha}}" target="_blank"><p style="font-style: italic">{{info}}</p></a>
-      <p style="font-size:11px;text-align:right">{{ date }}</p>
-      </ul>
-    </template>
+		<template if="{{show}}">
+			<ul class="box" style="border-bottom: 5px solid rgba(24, 41, 49, 0.67);cursor:wait;text-align:center">
+				<p>Loading...</p>
+			</ul>
+		</template>
 
-  <template if="{{ lastPage != page && !show}}">
-    <ul class="box" style="text-align:center;cursor: pointer;font-size: 16px"  on-click={{load}}>
-      <span style="font-size: 12px">Mostrar más eventos</span>
-    </ul>
-  </template>
-  </div>
+		<div style="overflow-y: scroll;max-height: 400px" id="scrollControl">
+			<template id="contenido" is="auto-binding" repeat="{{events}}">
+				<ul class="box">
+					<div style="text-align: center">
+						<core-icon  src="{{actor.avatar_url}}" class="imgEvent" alt="hola">
+						</core-icon>
+						<a href="https://github.com/{{actor.login}}" style="color: black"><span class="name" >{{actor.login}}</span></a>
+					</div>
+					</br>
+				</br>
+			<p>{{type}} <a target="_blank"href="https://github.com/{{repo.name}}"><span style="font-style: italic">{{repo.name}}</span></a></p>
+			<a href="https://github.com/{{repo.name}}/commits/{{payload.commits[0].sha}}" target="_blank"><p style="font-style: italic">{{info}}</p></a>
+			<p style="font-size:11px;text-align:right">{{ date }}</p>
+			</ul>
+		</template>
+
+	<template if="{{ lastPage != page && !show}}">
+		<ul class="box" style="text-align:center;cursor: pointer;font-size: 16px"  on-click={{load}}>
+			<span style="font-size: 12px">Mostrar más eventos</span>
+		</ul>
+	</template>
+	</div>
 </paper-shadow>
 </template>
 <script>
-  Polymer({
-    mostrar: 15,
-    username:'',
-    token:'',
-    events:'',
-    lastPage:'',
-    show:true,
-    page:'1',
-    ready: function () {
-      // Set Header for authorize request
-      if (this.token != '') {
-        this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
-      }
-      // Call Github Api
-      if (this.username) {
-        this.$.request.go();
-      }
-    },
-    domReady : function() {
-      if (this.token != '') {
-        this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
-      }
-      // Call Github Api
-      if (this.username) {
-        this.$.request.go();
-      }
-    },
-    response: function(event,detail,sender){
-      // Github events
-      this.events = this.changeEvent(sender.response);
-      // Check lastPage
-      if (this.lastPage == '') {
+	Polymer({
+		per_page: 15,
+		username:'',
+		token:'',
+		events:'',
+		lastPage:'',
+		show:true,
+		page:'1',
+		ready: function () {
+			// Set Header for authorize request
+			if (this.token != '') {
+				this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
+			}
+			// Call Github Api
+			if (this.username) {
+				this.$.request.go();
+			}
+		},
+		domReady : function() {
+			if (this.token != '') {
+				this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
+			}
+			// Call Github Api
+			if (this.username) {
+				this.$.request.go();
+			}
+		},
+		response: function(event,detail,sender){
+			// Github events
+			this.events = this.changeEvent(sender.response);
+			// Check lastPage
+			if (this.lastPage == '') {
 
-        var headers = detail.xhr.getAllResponseHeaders();
-        headers = headers.split(",");
-        var head = headers[headers.length-1];
-        var patron = 'page'+'=([^&]*)';
-        var exp = new RegExp(patron);
-        this.lastPage = parseInt(exp.exec(head)[1]);
-      }
-      var t = this.$.contenido;
-      t.events == undefined ? t.events = this.events:	t.events = 	t.events.concat(this.events);
+				var headers = detail.xhr.getAllResponseHeaders();
+				headers = headers.split(",");
+				var head = headers[headers.length-1];
+				var patron = 'page'+'=([^&]*)';
+				var exp = new RegExp(patron);
+				this.lastPage = parseInt(exp.exec(head)[1]);
+			}
+			var t = this.$.contenido;
+			t.events == undefined ? t.events = this.events:	t.events = 	t.events.concat(this.events);
 
-      this.show = false;
-      // If not lastPage, next request is the next page
-      if (this.page != this.lastPage)
-        this.page++;
-    },
+			this.show = false;
+			// If not lastPage, next request is the next page
+			if (this.page != this.lastPage)
+				this.page++;
+		},
 
-    load: function(){
-      this.$.request.go();	
-    },
-    changeEvent: function(list){
-      for (i=0;i<list.length;i++){
-        switch(list[i].type) {
-          case "PushEvent":
-            list[i].type = "Realizó un push sobre";
-            if (list[i].info) {
-              list[i].info = "Commit: \n "+list[i].payload.commits[0].message;
-            };
-            break;
-          case "WatchEvent":
-            list[i].type = "Empezó a seguir el repositorio "
-            break;
-          case "CreateEvent":
-            list[i].type = "Ha creado el repositorio en";
-            break;
-          case "PullRequestEvent":
-            list[i].type = "Realizó una pull request sobre";
-            break;
-          case "IssuesEvent":
-            break;
-          case "MemberEvent":
-            break;
-          case "ReleaseEvent":
-            break;
-          case "CommitCommentEvent":
-            break;
-          case "DelateEvent":
-            break;
-          case "GollumEvent":
-            break;
-          case "IssueCommentEvent":
-            break;
-          case "PublicEvent":
-            break;
-          case "PullRequestReviewCommentEvent":
-            break;
-        };
-        var date = new Date(list[i].created_at);
-        var month = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
-                     'Septiembre','Octubre','Noviembre','Diciembre'];
-        list[i].date ="Fecha: "+date.getDate()+" de "+month[date.getMonth()]+" de "+date.getFullYear();
-      }
-      return list;
-    },
+		load: function(){
+			this.$.request.go();
+		},
 
-  });
+		changeEvent: function(list){
+			for (i=0;i<list.length;i++){
+				switch(list[i].type) {
+					case "PushEvent":
+						list[i].type = "Realizó un push sobre";
+						if (list[i].info) {
+							list[i].info = "Commit: \n "+list[i].payload.commits[0].message;
+						};
+						break;
+					case "WatchEvent":
+						list[i].type = "Empezó a seguir el repositorio "
+						break;
+					case "CreateEvent":
+						list[i].type = "Ha creado el repositorio en";
+						break;
+					case "PullRequestEvent":
+						list[i].type = "Realizó una pull request sobre";
+						break;
+					case "IssuesEvent":
+						break;
+					case "MemberEvent":
+						break;
+					case "ReleaseEvent":
+						break;
+					case "CommitCommentEvent":
+						break;
+					case "DelateEvent":
+						break;
+					case "GollumEvent":
+						break;
+					case "IssueCommentEvent":
+						break;
+					case "PublicEvent":
+						break;
+					case "PullRequestReviewCommentEvent":
+						break;
+				};
+				var date = new Date(list[i].created_at);
+				var month = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
+										 'Septiembre','Octubre','Noviembre','Diciembre'];
+				list[i].date ="Fecha: "+date.getDate()+" de "+month[date.getMonth()]+" de "+date.getFullYear();
+			}
+			return list;
+		},
+
+	});
 </script>
 </polymer-element>

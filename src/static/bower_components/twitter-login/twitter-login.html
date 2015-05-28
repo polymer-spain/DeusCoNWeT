@@ -51,25 +51,25 @@ Element providing solution to no problem in particular.
 							 >
 		</core-ajax>
 
-		<paper-button id="TwitterButton" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
-			<core-icon src='twitter_logo.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
+		<paper-button class="TwitterButton" title="Twitter" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
+			<core-icon src='twitter_logo.png' class="icono" ></core-icon>
 			Log in with Twitter
 		</paper-button>
 		<content></content>
 
-		<paper-button id="TwitterButton" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
-			<core-icon src='twitter_logo.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
+		<paper-button class="TwitterButton desconectar" title="Twitter" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+			<core-icon src='twitter_logo.png' class="icono"  ></core-icon>
 			Log out from Twitter
 		</paper-button>
 		<content></content>
 
-		<paper-button id="TwitterButton2" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
-			<core-icon src='twitter_logo.png' style="width: 24px; height: 24px; background-repeat:no-repeat; margin-right:0px" ></core-icon>
+		<paper-button class="TwitterButton2" title="Twitter" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
+			<core-icon src='twitter_logo.png' class="icono2" ></core-icon>
 		</paper-button>
 		<content></content>
 
-		<paper-button id="TwitterButton2" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
-			<core-icon src='twitter_logo.png' style="width: 20px; height: 24px; background-repeat:no-repeat" ></core-icon>
+		<paper-button class="TwitterButton2 desconectar" title="Twitter" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
+			<core-icon src='twitter_logo.png' class="icono2"></core-icon>
 		</paper-button>
 		<content></content>
 	</template>
