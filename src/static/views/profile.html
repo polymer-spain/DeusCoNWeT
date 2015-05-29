@@ -3,7 +3,7 @@
 <div class="content">
 	<div>
 		<div id="fondo">
-			<h1 id="titulo">Tus datos</h1>
+			<h1 id="titulo">Datos Personales</h1>
 			<div id="form" center layout>
 				<paper-input-decorator label="Nombre" floatinglabel class="formulario">
 					<input is="core-input" class="nom" type="text">
@@ -11,14 +11,22 @@
 				<paper-input-decorator label="Apellidos" floatinglabel class="formulario">
 					<input is="core-input" class="nom" type="text">
 				</paper-input-decorator>
-				<paper-input-decorator label="Email" floatinglabel class="formulario">
-					<input is="core-input" class="nom" type="text">
+				<paper-input-decorator label="Email" floatinglabel autoValidate class="formulario">
+					<input is="core-input" class="nom" type="email" style="width: 620px;">
 				</paper-input-decorator>
+			</div>
+			<div class="boton" horizontal layout center-justified>
+				<a href="{{domain}}">
+					<paper-button id="but" ng-click="calC()" class="login">
+						<core-icon icon="check"></core-icon>
+						Guardar
+					</paper-button>
+				</a>
 			</div>
 		</div>
 		<br>
 		<div id="fondo2">
-			<h1 id="titulo2">Conecta tus redes sociales</h1>
+			<h1 id="titulo2">Redes sociales conectadas</h1>
 			<div id ="redes" horizontal center-justified layout>
 				<div>
 					<core-item label="" id="facebookitem">
@@ -53,13 +61,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-<!--	<div horizontal layout center-justified>
-<a href="{{domain}}">
-<paper-button id="but" ng-click="calC()" class="login">
-<core-icon icon="save"></core-icon>
-Guardar
-</paper-button>
-</a>
-</div>-->
 </div>

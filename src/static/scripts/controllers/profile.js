@@ -45,9 +45,6 @@ angular.module('picbit')
 
   };
 
-
-  $scope.$watch('asdasdasdasd',function(){console.log("hola")});
-
 	$scope.sort = true
 
   /*  document.getElementById("pr").addEventListener('facebook-logged',$scope.takeInfoLog);

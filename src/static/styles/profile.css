@@ -1,17 +1,20 @@
 html {
-	background: url('../images/background.jpg') no-repeat;
+	background: url("../images/background.jpg") no-repeat;
 	background-size: cover;
-	background-attachment: fixed;
 }
 
 #titulo{
 	text-align: center;
 	text-decoration: underline;
+	font-size: 30px;
 	margin-bottom: 0px;
+	margin-top: -10px;
 }
 
 #titulo2{
+	font-size: 30px;
 	text-align: center;
+	margin-top: -10px;
 	margin-bottom: 40px;
 	text-decoration: underline;
 }
@@ -25,22 +28,38 @@ html {
 
 #fondo{
 	background-color: rgba(245, 245, 245, 0.5);
-	border-radius: 5px;
-	padding: 15px 30px;
+	border-radius: 40px;
+	padding: 50px 60px;
+	max-width: 600px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 30px;
+	padding-bottom: 10px;
+}
+
+#fondo2{
+	background-color: rgba(245, 245, 245, 0.5);
+	border-radius: 40px;
+	padding: 50px 60px;
 	max-width: 600px;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-#fondo2{
-	background-color: rgba(245, 245, 245, 0.5);
+.boton{
+	margin-top: 30px;
+	margin-bottom: 20px;
+}
+
+.login{
+	background-color: rgba(57, 57, 57, 0.51);
+	color: antiquewhite;
 	border-radius: 5px;
-	padding: 15px 30px;
-	max-width: 600px;
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
+	text-transform: None;
+	font-family: inherit;
+	font-size: 17px;
 }
 
 .button-login{
@@ -49,8 +68,9 @@ html {
 
 /*Texto a introducir*/
 .formulario{
-	color: whitesmoke;
+	color: black;
 	font-size: 20px;
+	margin: -20px;
 }
 
 /*Transicion texto*/
@@ -63,17 +83,9 @@ html {
 	color: black;
 }
 
-.formulario /deep/ ::-moz-input-placeholder {
-	color: yellow;
-}
-
-.formulario /deep/ ::-ms-input-placeholder {
-	color: yellow;
-}
-
 /*Texto despues transicion*/
 .formulario /deep/ .floated-label #floatedLabelText{
-	color: whitesmoke;
+	color: black;
 }
 
 .formulario /deep/ #underline .unfocused-underline{
@@ -82,4 +94,21 @@ html {
 
 .formulario /deep/ #underline .focused-underline{
 	background-color: black;
+}
+
+.formulario.invalid /deep/ .floated-label #floatedLabelText{
+	color: red;
+}
+
+.formulario.invalid /deep/ #underline .focused-underline{
+	background-color: red;
+}
+
+.formulario.invalid /deep/ #underline .unfocused-underline{
+	background-color: red;
+}
+
+paper-input-decorator /deep/ .error{
+	margin-top: -27px;
+	margin-bottom: 7px;
 }

@@ -83,7 +83,7 @@
 							back.code = exp.exec(url)[1];
 							// Llamamos a backend para que obtenga el token
 							back.$.githubcode.go();
-							this.logged = true;
+							back.logged = true;
 							win.close();
 						}
 					} catch (e) {
