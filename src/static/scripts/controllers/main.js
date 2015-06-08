@@ -138,6 +138,4 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
   document.querySelector('body').addEventListener('facebook-logged', $scope.logged);
   document.querySelector('body').addEventListener('sof-logged', $scope.logged);
   $scope.popup = false;
-
-
 });

@@ -23,5 +23,13 @@
     "delete": "Borrar",
     "modify": "Modificar",
     "help": "Ayuda"
+  },
+  "user_profile": {
+    "title" : "Datos Personales",
+    "name" : "Nombre",
+    "surname" : "Apeliidos",
+    "email" : "Email",
+    "save" : "Guardar",
+    "social" : "Redes sociales conectadas"
   }
 }
