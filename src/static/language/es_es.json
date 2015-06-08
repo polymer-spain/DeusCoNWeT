@@ -17,6 +17,7 @@
     "es":"Español",
     "en":"English"
   },
+  "profile":"Perfil",
   "user_action": {
     "add" : "Añadir",
     "delete": "Borrar",

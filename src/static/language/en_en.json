@@ -17,7 +17,8 @@
     "es":"Español",
     "en":"English"
   },
-    "user_action": {
+  "profile":"Profile",
+  "user_action": {
     "add":"Add",
     "delete": "Delete",
     "modify": "Modify",
