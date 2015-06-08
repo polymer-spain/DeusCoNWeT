@@ -115,7 +115,6 @@ angular.module('picbit').controller('MainCtrl', function ($scope, $location, $ti
 
 
 			var size = 	document.body.scrollTop
-			console.log(document.body.scrollTop)
 			$scope.scrolled = size > 0;
 		});
 	});

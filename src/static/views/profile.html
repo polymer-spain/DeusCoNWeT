@@ -3,15 +3,15 @@
 <div class="content">
 	<div>
 		<div id="fondo">
-			<h1 id="titulo">Datos Personales</h1>
+			<h1 id="titulo">{{language.user_profile.title}}</h1>
 			<div id="form" center layout>
-				<paper-input-decorator label="Nombre" floatinglabel class="formulario">
+				<paper-input-decorator label="{{language.user_profile.name}}" floatinglabel class="formulario">
 					<input is="core-input" class="nom" type="text">
 				</paper-input-decorator>
-				<paper-input-decorator label="Apellidos" floatinglabel class="formulario">
+				<paper-input-decorator label="{{language.user_profile.surname}}" floatinglabel class="formulario">
 					<input is="core-input" class="nom" type="text">
 				</paper-input-decorator>
-				<paper-input-decorator label="Email" floatinglabel autoValidate class="formulario">
+				<paper-input-decorator label="{{language.user_profile.email}}" floatinglabel autoValidate class="formulario">
 					<input is="core-input" class="nom" type="email" style="width: 620px;">
 				</paper-input-decorator>
 			</div>
@@ -19,14 +19,14 @@
 				<a href="{{domain}}">
 					<paper-button id="but" ng-click="calC()" class="login">
 						<core-icon icon="check"></core-icon>
-						Guardar
+						{{language.user_profile.save}}
 					</paper-button>
 				</a>
 			</div>
 		</div>
 		<br>
 		<div id="fondo2">
-			<h1 id="titulo2">Redes sociales conectadas</h1>
+			<h1 id="titulo2">{{language.user_profile.social}}</h1>
 			<div id ="redes" horizontal center-justified layout>
 				<div>
 					<core-item label="" id="facebookitem">
