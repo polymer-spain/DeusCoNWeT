@@ -1,180 +1,181 @@
 @font-face {
-  font-family: myFont;
-  src: url(../font/font.ttf);
+	font-family: myFont;
+	src: url(../font/font.ttf);
 }
 
 body,html {
-  margin:0;
-  color:rgba(255, 255, 255, 0.85);
-  font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
-  background-attachment: fixed;
-  min-width: 1024px;
-  min-height: 100%;
+	margin:0;
+	color:rgba(255, 255, 255, 0.85);
+	font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
+	background-attachment: fixed;
+	min-width: 1024px;
+	min-height: 100%;
 }
 
 .view {
-  margin:0px 150px;
-  margin-bottom: 50px;
+	margin:0px 150px;
+	margin-bottom: 50px;
 }
 
 core-toolbar {
-  position: fixed;
-  width: 100%;
-  top:0;
-  background-color: rgba(0,0,0,0.5);
-  padding: 15px 150px;
-  height: 100px;
-  min-width: 600px;
-  color:whitesmoke;
+	position: fixed;
+	width: 100%;
+	top:0;
+	background-color: rgba(0,0,0,0.5);
+	padding: 15px 150px;
+	height: 100px;
+	min-width: 600px;
+	color:whitesmoke;
 }
+
 @media (max-width: 1200px) {
 
-  core-toolbar {
-    padding: 15px 30px; 
-  }
+	core-toolbar {
+		padding: 15px 30px;
+	}
 }
 
 .signin:hover {
-  background-color: #B71C1C;
-  border-radius: 8px;
+	background-color: #B71C1C;
+	border-radius: 8px;
 }
 .logo {
-  height: 50px;
-  cursor: pointer;
+	height: 50px;
+	cursor: pointer;
 }
 h2 {
-  font-size: 120%; 
+	font-size: 120%;
 }
 paper-button {
-  font-size: 70%;
+	font-size: 70%;
 }
 .search{
-  border-radius: 100%;
-  width:38px;
-  height:38px;
-  background-color: #B71C1C;
+	border-radius: 100%;
+	width:38px;
+	height:38px;
+	background-color: #B71C1C;
 }
 .popup {
-  position:fixed;
-  top:0;
-  left:0;
-  border-radius: 3px;
-  right:0;
-  bottom:0;
-  padding:30px;
-  padding-top:0;
-  margin: auto;
-  color:brown;
-  background-color:whitesmoke;
-  height: 250px;
-  width: 300px;
-  z-index: 1;
-  text-align: center;
+	position:fixed;
+	top:0;
+	left:0;
+	border-radius: 3px;
+	right:0;
+	bottom:0;
+	padding:30px;
+	padding-top:0;
+	margin: auto;
+	color:brown;
+	background-color:whitesmoke;
+	height: 250px;
+	width: 300px;
+	z-index: 1;
+	text-align: center;
 }
 #popup > div {
-  margin-top: 30px; 
+	margin-top: 30px;
 }
 .shadow {
-  position:fixed;
-  top:0;
-  right:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.8);
+	position:fixed;
+	top:0;
+	right:0;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.8);
 }
 .button-login twitter-login,
 .button-login login-facebook {
-  margin-top: 25px;
+	margin-top: 25px;
 }
 #name {
-  letter-spacing: 10px;
-  font-size: 45px; 
-  font-family: myFont, serif;
+	letter-spacing: 10px;
+	font-size: 45px;
+	font-family: myFont, serif;
 }
 #name:hover{
-  cursor: pointer;
+	cursor: pointer;
 }
 
 core-dropdown {
-  position: absolute;
-  top: 38px;
-  left: 0;
-  border-radius: 5px 5px 5px 5px;
-  background: blue;
-  background-color: #eee;
-  color: #000;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  padding: 8px;
+	position: absolute;
+	top: 38px;
+	left: 0;
+	border-radius: 5px 5px 5px 5px;
+	background: blue;
+	background-color: #eee;
+	color: #000;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	padding: 8px;
 }
 paper-button > a {
-  text-decoration: inherit;
-  color: inherit
+	text-decoration: inherit;
+	color: inherit
 }
 paper-button > a:visited {
-  color:inherit;
+	color:inherit;
 
 }
 .with-margin {
-  margin: 12px;
+	margin: 12px;
 }
 
 .open-below {
-  top: 38px;
-  color: black;
-  margin:0 20px;
+	top: 38px;
+	color: black;
+	margin:0 20px;
 }
 
 footer {
-  position:fixed;
-  bottom:0;
-  padding:7px;
-  width:100%;
-  background-color:rgba(0,0,0,0.5);
+	position:fixed;
+	bottom:0;
+	padding:7px;
+	width:100%;
+	background-color:rgba(0,0,0,0.5);
 
-  z-index: 1;
+	z-index: 1;
 }
 core-dropdown-menu {
-  background-color: inherit;
-  font-size: 16px;
-  min-width: 80px;
-  cursor: pointer;
-  padding:2px 5px;
+	background-color: inherit;
+	font-size: 16px;
+	min-width: 80px;
+	cursor: pointer;
+	padding:2px 5px;
 }
 core-dropdown-menu /deep/ core-dropdown {
-  box-sizing: border-box;
-  background-color: #eee;
-  color: #000;
-  border: 2px solid #ccc;
-  border-radius: 3px;
-  min-width: 80px;
+	box-sizing: border-box;
+	background-color: #eee;
+	color: #000;
+	border: 2px solid #ccc;
+	border-radius: 3px;
+	min-width: 80px;
 
 }
 core-dropdown-menu /deep/ core-dropdown /deep/ core-item:hover{
-  background-color: #bbb;
+	background-color: #bbb;
 }
 core-dropdown.lang-menu {
-  top: 23px;
+	top: 23px;
 }
 
 core-dropdown-menu /deep/ core-item {
-  padding:10px 4px;
+	padding:10px 4px;
 }
 select.language:after {
-  fill:none; 
-  border: none;
+	fill:none;
+	border: none;
 }
 select.language {
-  font-size: 16px;
-  font-family: inherit;
-  border: none;
-  background-color:transparent;
-  color:inherit;
-  outline: none;
-  cursor: pointer;
+	font-size: 16px;
+	font-family: inherit;
+	border: none;
+	background-color:transparent;
+	color:inherit;
+	outline: none;
+	cursor: pointer;
 }
 select.language > option {
-  color:black;
-  font-weight: bold;
-  background-color:transparent;
+	color:black;
+	font-weight: bold;
+	background-color:transparent;
 }

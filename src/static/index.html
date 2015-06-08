@@ -1,103 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="shortcut icon" href="images/logo.png" />
-    <meta name="description" content="">
-    <base href="/#">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link rel="shortcut icon" href="images/logo.png" />
+		<meta name="description" content="">
+		<base href="/#">
 
-    <title>PicBit</title>
+		<title>PicBit</title>
 
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-    <link rel="import" href="elements/elements.html">
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/landingPage.css">
-    <link href='https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'>
-  </head>    
-  <body unresolved ng-app="picbit" ng-controller="MainCtrl" >
+		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+		<script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+		<link rel="import" href="elements/elements.html">
+		<link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
+		<link rel="stylesheet" href="styles/main.css">
+		<link rel="stylesheet" href="styles/landingPage.css">
+		<link href='https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'>
+	</head>
+	<body unresolved ng-app="picbit" ng-controller="MainCtrl" >
 
-    <core-toolbar>
-      <img class="logo" src="images/logo.png">
+		<core-toolbar ng-class="{small: scrolled}">
+			<img class="logo" src="images/logo.png">
+			<h2 id="name" ng-click="changeView('/')" flex>PicBit</h2>
 
-      <h2 id="name" ng-click="changeView('/')" flex>PicBit</h2>
+			<core-dropdown-menu id="language" label="{{language_selected}}" style="outline:none;margin-right:40px">
+				<core-dropdown class="lang-menu dropdown" >
+					<core-menu vertical layout>
+						<core-item center ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
+						<core-item center ng-click="changelanguage('en')">{{language.lang.en}}</core-item>
+					</core-menu>
+				</core-dropdown>
+			</core-dropdown-menu>
+			<core-icon-button ng-show="!status" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
+				<span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.login}}</span>
+			</core-icon-button>
+			<core-icon-button ng-show="status" id="siginButton" ng-click="logout()" icon="social:person" class="signin">
+				<span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.logout}}</span>
+			</core-icon-button>
+			<menu-desplegable src="images/logo.png" id="mas" ng-show="status">
+				<strong style="padding-left: 3px;vertical-align:middle">Nombre Usuario</strong>
+				<core-dropdown class="open-below">
+					<paper-button><a style="text-decoration:none;color:#000;" href="/user/123123"><span style="padding-left: 3px;vertical-align:middle">Mi Home</span></a></paper-button><br>
+					<paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Configurar Perfil</span></a></paper-button><br>
+					<paper-button  ng-click="showPopup($event)" class="signin"> <span style="padding-left: 3px;vertical-align:middle" id="nameId">Desconectar</span> </paper-button>
+				</core-dropdown>
+			</menu-desplegable>
 
-      <core-dropdown-menu id="language" label="{{language_selected}}" style="outline:none;margin-right:40px">
-        <core-dropdown class="lang-menu dropdown" >
-          <core-menu vertical layout>
-            <core-item center ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
-            <core-item center ng-click="changelanguage('en')">{{language.lang.en}}</core-item>
-          </core-menu>
-        </core-dropdown>
-      </core-dropdown-menu>
-      <core-icon-button ng-show="!status" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
-        <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.login}}</span>
-      </core-icon-button>
-      <core-icon-button ng-show="status" id="siginButton" ng-click="logout()" icon="social:person" class="signin">
-        <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.logout}}</span>
-      </core-icon-button>
-      <menu-desplegable src="images/logo.png" id="mas" ng-show="status"><strong style="padding-left: 3px;vertical-align:middle">Nombre Usuario</strong>
-        <core-dropdown class="open-below">
+			<!--<core-icon-button icon="search" class=" search"></core-icon-button>-->
+		</core-toolbar>
 
-          <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123"><span style="padding-left: 3px;vertical-align:middle">Mi Home</span></a></paper-button><br>
+		<footer horizontal center-justified layout>
+			<paper-button ng-click="changeView('/about')">{{language.about}}</paper-button>
+			<paper-button><a href="https://mortega5.typeform.com/to/nRCzNz">{{language.contact}}</a></paper-button>
+			<paper-button ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
+		</footer>
+		<div ng-view="" id="view" class="view">
 
-          <paper-button><a style="text-decoration:none;color:#000;" href="/user/123123/profile"><span style="padding-left: 3px;vertical-align:middle">Configurar Perfil</span></a></paper-button><br>
+		</div>
 
-          <paper-button  ng-click="showPopup($event)" class="signin"> <span style="padding-left: 3px;vertical-align:middle" id="nameId">Desconectar</span> </paper-button>
+		<div ng-show="shadow" class="shadow"></div>
+		<div ng-show="popup" vertical center layout class="popup" id="popup">
+			<core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
 
-        </core-dropdown>
-      </menu-desplegable>
+			<span style="margin:7% 10%;font-size:1.4em">{{language.select_network}}</span>
+			<div vertical center-justified layout class="button-login">
+				<google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login>
+				<twitter-login class="button-login" endpoint='{{domain}}/api/oauth/twitter'></twitter-login>
+				<login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email"></login-facebook>
 
-      <!--<core-icon-button icon="search" class=" search"></core-icon-button>-->
+			</div>
+		</div>
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="bower_components/angular-resource/angular-resource.js"></script>
 
-    </core-toolbar>
+		<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 
-    <footer horizontal center-justified layout>
-      <paper-button ng-click="changeView('/about')">{{language.about}}</paper-button>
-      <paper-button><a href="https://mortega5.typeform.com/to/nRCzNz">{{language.contact}}</a></paper-button>
-      <paper-button ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
-    </footer>
-    <div ng-view="" id="view" class="view">
+		<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 
-    </div>
+		<script src="bower_components/angular-animate/angular-animate.js"></script>
 
-    <div ng-show="shadow" class="shadow"></div>
-    <div ng-show="popup" vertical center layout class="popup" id="popup">
-      <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
+		<script src="bower_components/angular-touch/angular-touch.js"></script>
 
-      <span style="margin:7% 10%;font-size:1.4em">{{language.select_network}}</span>
-      <div vertical center-justified layout class="button-login">
-        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}"></google-login>
-        <twitter-login class="button-login" endpoint='{{domain}}/api/oauth/twitter'></twitter-login>
-        <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email"></login-facebook>
+		<script src="bower_components/angular-route/angular-route.js"></script>
 
-      </div>
-    </div>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
+		<script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
 
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-
-    <script src="bower_components/angular-touch/angular-touch.js"></script>
-
-    <script src="bower_components/angular-route/angular-route.js"></script>
-
-    <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
-
-    <script src="scripts/app.js"></script>
-    <script src="scripts/backend/Services.js"></script>
-    <script src="scripts/controllers/main.js"></script>
-    <script src="scripts/controllers/landingPage.js"></script>
-    <script src="scripts/controllers/userHome.js"></script>
-    <script src="scripts/controllers/about.js"></script>
-    <script src="scripts/controllers/contact.js"></script>
-    <script src="scripts/controllers/profile.js"></script>
-    <script src="scripts/controllers/privacy.js"></script>
-  </body>
+		<script src="scripts/app.js"></script>
+		<script src="scripts/backend/Services.js"></script>
+		<script src="scripts/controllers/main.js"></script>
+		<script src="scripts/controllers/landingPage.js"></script>
+		<script src="scripts/controllers/userHome.js"></script>
+		<script src="scripts/controllers/about.js"></script>
+		<script src="scripts/controllers/contact.js"></script>
+		<script src="scripts/controllers/profile.js"></script>
+		<script src="scripts/controllers/privacy.js"></script>
+	</body>
 </html>
