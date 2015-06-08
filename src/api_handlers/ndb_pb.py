@@ -118,80 +118,70 @@ class UsuarioBeta(ndb.Model):
   apellidos = ndb.StringProperty()
 
 class Componente(ndb.Model):
+  id_componente = ndb.StringProperty()
+  url = ndb.StringProperty()
+  input_type = ndb.StringProperty()
+  output_type = ndb.StringProperty()
+  listening = ndb.StringProperty()
+  rs = ndb.StringProperty()
 
-    nombre = ndb.StringProperty(required=True)
-    x = ndb.FloatProperty()
-    y = ndb.FloatProperty()
-    url = ndb.StringProperty()
-    height = ndb.StringProperty()
-    width = ndb.StringProperty()
-    input_type = ndb.StringProperty()
-    output_type = ndb.StringProperty()
-    listening = ndb.StringProperty()
+class ComponenteUsuario(ndb.Model):
+  id_componente = ndb.StringProperty(required=True)
+  x = ndb.FloatProperty()
+  y = ndb.FloatProperty()
+  height = ndb.StringProperty()
+  width = ndb.StringProperty()
 
 
 class UserRating(ndb.Model):
-
-  # google_user_id = ndb.StringProperty()
-
-    full_name_id = ndb.StringProperty()
-    rating_value = ndb.FloatProperty()
+  full_name_id = ndb.StringProperty()
+  rating_value = ndb.FloatProperty()
 
 
 # Entidad Grupo
 
 class Grupo(ndb.Model):
 
-    nombre_grupo = ndb.StringProperty(required=True)
-    lista_Usuarios = ndb.StringProperty()
-    descripcion = ndb.StringProperty()
+  nombre_grupo = ndb.StringProperty(required=True)
+  lista_Usuarios = ndb.StringProperty()
+  descripcion = ndb.StringProperty()
 
 
 # Entidad Token
 
 class Token(ndb.Model):
 
-    identificador = ndb.StringProperty()
-    token = ndb.StringProperty()
-    nombre_rs = ndb.StringProperty()
+  identificador = ndb.StringProperty()
+  token = ndb.StringProperty()
+  nombre_rs = ndb.StringProperty()
 
 
 # Entidad UsuarioSocial
 
 class UsuarioSocial(ndb.Model):
 
-    nombre_rs = ndb.StringProperty(required=True)
-    siguiendo = ndb.IntegerProperty()
-    seguidores = ndb.IntegerProperty()
-    url_sig = ndb.StringProperty()
-    url_seg = ndb.StringProperty()
-
-
-  # Faltan las uris del resto de apis a consultar
-
-##Entidad Tarjeta
-# class Tarjeta(ndb.Model):
-#   id_tw = ndb.StringProperty()
-#   id_fb = ndb.StringProperty()
-#   id_sof = ndb.StringProperty()
-#   id_li = ndb.StringProperty()
-#   id_ins = ndb.StringProperty()
-#   id_git = ndb.StringProperty()
-#   id_google = ndb.StringProperty()
+  nombre_rs = ndb.StringProperty(required=True)
+  siguiendo = ndb.IntegerProperty()
+  seguidores = ndb.IntegerProperty()
+  url_sig = ndb.StringProperty()
+  url_seg = ndb.StringProperty()
 
 # Entidad usuario
 
 class Usuario(ndb.Model):
-
-    email = ndb.StringProperty()
-    telefono = ndb.IntegerProperty()
-    descripcion = ndb.TextProperty()
-    imagen = ndb.StringProperty()
-    tokens = ndb.StructuredProperty(Token, repeated=True)
-    lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
-    lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
-    valoracion = ndb.StructuredProperty(UserRating, repeated=True)
-    componentes = ndb.StructuredProperty(Componente, repeated=True)
+  id_usuario = ndb.StringProperty()
+  email = ndb.StringProperty()
+  private_email = ndb.BooleanProperty()
+  telefono = ndb.IntegerProperty()
+  private_phone = ndb.BooleanProperty()
+  descripcion = ndb.TextProperty()
+  sitio_web = ndb.StringProperty()
+  imagen = ndb.StringProperty()
+  tokens = ndb.StructuredProperty(Token, repeated=True)
+  lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
+  lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
+  valoracion = ndb.StructuredProperty(UserRating, repeated=True)
+  componentes = ndb.StructuredProperty(ComponenteUsuario, repeated=True)
 
 
   # tarjeta = ndb.StructuredProperty(Tarjeta)
@@ -344,7 +334,7 @@ def buscaRed(entity_key): # FUNCIONA
 
 def insertarComponente(entity_key, nombre, entrada, salida, coord_x=0, coord_y=0, url="", height="", width="", listening=""): # FUNCIONA
   usuario = entity_key.get()
-  componente = Componente(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width, input_type=entrada, output_type=salida, listening=listening)
+  componente = ComponenteUsuario(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width, input_type=entrada, output_type=salida, listening=listening)
   usuario.componentes.append(componente)
 
   usuario.put()
@@ -440,6 +430,16 @@ def usuarioSuscrito(email):
     return True
   else:
     return False
+
+def getComponents(rs="", entity_key="", user_id="", all_info=True, format="reduced"):
+  if user_id == "" and all_info: # The general information of the components must be returned
+    components = Componente.query()
+    comp = {}
+    res = []
+    for component in components:
+      comp["id_componente"] = component.id_componente
+      comp["url"] = component.url
+
 
 
 # class MainPage(webapp2.RequestHandler):
