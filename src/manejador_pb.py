@@ -55,8 +55,8 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/stackoverflow', api_oauth_refactored.StackOverflowContainerHandler),
     (r'/api/oauth/stackoverflow/(.*)', api_oauth_refactored.StackOverflowHandler),
 
-    (r'/api/oauth/github', api_oauth_refactored.GithubContainerHandler),
-    (r'/api/oauth/github/(.*)', api_oauth_refactored.GithubHandler),
+    (r'/api/oauth/github', api_oauth_refactored.GitHubContainerHandler),
+    (r'/api/oauth/github/(.*)', api_oauth_refactored.GitHubHandler),
 
     (r'/api/oauth/linkedin', api_oauth_refactored.LinkedinContainerHandler),
     (r'/api/oauth/linkedin/(.*)', api_oauth_refactored.LinkedinHandler),

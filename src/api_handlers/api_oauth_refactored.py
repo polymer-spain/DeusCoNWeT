@@ -128,57 +128,56 @@ class OauthLoginHandler(SessionHandler):
 class OauthLogoutHandler(SessionHandler):
     def post_logout(self, social_network):
         cookie_value = self.request.cookies.get('session')
-            if not cookie_value == None:
-                # Logout
-                logout_status = self.logout(cookie_value)
-                # TODO: Invalidate the cookie!
-                self.response.delete_cookie('session')
-                self.response.set_status(200)
-            else:
-                response = \
-                    {'error': 'This request requires a secure_cookie with the session identifier'}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(400)
+        if not cookie_value == None:
+            # Logout
+            logout_status = self.logout(cookie_value)
+            # TODO: Invalidate the cookie!
+            self.response.delete_cookie('session')
+            self.response.set_status(200)
+        else:
+            response = \
+                {'error': 'This request requires a secure_cookie with the session identifier'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 class OauthCredentialsHandler(SessionHandler):
     def get_credentials(self, social_network):
-    cookie_value = self.request.cookies.get('session')
-    if not cookie_value == None:
+        cookie_value = self.request.cookies.get('session')
+        if not cookie_value == None:
+            # Obtains info related to the user authenticated in the system
+            user = self.getUserInfo(cookie_value)
 
-        # Obtains info related to the user authenticated in the system
-        user = self.getUserInfo(cookie_value)
-
-        # Searchs for user's credentials
-        if not user == None:
-            # userKey = ndb.Key(ndb_pb.Usuario,str(user))
-            user_credentials = ndb_pb.getToken(user, social_network)
-            if not user_credentials == None:
-                response = \
-                    {'token_id': user_credentials.identificador,
-                     'access_token': user_credentials.token}
-                self.response.content_type = 'application/json'
-                self.response.write(json.dumps(response))
-                self.response.set_status(200)
+            # Searchs for user's credentials
+            if not user == None:
+                # userKey = ndb.Key(ndb_pb.Usuario,str(user))
+                user_credentials = ndb_pb.getToken(user, social_network)
+                if not user_credentials == None:
+                    response = \
+                        {'token_id': user_credentials.identificador,
+                         'access_token': user_credentials.token}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                else:
+                    response = \
+                        {'error': 'The active user does not have a pair of token_id' \
+                         + 'and access_token in linkedin stored in the system'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
             else:
                 response = \
-                    {'error': 'The active user does not have a pair of token_id' \
-                     + 'and access_token in linkedin stored in the system'}
+                    {'error': 'The cookie session provided does not belongs to any active user'}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
-                self.response.set_status(404)
+                self.response.set_status(400)
         else:
-            response = \
-                {'error': 'The cookie session provided does not belongs to any active user'}
+            response = {'error': 'You must provide a session cookie'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
             self.response.set_status(400)
-    else:
-        response = {'error': 'You must provide a session cookie'}
-        self.response.content_type = 'application/json'
-        self.response.write(json.dumps(response))
-        self.response.set_status(400)
 
     # TODO!
     def delete_credentials(self, social_network):
@@ -328,12 +327,10 @@ class GitHubContainerHandler(OAuthCredentialsContainerHandler):
             user_id = ndb_pb.modificaToken(str(user_details['id']),
                     access_token, 'github')
             self.response.set_status(200)
-    else:
-        self.response.set_status(400)
 
 
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
-class GoogleplusHandler(OauthCredentialsHandler):
+class GooglePlusHandler(OauthCredentialsHandler):
     """
     Class that represents the Instagram token resource. 
     Methods:
@@ -348,7 +345,7 @@ class GoogleplusHandler(OauthCredentialsHandler):
     def delete(self):
         self.delete_credentials("google")
 
-class GoogleplusLoginHandler(OauthLoginHandler):
+class GooglePlusLoginHandler(OauthLoginHandler):
     """ This class is a resource that represents the login 
     action using the GooglePlus credentials to autenticate in PicBit 
     """
@@ -356,7 +353,7 @@ class GoogleplusLoginHandler(OauthLoginHandler):
         self.post_login('google')
 
 
-class GoogleplusLogoutHandler(OauthLogoutHandler):
+class GooglePlusLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout
     action using the GooglePlus credentials to autenticate in PicBit 
     """
@@ -480,11 +477,11 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
 
 # Handler that manages the callback from Twitter as a final step of the oauth flow
 class TwitterAuthorizationHandler(webapp2.RequestHandler):
-        """ This class is a resource that represents the authorization
+    """ This class is a resource that represents the authorization
         step in the Twitter Login flow, in which the Twitter Endpoint returns
         asyncronously the credentials for the user authenticated in the flow.
         It is the third step in a login flow of three steps.  
-        """
+    """
 
     def get(self):
         """ Manages the callback from Twitter in the Twitter oauth flow.
@@ -528,7 +525,7 @@ class TwitterAuthorizationHandler(webapp2.RequestHandler):
 
 
 class TwitterHandler(OauthCredentialsHandler):
-     """
+    """
     Class that represents the Twitter token resource. 
     Methods:
         get -- Returns the Twitter access_token and token_id
