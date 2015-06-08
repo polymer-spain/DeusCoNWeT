@@ -25,7 +25,7 @@ import re
 import sys
 sys.path.insert(1, 'api_handlers/')
 sys.path.insert(1, 'api_handlers/lib/')
-import api_usuarios, api_componentes, api_contacto, api_oauth_refactored
+import api_usuarios, api_componentes, api_contacto, api_oauth_refactored, api_auxiliar
 
 
 app = webapp2.WSGIApplication([
@@ -35,7 +35,7 @@ app = webapp2.WSGIApplication([
     (r'/api/usuarios', api_usuarios.UserListHandler),
     (r'/api/usuarios/(.*)', api_usuarios.UserHandler),
     
-    (r'/api/oauth/twitterTimeline', api_oauth_refactored.OAuthTwitterTimelineHandler),
+    (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
     
     (r'/api/oauth/twitter', api_oauth_refactored.TwitterContainerHandler),
     (r'/api/oauth/twitter/(.*)', api_oauth_refactored.TwitterHandler),
