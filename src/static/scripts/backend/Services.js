@@ -150,13 +150,11 @@ angular.module('picbit').service('$backend', function ($http, $location) {
 
 }).service('$cookie', function () {
   this.get = function (name) {
-    var cookies, result, patron, exp;
-    cookies = document.cookie;
-    patron = name+"=([^&#]*)";
-    exp = new RegExp(patron);
-    result = exp.exec(cookies);
-    return result ? result[1] : undefined;
-  };
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift()
+      };
+  
   this.put  = function (key, value, expires, path, domain, secure) {
     var cookie;
     cookie = key + '=' + value;

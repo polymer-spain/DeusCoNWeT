@@ -84,5 +84,9 @@
         $location.path("/");
       }
     });
+
+    $rootScope.$on("$locationChangeStart", function(event,current,previus,eventObj) {
+      console.log(event,current,previus,eventObj);
+    });
   }]);
 })(wrap(document));
