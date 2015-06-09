@@ -117,13 +117,14 @@ class UsuarioBeta(ndb.Model):
   nombre = ndb.StringProperty()
   apellidos = ndb.StringProperty()
 
-class Componente(ndb.Model):
+class Component(ndb.Model):
   id_componente = ndb.StringProperty()
   url = ndb.StringProperty()
   input_type = ndb.StringProperty()
   output_type = ndb.StringProperty()
   listening = ndb.StringProperty()
   rs = ndb.StringProperty()
+  description = ndb.StringProperty()
 
 class ComponenteUsuario(ndb.Model):
   id_componente = ndb.StringProperty(required=True)
@@ -134,7 +135,7 @@ class ComponenteUsuario(ndb.Model):
 
 
 class UserRating(ndb.Model):
-  full_name_id = ndb.StringProperty()
+  component_id = ndb.StringProperty()
   rating_value = ndb.FloatProperty()
 
 
@@ -180,7 +181,7 @@ class Usuario(ndb.Model):
   tokens = ndb.StructuredProperty(Token, repeated=True)
   lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
   lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
-  valoracion = ndb.StructuredProperty(UserRating, repeated=True)
+  rates = ndb.StructuredProperty(UserRating, repeated=True)
   componentes = ndb.StructuredProperty(ComponenteUsuario, repeated=True)
 
 
@@ -204,7 +205,7 @@ def getToken(entity_key, rs):  # FUNCIONA
     return res
 
 
-def buscaUsuario(entity_key): #FUNCIONA
+def getUser(entity_key): #FUNCIONA
   user = entity_key.get()
   grupos = user.lista_Grupos; redes = user.lista_Redes
   nombres_grupos = []; nombres_redes = []
@@ -332,7 +333,7 @@ def buscaRed(entity_key): # FUNCIONA
 
   return json.dumps(res)
 
-def insertarComponente(entity_key, nombre, entrada, salida, coord_x=0, coord_y=0, url="", height="", width="", listening=""): # FUNCIONA
+def insertarUserComponent(entity_key, nombre, entrada, salida, coord_x=0, coord_y=0, url="", height="", width="", listening=""): # FUNCIONA
   usuario = entity_key.get()
   componente = ComponenteUsuario(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width, input_type=entrada, output_type=salida, listening=listening)
   usuario.componentes.append(componente)
@@ -394,7 +395,7 @@ def getComponente(entity_key, nombre): # FUNCIONA
   return json.dumps(res)
 
 def buscaToken(id_usuario, rs): #FUNCIONA
-  tokens = Token.query()
+  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
   if token:
     return token.token
@@ -431,7 +432,7 @@ def usuarioSuscrito(email):
   else:
     return False
 
-def getComponents(rs="", entity_key="", user_id="", all_info=True, format="reduced"):
+def getComponents(rs="", user_id="", all_info=True, format="reduced"):
   if user_id == "" and all_info: # The general information of the components must be returned
     components = Componente.query()
     comp = {}
@@ -439,6 +440,21 @@ def getComponents(rs="", entity_key="", user_id="", all_info=True, format="reduc
     for component in components:
       comp["id_componente"] = component.id_componente
       comp["url"] = component.url
+      comp["rs"] = component.rs
+      comp["description"] = component.description
+      comp["input_type"] = component.input_type
+      comp["output_type"] = component.output_type
+      comp["listening"] = component.listening
+      res.append(json.dumps(comp))
+
+    return res
+
+def addRate(entity_key, component_id, value):
+  user = entity_key.get()
+  rate = UserRating(component_id=component_id, rating_value=value)
+  user.rates.append(rate)
+
+
 
 
 
