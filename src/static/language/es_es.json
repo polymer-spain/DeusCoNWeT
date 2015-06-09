@@ -18,6 +18,7 @@
     "en":"English"
   },
   "profile":"Perfil",
+  "settings":"Configuración",
   "user_action": {
     "add" : "Añadir",
     "delete": "Borrar",

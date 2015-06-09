@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
-<polymer-element name="login-facebook" attributes="key_app scope logged sort">
+<polymer-element name="login-facebook" attributes="key_app scope logged sort static">
 	<template id="template">
 		<link rel="stylesheet" href="login-facebook.css">
 
@@ -39,6 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		Polymer('login-facebook',{
 			logged: false, // Parametro que se recibe de la base de datos
 			sort: false,
+      static: false,
 			key_app:'',
 			textlogin:'LogIn in with Facebook',
 			scope:'',
@@ -86,7 +87,7 @@ fjs.parentNode.insertBefore(js, fjs);\
 				FB.login(function(response) {
 					back.acToken=response.authResponse.accessToken;
 					back.userId = response.authResponse.userID;
-					back.logged = true
+					back.logged= back.static?false:true;
 					this.acToken=response.authResponse.accessToken;
 					this.userId = response.authResponse.userID;
 					document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});}, {scope: this.scope});
