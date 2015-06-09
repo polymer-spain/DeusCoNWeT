@@ -12,7 +12,6 @@
   var app = angular
   .module('picbit', [
     'ngAnimate',
-    'ngCookies',
     'ngResource',
     'ngRoute',
     'ngSanitize',
@@ -25,11 +24,11 @@
     /* Español */
       .when('/', {
       templateUrl: 'views/landingPage.html',
-      controller: 'landingCtrl'
+      controller: 'LandingController'
     })
       .when('/user/:userId', {
       templateUrl: 'views/userHome.html',
-      controller: 'userHomeCtrl',
+      controller: 'UserHomeController',
       resolve: {
         auth: ["$q", "$cookie", function($q, $cookie){
 
@@ -45,15 +44,15 @@
     })
       .when('/about', {
       templateUrl: 'views/about.html',
-      controller: 'aboutCtrl'
+      controller: 'AboutController'
     })
       .when('/contact', {
       templateUrl: 'views/contact.html',
-      controller: 'contactCtrl'
+      controller: 'ContactController'
     })
       .when('/user/:userId/profile', {
       templateUrl: 'views/profile.html',
-      controller: 'ProfileCtrl',
+      controller: 'ProfileController',
       /* Para poder editar el perfil en localhost
     resolve: {
         auth: ["$q", "$cookie", function($q, $cookie){
@@ -70,7 +69,7 @@
     })
       .when('/privacy',{
       templateUrl: 'views/privacy.html',
-      controller: 'privacyCtrl'
+      controller: 'PrivacyController'
     })
     /* Por defecto */
       .otherwise({redirectTo: '/'})

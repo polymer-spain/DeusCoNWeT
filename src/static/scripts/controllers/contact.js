@@ -1,4 +1,4 @@
-angular.module('picbit').controller('contactCtrl', function ($scope, $backend) {
+angular.module('picbit').controller('ContactController', function ($scope, $backend) {
   'use strict';
 
 
