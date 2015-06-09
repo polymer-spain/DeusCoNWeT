@@ -8,14 +8,14 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/core-ajax/core-ajax.html">
-<link rel="import" href="bower_components/core-icon/core-icon.html">
-<link rel="import" href="bower_components/core-icons/core-icons.html">
-<link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
-<link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../core-ajax/core-ajax.html">
+<link rel="import" href="../../core-icon/core-icon.html">
+<link rel="import" href="../../core-icons/core-icons.html">
+<link rel="import" href="../../core-icon-button/core-icon-button.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
 <polymer-element name="instagram-timeline" attributes=" endpoint accessToken">
   <template>
@@ -133,12 +133,12 @@ on-core-response="{{response_megusta}}"
       media_id: "",
       /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
-        if(this.accessToken){
+        if(this.accessToken && this.endpoint != ""){
           this.$.request.go()
         }
       },
       domReady: function(event, detail,sender){
-        if(this.accessToken && this.events != null){
+        if(this.accessToken && this.events == null && this.endpoint != ""){
           this.$.request.go()
         }
       },

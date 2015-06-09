@@ -21,15 +21,17 @@
   <body unresolved ng-app="picbit" ng-controller="MainController">
 
     <core-toolbar ng-class="{small: scrolled}">
-      <img class="logo" src="images/logo.png">
-      <h2 id="name" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')" flex>PicBit</h2>
+      <img class="logo" src="images/logo.png" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')">
+      <div horizontal layout flex>
+        <h2 id="name" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')">PicBit</h2>
+      </div>
 
       <!-- Languages --> 
       <core-dropdown-menu id="language" label="{{language_selected}}">
         <core-dropdown class="lang-menu dropdown" >
           <core-menu vertical layout>
-            <core-item ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
-            <core-item ng-click="changelanguage('en')">{{language.lang.en}}</core-item>
+            <core-item class="lenguage-button" ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
+            <core-item class="lenguage-button" ng-click="changelanguage('en')">{{language.lang.en}}</core-item>
           </core-menu>
         </core-dropdown>
       </core-dropdown-menu>

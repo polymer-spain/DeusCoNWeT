@@ -97,6 +97,7 @@ core-icon-button /deep/ core-icon[role=img] {
   margin-bottom: 15px;
   font-size: 13px;
   max-width: 400px;
+  color: black;
 }
 
 #video{

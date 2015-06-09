@@ -118,7 +118,6 @@ angular.module('picbit').controller('MainController', function ($scope, $locatio
   window.addEventListener('scroll',function(e,d,s){
     $scope.$apply(function() {
       var size = 	document.body.scrollTop
-      console.log(document.body.scrollTop)
       $scope.scrolled = size > 0;
     });
   });

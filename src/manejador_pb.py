@@ -25,7 +25,7 @@ import re
 import sys
 sys.path.insert(1, 'api_handlers/')
 sys.path.insert(1, 'api_handlers/lib/')
-import api_usuarios, api_componentes, api_oauth, api_contacto, api_oauth_refactored
+import api_usuarios, api_componentes, api_oauth, api_contacto, api_oauth_refactored, api_auxiliar
 
 
 app = webapp2.WSGIApplication([
@@ -38,6 +38,7 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/github', api_oauth_refactored.OAuthGithubHandler),
     (r'/api/oauth/linkedin', api_oauth_refactored.OauthLinkedinHandler),
     (r'/api/oauth/instagram', api_oauth_refactored.OAuthInstagramHandler),
+    (r'/api/aux/instagramTimeline', api_auxiliar.instagramRequest),
     (r'/api/oauth/facebook', api_oauth_refactored.OauthFacebookHandler),
     (r'/api/oauth/stackoverflow', api_oauth_refactored.OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', api_oauth_refactored.OauthGooglePlusHandler),
