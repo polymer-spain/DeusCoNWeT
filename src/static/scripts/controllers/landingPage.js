@@ -1,14 +1,4 @@
-
-
-/**
- * @ngdoc function
- * @name pruebaApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the pruebaApp
- */
-
-angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $location, $anchorSmoothScroll, $anchorScroll, $backend) {
+angular.module('picbit').controller('LandingController', function ($scope, $timeout, $location, $anchorSmoothScroll, $anchorScroll, $backend) {
   'use strict';
   if ($location.hash() === 'section1') {
     $scope.selected = 1;

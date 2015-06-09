@@ -8,7 +8,7 @@
  * Controller of the polymerGeneratedAppApp
  */
 
-angular.module('picbit').controller('userHomeCtrl', function ($scope,$timeout) {
+angular.module('picbit').controller('UserHomeController', function ($scope,$timeout) {
 
   $scope.list = [
     {name: 'John'},

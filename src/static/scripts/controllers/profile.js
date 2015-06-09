@@ -1,7 +1,7 @@
 'user strict'
 angular.module('picbit')
 
-  .controller('ProfileCtrl', function ($scope) {
+  .controller('ProfileController', function ($scope) {
   $scope.calC= function()	{
     var nombre=document.getElementById("nombre").value;
     var apellido=document.getElementById("apellido").value;

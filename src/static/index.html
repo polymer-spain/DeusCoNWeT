@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="styles/landingPage.css">
     <link href='https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'>
   </head>
-  <body unresolved ng-app="picbit" ng-controller="MainCtrl" >
+  <body unresolved ng-app="picbit" ng-controller="MainController">
 
     <core-toolbar ng-class="{small: scrolled}">
       <img class="logo" src="images/logo.png">
-      <h2 id="name" ng-click="changeView('/')" flex>PicBit</h2>
+      <h2 id="name" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')" flex>PicBit</h2>
 
       <!-- Languages --> 
       <core-dropdown-menu id="language" label="{{language_selected}}">
@@ -78,17 +78,10 @@
     </div>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
-
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-
     <script src="bower_components/angular-animate/angular-animate.js"></script>
-
     <script src="bower_components/angular-touch/angular-touch.js"></script>
-
     <script src="bower_components/angular-route/angular-route.js"></script>
-
     <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
 
     <script src="scripts/app.js"></script>

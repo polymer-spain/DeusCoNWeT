@@ -1,7 +1,7 @@
-angular.module('picbit').controller('MainCtrl', function ($scope, $location, $timeout, $backend,$http, $window, $cookie) {
+angular.module('picbit').controller('MainController', function ($scope, $location, $timeout, $backend,$http, $window, $cookie) {
   'use strict';
 
-  $scope.status = false; // Registr el stado de logueado
+  $scope.status = $cookie.get('session') !== undefined; // Registr el stado de logueado
   $scope.domain = "https://" + $location.host(); // Dominio bajo el que ejecutamos
   $scope.shadow = false; // Sombra del popup
   $scope.sended = false; // popup de notificar
