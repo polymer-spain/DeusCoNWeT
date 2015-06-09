@@ -404,10 +404,10 @@ def getComponente(entity_key, nombre): # FUNCIONA
   return json.dumps(res)
 
 def buscaToken(id_usuario, rs): #FUNCIONA
-  tokens = Token.query()
-  token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
-  if token:
-    return token.token
+  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+  user = Usuario.query(Usuario.tokens==token_aux).get() 
+  if user.tokens.token:
+    return user.tokens.token
   else:
     return None
 
