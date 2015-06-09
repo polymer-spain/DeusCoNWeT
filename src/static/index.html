@@ -39,18 +39,16 @@
         <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.login}}</span>
       </core-icon-button>
 
-
-
       <div ng-click="dropmenu()"  ng-show="status" relative>
         <div horizontal layout id="user_options">
-          <span flex>{{user.name}}</span>
           <core-icon id="siginButton" icon="social:person"></core-icon>
+          <span flex>{{user.name}}</span>
         </div>
         <core-dropdown class="lang-menu dropdown" id="dropmenu" relatedTarget="{{document.querySelector('#user_options')}}">
           <core-menu vertical layout>
-            <core-item><paper-button flex ng-click="changeView('/user/{{user.id}}/')">{{language.profile}}</paper-button></core-item>
-            <core-item><paper-button flex ng-click="changeView('/user/{{user.id}}/profile')">{{language.settings}}</paper-button></core-item>
-            <core-item><paper-button ng-click="logout()">{{language.logout}}</paper-button></core-item>
+            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="changeView('/user/{{user.id}}/')">{{language.profile}}</paper-button></core-item>
+            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="changeView('/user/{{user.id}}/profile')">{{language.settings}}</paper-button></core-item>
+            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="logout()">{{language.logout}}</paper-button></core-item>
           </core-menu>
         </core-dropdown>
       </div>
