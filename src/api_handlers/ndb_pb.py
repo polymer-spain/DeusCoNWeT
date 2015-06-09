@@ -454,6 +454,10 @@ def addRate(entity_key, component_id, value):
   rate = UserRating(component_id=component_id, rating_value=value)
   user.rates.append(rate)
 
+def deleteUser(entity_key):
+  entity_key.delete()
+
+def deleteComponent():
 
 
 
