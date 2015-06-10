@@ -82,31 +82,28 @@ class OauthLoginHandler(SessionHandler):
         try:
             access_token = self.request.POST['access_token']
             token_id = self.request.POST['token_id']
+            print "Access token recibido ", access_token
+            print "Token id recibido ", token_id
 
             # Checks if the username was stored previously
-
             stored_credentials = ndb_pb.buscaToken(token_id,
                     social_network)
             if stored_credentials == None:
-
+                print stored_credentials
                 # Generate a valid username for a new user
-
                 user_id = ndb_pb.insertaUsuario(social_network,
                         token_id, access_token)
                 session_id = self.login(user_id)
 
                 # Returns the session cookie
-
                 self.response.set_cookie('session', session_id,
                         path='/', domain=domain, secure=True)
 
                 # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
-
                 self.response.set_status(201)
             else:
-
+                print stored_credentials
                 # We store the new set of credentials
-
                 user_id = ndb_pb.modificaToken(token_id,
                         access_token, social_network)
                 session_id = self.login(user_id)

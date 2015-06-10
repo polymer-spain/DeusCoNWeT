@@ -9,6 +9,7 @@ import json
 #       (http://github-login-lab.appspot.com/app/demo.html)
 
 connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
+# connection = httplib.HTTPConnection("localhost:8080")
 
 def make_request(method, request_uri, params, status_ok, session):
 	headers = {"User-Agent": "PicBit-App"}

@@ -38,19 +38,19 @@ app = webapp2.WSGIApplication([
     (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
     
     (r'/api/oauth/twitter', api_oauth_refactored.TwitterContainerHandler),
-    (r'/api/oauth/twitter/(.*)', api_oauth_refactored.TwitterHandler),
     (r'/api/oauth/twitter/login', api_oauth_refactored.TwitterLoginHandler),
     (r'/api/oauth/twitter/logout', api_oauth_refactored.TwitterLogoutHandler),
     (r'/api/oauth/twitter/authorization', api_oauth_refactored.TwitterAuthorizationHandler),
     (r'/api/oauth/twitter/requestToken', api_oauth_refactored.TwitterRequestLoginHandler),
+    (r'/api/oauth/twitter/(.*)', api_oauth_refactored.TwitterHandler),
 
-    (r'/api/oauth/facebook/(.*)', api_oauth_refactored.FacebookHandler),
     (r'/api/oauth/facebook/login', api_oauth_refactored.FacebookLoginHandler),
     (r'/api/oauth/facebook/logout', api_oauth_refactored.FacebookLogoutHandler),
+    (r'/api/oauth/facebook/(.*)', api_oauth_refactored.FacebookHandler),
     
-    (r'/api/oauth/googleplus/(.*)', api_oauth_refactored.GooglePlusHandler),
     (r'/api/oauth/googleplus/login', api_oauth_refactored.GooglePlusLoginHandler),
     (r'/api/oauth/googleplus/logout', api_oauth_refactored.GooglePlusLogoutHandler),
+    (r'/api/oauth/googleplus/(.*)', api_oauth_refactored.GooglePlusHandler),
     
     (r'/api/oauth/stackoverflow', api_oauth_refactored.StackOverflowContainerHandler),
     (r'/api/oauth/stackoverflow/(.*)', api_oauth_refactored.StackOverflowHandler),
