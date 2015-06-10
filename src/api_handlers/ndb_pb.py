@@ -407,7 +407,7 @@ def buscaToken(id_usuario, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   user = Usuario.query(Usuario.tokens==token_aux).get() 
   user_tok_list = user.tokens
-  res = [token.token if token.identificador==id_usuario for token in user_tok_list]
+  res = [token.token for token in user_tok_list if token.identificador==id_usuario]
   print len(res)
   return res
 
