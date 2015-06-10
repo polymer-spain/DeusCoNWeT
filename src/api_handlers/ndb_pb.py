@@ -122,7 +122,6 @@ class Component(ndb.Model):
   url = ndb.StringProperty()
   input_type = ndb.StringProperty()
   output_type = ndb.StringProperty()
-  listening = ndb.StringProperty()
   rs = ndb.StringProperty()
   description = ndb.StringProperty()
 
@@ -132,6 +131,7 @@ class ComponenteUsuario(ndb.Model):
   y = ndb.FloatProperty()
   height = ndb.StringProperty()
   width = ndb.StringProperty()
+  listening = ndb.StringProperty()
 
 
 class UserRating(ndb.Model):
@@ -333,9 +333,12 @@ def buscaRed(entity_key): # FUNCIONA
 
   return json.dumps(res)
 
-def insertarUserComponent(entity_key, nombre, entrada, salida, coord_x=0, coord_y=0, url="", height="", width="", listening=""): # FUNCIONA
+def insertComponent(name, url, description, rs, input, output):
+  
+
+def insertarUserComponent(entity_key, nombre, coord_x=0, coord_y=0, height="", width="", listening=""): # FUNCIONA
   usuario = entity_key.get()
-  componente = ComponenteUsuario(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width, input_type=entrada, output_type=salida, listening=listening)
+  componente = ComponenteUsuario(nombre=nombre, x=coord_x, y=coord_y, height=height, width=width, listening=listening)
   usuario.componentes.append(componente)
 
   usuario.put()
@@ -457,10 +460,20 @@ def addRate(entity_key, component_id, value):
 def deleteUser(entity_key):
   entity_key.delete()
 
-def deleteComponent():
+def deleteComponent(component_name): 
+  component = Component.query(Component.id_componente==component_name).get()
+  component.key.delete()
 
+  # Now, it's necessary to delete this component from all the users
+  comp = Component(component_id=component_name)
+  users = Usuario.query(Usuario.componentes==component).fetch(100)
 
+  [user.componentes.remove(comp) for user in users]
 
+def deleteCredentials(entity_key, rs, id_rs):
+  token_aux = Token(identificador=id_rs, nombre_rs=rs)
+  user = entity_key.get()
+  user.tokens.remove(token_aux)
 
 # class MainPage(webapp2.RequestHandler):
 #   def get(self):
