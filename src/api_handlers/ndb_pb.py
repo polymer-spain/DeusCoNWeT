@@ -404,11 +404,13 @@ def getComponente(entity_key, nombre): # FUNCIONA
   return json.dumps(res)
 
 def buscaToken(id_usuario, rs): #FUNCIONA
+  res = None
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   user = Usuario.query(Usuario.tokens==token_aux).get() 
-  user_tok_list = user.tokens
-  res = [token.token for token in user_tok_list if token.identificador==id_usuario]
-  print len(res)
+  if not user == None:
+    user_tok_list = user.tokens
+    res = [token.token for token in user_tok_list if token.identificador==id_usuario]
+    print len(res)
   return res
 
 def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
