@@ -402,6 +402,7 @@ def getComponente(entity_key, nombre): # FUNCIONA
 
 def buscaToken(id_usuario, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+  tokens = Token.query()
   token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
   if token:
     return token.token
@@ -477,6 +478,13 @@ def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
   user = entity_key.get()
   user.tokens.remove(token_aux)
+
+def searchUserById(user_id):
+  user = Usuario.query(id_usuario=user_id).get()
+  if user:
+    return True
+  else:
+    return False
 
 # class MainPage(webapp2.RequestHandler):
 #   def get(self):
