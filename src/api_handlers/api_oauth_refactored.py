@@ -154,7 +154,7 @@ class OauthLogoutHandler(SessionHandler):
 
 
 class OauthCredentialsHandler(SessionHandler):
-    def get_credentials(self, social_network):
+    def get_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
@@ -162,15 +162,20 @@ class OauthCredentialsHandler(SessionHandler):
 
             # Searchs for user's credentials
             if not user == None:
-                # userKey = ndb.Key(ndb_pb.Usuario,str(user))
                 user_credentials = ndb_pb.getToken(user, social_network)
                 if not user_credentials == None:
-                    response = \
-                        {'token_id': user_credentials.identificador,
-                         'access_token': user_credentials.token}
-                    self.response.content_type = 'application/json'
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(200)
+                    if user_credentials.identificador == token_id: 
+                        response = \
+                            {'token_id': user_credentials.identificador,
+                            'access_token': user_credentials.token}
+                        self.response.content_type = 'application/json'
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(200)
+                    else:
+                        response = {'error': 'You don\'t have permission to access this resource.'}            
+                        self.response.content_type = 'application/json'
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(401)
                 else:
                     response = \
                         {'error': 'The active user does not have a pair of token_id' \
@@ -191,7 +196,7 @@ class OauthCredentialsHandler(SessionHandler):
             self.response.set_status(400)
 
     # TODO!
-    def delete_credentials(self, social_network):
+    def delete_credentials(self, social_network, token_id):
         pass
 
 
@@ -236,10 +241,10 @@ class FacebookHandler(OauthCredentialsHandler):
                   in Facebook for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("facebook")
+        self.get_credentials("facebook", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("facebook")
+        self.delete_credentials("facebook", token_id)
 
 class FacebookLoginHandler(OauthLoginHandler):
     """ This class is a resource that represents the login 
@@ -266,10 +271,10 @@ class GitHubHandler(OauthCredentialsHandler):
                   in GitHub for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("github")
+        self.get_credentials("github", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("github")
+        self.delete_credentials("github", token_id)
 
 
 class GitHubContainerHandler(OAuthCredentialsContainerHandler):
@@ -351,10 +356,10 @@ class GooglePlusHandler(OauthCredentialsHandler):
                   in Instagram for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("google")
+        self.get_credentials("google", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("google")
+        self.delete_credentials("google", token_id)
 
 class GooglePlusLoginHandler(OauthLoginHandler):
     """ This class is a resource that represents the login 
@@ -383,10 +388,10 @@ class InstagramHandler(OauthCredentialsHandler):
                   in Instagram for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("instagram")
+        self.get_credentials("instagram", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("instagram")
+        self.delete_credentials("instagram", token_id)
 
 class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     """
@@ -409,10 +414,10 @@ class LinkedinHandler(OauthCredentialsHandler):
                   in Linkedin for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("linkedin")
+        self.get_credentials("linkedin", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("linkedin")
+        self.delete_credentials("linkedin", token_id)
 
 class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
     """
@@ -435,10 +440,10 @@ class StackOverflowHandler(OauthCredentialsHandler):
                   in StackOverflow for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("stackoverflow")
+        self.get_credentials("stackoverflow", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("stackoverflow")
+        self.delete_credentials("stackoverflow", token_id)
 
 class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     """
@@ -545,10 +550,10 @@ class TwitterHandler(OauthCredentialsHandler):
                   in Twitter for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("twitter")
+        self.get_credentials("twitter", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("twitter")
+        self.delete_credentials("twitter", token_id)
 
 
 class TwitterContainerHandler(OAuthCredentialsContainerHandler):
