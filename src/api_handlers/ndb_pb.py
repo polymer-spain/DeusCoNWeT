@@ -230,8 +230,12 @@ def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   if not datos == None:
     if datos.has_key("email"):
       usuario.email = datos["email"]
+    if datos.has_key("private_email"):
+      usuario.private_email = datos["private_email"]
     if datos.has_key("telefono"):
       usuario.telefono = datos["telefono"]
+    if datos.has_key("private_phone"):
+      usuario.private_phone = datos["private_phone"]
     if datos.has_key("descripcion"):
       usuario.descripcion = datos["descripcion"]
     if datos.has_key("imagen"):
@@ -246,8 +250,12 @@ def actualizaUsuario(entity_key, datos): #FUNCIONA
   usuario = entity_key.get()
   if datos.has_key("email"):
     usuario.email = datos["email"]
+  if datos.has_key("private_email"):
+    usuario.private_email = datos["private_email"]
   if datos.has_key("telefono"):
     usuario.telefono = datos["telefono"]
+  if datos.has_key("private_phone"):
+    usuario.private_phone = datos["private_phone"]
   if datos.has_key("descripcion"):
     usuario.descripcion = datos["descripcion"]
   if datos.has_key("imagen"):
