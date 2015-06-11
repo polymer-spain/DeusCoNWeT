@@ -118,7 +118,7 @@ class UsuarioBeta(ndb.Model):
   apellidos = ndb.StringProperty()
 
 class Component(ndb.Model):
-  id_componente = ndb.StringProperty()
+  component_id = ndb.StringProperty()
   url = ndb.StringProperty()
   input_type = ndb.StringProperty()
   output_type = ndb.StringProperty()
@@ -333,8 +333,9 @@ def buscaRed(entity_key): # FUNCIONA
 
   return json.dumps(res)
 
-def insertComponent(name, url, description, rs, input, output):
-  
+def insertComponent(name, url, description, rs, input_t, output):
+  comp = Component(component_id=name, url=url, input_type=input_t, output_type=output, rs=rs, description=description)
+  comp.put()
 
 def insertarUserComponent(entity_key, nombre, coord_x=0, coord_y=0, height="", width="", listening=""): # FUNCIONA
   usuario = entity_key.get()
@@ -352,17 +353,11 @@ def modificarComponente(entity_key, nombre, datos): #FUNCIONA
         comp.x = datos["x"]
       if datos.has_key("y"):
         comp.y = datos["y"]
-      if datos.has_key("url"):
-        comp.url = datos["url"]
       if datos.has_key("height"):
         comp.height = datos["height"]
       if datos.has_key("width"):
         comp.width = datos["width"]
-      if datos.has_key("entrada"):
-        comp.input_type = datos["entrada"]
-      if datos.has_key("salida"):
-        comp.output_type = datos["salida"]
-
+      
   usuario.put()
 
 def addListening(entity_key, nombre, events):
