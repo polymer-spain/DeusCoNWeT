@@ -48,7 +48,6 @@ domain = cfg['domain']
 # Generic handlers for the session management, login, logout and actions 
 # related to user credentials 
 class SessionHandler(webapp2.RequestHandler):
-
     """
     Class that handles the session of the application
     Methods:
@@ -78,6 +77,14 @@ class SessionHandler(webapp2.RequestHandler):
         return logout_status
 
 class OauthLoginHandler(SessionHandler):
+    """ Defines the logic for the login action, in those social networks that
+        act as authentication services in PicBit, and have 
+        a client authorization flow (for example, GooglePlus or Facebook)
+        Methods:
+            post_login - Implements the login action. Stores the pair of 
+            token_in and access_token in the system, and generates the
+            cookie for the session.
+    """
     def post_login(self, social_network):
         try:
             access_token = self.request.POST['access_token']
@@ -123,6 +130,13 @@ class OauthLoginHandler(SessionHandler):
             self.response.set_status(400)
 
 class OauthLogoutHandler(SessionHandler):
+    """ Defines the logic for the logout action, in those social networks that
+        act as authentication services in PicBit, and have 
+        a client authorization flow (for example, GooglePlus or Facebook)
+        Methods:
+            post_logout - Implements the logout action. Destroys the
+            cookie for the session.
+    """
     def post_logout(self, social_network):
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
@@ -221,10 +235,10 @@ class FacebookHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in Facebook for the user authenticated
     """
-    def get(self):
+    def get(self, token_id):
         self.get_credentials("facebook")
 
-    def delete(self):
+    def delete(self, token_id):
         self.delete_credentials("facebook")
 
 class FacebookLoginHandler(OauthLoginHandler):
@@ -251,10 +265,10 @@ class GitHubHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in GitHub for the user authenticated
     """
-    def get(self):
+    def get(self, token_id):
         self.get_credentials("github")
 
-    def delete(self):
+    def delete(self, token_id):
         self.delete_credentials("github")
 
 
@@ -336,10 +350,10 @@ class GooglePlusHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in Instagram for the user authenticated
     """
-    def get(self):
+    def get(self, token_id):
         self.get_credentials("google")
 
-    def delete(self):
+    def delete(self, token_id):
         self.delete_credentials("google")
 
 class GooglePlusLoginHandler(OauthLoginHandler):
@@ -368,10 +382,10 @@ class InstagramHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in Instagram for the user authenticated
     """
-    def get(self):
+    def get(self, token_id):
         self.get_credentials("instagram")
 
-    def delete(self):
+    def delete(self, token_id):
         self.delete_credentials("instagram")
 
 class InstagramContainerHandler(OAuthCredentialsContainerHandler):
@@ -394,10 +408,10 @@ class LinkedinHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in Linkedin for the user authenticated
     """
-    def get(self):
+    def get(self, token_id):
         self.get_credentials("linkedin")
 
-    def delete(self):
+    def delete(self, token_id):
         self.delete_credentials("linkedin")
 
 class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
@@ -420,10 +434,10 @@ class StackOverflowHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in StackOverflow for the user authenticated
     """
-    def get(self):
+    def get(self, token_id):
         self.get_credentials("stackoverflow")
 
-    def delete(self):
+    def delete(self, token_id):
         self.delete_credentials("stackoverflow")
 
 class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
@@ -530,10 +544,10 @@ class TwitterHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in Twitter for the user authenticated
     """
-    def get(self):
+    def get(self, token_id):
         self.get_credentials("twitter")
 
-    def delete(self):
+    def delete(self, token_id):
         self.delete_credentials("twitter")
 
 
