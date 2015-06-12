@@ -478,6 +478,22 @@ def deleteCredentials(entity_key, rs, id_rs):
   user = entity_key.get()
   user.tokens.remove(token_aux)
 
+def getUsers():
+  users = Usuario.query()
+  users_list = []
+  for user in users:
+    groups = user.lista_Grupos; networks = user.lista_Redes
+    group_names = []; net_names = []
+    [group_names.append(group.nombre_grupo) for group in groups]
+    [net_names.append(net.nombre_rs) for net in networks]
+    usuario = {"email": user.email,
+              "telefono": user.telefono,
+              "descripcion": user.descripcion,
+              "grupos": nombres_grupos,
+              "redes": nombres_redes}
+    usuario = json.dumps(usuario)
+    users_list.append(usuario)
+
 # class MainPage(webapp2.RequestHandler):
 #   def get(self):
 #     self.response.headers['Content-Type'] = 'text/plain'

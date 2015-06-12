@@ -35,7 +35,9 @@ class UserListHandler(SessionHandler):
   # GET Method
 
     def get(self):
-       
+      cookie = self.request.get('session')
+      if not cookie == None:
+        user = self.getUserInfo(cookie) # Entity_key of user
 
 class UserHandler(SessionHandler):
 
@@ -45,5 +47,5 @@ class UserHandler(SessionHandler):
   Methods:
   get -- Gets the info about a user  
   """
-
+  def get(self, user_id):
   
