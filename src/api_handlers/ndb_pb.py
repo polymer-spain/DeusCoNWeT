@@ -117,81 +117,72 @@ class UsuarioBeta(ndb.Model):
   nombre = ndb.StringProperty()
   apellidos = ndb.StringProperty()
 
-class Componente(ndb.Model):
+class Component(ndb.Model):
+  component_id = ndb.StringProperty()
+  url = ndb.StringProperty()
+  input_type = ndb.StringProperty()
+  output_type = ndb.StringProperty()
+  rs = ndb.StringProperty()
+  description = ndb.StringProperty()
 
-    nombre = ndb.StringProperty(required=True)
-    x = ndb.FloatProperty()
-    y = ndb.FloatProperty()
-    url = ndb.StringProperty()
-    height = ndb.StringProperty()
-    width = ndb.StringProperty()
-    input_type = ndb.StringProperty()
-    output_type = ndb.StringProperty()
-    listening = ndb.StringProperty()
+class ComponenteUsuario(ndb.Model):
+  id_componente = ndb.StringProperty(required=True)
+  x = ndb.FloatProperty()
+  y = ndb.FloatProperty()
+  height = ndb.StringProperty()
+  width = ndb.StringProperty()
+  listening = ndb.StringProperty()
 
 
 class UserRating(ndb.Model):
-
-  # google_user_id = ndb.StringProperty()
-
-    full_name_id = ndb.StringProperty()
-    rating_value = ndb.FloatProperty()
+  component_id = ndb.StringProperty()
+  rating_value = ndb.FloatProperty()
 
 
 # Entidad Grupo
 
 class Grupo(ndb.Model):
 
-    nombre_grupo = ndb.StringProperty(required=True)
-    lista_Usuarios = ndb.StringProperty()
-    descripcion = ndb.StringProperty()
+  nombre_grupo = ndb.StringProperty(required=True)
+  lista_Usuarios = ndb.StringProperty()
+  descripcion = ndb.StringProperty()
 
 
 # Entidad Token
 
 class Token(ndb.Model):
 
-    identificador = ndb.StringProperty()
-    token = ndb.StringProperty()
-    nombre_rs = ndb.StringProperty()
+  identificador = ndb.StringProperty()
+  token = ndb.StringProperty()
+  nombre_rs = ndb.StringProperty()
 
 
 # Entidad UsuarioSocial
 
 class UsuarioSocial(ndb.Model):
 
-    nombre_rs = ndb.StringProperty(required=True)
-    siguiendo = ndb.IntegerProperty()
-    seguidores = ndb.IntegerProperty()
-    url_sig = ndb.StringProperty()
-    url_seg = ndb.StringProperty()
-
-
-  # Faltan las uris del resto de apis a consultar
-
-##Entidad Tarjeta
-# class Tarjeta(ndb.Model):
-#   id_tw = ndb.StringProperty()
-#   id_fb = ndb.StringProperty()
-#   id_sof = ndb.StringProperty()
-#   id_li = ndb.StringProperty()
-#   id_ins = ndb.StringProperty()
-#   id_git = ndb.StringProperty()
-#   id_google = ndb.StringProperty()
+  nombre_rs = ndb.StringProperty(required=True)
+  siguiendo = ndb.IntegerProperty()
+  seguidores = ndb.IntegerProperty()
+  url_sig = ndb.StringProperty()
+  url_seg = ndb.StringProperty()
 
 # Entidad usuario
 
 class Usuario(ndb.Model):
-
-    email = ndb.StringProperty()
-    telefono = ndb.IntegerProperty()
-    descripcion = ndb.TextProperty()
-    imagen = ndb.StringProperty()
-    tokens = ndb.StructuredProperty(Token, repeated=True)
-    lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
-    lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
-    valoracion = ndb.StructuredProperty(UserRating, repeated=True)
-    componentes = ndb.StructuredProperty(Componente, repeated=True)
+  id_usuario = ndb.StringProperty()
+  email = ndb.StringProperty()
+  private_email = ndb.BooleanProperty()
+  telefono = ndb.IntegerProperty()
+  private_phone = ndb.BooleanProperty()
+  descripcion = ndb.TextProperty()
+  sitio_web = ndb.StringProperty()
+  imagen = ndb.StringProperty()
+  tokens = ndb.StructuredProperty(Token, repeated=True)
+  lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
+  lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
+  rates = ndb.StructuredProperty(UserRating, repeated=True)
+  componentes = ndb.StructuredProperty(ComponenteUsuario, repeated=True)
 
 
   # tarjeta = ndb.StructuredProperty(Tarjeta)
@@ -214,7 +205,7 @@ def getToken(entity_key, rs):  # FUNCIONA
     return res
 
 
-def buscaUsuario(entity_key): #FUNCIONA
+def getUser(entity_key): #FUNCIONA
   user = entity_key.get()
   grupos = user.lista_Grupos; redes = user.lista_Redes
   nombres_grupos = []; nombres_redes = []
@@ -239,8 +230,12 @@ def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   if not datos == None:
     if datos.has_key("email"):
       usuario.email = datos["email"]
+    if datos.has_key("private_email"):
+      usuario.private_email = datos["private_email"]
     if datos.has_key("telefono"):
       usuario.telefono = datos["telefono"]
+    if datos.has_key("private_phone"):
+      usuario.private_phone = datos["private_phone"]
     if datos.has_key("descripcion"):
       usuario.descripcion = datos["descripcion"]
     if datos.has_key("imagen"):
@@ -255,8 +250,12 @@ def actualizaUsuario(entity_key, datos): #FUNCIONA
   usuario = entity_key.get()
   if datos.has_key("email"):
     usuario.email = datos["email"]
+  if datos.has_key("private_email"):
+    usuario.private_email = datos["private_email"]
   if datos.has_key("telefono"):
     usuario.telefono = datos["telefono"]
+  if datos.has_key("private_phone"):
+    usuario.private_phone = datos["private_phone"]
   if datos.has_key("descripcion"):
     usuario.descripcion = datos["descripcion"]
   if datos.has_key("imagen"):
@@ -342,9 +341,13 @@ def buscaRed(entity_key): # FUNCIONA
 
   return json.dumps(res)
 
-def insertarComponente(entity_key, nombre, entrada, salida, coord_x=0, coord_y=0, url="", height="", width="", listening=""): # FUNCIONA
+def insertComponent(name, url, description, rs, input_t, output):
+  comp = Component(component_id=name, url=url, input_type=input_t, output_type=output, rs=rs, description=description)
+  comp.put()
+
+def insertarUserComponent(entity_key, nombre, coord_x=0, coord_y=0, height="", width="", listening=""): # FUNCIONA
   usuario = entity_key.get()
-  componente = Componente(nombre=nombre, x=coord_x, y=coord_y, url=url, height=height, width=width, input_type=entrada, output_type=salida, listening=listening)
+  componente = ComponenteUsuario(nombre=nombre, x=coord_x, y=coord_y, height=height, width=width, listening=listening)
   usuario.componentes.append(componente)
 
   usuario.put()
@@ -358,17 +361,11 @@ def modificarComponente(entity_key, nombre, datos): #FUNCIONA
         comp.x = datos["x"]
       if datos.has_key("y"):
         comp.y = datos["y"]
-      if datos.has_key("url"):
-        comp.url = datos["url"]
       if datos.has_key("height"):
         comp.height = datos["height"]
       if datos.has_key("width"):
         comp.width = datos["width"]
-      if datos.has_key("entrada"):
-        comp.input_type = datos["entrada"]
-      if datos.has_key("salida"):
-        comp.output_type = datos["salida"]
-
+      
   usuario.put()
 
 def addListening(entity_key, nombre, events):
@@ -404,6 +401,7 @@ def getComponente(entity_key, nombre): # FUNCIONA
   return json.dumps(res)
 
 def buscaToken(id_usuario, rs): #FUNCIONA
+  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   tokens = Token.query()
   token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
   if token:
@@ -441,6 +439,52 @@ def usuarioSuscrito(email):
   else:
     return False
 
+def getComponents(rs="", user_id="", all_info=True, format="reduced"):
+  if user_id == "" and all_info: # The general information of the components must be returned
+    components = Componente.query()
+    comp = {}
+    res = []
+    for component in components:
+      comp["id_componente"] = component.id_componente
+      comp["url"] = component.url
+      comp["rs"] = component.rs
+      comp["description"] = component.description
+      comp["input_type"] = component.input_type
+      comp["output_type"] = component.output_type
+      comp["listening"] = component.listening
+      res.append(json.dumps(comp))
+
+    return res
+
+def addRate(entity_key, component_id, value):
+  user = entity_key.get()
+  rate = UserRating(component_id=component_id, rating_value=value)
+  user.rates.append(rate)
+
+def deleteUser(entity_key):
+  entity_key.delete()
+
+def deleteComponent(component_name): 
+  component = Component.query(Component.id_componente==component_name).get()
+  component.key.delete()
+
+  # Now, it's necessary to delete this component from all the users
+  comp = Component(component_id=component_name)
+  users = Usuario.query(Usuario.componentes==component).fetch(100)
+
+  [user.componentes.remove(comp) for user in users]
+
+def deleteCredentials(entity_key, rs, id_rs):
+  token_aux = Token(identificador=id_rs, nombre_rs=rs)
+  user = entity_key.get()
+  user.tokens.remove(token_aux)
+
+def searchUserById(user_id):
+  user = Usuario.query(id_usuario=user_id).get()
+  if user:
+    return True
+  else:
+    return False
 
 # class MainPage(webapp2.RequestHandler):
 #   def get(self):
@@ -554,4 +598,3 @@ def usuarioSuscrito(email):
 # app = webapp2.WSGIApplication([
 #       ('/', MainPage),
 # ], debug=True)
-
