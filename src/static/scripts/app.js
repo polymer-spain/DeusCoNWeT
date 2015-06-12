@@ -22,6 +22,7 @@
     .config(function ($locationProvider, $routeProvider,$httpProvider) {
 
     $routeProvider
+    /* Español */
       .when('/', {
       templateUrl: 'views/landingPage.html',
       controller: 'landingCtrl'
@@ -42,6 +43,8 @@
       templateUrl: 'views/privacy.html',
       controller: 'privacyCtrl'
     })
+
+    /* Por defecto */
       .otherwise({redirectTo: '/'})
     ;
     $locationProvider.html5Mode(true)
