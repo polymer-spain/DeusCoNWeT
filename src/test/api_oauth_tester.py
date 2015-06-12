@@ -39,13 +39,12 @@ def main():
 	if len(sys.argv) == 3:
 		opcion = sys.argv[2]
 	if red_social == "googleplus" or red_social=="facebook":
+		basePath = "/api/oauth/" + red_social
+		session1 = None
+		session2 = None
+		token_id1 = "id" + red_social
+		token_id2 = "id" + red_social + "2"
 		if opcion == None:
-			basePath = "/api/oauth/" + red_social
-			session1 = None
-			session2 = None
-			token_id1 = "id" + red_social
-			token_id2 = "id" + red_social + "2"
-
 			#Logins
 			# TEST 1
 			request_uri = basePath + "/login"
@@ -123,29 +122,87 @@ def main():
 			make_request("GET", request_uri, params,400, session1)
 
 			# TEST 11 
-			# Logout con cookie antigua (tiene que borrar la cookie y devolver un 200)
+			# Logout con cookie antigua
 			request_uri = basePath + "/logout"
 			print "\nTEST 11: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 400"
 			params = urllib.urlencode({})
 			make_request("POST", request_uri, params,400, None)
 			print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 		
-		# elif opcion == "borrar":
-		# 	# TODO TEST 12
-		# 	# Borrar credenciales de usuarios de prueba1
-		# 	request_uri = basePath + "/logout"
-		# 	print "\nTEST 12: Haciendo petición DELETE a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 204"
-		# 	params = urllib.urlencode({})
-		# 	make_request("DELETE", request_uri, params,204, session1)
-		# 	print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
-		# 	# TODO TEST 13
-		# 	# Borrar credenciales de usuario de prueba2
-		# 	request_uri = basePath + "/logout"
-		# 	print "\nTEST 13: Haciendo petición DELETE a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 200"
-		# 	params = urllib.urlencode({})
-		# 	make_request("DELETE", request_uri, params,204, session1)
+		elif opcion == "borrar":
+			# PRE-TEST 1: Login en el sistema de usuario de prueba 1
+			request_uri = basePath + "/login"
+			print "\nPRE-TEST 1: Haciendo petición POST a " + request_uri
+			print " (Login en el sistema de usuario de prueba 1)\n Status esperado: 200"
+			access_token = red_social + "tokenTODELETE1"
+			params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token})	
+			session1 = make_request("POST", request_uri, params,200, None)
 
-			print "\nTESTs finalizados. Comprobar el borrado de las entidades de tipo Usuario y Token en datastore"
+			# TEST 12
+			# Borrar credenciales de usuarios de prueba2
+			request_uri = basePath + "/" + token_id2
+			print "\nTEST 12: Haciendo petición DELETE a " + request_uri + " (Borrar creedenciales sin cookie de sesion)"
+			print " Status esperado: 401"
+			params = urllib.urlencode({})
+			make_request("DELETE", request_uri, params,401, None)
+			print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
+			
+			# PRE-TEST 2: Login en el sistema de usuario de prueba 2
+			request_uri = basePath + "/login"
+			print "\nPRE-TEST 2: Haciendo petición POST a " + request_uri
+			print " (Login en el sistema de usuario de prueba 1)\n Status esperado: 200"
+			access_token = red_social + "tokenTODELETE2"
+			params = urllib.urlencode({'token_id': token_id2, 'access_token':access_token})	
+			session2 = make_request("POST", request_uri, params,200, None)
+
+			# TEST 13
+			# Borrar credenciales de usuario de prueba1 (Estando logeado)
+			request_uri = basePath + "/" + token_id1
+			print "\nTEST 13: Haciendo petición DELETE a " + request_uri + " (Borrado de credenciales estando logeado)"
+			print " Status esperado: 204"
+			params = urllib.urlencode({})
+			make_request("DELETE", request_uri, params,204, session1)
+			
+			# TEST 14
+			# Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
+			request_uri = basePath + "/" + token_id2
+			print "\nTEST 13: Haciendo petición DELETE a " + request_uri + " (Borrado de credenciales estando logeado)"
+			print " Status esperado: 401"
+			params = urllib.urlencode({})
+			make_request("DELETE", request_uri, params,401, session1)
+
+			# TEST 15
+			# Borrar credenciales de usuario de prueba2 (Estando logeado)
+			request_uri = basePath + "/" + token_id2
+			print "\nTEST 13: Haciendo petición DELETE a " + request_uri + " (Borrado de credenciales estando logeado)"
+			print " Status esperado: 204"
+			params = urllib.urlencode({})
+			make_request("DELETE", request_uri, params,204, session2)
+
+			# TEST 16
+			# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
+			request_uri = basePath + "/" + token_id2
+			print "\nTEST 13: Haciendo petición DELETE a " + request_uri + " (Intento de borado por segunda vez)"
+			print " Status esperado: 404"
+			params = urllib.urlencode({})
+			make_request("DELETE", request_uri, params,404, session2)
+
+			# POST-TEST 1: Realizar logout en el sistema (usuario 1)
+			request_uri = basePath + "/logout"
+			print "\nPOST-TEST 1: Haciendo petición POST a " + request_uri + " (logout de usuario 1 con cookie de sesion)"
+			print " Status esperado: 200"
+			# Se desloguea el usuario logueado en el PRE TEST 1
+			make_request("POST", request_uri, params,200,session1)
+
+			# POST-TEST 2: Realizar logout en el sistema (usuario 2)
+			request_uri = basePath + "/logout"
+			print "\nPOST-TEST 2: Haciendo petición POST a " + request_uri + " (logout de usuario 1 con cookie de sesion)"
+			print " Status esperado: 200"
+			# Se desloguea el usuario logueado en el PRE TEST 2
+			make_request("POST", request_uri, params,200,session2)
+
+			print "\nTESTs finalizados. Comprobar el borrado de las entidades de tipo Token en datastore"
+
 	elif red_social=="stackoverflow" or red_social=="instagram" or red_social=="linkedin":
 		session = None
 

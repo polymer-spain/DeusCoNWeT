@@ -477,7 +477,11 @@ def deleteComponent(component_name):
 def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
   user = entity_key.get()
-  user.tokens.remove(token_aux)
+  if user:
+    user.tokens.remove(token_aux)
+    return True
+  else:
+    return False
 
 def searchUserById(user_id):
   user = Usuario.query(id_usuario=user_id).get()

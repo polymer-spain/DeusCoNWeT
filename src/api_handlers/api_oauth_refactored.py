@@ -150,7 +150,7 @@ class OauthLogoutHandler(SessionHandler):
                 {'error': 'This request requires a secure_cookie with the session identifier'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
-            self.response.set_status(400)
+            self.response.set_status(401)
 
 
 class OauthCredentialsHandler(SessionHandler):
@@ -193,7 +193,7 @@ class OauthCredentialsHandler(SessionHandler):
             response = {'error': 'You must provide a session cookie'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
-            self.response.set_status(400)
+            self.response.set_status(401)
 
     # TODO!
     def delete_credentials(self, social_network, token_id):
@@ -202,7 +202,19 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user's credentials
             user = self.getUserInfo(cookie_value)
             if not user == None:
-                #TODO: Delete credentials!!
+                deleteStatus = ndb_pb.deleteCredentials(user, social_network, token_id)
+                if deleteStatus:
+                    response = \
+                        {'status': 'Credentials deleted successfully'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(204)
+                else:
+                    response = \
+                        {'status': 'Token not found in the system'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
             else:
                 response = \
                     {'error': 'The cookie session provided does not belongs to any active user'}
@@ -213,7 +225,7 @@ class OauthCredentialsHandler(SessionHandler):
             response = {'error': 'You must provide a session cookie'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
-            self.response.set_status(400)
+            self.response.set_status(401)
 
 
 class OAuthCredentialsContainerHandler(SessionHandler):
