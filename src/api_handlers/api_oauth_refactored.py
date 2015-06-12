@@ -197,7 +197,23 @@ class OauthCredentialsHandler(SessionHandler):
 
     # TODO!
     def delete_credentials(self, social_network, token_id):
-        pass
+        cookie_value = self.request.cookies.get('session')
+        if not cookie_value == None:
+            # Searchs for user's credentials
+            user = self.getUserInfo(cookie_value)
+            if not user == None:
+                #TODO: Delete credentials!!
+            else:
+                response = \
+                    {'error': 'The cookie session provided does not belongs to any active user'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        else:
+            response = {'error': 'You must provide a session cookie'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 class OAuthCredentialsContainerHandler(SessionHandler):
