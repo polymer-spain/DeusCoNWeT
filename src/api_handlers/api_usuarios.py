@@ -54,4 +54,8 @@ class UserHandler(SessionHandler):
   get -- Gets the info about a user  
   """
   def get(self, user_id):
-  
+    cookie_value = self.request.cookies.get('session')
+    if not cookie_value == None:
+      # Obtains info related to the user authenticated in the system
+      user_key = self.getUserInfo(cookie_value)
+      user_info = ndb_pb.getUser(user_key)
