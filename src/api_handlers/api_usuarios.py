@@ -59,3 +59,5 @@ class UserHandler(SessionHandler):
       # Obtains info related to the user authenticated in the system
       user_key = self.getUserInfo(cookie_value)
       user_info = ndb_pb.getUser(user_key)
+
+      
