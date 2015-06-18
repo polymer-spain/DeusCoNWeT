@@ -418,6 +418,7 @@ def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
       token.token = nuevo_token
 
   usuario.put()
+  print "Usuario ", usuario
   return usuario.key
 
 def nuevoUsuarioBeta(email, nombre, apellidos): #FUNCIONA
@@ -475,9 +476,15 @@ def deleteComponent(component_name):
   [user.componentes.remove(comp) for user in users]
 
 def deleteCredentials(entity_key, rs, id_rs):
-  token_aux = Token(identificador=id_rs, nombre_rs=rs)
+  print "red social ", rs
+  print "Id red social ", id_rs
+  # token_aux = Token(identificador=id_rs, nombre_rs=rs)
   user = entity_key.get()
+  print "User ", user
   if user:
+    token_aux = getToken(entity_key, rs)
+    print "Lista de tokens de usuario ", user.tokens
+    print "Token a borrar ", token_aux
     user.tokens.remove(token_aux)
     return True
   else:

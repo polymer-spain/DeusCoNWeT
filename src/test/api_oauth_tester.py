@@ -145,7 +145,6 @@ def main():
 			print " Status esperado: 401"
 			params = urllib.urlencode({})
 			make_request("DELETE", request_uri, params,401, None)
-			print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 			
 			# PRE-TEST 2: Login en el sistema de usuario de prueba 2
 			request_uri = basePath + "/login"
@@ -163,33 +162,34 @@ def main():
 			params = urllib.urlencode({})
 			make_request("DELETE", request_uri, params,204, session1)
 			
-			# TEST 14
-			# Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
-			request_uri = basePath + "/" + token_id2
-			print "\nTEST 13: Haciendo petición DELETE a " + request_uri + " (Borrado de credenciales estando logeado)"
-			print " Status esperado: 401"
-			params = urllib.urlencode({})
-			make_request("DELETE", request_uri, params,401, session1)
+			# # TEST 14
+			# # Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
+			# request_uri = basePath + "/" + token_id2
+			# print "\nTEST 14: Haciendo petición DELETE a " + request_uri
+			# print " (Borrado de credenciales estando logeado, pero sin ser propietario de las mismas)"
+			# print " Status esperado: 401"
+			# params = urllib.urlencode({})
+			# make_request("DELETE", request_uri, params,401, session1)
 
-			# TEST 15
-			# Borrar credenciales de usuario de prueba2 (Estando logeado)
-			request_uri = basePath + "/" + token_id2
-			print "\nTEST 13: Haciendo petición DELETE a " + request_uri + " (Borrado de credenciales estando logeado)"
-			print " Status esperado: 204"
-			params = urllib.urlencode({})
-			make_request("DELETE", request_uri, params,204, session2)
+			# # TEST 15
+			# # Borrar credenciales de usuario de prueba2 (Estando logeado)
+			# request_uri = basePath + "/" + token_id2
+			# print "\nTEST 15: Haciendo petición DELETE a " + request_uri + " (Borrado de credenciales estando logeado)"
+			# print " Status esperado: 204"
+			# params = urllib.urlencode({})
+			# make_request("DELETE", request_uri, params,204, session2)
 
-			# TEST 16
-			# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
-			request_uri = basePath + "/" + token_id2
-			print "\nTEST 13: Haciendo petición DELETE a " + request_uri + " (Intento de borado por segunda vez)"
-			print " Status esperado: 404"
-			params = urllib.urlencode({})
-			make_request("DELETE", request_uri, params,404, session2)
+			# # TEST 16
+			# # Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
+			# request_uri = basePath + "/" + token_id2
+			# print "\nTEST 16: Haciendo petición DELETE a " + request_uri + " (Intento de borado por segunda vez)"
+			# print " Status esperado: 404"
+			# params = urllib.urlencode({})
+			# make_request("DELETE", request_uri, params,404, session2)
 
 			# POST-TEST 1: Realizar logout en el sistema (usuario 1)
 			request_uri = basePath + "/logout"
-			print "\nPOST-TEST 1: Haciendo petición POST a " + request_uri + " (logout de usuario 1 con cookie de sesion)"
+			print "\n\nPOST-TEST 1: Haciendo petición POST a " + request_uri + " (logout de usuario 1 con cookie de sesion)"
 			print " Status esperado: 200"
 			# Se desloguea el usuario logueado en el PRE TEST 1
 			make_request("POST", request_uri, params,200,session1)
