@@ -213,7 +213,8 @@ def getUser(entity_key): #FUNCIONA
     nombres_grupos.append(grupo.nombre_grupo)
   for red in redes:
     nombres_redes.append(red.nombre_rs)
-  usuario = {"email": user.email,
+  usuario = {"id_usuario": user.id_usuario,
+              "email": user.email,
               "telefono": user.telefono,
               "descripcion": user.descripcion,
               "grupos": nombres_grupos,
