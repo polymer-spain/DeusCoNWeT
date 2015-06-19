@@ -49,13 +49,17 @@ class ComponentListHandler(webapp2.RequestHandler):
 
     # Get the cookie in the request
     cookie_value = self.request.cookies.get('session')
-    
+    # Social_network,filter_param and list_format are optional params
+    social_network = self.request.get('social_network', default_value='none')
+    filter_param = self.request.get('filter',default_value='none')
+    list_format = self.request.get('list_format', default_value='none') 
     if cookie_value == None:
-        
+        response = {'error': 'You must provide a session cookie'}
         self.response.content_type = 'application/json'
-        self.response.write(json.dumps(componentList))
-        self.request.set_status(200)
+        self.response.write(json.dumps(response))
+        self.request.set_status(401)
     else:
+        
         
 
   # POST Method
