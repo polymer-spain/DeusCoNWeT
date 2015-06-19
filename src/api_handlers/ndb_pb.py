@@ -412,6 +412,7 @@ def buscaToken(id_usuario, rs): #FUNCIONA
 def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   usuario = Usuario.query(Usuario.tokens==token_aux).get()
+  print "Usuario ", usuario
   tokens = usuario.tokens
   for token in tokens:
     if token.identificador==id_usuario and token.nombre_rs==rs:
@@ -420,7 +421,6 @@ def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
       token_aux.put()
 
   usuario.put()
-  print "Usuario ", usuario
   return usuario.key
 
 def nuevoUsuarioBeta(email, nombre, apellidos): #FUNCIONA
@@ -478,28 +478,11 @@ def deleteComponent(component_name):
   [user.componentes.remove(comp) for user in users]
 
 def deleteCredentials(entity_key, rs, id_rs):
-<<<<<<< HEAD
-  print "red social ", rs
-  print "Id red social ", id_rs
-  # token_aux = Token(identificador=id_rs, nombre_rs=rs)
-  user = entity_key.get()
-  print "User ", user
-  if user:
-    token_aux = getToken(entity_key, rs)
-    print "Lista de tokens de usuario ", user.tokens
-    print "Token a borrar ", token_aux
-    user.tokens.remove(token_aux)
-    user.put()
-    return True
-  else:
-    return False
-=======
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
-  tok = Token.query(token_aux).get()
+  tok = Token.query(ndb.AND(Token.identificador == id_rs, Token.nombre_rs == rs)).get()
   tok.key.delete()
   user = entity_key.get()
   user.tokens.remove(token_aux)
->>>>>>> iss89
 
 def searchUserById(user_id):
   user = Usuario.query(id_usuario=user_id).get()

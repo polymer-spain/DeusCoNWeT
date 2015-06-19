@@ -238,6 +238,7 @@ class OAuthCredentialsContainerHandler(SessionHandler):
             # Checks if the username was stored previously
             stored_credentials = ndb_pb.buscaToken(token_id,
                     social_network)
+            print "Stored credentials ", stored_credentials
             if stored_credentials == None:
 
               # Stores the credentials in a Token Entity
