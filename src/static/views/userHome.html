@@ -14,15 +14,16 @@
     <github-events style="color:black" username={{github.username}} token={{github.token}} mostrar=10></github-events>
 
     <div vertical layout end id="listOption" >
-
       <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
         <core-icon id="menu-icon" icon="arrow-back"></core-icon>
       </div>
 
-      <div id="add" ng-class="{hidden: isMenuHidden('add')}">
+      <div id="add" style="padding-top: 0px; padding-bottom: 0px;" ng-class="{hidden: isMenuHidden('add')}">
         <div horizontal layout>
-          <core-icon icon="add-box" style="display:inline-block" ng-click="setSelected('add')"></core-icon>
-          <div flex ng-click="setList('add')">
+          <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('add'); setSelected('add')">
+            <core-icon icon="add-box" style="display:inline-block"></core-icon>
+          </div>
+          <div flex ng-click="setList('add')" class="desplegable">
             <span  ng-show="showElement?true:showSingle=='add'">{{language.user_action.add}}</span>
             <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" icon="arrow-drop-down" style="float:right">
             </core-icon>
@@ -35,10 +36,12 @@
         </div>
       </div>
 
-      <div id="delete" ng-class="{hidden: isMenuHidden('delete')}">
+      <div id="delete" style="padding-top: 0px; padding-bottom: 0px;" ng-class="{hidden: isMenuHidden('delete')}">
         <div horizontal layout>
-          <core-icon  icon="delete" ng-click="setSelected('delete')"></core-icon>
-          <div flex ng-click="setList('delete')">
+          <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('delete'); setSelected('delete')">
+            <core-icon icon="delete" style="display:inline-block"></core-icon>
+          </div>
+          <div flex ng-click="setList('delete')" class="desplegable">
             <span ng-show="showElement?true:showSingle=='delete'"> {{language.user_action.delete}}</span>
             <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" id="arrow" icon="arrow-drop-down" style="float:right">
             </core-icon>
@@ -51,10 +54,12 @@
         </div>
       </div>
 
-      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
+      <div id="modify" style="padding-top: 0px; padding-bottom: 0px;" ng-class="{hidden: isMenuHidden('modify')}">
         <div horizontal layout>
-          <core-icon  icon="create" ng-click="setSelected('modify')"></core-icon>
-          <div flex ng-click="setList('modify')">
+          <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('modify'); setSelected('modify')">
+            <core-icon  icon="create"></core-icon>
+          </div>
+          <div flex ng-click="setList('modify')" class="desplegable">
             <span ng-show="showElement?true:showSingle=='modify'"> {{language.user_action.modify}}</span>
             <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" icon="arrow-drop-down" style="float:right">
             </core-icon>
