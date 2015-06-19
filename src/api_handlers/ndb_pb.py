@@ -198,7 +198,7 @@ def getToken(entity_key, rs):  # FUNCIONA
     if not rs in rs_list:
       return 'La red social no esta contemplada'
     for token in tokens:
-      print "DEBUG: TOKEN ACTUAL ", token.nombre_rs 
+      print "DEBUG: TOKEN ACTUAL ", token.identificador 
       if token.nombre_rs == rs:
         res = token
 
@@ -486,6 +486,7 @@ def deleteCredentials(entity_key, rs, id_rs):
     print "Lista de tokens de usuario ", user.tokens
     print "Token a borrar ", token_aux
     user.tokens.remove(token_aux)
+    user.put()
     return True
   else:
     return False
