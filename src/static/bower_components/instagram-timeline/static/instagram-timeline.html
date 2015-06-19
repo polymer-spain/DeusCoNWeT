@@ -281,7 +281,7 @@ on-core-response="{{response_megusta}}"
 
       /*Parseo de los hastaghs de dentro de los tweets*/
       parseHashtag: function(tweet) {
-        return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóú]+/g, function(t) {
+        return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
           return '<a href="https://instagram.com/explore/tags/'+tag+' "target="_blank">#'+tag+'</a>'
         });

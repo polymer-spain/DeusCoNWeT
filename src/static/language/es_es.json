@@ -28,7 +28,7 @@
   "user_profile": {
     "title" : "Datos Personales",
     "name" : "Nombre",
-    "surname" : "Apeliidos",
+    "surname" : "Apellidos",
     "email" : "Email",
     "save" : "Guardar",
     "social" : "Redes sociales conectadas"

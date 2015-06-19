@@ -195,7 +195,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       /*Parseo de los hastaghs de dentro de los tweets*/
       parseHashtag: function(tweet) {
-        return tweet.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
+        return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
           return '<a href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
         });
