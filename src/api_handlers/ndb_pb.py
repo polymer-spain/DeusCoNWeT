@@ -416,6 +416,8 @@ def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
   for token in tokens:
     if token.identificador==id_usuario and token.nombre_rs==rs:
       token.token = nuevo_token
+      token_aux.token = nuevo_token
+      token_aux.put()
 
   usuario.put()
   return usuario.key
@@ -476,6 +478,8 @@ def deleteComponent(component_name):
 
 def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
+  tok = Token.query(token_aux).get()
+  tok.key.delete()
   user = entity_key.get()
   user.tokens.remove(token_aux)
 
