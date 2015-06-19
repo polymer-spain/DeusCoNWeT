@@ -18,7 +18,7 @@
   limitations under the License.
 """
 
-import webapp2
+import webapp2, json
 import ndb_pb
 from google.appengine.api import memcache
 from api_oauth import SessionHandler
@@ -59,5 +59,9 @@ class UserHandler(SessionHandler):
       # Obtains info related to the user authenticated in the system
       user_key = self.getUserInfo(cookie_value)
       user_info = ndb_pb.getUser(user_key)
+      user = json.dumps(user_info)
+      # Depending on the user making the request, the info returned will be one or another
+      if user["id_usuario"] == user_id:
+        
 
       
