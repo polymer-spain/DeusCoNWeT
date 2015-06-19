@@ -207,17 +207,23 @@ def getToken(entity_key, rs):  # FUNCIONA
 
 def getUser(entity_key): #FUNCIONA
   user = entity_key.get()
-  grupos = user.lista_Grupos; redes = user.lista_Redes
-  nombres_grupos = []; nombres_redes = []
-  for grupo in grupos:
-    nombres_grupos.append(grupo.nombre_grupo)
+  rates = user.rates; redes = user.lista_Redes
+  rates_list = []; nombres_redes = []
+  for rate in rates:
+    comp = rate.component_id
+    value = rate.rating_value
+    tup = (comp, value)
+    rates_list.append(tup)
   for red in redes:
     nombres_redes.append(red.nombre_rs)
   usuario = {"id_usuario": user.id_usuario,
-              "email": user.email,
-              "telefono": user.telefono,
               "descripcion": user.descripcion,
-              "grupos": nombres_grupos,
+              "imagen": user.imagen,
+              "sitio_web": user.sitio_web,
+              "private_email"_ user.private_email,
+              "email": user.email,
+              "private_phone": user.private_phone,
+              "telefono": user.telefono,
               "redes": nombres_redes}
   usuario = json.dumps(usuario)
   return usuario
@@ -403,6 +409,7 @@ def getComponente(entity_key, nombre): # FUNCIONA
 
 def buscaToken(id_usuario, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+  tokens = Token.query()
   token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
   if token:
     return token.token
@@ -416,6 +423,8 @@ def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
   for token in tokens:
     if token.identificador==id_usuario and token.nombre_rs==rs:
       token.token = nuevo_token
+      token_aux.token = nuevo_token
+      token_aux.put()
 
   usuario.put()
   return usuario.key
@@ -476,6 +485,8 @@ def deleteComponent(component_name):
 
 def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
+  tok = Token.query(token_aux).get()
+  tok.key.delete()
   user = entity_key.get()
   user.tokens.remove(token_aux)
 
@@ -494,6 +505,13 @@ def getUsers():
               "redes": nombres_redes}
     usuario = json.dumps(usuario)
     users_list.append(usuario)
+
+def searchUserById(user_id):
+  user = Usuario.query(id_usuario=user_id).get()
+  if user:
+    return True
+  else:
+    return False
 
 # class MainPage(webapp2.RequestHandler):
 #   def get(self):
