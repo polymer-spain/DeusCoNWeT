@@ -195,7 +195,7 @@ class OauthCredentialsHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(401)
 
-    # TODO!
+    
     def delete_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
@@ -585,22 +585,11 @@ class TwitterHandler(OauthCredentialsHandler):
         self.delete_credentials("twitter", token_id)
 
 
-class TwitterContainerHandler(OAuthCredentialsContainerHandler):
-    """
-    Class that represents the List of Twitter credentials resource. 
-    Methods:
-        post -- Adds a new set of credentials (token_id and access_token in GitHub)
-    """
-    def post(self):
-        self.post_credentials('twitter')
-
-
 class TwitterLoginHandler(SessionHandler):
     """ This class is a resource that represents the login 
     action using the Twitter credentials to autenticate in PicBit 
     """
     def post(self):
-        # TODO: data!!
         oauth_verifier = self.request.get('oauth_verifier',
                 default_value='None')
         if not oauth_verifier == '':

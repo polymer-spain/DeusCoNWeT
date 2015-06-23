@@ -37,7 +37,6 @@ app = webapp2.WSGIApplication([
     
     (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
     
-    (r'/api/oauth/twitter', api_oauth_refactored.TwitterContainerHandler),
     (r'/api/oauth/twitter/login', api_oauth_refactored.TwitterLoginHandler),
     (r'/api/oauth/twitter/logout', api_oauth_refactored.TwitterLogoutHandler),
     (r'/api/oauth/twitter/authorization', api_oauth_refactored.TwitterAuthorizationHandler),
