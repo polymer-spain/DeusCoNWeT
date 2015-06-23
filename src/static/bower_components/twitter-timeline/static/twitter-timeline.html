@@ -16,7 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../paper-button/paper-button.html">
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-<polymer-element name="twitter-timeline" attributes="endpoint accessToken secretToken consumerKey consumerSecret count since_id">
+<polymer-element name="twitter-timeline" attributes="endpoint accessToken secretToken consumerKey consumerSecret count since_id language">
 
   <template>
     <!-- Importacion del CSS a usar -->
@@ -37,12 +37,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                on-core-response="{{response}}"
                >
     </core-ajax>
+
+    <core-ajax
+               id="requestLanguage"
+               url='bower_components/twitter-timeline/static/language/{{idioma}}'
+               method="GET"
+               handleAs='json'
+               on-core-response="{{languaje_response}}"
+               >
+    </core-ajax>
+
     <paper-shadow>
       <!-- Cabecera -->
       <paper-shadow>
         <div id ="cabecera" horizontal center-justified layout>
-          <p flex style="text-align:center; padding-left:50px">Tu Timeline</p>
-          <core-icon-button class="boton_refrescar" icon="refresh" on-click={{refrescar}}></core-icon-button>
+          <p flex style="text-align:center; padding-left:50px">{{data.title}}</p>
+          <core-icon-button class="boton_refrescar" title="{{data.refresh}}" icon="refresh" on-click={{refrescar}}></core-icon-button>
         </div>
       </paper-shadow>
       <!-- Timeline box -->
@@ -75,7 +85,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
         <template if="{{ show}}">
           <ul class="box boton"  on-click={{mostrar}}>
-            <span>Mostrar más</span>
+            <span>{{data.load_more}}</span>
           </ul>
         </template>
       </div>
@@ -89,18 +99,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       show: true,
       since_id: "",
       endpoint:'',
+
+
       ready: function(event, detail, sender) {
-
         if (this.accesToken && this.endpoint){
-
+          if(this.language == 'es'){
+            this.idioma = 'es_es.json'
+          }else if(this.language == 'en'){
+            this.idioma = 'en_en.json'
+          }
+          this.$.requestLanguage.go();
           this.$.requestTimeline.go();
         }
       },
-      domReady: function(e,d,s) {
 
+      domReady: function(e,d,s) {
         if (this.accessToken && this.endpoint){
+          if(this.language == 'es'){
+            this.idioma = 'es_es.json'
+          }else if(this.language == 'en'){
+            this.idioma = 'en_en.json'
+          }
+          this.$.requestLanguage.go();
           this.$.requestTimeline.go();
         }
+      },
+
+      attributeChanged: function(attrName, oldVal, newVal) {
+        if(newVal === "en" && attrName == "language"){
+          this.language = "en";
+          this.idioma = "en_en.json"
+          this.$.requestLanguage.go();
+        }
+        else if(newVal === "es" && attrName == "language"){
+          this.language = "es";
+          this.idioma = "es_es.json"
+          this.$.requestLanguage.go();
+        }
+        this.$.requestTimeline.go();
       },
 
       /*Funcion que prepara los tweets antes de mostrarlos*/
@@ -108,6 +144,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.events = this.changeTime(sender.response);
         this.events = this.parsear(this.events)
         this.mostrar()
+      },
+      languaje_response: function(event, detail,sender){
+        this.data = sender.response;
       },
       /*Funcion que inyecta el codigo html del tweet para que se pueda visualizar*/
       cambiar: function(evento,index){
@@ -138,28 +177,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         for (i=0;i<list.length;i++){
           var date = new Date(list[i].created_at);
           var current_date = new Date();
-          if((current_date.getDay() - date.getDay()) == 0 ){
+          if((current_date.getDate() - date.getDate()) == 0 ){
             if((current_date.getHours() - date.getHours()) == 0 ){
               if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
-                list[i].tiempo = current_date.getSeconds() - date.getSeconds()+" segundos"
+                list[i].tiempo = current_date.getSeconds() - date.getSeconds()+" "+this.data.seconds
               }
               else{
-                list[i].tiempo = current_date.getMinutes() - date.getMinutes()+" minutos";
+                list[i].tiempo = current_date.getMinutes() - date.getMinutes()+" "+this.data.minutes
               }
             }
             else{
               if (current_date.getHours() - date.getHours() == 1)
-                list[i].tiempo = current_date.getHours() - date.getHours()+" hora";
+                list[i].tiempo = current_date.getHours() - date.getHours()+" "+this.data.hour;
               else
-                list[i].tiempo = current_date.getHours() - date.getHours()+" horas";
+                list[i].tiempo = current_date.getHours() - date.getHours()+" "+this.data.hours;
             }
           }
-          else if( (current_date.getDay() - date.getDay()) < 15 ){
-            list[i].tiempo = current_date.getDay() - date.getDay()+" dias";
+          else if( ((current_date.getDate() - date.getDate()) < 15) && ( (current_date.getDate() - date.getDate()) > 0)){
+            if( (current_date.getDate() - date.getDate()) == 1){
+              list[i].tiempo = current_date.getDate() - date.getDate()+" "+this.data.day
+            }
+            else{
+              list[i].tiempo = current_date.getDate() - date.getDate()+" "+this.data.days
+            }
           }
           else{
-            var month = ['Enero','Febrero','Marzo','Abril', 'Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-            list[i].tiempo = date.getDate()+" de "+month[date.getMonth()]+" de "+date.getFullYear();
+            var month = [this.data.january,this.data.february,this.data.march,this.data.april, this.data.may,this.data.june,this.data.july,this.data.august,this.data.september,this.data.october,this.data.november,this.data.december];
+            list[i].tiempo = date.getDate()+" "+this.data.of+" "+month[date.getMonth()]+" "+this.data.of+" "+date.getFullYear();
           }
         }
         return list;

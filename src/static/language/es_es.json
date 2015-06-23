@@ -32,5 +32,10 @@
     "email" : "Email",
     "save" : "Guardar",
     "social" : "Redes sociales conectadas"
+  },
+  "twitter_timeline": {
+    "title" : "Tu Timeline",
+    "refresh" : "Refrescar",
+    "Load more" : "Mostrar mas"
   }
 }

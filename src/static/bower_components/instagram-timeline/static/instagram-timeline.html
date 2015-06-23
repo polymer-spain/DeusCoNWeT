@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
-<polymer-element name="instagram-timeline" attributes=" endpoint accessToken">
+<polymer-element name="instagram-timeline" attributes="endpoint accessToken language">
   <template>
     <link rel="stylesheet" href="instagram-timeline.css">
     <core-ajax
@@ -59,6 +59,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                >
     </core-ajax>
 
+    <core-ajax
+               id="requestLanguage"
+               url='bower_components/instagram-timeline/static/language/{{idioma}}'
+               method="GET"
+               handleAs='json'
+               on-core-response="{{language_response}}"
+               >
+    </core-ajax>
+
     <!--  <core-ajax
 id="me_gusta"
 url="{{endpoint}}"
@@ -75,7 +84,7 @@ on-core-response="{{response_megusta}}"
     <paper-shadow>
       <div id ="cabecera" horizontal center-justified layout>
         <p flex style="text-align:center">Instagram</p>
-        <core-icon-button id="boton_refrescar" icon="refresh" on-click={{refrescar}}></core-icon-button>
+        <core-icon-button id="boton_refrescar" icon="refresh" title="{{language_data.refresh}}" on-click={{refrescar}}></core-icon-button>
       </div>
     </paper-shadow>
 
@@ -97,7 +106,7 @@ on-core-response="{{response_megusta}}"
               <a href="{{evento.link}}" target="_blank">
                 <video id="video" controls muted>
                   <source src="{{evento.videos.standard_resolution.url}}">
-                  El video no puede ser reproducido
+                  {{language_data.video}}
                 </video>
               </a>
             </template>
@@ -115,7 +124,7 @@ on-core-response="{{response_megusta}}"
       <template if="{{events != null}}">
         <div on-click="{{load}}" style="text-align: center; margin-top: -12px">
           <paper-button id="boton">
-            Mostrar más
+            {{language_data.load_more}}
           </paper-button>
         </div>
       </template>
@@ -134,14 +143,42 @@ on-core-response="{{response_megusta}}"
       /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
         if(this.accessToken && this.endpoint != ""){
+          if(this.language == 'es'){
+            this.idioma = 'es_es.json'
+          }else if(this.language == 'en'){
+            this.idioma = 'en_en.json'
+          }
+          this.$.requestLanguage.go();
           this.$.request.go()
         }
       },
+
       domReady: function(event, detail,sender){
         if(this.accessToken && this.events == null && this.endpoint != ""){
+          if(this.language == 'es'){
+            this.idioma = 'es_es.json'
+          }else if(this.language == 'en'){
+            this.idioma = 'en_en.json'
+          }
+          this.$.requestLanguage.go();
           this.$.request.go()
         }
       },
+
+      attributeChanged: function(attrName, oldVal, newVal) {
+        if(newVal === "en" && attrName == "language"){
+          this.language = "en";
+          this.idioma = "en_en.json"
+          this.$.requestLanguage.go();
+        }
+        else if(newVal === "es" && attrName == "language"){
+          this.language = "es";
+          this.idioma = "es_es.json"
+          this.$.requestLanguage.go();
+        }
+        this.$.request.go();
+      },
+
       response: function(event, detail, sender) {
         this.datos = (sender.response)
         this.min_id = this.datos.data[0].id
@@ -149,6 +186,11 @@ on-core-response="{{response_megusta}}"
         this.events = this.parsear(this.events)
         var t = this.$.contenido;
         t.events =  this.events
+      },
+
+      language_response: function(event, detail,sender){
+        this.language_data = sender.response;
+        console.log(this.language_data)
       },
 
       refrescar: function(){
@@ -223,30 +265,30 @@ on-core-response="{{response_megusta}}"
           if( Math.floor(calculate_date/3600) == 0){
             if ( Math.floor(calculate_date/60) == 0){
               if (Math.floor(calculate_date) == 1){
-                list[i].tiempo = Math.floor(calculate_date)+" segundo"
+                list[i].tiempo = Math.floor(calculate_date)+" "+this.language_data.second
               }
               else{
-                list[i].tiempo = Math.floor(calculate_date)+" segundos"
+                list[i].tiempo = Math.floor(calculate_date)+" "+this.language_data.seconds
               }
             }
             else{
               if ( Math.floor(calculate_date/60) == 1 ){
-                list[i].tiempo = Math.floor(calculate_date/60)+" minuto"
+                list[i].tiempo = Math.floor(calculate_date/60)+" "+this.language_data.minute
               }
               else{
-                list[i].tiempo = Math.floor(calculate_date/60)+" minutos"
+                list[i].tiempo = Math.floor(calculate_date/60)+" "+this.language_data.minutes
               }
             }
           }
           else{
             if( Math.floor(calculate_date/3600) == 1 ){
-              list[i].tiempo = Math.floor(calculate_date/3600)+" hora"
+              list[i].tiempo = Math.floor(calculate_date/3600)+" "+this.language_data.hour
             }
             else if(calculate_date/3600 < 24){
-              list[i].tiempo = Math.floor(calculate_date/3600)+" horas"
+              list[i].tiempo = Math.floor(calculate_date/3600)+" "+this.language_data.hours
             }
             else{
-              list[i].tiempo = Math.floor(calculate_date/86400)+" dias"
+              list[i].tiempo = Math.floor(calculate_date/86400)+" "+this.language_data.days
             }
           }
         }
