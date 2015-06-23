@@ -81,5 +81,17 @@ class UserHandler(SessionHandler):
             user_dict["email"] = user["email"]
           if user["private_phone"] == False:
             user_dict["telefono"] = user["telefono"]
+          self.response.content_type = 'application/json'
+          self.response.write(user_dict)
+          self.response.set_status(200)
+
+  def post(self, user_id):
+    cookie_value = self.request.cookies.get('session')
+    if not cookie_value == None:
+      user_key = self.getUserInfo(cookie_value)
+      # It is neccesary to get the parameters from the request
+      try:
+        
+      user_info = ndb_pb.actualizaUsuario()
 
       
