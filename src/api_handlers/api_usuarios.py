@@ -59,9 +59,27 @@ class UserHandler(SessionHandler):
       # Obtains info related to the user authenticated in the system
       user_key = self.getUserInfo(cookie_value)
       user_info = ndb_pb.getUser(user_key)
-      user = json.dumps(user_info)
-      # Depending on the user making the request, the info returned will be one or another
-      if user["id_usuario"] == user_id:
-        
+      if user_info == None:
+        self.response.content_type = 'application/text'
+        self.response.write("")
+        self.response.set_status(404)
+      else:
+        user = json.dumps(user_info)
+        # Depending on the user making the request, the info returned will be one or another
+        if user["id_usuario"] == user_id:
+          self.response.content_type = 'application/json'
+          self.response.write(user_info)
+          self.response.set_status(200)
+        else:
+          user_dict = {"id_usuario": user["id_usuario"],
+                        "descripcion": user["descripcion"],
+                        "imagen": user["imagen"],
+                        "sitio_web": user["sitio_web"],
+                        "redes": user["redes"],
+                        "componentes": user["components"]}
+          if user["private_email"] == False:
+            user_dict["email"] = user["email"]
+          if user["private_phone"] == False:
+            user_dict["telefono"] = user["telefono"]
 
       

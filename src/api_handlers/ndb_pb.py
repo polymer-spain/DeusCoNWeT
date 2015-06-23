@@ -224,7 +224,8 @@ def getUser(entity_key): #FUNCIONA
               "email": user.email,
               "private_phone": user.private_phone,
               "telefono": user.telefono,
-              "redes": nombres_redes}
+              "redes": nombres_redes,
+              "components": rates_list}
   usuario = json.dumps(usuario)
   return usuario
 
