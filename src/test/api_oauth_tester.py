@@ -89,22 +89,22 @@ def main():
 			#Logouts
 			# TEST 6
 			request_uri = basePath + "/logout"
-			print "\nTEST 6: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 400"
+			print "\nTEST 6: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 401"
 			params = urllib.urlencode({})
-			make_request("POST", request_uri, params,400, None)
+			make_request("POST", request_uri, params, 401, None)
 
 			# TEST 7
 			print "\nTEST 7: Haciendo petición POST a " + request_uri + " (logout con cookie de sesion)\n Status esperado: 200"
 			# Se desloguea el usuario logueado en el test1
 			request_uri = basePath + "/logout"
-			make_request("POST", request_uri, params,200,session1)
+			make_request("POST", request_uri, params, 200,session1)
 			
 			# TEST 8
 			# Get (Sin cookie)
 			request_uri = basePath + "/" + token_id2
-			print "\nTEST 8: Haciendo petición GET a " + request_uri + " (obtener credenciales sin cookie)\n Status esperado: 400"
+			print "\nTEST 8: Haciendo petición GET a " + request_uri + " (obtener credenciales sin cookie)\n Status esperado: 401"
 			params = urllib.urlencode({})
-			make_request("GET", request_uri, params,400, None)
+			make_request("GET", request_uri, params, 401, None)
 
 			# TEST 9
 			# Login (prueba de nueva sesión y actualizar credenciales)
@@ -112,21 +112,21 @@ def main():
 			print "\nTEST 9: Haciendo petición POST a " + request_uri + " (prueba de nueva sesión y actualizar credenciales)\n Status esperado: 200"
 			access_token = red_social + "Modify2TEST"
 			params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token})	
-			make_request("POST", request_uri, params,200, None)
+			make_request("POST", request_uri, params, 200, None)
 
 			# TEST 10
 			# Obtener credenciales con cookies antiguas
 			request_uri = basePath + "/" + token_id1
 			print "\nTEST 10: Haciendo petición GET a " + request_uri + " (obtener credenciales con cookie antigua)\n Status esperado: 400"
 			params = urllib.urlencode({})
-			make_request("GET", request_uri, params,400, session1)
+			make_request("GET", request_uri, params, 400, session1)
 
 			# TEST 11 
 			# Logout con cookie antigua
 			request_uri = basePath + "/logout"
-			print "\nTEST 11: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 400"
+			print "\nTEST 11: Haciendo petición POST a " + request_uri + " (logout sin cookie de sesion)\n Status esperado: 401"
 			params = urllib.urlencode({})
-			make_request("POST", request_uri, params,400, None)
+			make_request("POST", request_uri, params, 401, None)
 			print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 		
 		elif opcion == "borrar":
