@@ -381,7 +381,7 @@ def addListening(entity_key, nombre, events):
 
   usuario.put()
 
-def getComponente(entity_key, nombre): # FUNCIONA
+def getComponentes(entity_key, nombre): # FUNCIONA
   user = entity_key.get()
   comps = user.componentes
   res = {"nombre": nombre,
