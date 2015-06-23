@@ -268,6 +268,14 @@ def actualizaUsuario(entity_key, datos): #FUNCIONA
     usuario.descripcion = datos["descripcion"]
   if datos.has_key("imagen"):
     usuario.imagen = datos["imagen"]
+  if datos.has_key("sitio_web"):
+    usuario.imagen = datos["sitio_web"]
+  if datos.has_key("componente"):
+    nom_comp = datos["componente"]
+    if datos.has_key("valoracion"):
+      rate = datos["valoracion"]
+      rating = UserRating(component_id=nom_comp, rating_value=rate)
+      usuario.rates.append(rating)
 
   usuario.put()
 
