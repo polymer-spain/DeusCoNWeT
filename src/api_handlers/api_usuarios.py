@@ -60,8 +60,8 @@ class UserHandler(SessionHandler):
       user_key = self.getUserInfo(cookie_value)
       user_info = ndb_pb.getUser(user_key)
       if user_info == None:
-        self.response.content_type = 'application/text'
-        self.response.write("")
+        self.response.content_type = 'application/json'
+        self.response.write({"error": "The user requested does not exist"})
         self.response.set_status(404)
       else:
         user = json.dumps(user_info)
@@ -90,8 +90,44 @@ class UserHandler(SessionHandler):
     if not cookie_value == None:
       user_key = self.getUserInfo(cookie_value)
       # It is neccesary to get the parameters from the request
-      try:
+      user_info = ndb_pb.getUser(user_key)
+      if not user_info == None:
+        self.response.content_type = 'application/json'
+        self.response.write({"error": "The user requested does not exist"})
+        self.response.set_status(404)
+      else:
+        user = json.dumps(user_info)
+        # Depending on the user making the request, the info returned will be one or another
+        if user["id_usuario"] == user_id:
+          values = self.request.POST
+          update_data = {}
+          if values.has_key("description"):
+            update_data["description"] = values.get("description")
+          if values.has_key("web_site"):
+            update_data["web_site"] = values.get("web_site")
+          if values.has_key("image"):
+            update_data["image"] = values.get("image")
+          if values.has_key("phone"):
+            update_data["phone"] = values.get("phone")
+          if values.has_key("email"):
+            update_data["email"] = values.get("email")
+          if values.has_key("private_phone"):
+            update_data["private_phone"] = values.get("private_phone")
+          if values.has_key("private_email"):
+            update_data["private_email"] = values.get("private_email")
+          if values.has_key("component"):
+            update_data["component"] = values.get("component")
+          if values.has_key("rate"):
+            update_data["rate"] = values.get("rate")
         
-      user_info = ndb_pb.actualizaUsuario()
+          user_info = ndb_pb.actualizaUsuario(user_key, update_data)
+
+          self.response.content_type = 'application/json'
+          self.response.write({"success": "The update has been executed successfully"})
+
+        else:
+          self.response.content_type = 'application/json'
+          self.response.write({"error": "The user is not authenticated"})
+          self.response.set_status(401)
 
       
