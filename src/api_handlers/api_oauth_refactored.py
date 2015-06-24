@@ -29,6 +29,7 @@ import urllib
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
 import time
+import datetime
 import ndb_pb
 from ndb_pb import Token, Usuario
 
@@ -189,9 +190,17 @@ class OAuthLoginHandler(SessionHandler):
 
                 logout_status = self.logout(cookie_value)
 
-                # Delete cookie
+                # Invalidate cookie
 
-                self.response.delete_cookie('session')
+                self.response.set_cookie(
+                    'session',
+                    cookie_value,
+                    path='/',
+                    expires=datetime.datetime.now(),
+                    domain=domain,
+                    secure=True,
+                    )
+
                 self.response.set_status(200)
             else:
                 response = \
@@ -320,8 +329,8 @@ class OAuthTwitterHandler(SessionHandler):
         callback_uri = 'https://' + domain \
             + '/api/oauth/twitter?action=authorization'
         client = oauth.TwitterClient(consumer_key, consumer_secret,
-                callback_uri)
-
+                'https://'+domain+'/api/oauth/twitter?action=authorization'
+                )
         if action == 'request_token':
             self.response.content_type = 'application/json'
             response = {'oauth_url': client.get_authorization_url()}
@@ -468,9 +477,18 @@ class OAuthTwitterHandler(SessionHandler):
 
                 logout_status = self.logout(cookie_value)
 
-                # Delete cookie
+                # Invalidate the cookie
 
-                self.response.delete_cookie('session')
+                self.response.set_cookie(
+                    'session',
+                    cookie_value,
+                    path='/',
+                    expires=datetime.datetime.now(),
+                    domain=domain,
+                    secure=True,
+                    )
+
+
                 self.response.set_status(200)
             else:
                 response = \

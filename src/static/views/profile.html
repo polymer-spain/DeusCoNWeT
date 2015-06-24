@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="styles/profile.css" />
+
+<div class="content">
+	<div>
+		<div id="fondo">
+			<h1 id="titulo">{{language.user_profile.title}}</h1>
+			<div id="form" center layout>
+				<paper-input-decorator label="{{language.user_profile.name}}" floatinglabel class="formulario">
+					<input is="core-input" class="nom" type="text">
+				</paper-input-decorator>
+				<paper-input-decorator label="{{language.user_profile.surname}}" floatinglabel class="formulario">
+					<input is="core-input" class="nom" type="text">
+				</paper-input-decorator>
+				<paper-input-decorator label="{{language.user_profile.email}}" floatinglabel autoValidate class="formulario">
+					<input is="core-input" class="nom" type="email" style="width: 620px;">
+				</paper-input-decorator>
+			</div>
+			<div class="boton" horizontal layout center-justified>
+				<a href="{{domain}}">
+					<paper-button id="but" ng-click="calC()" class="login">
+						<core-icon icon="check"></core-icon>
+						{{language.user_profile.save}}
+					</paper-button>
+				</a>
+			</div>
+		</div>
+		<br>
+		<div id="fondo2">
+			<h1 id="titulo2">{{language.user_profile.social}}</h1>
+			<div id ="redes" horizontal center-justified layout>
+				<div>
+					<core-item label="" id="facebookitem">
+						<login-facebook id ="facebook" class="button-login" key_app="928341650551653" scope="public_profile,email" sort={{sort}}></login-facebook>
+					</core-item>
+				</div>
+				<div>
+					<core-item label="" id="googleitem">
+						<google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" sort={{sort}}></google-login>
+					</core-item>
+				</div>
+				<div>
+					<core-item label=""id="twitteritem">
+						<twitter-login class="button-login" id="twitter" endpoint='{{domain}}/api/oauth/twitter' sort={{sort}}></twitter-login>
+					</core-item>
+				</div>
+				<div>
+					<core-item label=""id="githubitem">
+						<github-login id ="github" class="button-login" scope="user:email" client_id="dc994a092e5f28ad0ffa" endpoint={{domain}} sort={{sort}}></github-login>
+					</core-item>
+				</div>
+				<div>
+					<core-item label=""id="linkedinitem">
+						<linkedin-login id ="linkedin" class="button-login" apiKey="775t0r02k5gfre" sort={{sort}}></linkedin-login>
+					</core-item>
+				</div>
+				<div>
+					<core-item label=""id="instagramitem">
+						<instagram-login id ="instagram" class="button-login" clientId="34af286560fc492cbabc62285f098047" redirectUri="https://test-frontend2-dot-example-project-13.appspot.com" sort={{sort}}></instagram-login>
+					</core-item>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

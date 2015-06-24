@@ -2,14 +2,14 @@
 
 /**
  * @ngdoc function
- * @name pruebaApp.controller:MainCtrl
+ * @name pruebaApp.controller:MainController
  * @description
  * # ComponentCtrl
  * Controller of the pruebaApp
  */
 
 angular.module('picbit')
-  .controller('privacyCtrl', function($scope, $routeParams,$timeout) {
+  .controller('PrivacyController', function($scope, $routeParams,$timeout) {
   $scope.mailTo = function () {
 
     var link = "mailto:deus@conwet.com"

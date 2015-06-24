@@ -113,9 +113,11 @@ rs_list = [
   #               componentId=self.full_name_id)
 
 class UsuarioBeta(ndb.Model):
-  email = ndb.StringProperty(required=True)
-  nombre = ndb.StringProperty()
-  apellidos = ndb.StringProperty()
+
+    email = ndb.StringProperty(required=True)
+    nombre = ndb.StringProperty()
+    apellidos = ndb.StringProperty()
+
 
 class Componente(ndb.Model):
 
@@ -214,23 +216,31 @@ def getToken(entity_key, rs):  # FUNCIONA
     return res
 
 
-def buscaUsuario(entity_key): #FUNCIONA
-  user = entity_key.get()
-  grupos = user.lista_Grupos; redes = user.lista_Redes
-  nombres_grupos = []; nombres_redes = []
-  for grupo in grupos:
-    nombres_grupos.append(grupo.nombre_grupo)
-  for red in redes:
-    nombres_redes.append(red.nombre_rs)
-  usuario = {"email": user.email,
-              "telefono": user.telefono,
-              "descripcion": user.descripcion,
-              "grupos": nombres_grupos,
-              "redes": nombres_redes}
-  usuario = json.dumps(usuario)
-  return usuario
+def buscaUsuario(entity_key):  # FUNCIONA
+    user = entity_key.get()
+    grupos = user.lista_Grupos
+    redes = user.lista_Redes
+    nombres_grupos = []
+    nombres_redes = []
+    for grupo in grupos:
+        nombres_grupos.append(grupo.nombre_grupo)
+    for red in redes:
+        nombres_redes.append(red.nombre_rs)
+    usuario = {
+        'email': user.email,
+        'telefono': user.telefono,
+        'descripcion': user.descripcion,
+        'grupos': nombres_grupos,
+        'redes': nombres_redes,
+        }
+    usuario = json.dumps(usuario)
+    return usuario
+
+
+# FUNCIONA
 
 @ndb.transactional(xg=True)
+
 def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   usuario = Usuario()
   token = Token(identificador=ide, token=token, nombre_rs=rs)
@@ -372,186 +382,208 @@ def modificarComponente(entity_key, nombre, datos): #FUNCIONA
   usuario.put()
 
 def addListening(entity_key, nombre, events):
-  usuario = entity_key.get()
-  comps = usuario.componentes
-  for comp in comps:
-    if comp.nombre == nombre:
-      for event in events:
-        comp.listening += event + ""
+    usuario = entity_key.get()
+    comps = usuario.componentes
+    for comp in comps:
+        if comp.nombre == nombre:
+            for event in events:
+                comp.listening += event + ''
 
-  usuario.put()
+    usuario.put()
 
-def getComponente(entity_key, nombre): # FUNCIONA
-  user = entity_key.get()
-  comps = user.componentes
-  res = {"nombre": nombre,
-          "x": 0,
-          "y": 0,
-          "url": "",
-          "height": "",
-          "width": ""}
-  for comp in comps:
-    if comp.nombre == nombre:
-      res["x"] = comp.x
-      res["y"] = comp.y
-      res["url"] = comp.url
-      res["height"] = comp.height
-      res["width"] = comp.width
-      res["entrada"] = comp.input_type
-      res["salida"] = comp.output_type
-      res["escuchando"] = comp.listening
+def getComponente(entity_key, nombre):  # FUNCIONA
+    user = entity_key.get()
+    comps = user.componentes
+    res = {
+        'nombre': nombre,
+        'x': 0,
+        'y': 0,
+        'url': '',
+        'height': '',
+        'width': '',
+        }
+    for comp in comps:
+        if comp.nombre == nombre:
+            res['x'] = comp.x
+            res['y'] = comp.y
+            res['url'] = comp.url
+            res['height'] = comp.height
+            res['width'] = comp.width
+            res['entrada'] = comp.input_type
+            res['salida'] = comp.output_type
+            res['escuchando'] = comp.listening
 
-  return json.dumps(res)
+    return json.dumps(res)
 
-def buscaToken(id_usuario, rs): #FUNCIONA
-  tokens = Token.query()
-  token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
-  if token:
-    return token.token
-  else:
-    return None
 
-def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
-  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
-  usuario = Usuario.query(Usuario.tokens==token_aux).get()
-  tokens = usuario.tokens
-  for token in tokens:
-    if token.identificador==id_usuario and token.nombre_rs==rs:
-      token.token = nuevo_token
+def buscaToken(id_usuario, rs):  # FUNCIONA
+    tokens = Token.query()
 
-  usuario.put()
-  return usuario.key
+    token = tokens.filter(Token.identificador
+                          == id_usuario).filter(Token.nombre_rs
+            == rs).get()  # filter(Token.nombre_rs==rs).get()
 
-def nuevoUsuarioBeta(email, nombre, apellidos): #FUNCIONA
-  user_beta = UsuarioBeta(email=email, nombre=nombre, apellidos=apellidos)
-  user_beta.put()
+    if token:
+        return token.token
+    else:
+        return None
 
-def getEmails(): #FUNCIONA
-  users_beta = UsuarioBeta.query().fetch(100)
-  lista_emails = []
-  for user in users_beta:
-    lista_emails.append(user.email)
 
-  return lista_emails
+def modificaToken(id_usuario, nuevo_token, rs):  # FUNCIONA
+    token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+    usuario = Usuario.query(Usuario.tokens == token_aux).get()
+    tokens = usuario.tokens
+    for token in tokens:
+        if token.identificador == id_usuario and token.nombre_rs == rs:
+            token.token = nuevo_token
+
+    usuario.put()
+    return usuario.key
+
+
+def nuevoUsuarioBeta(email, nombre, apellidos):  # FUNCIONA
+    user_beta = UsuarioBeta(email=email, nombre=nombre,
+                            apellidos=apellidos)
+    user_beta.put()
+
+
+def getEmails():  # FUNCIONA
+    users_beta = UsuarioBeta.query().fetch(100)
+    lista_emails = []
+    for user in users_beta:
+        lista_emails.append(user.email)
+
+    return lista_emails
+
 
 def usuarioSuscrito(email):
-  emails = getEmails()
-  if email in emails:
-    return True
-  else:
-    return False
+    emails = getEmails()
+    if email in emails:
+        return True
+    else:
+        return False
 
 
-# class MainPage(webapp2.RequestHandler):
-#   def get(self):
-#     self.response.headers['Content-Type'] = 'text/plain'
-#     #PARTE 1: INSERCION DE 1 USUARIO, INSERCION 1 TOKEN, MOSTRAR TOKENS
-#     datos = {"email":"lruiz@conwet.com", 
-#               "telefono": 61472589, 
-#               "descripcion":"Este es mi perfil personal", 
-#               "imagen": "www.example.com/mi-foto.jpg"}
-#     key = insertaUsuario("twitter", "lrr9204", "asdfghjklm159753", datos)
+class MainPage(webapp2.RequestHandler):
 
-#     tok = getToken(key, "twitter")
-#     self.response.write(tok.nombre_rs + "--> identificador: " + tok.identificador + "; token: " + tok.token)
-#     self.response.write("\n")
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/plain'
 
-#     insertaToken(key, "facebook", "poiuytrewq12345", "Luis Ruiz")
+    # PARTE 1: INSERCION DE 1 USUARIO, INSERCION 1 TOKEN, MOSTRAR TOKENS
 
-#     tok_f = getToken(key, "facebook")
-#     self.response.write(tok_f.nombre_rs + "--> identificador: " + tok_f.identificador + "; token: " + tok_f.token)
-#     self.response.write("\n")
+        datos = {
+            'email': 'lruiz@conwet.com',
+            'telefono': 61472589,
+            'descripcion': 'Este es mi perfil personal',
+            'imagen': 'www.example.com/mi-foto.jpg',
+            }
+        key = insertaUsuario('twitter', 'lrr9204', 'asdfghjklm159753',
+                             datos)
 
-#     #PARTE 2: INSERTAR GRUPO, RED Y COMPONENTE, MOSTRAR TODOS
-#     datos_grupo = {"descripcion": "Grupo de prueba para usuario 1",
-#                     "usuarios": ["luis", "ana", "miguel", "enrique"]}
+        tok = getToken(key, 'twitter')
+        self.response.write(tok.nombre_rs + '--> identificador: '
+                            + tok.identificador + '; token: '
+                            + tok.token)
+        self.response.write('\n')
 
-#     insertaGrupo(key, "DEUS", datos_grupo)
+        insertaToken(key, 'facebook', 'poiuytrewq12345', 'Luis Ruiz')
 
-#     grupo = buscaGrupos(key)
-#     grupo = json.loads(grupo)
-#     keys = grupo.keys()
-#     for key_group in keys:
-#       self.response.write("Grupo " + key_group + ": " + grupo[key_group] + "\n")
+        tok_f = getToken(key, 'facebook')
+        self.response.write(tok_f.nombre_rs + '--> identificador: '
+                            + tok_f.identificador + '; token: '
+                            + tok_f.token)
+        self.response.write('\n')
 
-#     datos_red = {"siguiendo": 134,
-#                   "seguidores": 50,
-#                   "url_seg": "api.twitter.com/get_followers",
-#                   "url_sig": "api.twitter.com/get_following"}
+    # PARTE 2: INSERTAR GRUPO, RED Y COMPONENTE, MOSTRAR TODOS
 
-#     insertaRed(key, "twitter", datos_red)
+        datos_grupo = {'descripcion': 'Grupo de prueba para usuario 1',
+                       'usuarios': ['luis', 'ana', 'miguel', 'enrique']}
 
-#     red = buscaRed(key)
-#     red = json.loads(red)
-#     red_keys = red.keys()
-#     for key_network in keys:
-#       self.response.write("Redes " + key_network + ": " + red[key_network] + "\n")
+        insertaGrupo(key, 'DEUS', datos_grupo)
 
-#     insertarComponente(key, "login_twitter", coord_x=12, coord_y=15, url="https://github.com/deus/login_twitter", height="120px", width="50px", entrada="entero", salida="string")
+        grupo = buscaGrupos(key)
+        grupo = json.loads(grupo)
+        keys = grupo.keys()
+        for key_group in keys:
+            self.response.write('Grupo ' + key_group + ': '
+                                + grupo[key_group] + '\n')
 
-#     comp = getComponente(key, "login_twitter")
-#     comp = json.loads(comp)
-#     keys = comp.keys()
-#     self.response.write("Componente " + comp["nombre"] + ":\n")
-#     for key_comp in keys:
-#       if not key_comp == "nombre":
-#         self.response.write("\t" + key_comp + ": " + str(comp[key_comp]) + "\n")
+        datos_red = {
+            'siguiendo': 134,
+            'seguidores': 50,
+            'url_seg': 'api.twitter.com/get_followers',
+            'url_sig': 'api.twitter.com/get_following',
+            }
 
-#     #PARTE 3: MODIFICACION DE ENTIDADES
-#     new_key = modificaToken("lrr9204", "mnbvcxzmnbvcxz1234", "twitter")
-#     tok = getToken(key, "twitter")
-#     self.response.write(tok.nombre_rs + "--> identificador: " + tok.identificador + "; token: " + tok.token)
-#     self.response.write("\n")
+        insertaRed(key, 'twitter', datos_red)
 
-#     token_param = buscaToken("lrr9204", "twitter")
-#     self.response.write(token_param)
-#     self.response.write("\n")
+        red = buscaRed(key)
+        red = json.loads(red)
+        red_keys = red.keys()
+        for key_network in keys:
+            self.response.write('Redes ' + key_network + ': '
+                                + red[key_network] + '\n')
 
-#     info_user = buscaUsuario(key)
-#     info_user = json.loads(info_user)
-#     keys = info_user.keys()
-#     for key_user in keys:
-#       self.response.write("Datos usuario --> " + str(key_user) + ": " + str(info_user[key_user]) + "\n")
+        insertarComponente(
+            key,
+            'login_twitter',
+            coord_x=12,
+            coord_y=15,
+            url='https://github.com/deus/login_twitter',
+            height='120px',
+            width='50px',
+            )
 
-#     addUsuarioAGrupo(key, "DEUS", "pepe")
-#     addDescripcionAGrupo(key, "DEUS", "Grupo UPM")
-#     grupo = buscaGrupos(key)
-#     grupo = json.loads(grupo)
-#     keys = grupo.keys()
-#     for key_group in keys:
-#       self.response.write("Grupo " + key_group + ": " + grupo[key_group] + "\n")
+        comp = getComponente(key, 'login_twitter')
+        comp = json.loads(comp)
+        keys = comp.keys()
+        self.response.write('Componente ' + comp['nombre'] + ':\n')
+        for key_comp in keys:
+            if not key_comp == 'nombre':
+                self.response.write('\t' + key_comp + ': '
+                                    + str(comp[key_comp]) + '\n')
 
-#     datos_act = {"x": 19}
-#     modificarComponente(key, "login_twitter", datos_act)
-#     comp = getComponente(key, "login_twitter")
-#     comp = json.loads(comp)
-#     keys = comp.keys()
-#     self.response.write("Componente " + comp["nombre"] + ":\n")
-#     for key_comp in keys:
-#       if not key_comp == "nombre":
-#         self.response.write("\t" + key_comp + ": " + str(comp[key_comp]) + "\n")
+    # PARTE 3: MODIFICACION DE ENTIDADES
 
-#     nuevos_datos_us = {"email": "l.ruizr04@gmail.com",
-#                         "telefono": 614526893}
-#     actualizaUsuario(key, nuevos_datos_us)
-#     info_user = buscaUsuario(key)
-#     info_user = json.loads(info_user)
-#     keys = info_user.keys()
-#     for key_user in keys:
-#       self.response.write("Datos usuario --> " + str(key_user) + ": " + str(info_user[key_user]) + "\n")
+        new_key = modificaToken('lrr9204', 'mnbvcxzmnbvcxz1234',
+                                'twitter')
+        tok = getToken(key, 'twitter')
+        self.response.write(tok.nombre_rs + '--> identificador: '
+                            + tok.identificador + '; token: '
+                            + tok.token)
+        self.response.write('\n')
 
-#     nuevoUsuarioBeta("luis@ruiz", "Luis", "Ruiz Ruiz")
-#     nuevoUsuarioBeta("ana@lopera", "Ana", "Lopera Martinez")
-#     nuevoUsuarioBeta("juanfran@salamanca", "Juanfran", "Salamanca Carmona")
-#     nuevoUsuarioBeta("miguel@ortega", "Miguel", "Ortega Moreno")
+        token_param = buscaToken('lrr9204', 'twitter')
+        self.response.write(token_param)
+        self.response.write('\n')
 
-#     emails = getEmails()
-#     for email in emails:
-#       self.response.write("\t email: " + email + "\n")
+        info_user = buscaUsuario(key)
+        info_user = json.loads(info_user)
+        keys = info_user.keys()
+        for key_user in keys:
+            self.response.write('Datos usuario --> ' + str(key_user)
+                                + ': ' + str(info_user[key_user]) + '\n'
+                                )
 
-#     self.response.write(str(usuarioSuscrito("enrique@madridejos")) + "\n")
+        addUsuarioAGrupo(key, 'DEUS', 'pepe')
+        addDescripcionAGrupo(key, 'DEUS', 'Grupo UPM')
+        grupo = buscaGrupos(key)
+        grupo = json.loads(grupo)
+        keys = grupo.keys()
+        for key_group in keys:
+            self.response.write('Grupo ' + key_group + ': '
+                                + grupo[key_group] + '\n')
 
-# app = webapp2.WSGIApplication([
-#       ('/', MainPage),
-# ], debug=True)
+        datos_act = {'x': 19}
+        modificarComponente(key, 'login_twitter', datos_act)
+        comp = getComponente(key, 'login_twitter')
+        comp = json.loads(comp)
+        keys = comp.keys()
+        self.response.write('Componente ' + comp['nombre'] + ':\n')
+        for key_comp in keys:
+            if not key_comp == 'nombre':
+                self.response.write('\t' + key_comp + ': '
+                                    + str(comp[key_comp]) + '\n')
 
+
+app = webapp2.WSGIApplication([('/', MainPage)], debug=True)

@@ -15,9 +15,6 @@ limitations under the License.
 
 -->
 
-
-
-
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../core-icon/core-icon.html">
@@ -31,103 +28,133 @@ limitations under the License.
 @status beta
 @homepage https://github.com/Mortega5/google-login
 -->
-<polymer-element name="google-login" attributes="callback clientID scope textLogin">
-	<template>
-		<link rel="stylesheet" href="google-login.css">
-		<paper-button hidden?="{{acToken==undefined}}" id="button" on-click="{{login}}" class="login">
-			<core-icon src="images/googleplus.png"></core-icon>
-			{{textLogin}}
-		</paper-button>
-	</template>
+<polymer-element name="google-login" attributes="callback clientID scope textLogin logged sort static">
+  <template>
+    <link rel="stylesheet" href="google-login.css">
+    <core-ajax id="request"
+               method="GET"
+               url="https://accounts.google.com/o/oauth2/revoke?"
+               params='{"token":"{{acToken}}"}'
+               >
+    </core-ajax>
 
-	<script src="https://apis.google.com/js/client:plusone.js?onload=signinCallback"></script>
-	<script>
-		Polymer({
-			/**
+    <paper-button class="GoogleButton" title="Google+" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
+      <core-icon src="https://i.imgur.com/FM5Nzy7.png" class="icono"></core-icon>
+      Log in with Google+
+    </paper-button>
+
+    <paper-button class="GoogleButton desconectar" title="Google+" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+      <core-icon src="https://i.imgur.com/FM5Nzy7.png" class="icono"></core-icon>
+      Log out from Google+
+    </paper-button>
+
+    <paper-button class="GoogleButton2" title="Google+" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
+      <core-icon src="https://i.imgur.com/FM5Nzy7.png" class="icono2"></core-icon>
+    </paper-button>
+
+    <paper-button class="GoogleButton2 desconectar" title="Google+" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
+      <core-icon src="https://i.imgur.com/FM5Nzy7.png" class="icono2"></core-icon>
+    </paper-button>
+
+  </template>
+
+  <!--  <script src="https://apis.google.com/js/client:plusone.js?onload=signinCallback"></script>-->
+  <script>
+    Polymer({
+      /**
      * Callback al que se va a dirigir una vez
      * realizado el callback (requerido, pero no utilizado)
      *
      * @attribute callback
      * @type string
      */
-			callback:'',
-			/**
+      callback:'',
+      /**
      * ClientID de tu aplicacion web. Obtenido de la
      * consola https://console.developers.google.com/project
      *
      * @attribute clientID
      * @type string
      */
-			clientID:'',
-			/**
+      clientID:'',
+      /**
 	 * Direccion donde se realiza la peticion de autenticacion
      *
      * @attribute OAUTHURL
      * @type string
      */
-			OAUTHURL:'https://accounts.google.com/o/oauth2/auth?',
-			/**
+      OAUTHURL:'https://accounts.google.com/o/oauth2/auth?',
+      /**
 	 * Scope de los datos que se desean obtener del usuario.
      * Consultar scopes: https://developers.google.com/+/api/oauth#login-scopes
 	 *
      * @attribute scope
      * @type string
      */
-			scope:'https://www.googleapis.com/auth/userinfo.profile',
-			/**
+      scope:'https://www.googleapis.com/auth/userinfo.profile',
+      /**
 	 * Token obtenido al hacer login
 	 *
      * @attribute acToken
      * @type string
      */
-			acToken:'',
-			tokenType:'',
-			expiresToken:'',
-			textLogin:'Sign in with Google+',
+      logged:false, // Parametro que se recibe de la base de datos
+      sort: false,
+      static: true,
+      acToken:'',
+      tokenType:'',
+      expiresToken:'',
+      textLogin:'Sign in with Google+',
+      logged:false,
+      estado:'',//Se obtiene de la Base de Datos
 
+      /*      ready : function(){
+        Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro
+      var back=this;
+      var estadoF=this.estado;
+      if (estadoF == true) {
+        back.logged = true;
+      } else{
+        back.logged = false;
+      }
 
-			ready : function(){
-				if (this.textLogin.length != 0) {
-					this.text = this.textLogin;
-				};
+      },*/
 
-			},
-
-			/**
+      /**
 		 * Funcion que realiza el login con google+
 		 * Dispara response
 		 *
 		 * @method login
 		 *
 		 */
-			login: function() {
+      login: function() {
+        console.log(this.logged)
+        var _url = this.OAUTHURL + 'scope=' + this.scope + '&client_id=' + this.clientID + '&redirect_uri=' + this.callback + '&response_type=code token id_token gsession';
+        var win  = window.open(_url, "Google+ Login", 'width=800, height=600');
+        var back = this;
+        var pollTimer  =  window.setInterval(function() {
+          try {
+            if (win.document.URL.indexOf('access_token') != -1) {
+              window.clearInterval(pollTimer);
+              var url =   win.document.URL;
+              var patron = "access_token"+"=([^&#]*)";
+              var exp = new RegExp(patron);
+              back.acToken = exp.exec(url)[1];0
+              back.fire('google-logged',{token: back.acToken,redSocial:'googleplus'});
+              back.logged= back.static?false:true;
+              win.close();
+            }
+          } catch(e) {
+          }
+        }, 100);
+        console.log(this.logged)
+      },
 
-
-				var _url = this.OAUTHURL + 'scope=' + this.scope + '&client_id=' + this.clientID + '&redirect_uri=' + this.callback + '&response_type=code token id_token gsession';
-				var win  = window.open(_url, "Google+ Login", 'width=800, height=600');
-				var back = this;
-				var pollTimer  =  window.setInterval(function() {
-					try {
-
-
-						if (win.document.URL.indexOf('access_token') != -1) {
-							window.clearInterval(pollTimer);
-							var url =   win.document.URL;
-							var patron = "access_token"+"=([^&#]*)";
-							var exp = new RegExp(patron);
-							back.acToken = exp.exec(url)[1];0
-							back.fire('google-logged',{token: back.acToken,redSocial:'googleplus'});
-/*							back.$.button.className="disconnect";
-							back.textLogin='Log out';*/
-							win.close();
-
-						}
-					} catch(e) {
-					}
-				}, 100);
-
-				//	window.location.assign(this.callback);
-
-			},
-		});
-	</script>
+      logout: function() {
+        console.log(this.logged)
+        var back = this;
+        back.logged=false;
+        console.log(this.logged)
+      },
+    });
+  </script>

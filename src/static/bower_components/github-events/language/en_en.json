@@ -1,0 +1,10 @@
+{
+  "refresh" : "Refresh",
+  "title" : "New Events",
+  "loading" : "Loading...",
+  "load_more" : "Show more events",
+  "push" : "Made a push over ",
+  "follow" : "Started to follow the repository ",
+  "create" : "Created the repository in ",
+  "pull_request" : "Made a request pull over "
+}

@@ -17,10 +17,25 @@
     "es":"Español",
     "en":"English"
   },
+  "profile":"Perfil",
+  "settings":"Configuración",
   "user_action": {
     "add" : "Añadir",
     "delete": "Borrar",
     "modify": "Modificar",
     "help": "Ayuda"
+  },
+  "user_profile": {
+    "title" : "Datos Personales",
+    "name" : "Nombre",
+    "surname" : "Apellidos",
+    "email" : "Email",
+    "save" : "Guardar",
+    "social" : "Redes sociales conectadas"
+  },
+  "twitter_timeline": {
+    "title" : "Tu Timeline",
+    "refresh" : "Refrescar",
+    "Load more" : "Mostrar mas"
   }
 }
