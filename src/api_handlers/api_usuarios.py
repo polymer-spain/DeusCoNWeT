@@ -33,17 +33,28 @@ class UserListHandler(SessionHandler):
   """
 
   # GET Method
-
-    def get(self):
-      users_list = ndb_pb.getUsers()
-      if len(users_list) == 0:
-        self.response.content_type = 'application/json'
-        self.response.write('')
-        self.response.set_status(204)
+  def get(self):
+    cookie_value = self.request.get('session')
+    if not cookie_value == None:
+      user_key = self.getUserInfo(cookie_value)
+      if not user_key == None:
+        users_list = ndb_pb.getUsers()
+        if len(users_list) == 0:
+          self.response.content_type = 'application/json'
+          self.response.write('')
+          self.response.set_status(204)
+        else:
+          self.response.content_type = 'application/json'
+          self.response.write(users_list)
+          self.response.set_status(200)
       else:
         self.response.content_type = 'application/json'
-        self.response.write(users_list)
-        self.response.set_status(200)
+        self.response.write({"error": "The session cookie header does not correspond to an active user in the system"})
+        self.response.set_status(400)
+    else:
+      self.response.content_type = 'application/json'
+      self.response.write({"error": "The user is not authenticated"})
+      self.response.set_status(401)
 
 class UserHandler(SessionHandler):
 
@@ -84,6 +95,10 @@ class UserHandler(SessionHandler):
           self.response.content_type = 'application/json'
           self.response.write(user_dict)
           self.response.set_status(200)
+    else:
+      self.response.content_type = 'application/json'
+      self.response.write({"error": "The user is not authenticated"})
+      self.response.set_status(401)
 
   def post(self, user_id):
     cookie_value = self.request.cookies.get('session')
