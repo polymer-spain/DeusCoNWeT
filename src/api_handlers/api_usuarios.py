@@ -145,6 +145,7 @@ class UserHandler(SessionHandler):
         user = json.dumps(user_info)
         # Depending on the user making the request, the info returned will be one or another
         if user["id_usuario"] == user_id:
+          
           ndb_pb.deleteUser(user_key)
 
           self.response.content_type = 'application/json'
