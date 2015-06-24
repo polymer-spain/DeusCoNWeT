@@ -11,9 +11,9 @@
     <instagram-timeline endpoint="{{domain}}/api/aux/instagramTimeline" accessToken="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{idioma}}">
     </instagram-timeline>
 
-    <github-events style="color:black" username={{github.username}} token={{github.token}} mostrar=10></github-events>
+    <github-events style="color:black" username={{github.username}} token={{github.token}} mostrar=10 language="{{idioma}}"></github-events>
 
-    <div vertical layout end id="listOption" >
+    <div vertical layout end id="listOption" style="width: 57px;">
       <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
         <core-icon id="menu-icon" icon="arrow-back"></core-icon>
       </div>

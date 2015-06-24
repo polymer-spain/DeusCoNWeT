@@ -141,7 +141,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /*Funcion que prepara los tweets antes de mostrarlos*/
       response: function(event, detail, sender) {
-        this.events = this.changeTime(sender.response);
+        this.events = this.changeTime(detail.response);
         this.events = this.parsear(this.events)
         this.mostrar()
       },

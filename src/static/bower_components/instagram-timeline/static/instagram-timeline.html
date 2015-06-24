@@ -170,19 +170,20 @@ on-core-response="{{response_megusta}}"
           this.language = "en";
           this.idioma = "en_en.json"
           this.$.requestLanguage.go();
+          this.$.request.go();
         }
         else if(newVal === "es" && attrName == "language"){
           this.language = "es";
           this.idioma = "es_es.json"
           this.$.requestLanguage.go();
+          this.$.request.go();
         }
-        this.$.request.go();
       },
 
       response: function(event, detail, sender) {
-        this.datos = (sender.response)
+        this.datos = (detail.response)
         this.min_id = this.datos.data[0].id
-        this.events  = this.changeTime(sender.response.data)
+        this.events  = this.changeTime(detail.response.data)
         this.events = this.parsear(this.events)
         var t = this.$.contenido;
         t.events =  this.events
@@ -190,7 +191,7 @@ on-core-response="{{response_megusta}}"
 
       language_response: function(event, detail,sender){
         this.language_data = sender.response;
-        console.log(this.language_data)
+        /*console.log(this.language_data)*/
       },
 
       refrescar: function(){
