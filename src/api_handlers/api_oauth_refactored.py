@@ -159,7 +159,6 @@ class OauthCredentialsHandler(SessionHandler):
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
             user = self.getUserInfo(cookie_value)
-
             # Searchs for user's credentials
             if not user == None:
                 user_credentials = ndb_pb.getToken(user, social_network)
@@ -179,7 +178,7 @@ class OauthCredentialsHandler(SessionHandler):
                 else:
                     response = \
                         {'error': 'The active user does not have a pair of token_id' \
-                         + 'and access_token in linkedin stored in the system'}
+                         + ' and access_token in ' + social_network + ' stored in the system'}
                     self.response.content_type = 'application/json'
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
@@ -230,34 +229,49 @@ class OauthCredentialsHandler(SessionHandler):
 
 class OAuthCredentialsContainerHandler(SessionHandler):
     def post_credentials(self, social_network):
-        # Gets the data from the request form
-        try:
-            access_token = self.request.POST['access_token']
-            token_id = self.request.POST['token_id']
+        cookie_value = self.request.cookies.get('session')
+        if not cookie_value == None:
+            user = self.getUserInfo(cookie_value)
+            if not user == None:
+                try:
+                    # Gets the data from the request form
+                    access_token = self.request.POST['access_token']
+                    token_id = self.request.POST['token_id']
 
-            # Checks if the username was stored previously
-            stored_credentials = ndb_pb.buscaToken(token_id,
-                    social_network)
-            print "Stored credentials ", stored_credentials
-            if stored_credentials == None:
+                    # Checks if the username was stored previously
+                    stored_credentials = ndb_pb.buscaToken(token_id,
+                            social_network)
+                    print "Stored credentials ", stored_credentials
+                    if stored_credentials == None:
 
-              # Stores the credentials in a Token Entity
-                ndb_pb.insertaUsuario(social_network, token_id,
-                        access_token)
-                self.response.set_status(201)
+                      # Stores the credentials in a Token Entity
+                        ndb_pb.insertaUsuario(social_network, token_id,
+                                access_token)
+                        self.response.set_status(201)
+                    else:
+
+                        # We store the new set of credentials
+                        user_id = ndb_pb.modificaToken(token_id, access_token,
+                                social_network)
+                        self.response.set_status(200)
+                except KeyError:
+                    response = \
+                        {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
             else:
-
-                # We store the new set of credentials
-                user_id = ndb_pb.modificaToken(token_id, access_token,
-                        social_network)
-                self.response.set_status(200)
-        except KeyError:
+                response = \
+                    {'error': 'The cookie session provided does not belongs to any active user'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        else:
             response = \
-                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+                {'error': 'You must provide a session cookie'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
-            self.response.set_status(400)
-
+            self.response.set_status(401)
 
 # HANDLERS FOR RESOURCES RELATED TO FACEBOOK
 class FacebookHandler(OauthCredentialsHandler):
@@ -565,7 +579,8 @@ class TwitterAuthorizationHandler(webapp2.RequestHandler):
         # Stores in memcache the session id associated with the oauth_verifierj
         key_verifier = 'oauth_verifier_' + oauth_verifier
         data = {'session_id': session_id,
-                'response_status': response_status}
+                'response_status': response_status
+                }
         memcache.add(key_verifier, data)
 
 
