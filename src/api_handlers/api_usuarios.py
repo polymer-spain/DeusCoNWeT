@@ -123,11 +123,35 @@ class UserHandler(SessionHandler):
           user_info = ndb_pb.actualizaUsuario(user_key, update_data)
 
           self.response.content_type = 'application/json'
-          self.response.write({"success": "The update has been executed successfully"})
+          self.response.write({"success": "The update has been successfully executed"})
+          self.response.write(200)
 
         else:
           self.response.content_type = 'application/json'
           self.response.write({"error": "The user is not authenticated"})
           self.response.set_status(401)
 
-      
+  def delete(self, user_id):
+    cookie_value = self.request.cookies.get('session')
+    if not cookie_value == None:
+      user_key = self.getUserInfo(cookie_value)
+      # It is neccesary to get the parameters from the request
+      user_info = ndb_pb.getUser(user_key)
+      if not user_info == None:
+        self.response.content_type = 'application/json'
+        self.response.write({"error": "The user requested does not exist"})
+        self.response.set_status(404)
+      else:
+        user = json.dumps(user_info)
+        # Depending on the user making the request, the info returned will be one or another
+        if user["id_usuario"] == user_id:
+          ndb_pb.deleteUser(user_key)
+
+          self.response.content_type = 'application/json'
+          self.response.write({})
+          self.response.set_status(204)
+
+        else:
+          self.response.content_type = 'application/json'
+          self.response.write({"error": "The user is not authenticated"})
+          self.response.set_status(401)
