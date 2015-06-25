@@ -1,6 +1,8 @@
-angular.module('picbit').service('$backend', function ($http) {
+angular.module('picbit').service('$backend', function ($http, $location) {
+
   'use strict';
-  this.endpoint = 'https://test-frontend-dot-example-project-13.appspot.com';
+
+  this.endpoint = 'https://' + $location.host();
 
   /* Envia el token y el identificador del token correspondiente a una red social */
   this.sendData = function (token, tokenId, redSocial, callback, errorCallback) {
@@ -40,7 +42,7 @@ angular.module('picbit').service('$backend', function ($http) {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
-    $http(request).success(function (data) {
+    $http(request).success(function (data, status) {
       if (callback) {
         callback(data);
       }
@@ -61,7 +63,9 @@ angular.module('picbit').service('$backend', function ($http) {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
-    $http(request).success(function (data,status) {
+
+    $http(request).success(function (data, status) {
+
       if (callback) {
         callback(data,status);
       }
@@ -69,6 +73,29 @@ angular.module('picbit').service('$backend', function ($http) {
       if (errorCallback) {
         errorCallback(data, status);
       }
+    });
+  };
+
+  this.logout = function (callback, errorCallback) {
+    var request, uri, params;
+
+    uri = this.endpoint + '/api/oauth/googleplus';
+    params = "action=logout";
+
+    request = {
+      method: 'post',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      data: params
+    };
+    $http(request).success(function (data, status) {
+      if (callback) {
+        callback(data,status); 
+      };
+    }).error(function (data, status) {
+      if (errorCallback) {
+        callback(data,status); 
+      };
     });
   };
 
@@ -121,4 +148,38 @@ angular.module('picbit').service('$backend', function ($http) {
 
   };
 
+}).service('$cookie', function () {
+  this.get = function (name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift()
+      };
+  
+  this.put  = function (key, value, expires, path, domain, secure) {
+    var cookie;
+    cookie = key + '=' + value;
+    if (expires) {
+      cookie += '; expires=' + expires;
+    }
+    if (path) {
+      cookie += '; path=' + path; 
+    }
+    if (domain) {
+      cookie += '; domain=' + domain;
+    }
+    if (secure) {
+      cookie +='; secure';
+    }
+    document.cookie = cookie;
+  };
+
+  this.delete = function (name) {
+    document.cookie = name + '=; expires= Thu, 01 jan 1970 00:00:00 UTC';
+  }
+  this.set = function (key, value, expires, path, domain, secure) {
+    this.put(key, value, expires, path, domain, secure); 
+  };
+  this.getAll = function () {
+    return document.cookie;
+  }
 });

@@ -5,6 +5,7 @@ import json
 
 # Script para hacer pruebas a la API de Oauth de PicBit (api/oauth/{red_social})
 # Uso: ./api_oauth_tester red_social
+
 # NOTA: El flujo por github se debe probar a traves del componente de login de github
 #       (http://github-login-lab.appspot.com/app/demo.html)
 
@@ -46,6 +47,7 @@ def main():
 		params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})
 		session = make_request("POST", request_uri, params, 201, None)
 
+
 		# TEST 2
 		request_uri = basePath + "?action=login"
 		print "\nTEST 2: Haciendo petición POST a " + request_uri + " (login de sesion iniciada anteriormente)\n Status esperado: 200"
@@ -68,6 +70,7 @@ def main():
 		print "\nTEST 4: Haciendo petición GET a " + request_uri + " (obtener credenciales con cookie de sesion)\n Status esperado: 200"
 		params = urllib.urlencode({})
 		make_request("GET", request_uri, params,200, session)		
+
 
 		#Logouts
 		# TEST 5
@@ -97,6 +100,7 @@ def main():
 		access_token = red_social + "Modify2TEST"
 		params = urllib.urlencode({'token_id': token_id, 'access_token':access_token})	
 		make_request("POST", request_uri, params,200, None)
+
 
 		# TODO TEST 9 
 		# Obtener credenciales con cookies antiguas
@@ -157,6 +161,7 @@ def main():
 
 		# TEST 5
 		# TODO Get (Con Cookie)
+
 		print "\nTEST 5: Haciendo petición GET a " + request_uri + " (obtener credenciales con cookie)\n Status esperado: 200"
 		params = urllib.urlencode({})
 		make_request("GET", request_uri, params, 200, session)	
@@ -166,6 +171,7 @@ def main():
 	else:
 		print "Error: es obligatorio proporcionar un parámetro válido para indicar que red social se pretende testear"
 		print "Uso: python api_oauth_tester.py {googleplus|stackoverflow|facebook|instagram|linkedin|twitter}"
+
 	# Cerramos conexión
 	connection.close()
 

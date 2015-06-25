@@ -23,13 +23,14 @@ Element providing solution to no problem in particular.
 @status alpha
 @homepage http://polymerlabs.github.io/twitter-login
 -->
-<polymer-element name="twitter-login" attributes="endpoint">
+<polymer-element name="twitter-login" attributes="endpoint logged sort">
 
   <template>
 
     <link rel="stylesheet" href="twitter-login.css">
     <core-ajax
-               id="requestToken" url="{{endpoint}}"
+               id="requestToken"
+               url="{{endpoint}}"
                method="GET"
                params='{
                        "action": "request_token"
@@ -38,7 +39,6 @@ Element providing solution to no problem in particular.
                on-core-response="{{authentication}}"
                >
     </core-ajax>
-
     <core-ajax
                id="requestCookie" url="{{endpoint}}"
                method="GET"
@@ -51,18 +51,37 @@ Element providing solution to no problem in particular.
                >
     </core-ajax>
 
-    <paper-button id="TwitterButton" on-click="{{login}}">
-      <core-icon src='twitter_logo.png' style="width: 24px; height: 24px; background-repeat:no-repeat" ></core-icon>
-      Sign in with Twitter
+    <paper-button class="TwitterButton" title="Twitter" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
+      <core-icon src='twitter_logo.png' class="icono" ></core-icon>
+      Log in with Twitter
+    </paper-button>
+    <content></content>
+
+    <paper-button class="TwitterButton desconectar" title="Twitter" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+      <core-icon src='twitter_logo.png' class="icono"  ></core-icon>
+      Log out from Twitter
+    </paper-button>
+    <content></content>
+
+    <paper-button class="TwitterButton2" title="Twitter" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
+      <core-icon src='twitter_logo.png' class="icono2" ></core-icon>
+    </paper-button>
+    <content></content>
+
+    <paper-button class="TwitterButton2 desconectar" title="Twitter" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
+      <core-icon src='twitter_logo.png' class="icono2"></core-icon>
     </paper-button>
     <content></content>
   </template>
 
-
   <script>
-
     Polymer({
       endpoint:'',
+      /* Hay que comprobar si hay datos del
+      usuario en la base de datos para saber
+      si esta logueado o no */
+      logged: false,
+      sort: false,
       /**
        * The `sayHello` method will return a greeting.
        *
@@ -83,9 +102,8 @@ Element providing solution to no problem in particular.
        */
       authentication: function(event, detail, sender) {
         var oauth_url = detail.response.oauth_url;
-        var win  = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
+        var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
         var back = this;
-
         var pollTimer  =  window.setInterval(function() {
           try {
             if(win.document.URL.indexOf('example-project-13') != -1){
@@ -97,21 +115,27 @@ Element providing solution to no problem in particular.
               back.oauth_verifier = exp.exec(url)[1];
               back.$.requestCookie.go();
               window.clearInterval(pollTimer);
-              back.fire('twitter-logged',{token:detail.response.token,redSocial:'twitter'});
-              win.close();
+              win.close()
+              back.logged = true
             }
           } catch(e) {
           }
         }, 100);
       },
+
+      /* Borrar todo relacionado en base de datos */
+      logout: function(event, detail, sender){
+        /* Borrar datos de la base de datos */
+        var back = this;
+        back.logged = false
+      },
+
       cookie: function(e,d,s) {
         var response, code;
         response = d.response;
         code = d.xhr.status;
-        this.fire('twitter-login-status',{response:response, status:code});
+        this.fire('twitter-logged',{token:'',redSocial:'twitter',code:code});
       },
     });
-
   </script>
-
 </polymer-element>

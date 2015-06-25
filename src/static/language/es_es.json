@@ -1,0 +1,41 @@
+{
+  "language":"Idioma",
+  "title": "Bienvenido a PicBit",
+  "login": "Entrar",
+  "logout": "Desconectar",
+  "entry": "Accede con tu Red Social",
+  "select_network": "Selecciona tu red social",
+  "slogan": "Mantente informado de toda la actividad en las redes de tus grupos de amigos",
+  "coming": "¡Proximamente!",
+  "sub": "Suscribete a la beta",
+  "contact":"Contactar",
+  "about":"Sobre nosotros",
+  "privacy":"privacidad",
+  "about_first": "DEUS es un grupo de trabajo centrado principalmente en tecnologías de Google, especialmente aquellas más innovadoras: lenguaje de programación Go!, componentes web Polymer, GoogleCloud (CloudSQL y Cloud Datastore), AppEngine o Google Analytics.",
+  "about_second": "Nació como una plataforma para formar a estudiantes en tecnologías punteras, abordar proyectos de investigación y, al mismo tiempo, proporcionales una toma de contacto con la forma de trabajo a nivel profesional. Cuenta actualmente con varios estudiantes de TFG y Prácticum, distribuidos en varias líneas de trabajo.",
+  "lang": {
+    "es":"Español",
+    "en":"English"
+  },
+  "profile":"Perfil",
+  "settings":"Configuración",
+  "user_action": {
+    "add" : "Añadir",
+    "delete": "Borrar",
+    "modify": "Modificar",
+    "help": "Ayuda"
+  },
+  "user_profile": {
+    "title" : "Datos Personales",
+    "name" : "Nombre",
+    "surname" : "Apellidos",
+    "email" : "Email",
+    "save" : "Guardar",
+    "social" : "Redes sociales conectadas"
+  },
+  "twitter_timeline": {
+    "title" : "Tu Timeline",
+    "refresh" : "Refrescar",
+    "Load more" : "Mostrar mas"
+  }
+}

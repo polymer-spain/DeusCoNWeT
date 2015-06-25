@@ -1,0 +1,49 @@
+{
+  "language":"Language",
+  "title": "Welcome to PicBit",
+  "login": "Log In",
+  "logout": "Log out",
+  "entry": "Sign In with your Social Network",
+  "select_network": "Select your social network",
+  "slogan": "Stay tuned on the activity of your friends in social networks",
+  "coming": "Coming Soon",
+  "sub": "Subscribe!",
+  "contact":"Contact",
+  "about":"about us",
+  "privacy":"privacy",
+  "about_first" :"Deus is a work group who is mainly working with Google tecnologies, particularly those most innovative: GO! programming lenguage, web components Polymer, GoogleCloud (CloudSQL y Cloud Datastore), AppEngine or Google Analytics.",
+  "about_second" : "It arised as a platform to educate students in leading tecnologies, deal with investigation projects and, at the same time, give them a first contact with the work environment. Currently, it has several Final Dissertation and Practicum students working in differents areas.",
+  "lang": {
+    "es":"Español",
+    "en":"English"
+  },
+  "profile":"Profile",
+  "settings":"Settings",
+  "user_action": {
+    "add":"Add",
+    "delete": "Delete",
+    "modify": "Modify",
+    "help": "Help"
+  },
+  "user_profile": {
+    "title" : "User Information",
+    "name" : "First Name",
+    "surname" : "Last Name",
+    "email" : "Email",
+    "save" : "Save",
+    "social" : "Your Social Networks",
+    "Login_Facebook" : "Log in Facebook",
+    "Logout_Facebook" : "Log out Facebook",
+    "Login_Google+" : "Log in Google+",
+    "Logout_Google+" : "Log out Google+",
+    "Login_Twitter" : "Log in Twitter",
+    "Logout_Twitter" : "Log out Twitter",
+    "Login_Github" : "Log in Github",
+    "Logout_Github" : "Log out Github",
+    "Login_Linkedin" : "Log in Linkedin",
+    "Logout_Linkedin" : "Log out Linkedin",
+    "Login_Instagram" : "Log in Instagram",
+    "Logout_Instagram" : "Log out Instagram"
+  }
+}
+

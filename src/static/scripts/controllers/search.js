@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc function
- * @name pruebaApp.controller:AboutCtrl
+ * @name pruebaApp.controller:AboutController
  * @description
- * # AboutCtrl
+ * # AboutController
  * Controller of the pruebaApp
  */
 

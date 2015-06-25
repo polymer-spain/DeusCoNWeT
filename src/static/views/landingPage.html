@@ -13,13 +13,13 @@
 </ul>-->
   <section id="section1">
     <div class="content" oscuro=true>
-      <h1>Bienvenido a PicBit</h1>
+      <h1>{{language.title}}</h1>
       <div style="padding-top: 30px"horizontal center-justified layout>
         <div class="slogan">
-          <p>Mantente informado de toda la actividad en las redes de tus grupos de amigos</p>
-<!--          <p>¡Proximamente!</p>
-          <paper-button  ng-click="goto(4)" id="beta">Suscribirse a la beta</paper-button>-->
-          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
+          <p>{{language.slogan}}</p>
+          <!--          <p>¡Proximamente!</p>
+<paper-button  ng-click="goto(4)" id="beta">Suscribirse a la beta</paper-button>-->
+          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">{{language.login}}</paper-button>
         </div>
       </div>
     </div>
@@ -87,6 +87,7 @@ Enviar
 </div>
 <!--
 <div ng-show="sended" class="popup">
+
 <div>
 <core-icon-button fill  raised style="position:absolute;right:0;top:0" ng-click="closeSended()" icon="close"></core-icon-button>
 <p style="margin:8px auto;font-size:1.4em">Se ha suscrito correctamente</p>

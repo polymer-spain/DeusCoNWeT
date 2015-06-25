@@ -1,14 +1,4 @@
-
-
-/**
- * @ngdoc function
- * @name pruebaApp.controller:MainCtrl
- * @description
- * # MainCtrl
- * Controller of the pruebaApp
- */
-
-angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $location, $anchorSmoothScroll, $anchorScroll, $backend) {
+angular.module('picbit').controller('LandingController', function ($scope, $timeout, $location, $anchorSmoothScroll, $anchorScroll, $backend) {
   'use strict';
   if ($location.hash() === 'section1') {
     $scope.selected = 1;
@@ -71,8 +61,10 @@ angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $
           name.value = '';
           sender.value = '';
           surname.value = '';
+
           $scope.$parent.shadow = true;
           $scope.$parent.sended = true;
+
         } else if (status === 200) {
           error.innerHTML = "* Ya esta registrado para la beta";
           name.value = '';
@@ -84,6 +76,7 @@ angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $
         error.innerHTML = "* Ahora mismo no podemos tratar su petición, intentelo mas tarde";
       };
       $backend.sendSub(name.value, sender.value, surname.value, callback, callbackError);
+
     }
   };
 
@@ -112,8 +105,8 @@ angular.module('picbit').controller('landingCtrl', function ($scope, $timeout, $
         $scope.selected += scrolled;
         $scope.cambiarAnchor('section3');
       }
-      document.onmousewheel = $scope.wheel;
 
+      document.onmousewheel = $scope.wheel;
 
     });
   };

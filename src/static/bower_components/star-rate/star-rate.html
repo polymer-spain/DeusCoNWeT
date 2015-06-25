@@ -3,79 +3,79 @@
 
 <polymer-element name="star-rate" attributes="stars value readOnly">
 
-    <template>
-        <div>
-            <template repeat="{{n in currentStars}}" >
-                <style>
-                    core-icon:hover {
-                        cursor:pointer;
-                    }
-                </style>
-                <core-icon icon="{{n <= value ? 'star' : 'star-outline'}}"  hidden?="{{(n-value)==0.5}}" data-item="{{n}}" on-mouseout="{{onMouseout}}" on-click="{{setvalue}}">
-                    <div flex style="width: 100%; height: 100%" layout horizontal>
-                        <div flex on-mouseover="{{halfStar}}" style="width: 50%;height: 100%" data-item="{{n-0.5}}"></div>
-                        <div flex on-mouseover="{{fullStar}}" style="width: 50%;height: 100%" data-item="{{n}}"></div>
-                    </div>
-                </core-icon>
+	<template>
+		<div>
+			<template repeat="{{n in currentStars}}" >
+				<style>
+					core-icon:hover {
+						cursor:pointer;
+					}
+				</style>
+				<core-icon icon="{{n <= value ? 'star' : 'star-outline'}}"  hidden?="{{(n-value)==0.5}}" data-item="{{n}}" on-mouseout="{{onMouseout}}" on-click="{{setvalue}}">
+					<div flex style="width: 100%; height: 100%" layout horizontal>
+						<div flex on-mouseover="{{halfStar}}" style="width: 50%;height: 100%" data-item="{{n-0.5}}"></div>
+						<div flex on-mouseover="{{fullStar}}" style="width: 50%;height: 100%" data-item="{{n}}"></div>
+					</div>
+				</core-icon>
 
-                <core-icon icon="star-half" hidden?="{{value!=n-0.5}}" on-click="{{setvalue}}" data-item="{{n-0.5}}" on-mouseout="{{onMouseout}}">
-                    <div flex style="width: 100%; height: 100%" layout horizontal>
-                        <div flex on-mouseover="{{halfStar}}" style="width: 50%;height: 100%" data-item="{{n-0.5}}"></div>
-                        <div flex on-mouseover="{{fullStar}}" style="width: 50%;height: 100%" data-item="{{n}}"></div>
-                    </div>
-                </core-icon>
+				<core-icon icon="star-half" hidden?="{{value!=n-0.5}}" on-click="{{setvalue}}" data-item="{{n-0.5}}" on-mouseout="{{onMouseout}}">
+					<div flex style="width: 100%; height: 100%" layout horizontal>
+						<div flex on-mouseover="{{halfStar}}" style="width: 50%;height: 100%" data-item="{{n-0.5}}"></div>
+						<div flex on-mouseover="{{fullStar}}" style="width: 50%;height: 100%" data-item="{{n}}"></div>
+					</div>
+				</core-icon>
 
-            </template>
-        </div>
+			</template>
+		</div>
 
-    </template>
+	</template>
 
-    <script>
-        Polymer('star-rate', {
+	<script>
+		Polymer('star-rate', {
 
-            default: this.value,
-            readOnly: false,
-            rated: false,
-            stars: 5,
-            value : 0,
+			default: this.value,
+			readOnly: false,
+			rated: false,
+			stars: 5,
+			value : 0,
 
-            onHovered: function(e,d,t) {
-                if (!this.readOnly && !this.rated){
-                    this.value = parseFloat(t.dataset.item, 10 );
-                }
-            },
+			onHovered: function(e,d,t) {
+				if (!this.readOnly && !this.rated){
+					this.value = parseFloat(t.dataset.item, 10 );
+				}
+			},
 
-            ready : function() {
-                this.currentStars = [];
+			ready : function() {
+				this.currentStars = [];
 
-                for (var i = 0; i<= this.stars - 1; i++) {
-                    this.currentStars.push(i+1);
-                };
-                this.default = this.value;
-            },
+				for (var i = 0; i<= this.stars - 1; i++) {
+					this.currentStars.push(i+1);
+				};
+				this.default = this.value;
+			},
 
-            setvalue: function(e,d,t) {
-                if (!this.readOnly &&!this.rated) {
-                    this.value = parseFloat(t.dataset.item, 10 );
-                    this.rated=true;
-                }
-            },
-            halfStar: function(e,d,t) {
-                if (!this.readOnly &&!this.rated) {
-                    this.value = parseFloat(t.dataset.item,10);
-                }
-            },
+			setvalue: function(e,d,t) {
+				if (!this.readOnly &&!this.rated) {
+					this.value = parseFloat(t.dataset.item, 10 );
+					this.rated=true;
+				}
+			},
+			halfStar: function(e,d,t) {
+				if (!this.readOnly &&!this.rated) {
+					this.value = parseFloat(t.dataset.item,10);
+				}
+			},
 
-            fullStar: function(e,d,t) {
-                if (!this.readOnly &&!this.rated) {
-                    this.value = parseFloat(t.dataset.item,10);
-                }
-            },
-            onMouseout: function(e,d,t) {
-                if (!this.readOnly &&!this.rated) {
-                    this.value=this.default;
-                }
-            }
-        });
-    </script>
+			fullStar: function(e,d,t) {
+				if (!this.readOnly &&!this.rated) {
+					this.value = parseFloat(t.dataset.item,10);
+				}
+			},
+			onMouseout: function(e,d,t) {
+				if (!this.readOnly &&!this.rated) {
+					this.value=this.default;
+				}
+			}
+		});
+	</script>
 </polymer-element>

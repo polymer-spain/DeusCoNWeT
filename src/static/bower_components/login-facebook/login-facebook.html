@@ -1,54 +1,102 @@
-<!doctype html>
-<html>
-  <head>
-    <link rel="import" href="../polymer/polymer.html">
-    <link rel="import" href="../paper-button/paper-button.html">
-  </head>
-  <body>
-    <polymer-element name="login-facebook" attributes="key_app scope">   
-      <template> 
-        <link rel="stylesheet" href="login-facebook.css">
-        <paper-button id="boton-facebook" on-click="{{login}}" class="login">
-          <core-icon src="images/icon-Facebook.svg" style="width: 30px; height: 30px; background-repeat:no-repeat"></core-icon>
-          Sign in with Facebook
-        </paper-button>
-      </template> 
-      <script>  
-        Polymer('login-facebook',{ 
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
 
-          key_app:'',
-          scope:'',
-          //Se realizara la carga del SDK de Facebook
-          ready: function(){
-            var script = document.createElement('script');
-            script.type = "text/javascript";
-            script.text = "	(function(d, s, id) { \
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<polymer-element name="login-facebook" attributes="key_app scope logged sort static">
+	<template id="template">
+		<link rel="stylesheet" href="login-facebook.css">
+
+		<paper-button class="FacebookButton" title="Facebook" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
+			<core-icon src="images/login-facebook.png" class="icono"></core-icon>
+			Log in with Facebook
+		</paper-button>
+
+		<paper-button class="FacebookButton desconectar" title="Facebook" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+			<core-icon src="images/login-facebook.png" class="icono"></core-icon>
+			Log out from Facebook
+		</paper-button>
+
+		<paper-button class="FacebookButton2" title="Facebook" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
+			<core-icon src="images/login-facebook.png" class="icono"></core-icon>
+		</paper-button>
+
+		<paper-button class="FacebookButton2 desconectar" title="Facebook" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
+			<core-icon src="images/login-facebook.png" class="icono"></core-icon>
+		</paper-button>
+
+	</template>
+
+	<script>
+		Polymer('login-facebook',{
+			logged: false, // Parametro que se recibe de la base de datos
+			sort: false,
+      static: false,
+			key_app:'',
+			textlogin:'LogIn in with Facebook',
+			scope:'',
+			estado:'',//Se obtiene de la Base de Datos
+
+			ready: function(){
+				//Se realizara la carga del SDK de Facebook
+				var script = document.createElement('script');
+				script.type = "text/javascript";
+				script.text = "	(function(d, s, id) { \
 var js, fjs = d.getElementsByTagName(s)[0];\
 if (d.getElementById(id)) return;\
 js = d.createElement(s); js.id = id;\
 js.src = '//connect.facebook.net/en_US/sdk.js';\
 fjs.parentNode.insertBefore(js, fjs);\
 }(document, 'script', 'facebook-jssdk'));\
-"
-document.body.appendChild(script);
-          },  
-          //Se incializa la api
-          login:function() {  
-            FB.init({
-              appId      : this.key_app,//Key App
-              cookie     : true,  // enable cookies to allow the server to 
-              xfbml      : true,  // parse social plugins on this page
-              version    : 'v2.2' // use version 2.2
-            });
-            //Se realiza el login con los permisos requeridos para la app
-            FB.login(function(response) {
-              this.acToken=response.authResponse.accessToken;
-              this.userId = response.authResponse.userID;
-              document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});
-            }, {scope: this.scope});
-          } 
-        });     
-      </script>  
-    </polymer-element>
-  </body>
-</html>
+";
+				document.body.appendChild(script);
+
+			},
+
+			/*          domReady: function() {
+            //Se mira en BD si se dispone de Token o no para red social y en funcion de eso se pinta un boton o otro
+            //          var back=this;
+            //          var estadoF=this.estado;
+            //          if (estadoF == true) {
+            //                     back.loged = true;
+            //                  } else{
+            //                     back.loged = false;
+            //                  }
+
+          },*/
+
+			login:function() {
+				FB.init({//Se incia variables necesarias
+					appId      : this.key_app,//Key App
+					cookie     : true,
+					status     : true,// enable cookies to allow the server to
+					xfbml      : true,  // parse social plugins on this page
+					version    : 'v2.3' // use version 2.2
+				});
+
+
+				var back = this;
+				FB.login(function(response) {
+					back.acToken=response.authResponse.accessToken;
+					back.userId = response.authResponse.userID;
+					back.logged= back.static?false:true;
+					this.acToken=response.authResponse.accessToken;
+					this.userId = response.authResponse.userID;
+					document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});}, {scope: this.scope});
+			},
+
+			logout:function() {
+				var back = this;
+				back.logged = false;
+			}
+		});
+	</script>
+</polymer-element>
