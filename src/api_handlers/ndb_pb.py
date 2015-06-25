@@ -394,7 +394,7 @@ def addListening(entity_key, nombre, events):
 
   usuario.put()
 
-def getComponente(entity_key, nombre): # FUNCIONA
+def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
   user = entity_key.get()
   comps = user.componentes
   res = {"nombre": nombre,
@@ -415,6 +415,33 @@ def getComponente(entity_key, nombre): # FUNCIONA
       res["escuchando"] = comp.listening
 
   return json.dumps(res)
+
+def getComponents(rs="", user_id="", all_info=False):
+  res = []
+  if user_id == "" and not all_info: # The general information of the components must be returned
+    components = Component.query()
+    comp = {}
+    for component in components:
+      comp["id_componente"] = component.id_componente
+      comp["url"] = component.url
+      comp["rs"] = component.rs
+      comp["description"] = component.description
+      comp["input_type"] = component.input_type
+      comp["output_type"] = component.output_type
+      comp["listening"] = component.listening
+      res.append(json.dumps(comp))
+  elif not user_id == "":
+    if all_info:
+      user = Usuario.query(Usuario.id_usuario == user_id).get()
+      # Info for the components used by the specified user
+      user_comps = user.componentes
+      for comp in user_comps:
+        # General info for components
+        comp = {}
+        info_comp = Component.query(Component.component_id == comp.id_componente).get()
+        comp["component_id"] = 
+
+    return res
 
 def buscaToken(id_usuario, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
@@ -457,22 +484,6 @@ def usuarioSuscrito(email):
   else:
     return False
 
-def getComponents(rs="", user_id="", all_info=True, format="reduced"):
-  if user_id == "" and all_info: # The general information of the components must be returned
-    components = Componente.query()
-    comp = {}
-    res = []
-    for component in components:
-      comp["id_componente"] = component.id_componente
-      comp["url"] = component.url
-      comp["rs"] = component.rs
-      comp["description"] = component.description
-      comp["input_type"] = component.input_type
-      comp["output_type"] = component.output_type
-      comp["listening"] = component.listening
-      res.append(json.dumps(comp))
-
-    return res
 
 def addRate(entity_key, component_id, value):
   user = entity_key.get()
