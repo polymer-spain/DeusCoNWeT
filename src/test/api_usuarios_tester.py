@@ -20,6 +20,7 @@ def make_request(method, request_uri, params, status_ok, session):
 		status_ok: status HTTP de retorno esperado de la peticion
 		session: cookie de sesion para adjuntar en la peticion
 	"""
+	print "Realizando petición", method, request_uri
 	headers = {"User-Agent": "PicBit-App"}
 	session_cookie = None
 	if not session == None:
@@ -47,7 +48,7 @@ def main():
 	session_error = "session_error"
 	user_id = "idGoogle"
 	user_id_error = "idError"
-	basepath = "api/usuarios/"
+	basepath = "/api/usuarios/"
 
 	# PRETEST: Inicio de sesion con Google+ en el sistema
 	request_uri = "/api/oauth/googleplus/login"
@@ -59,22 +60,34 @@ def main():
 	
 	print "-----------------------------------------------------------------------"
 	# TESTs Relativos a la obtención de lista de usuarios
-	# TEST 1: GET lista de usuarios (sin proporcionar una cookie de sesion)
-	# TEST 2: GET lista de usuarios (proporcionando una cookie de sesion no válida)
-	# TEST 3: GET lista de usuarios (proporcionando una cookie de sesion válida)
+	# TEST 1
+	print "TEST 1: GET lista de usuarios (sin proporcionar una cookie de sesion)"
+	print " Status esperado: 401"
+	params = urllib.urlencode({})
+	make_request("GET", basepath, params, 401, None)
 
-	print "-----------------------------------------------------------------------"
+	# TEST 2
+	print "TEST 2: GET lista de usuarios (proporcionando una cookie de sesion no válida)"
+	print " Status esperado: 400"
+	make_request("GET", basepath, params, 400, session_error)
+	
+	# TEST 3
+	print "TEST 3: GET lista de usuarios (proporcionando una cookie de sesion válida)"
+	print " Status esperado: 200 (O 204 si la lista de usuarios está vacía)"
+	make_request("GET", basepath, params, 200, session1)
+
+	# print "-----------------------------------------------------------------------"
 	# TESTs Relativos a la obtención de información sobre un usuario
 	# TEST 4: GET Usuario (sin proporcionar una cookie de sesión)
 	# TEST 5: GET Usuario, caso obtención de información pública de un usuario en concreto
 	# 		  (proporcionando una cookie de sesión diferente al recurso usuario solicitado)
 
-	print "-----------------------------------------------------------------------"
+	# print "-----------------------------------------------------------------------"
 	# TEST 6: GET Usuario, caso obtención de información privada de un usuario en concreto
 	#         (cookie de sesión coincide con recurso usuario solicitado)
 	# TEST 7: GET Usuario (usuario no existente en el sistema)
 
-	print "-----------------------------------------------------------------------"
+	# print "-----------------------------------------------------------------------"
 	# TESTs Relativos a la Modificación de información de un usuario en particular
 	# TEST 8: POST Usuario (sin cookie de sesión)
 	# TEST 9: POST Usuario (Con cookie de sesión distinta a la del recurso usuario)
@@ -83,14 +96,14 @@ def main():
 	# TEST 12: POST Usuario, caso modificar todos los campos del usuario, cambiando ámbito de email y teléfono a privado
 	#         (cookie de sesión correcta)
 
-	print "-----------------------------------------------------------------------"
+	# print "-----------------------------------------------------------------------"
 	# Comprobamos caso de uso de obtención de información privada de usuario
 	# TEST 13: GET Usuario, (cookie de sesión distinta al recurso solicitado)
 	# TEST 14: GET Usuario, (cookie de sesión asociada al usuario solicitado)
 	# Cambiamos el ámbito de campos de usuario a público
 	# TEST 15: POST Usuario, caso cambiar a ámbito público el email y telefono de usuario (cookie de sesión correcta)
 
-	print "-----------------------------------------------------------------------"
+	# print "-----------------------------------------------------------------------"
 	# TESTs Relativos a la eliminación de un usuario del sistema
 	# TEST 16: DELETE Usuario (cookie de sesión incorrecta)
 	# TEST 17: DELETE Usuario (usuario no existente en el sistema)

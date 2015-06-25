@@ -149,10 +149,10 @@ class UserHandler(SessionHandler):
         self.response.write({"error": "You do\'nt have the proper rights to modify this resource" +
           " (The cookie session header does not match with the resource requested)"})
         self.response.set_status(401)
-        else:
-          self.response.content_type = 'application/json'
-          self.response.write({"error": "The user is not authenticated"})
-          self.response.set_status(401)
+    else:
+      self.response.content_type = 'application/json'
+      self.response.write({"error": "The user is not authenticated"})
+      self.response.set_status(401)
 
   def delete(self, user_id):
     cookie_value = self.request.cookies.get('session')
@@ -180,7 +180,7 @@ class UserHandler(SessionHandler):
         self.response.write({"error": "You do\'nt have the proper rights to delete this resource" +
           " (The cookie session header does not match with the resource requested)"})
         self.response.set_status(401)
-        else:
-          self.response.content_type = 'application/json'
-          self.response.write({"error": "The user is not authenticated"})
-          self.response.set_status(401)
+    else:
+      self.response.content_type = 'application/json'
+      self.response.write({"error": "The user is not authenticated"})
+      self.response.set_status(401)

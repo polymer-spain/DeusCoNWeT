@@ -25,8 +25,8 @@ import json
 from google.appengine.ext import ndb
 
 
-from ndb_pb import Componente, UserRating, Grupo
-import cliente_gitHub
+# from ndb_pb import Componente, UserRating, Grupo
+# import cliente_gitHub
 
 class ComponentListHandler(webapp2.RequestHandler):
 
