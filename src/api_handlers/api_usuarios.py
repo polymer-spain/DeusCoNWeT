@@ -158,23 +158,28 @@ class UserHandler(SessionHandler):
     cookie_value = self.request.cookies.get('session')
     if not cookie_value == None:
       user_key = self.getUserInfo(cookie_value)
-      # It is neccesary to get the parameters from the request
-      user_info = ndb_pb.getUser(user_key)
-      if not user_info == None:
-        self.response.content_type = 'application/json'
-        self.response.write({"error": "The user requested does not exist"})
-        self.response.set_status(404)
-      else:
-        user = json.dumps(user_info)
-        # Depending on the user making the request, the info returned will be one or another
-        if user["id_usuario"] == user_id:
-          
-          ndb_pb.deleteUser(user_key)
-
+      if user_key == user_id:
+        # It is neccesary to get the parameters from the request
+        user_info = ndb_pb.getUser(user_key)
+        if not user_info == None:
           self.response.content_type = 'application/json'
-          self.response.write({})
-          self.response.set_status(204)
+          self.response.write({"error": "The user requested does not exist"})
+          self.response.set_status(404)
+        else:
+          user = json.dumps(user_info)
+          # Depending on the user making the request, the info returned will be one or another
+          if user["id_usuario"] == user_id:
+            
+            ndb_pb.deleteUser(user_key)
 
+            self.response.content_type = 'application/json'
+            self.response.write({})
+            self.response.set_status(204)
+      else:
+        self.response.content_type = 'application/json'
+        self.response.write({"error": "You do\'nt have the proper rights to delete this resource" +
+          " (The cookie session header does not match with the resource requested)"})
+        self.response.set_status(401)
         else:
           self.response.content_type = 'application/json'
           self.response.write({"error": "The user is not authenticated"})
