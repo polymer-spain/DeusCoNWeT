@@ -2,20 +2,20 @@
 
 <div class="content">
 	<div>
-		<div id="fondo">
-			<h1 id="titulo">{{language.user_profile.title}}</h1>
+		<div id="background">
+			<h1 id="title">{{language.user_profile.title}}</h1>
 			<div id="form" center layout>
-				<paper-input-decorator label="{{language.user_profile.name}}" floatinglabel class="formulario">
+				<paper-input-decorator label="{{language.user_profile.name}}" floatinglabel class="form">
 					<input is="core-input" class="nom" type="text">
 				</paper-input-decorator>
-				<paper-input-decorator label="{{language.user_profile.surname}}" floatinglabel class="formulario">
+				<paper-input-decorator label="{{language.user_profile.surname}}" floatinglabel class="form">
 					<input is="core-input" class="nom" type="text">
 				</paper-input-decorator>
-				<paper-input-decorator label="{{language.user_profile.email}}" floatinglabel autoValidate class="formulario">
+				<paper-input-decorator label="{{language.user_profile.email}}" floatinglabel autoValidate class="form">
 					<input is="core-input" class="nom" type="email" style="width: 620px;">
 				</paper-input-decorator>
 			</div>
-			<div class="boton" horizontal layout center-justified>
+			<div class="button" horizontal layout center-justified>
 				<a href="{{domain}}">
 					<paper-button id="but" ng-click="calC()" class="login">
 						<core-icon icon="check"></core-icon>
@@ -25,9 +25,9 @@
 			</div>
 		</div>
 		<br>
-		<div id="fondo2">
-			<h1 id="titulo2">{{language.user_profile.social}}</h1>
-			<div id ="redes" horizontal center-justified layout>
+		<div id="background2">
+			<h1 id="title2">{{language.user_profile.social}}</h1>
+			<div id ="networks" horizontal center-justified layout>
 				<div>
 					<core-item label="" id="facebookitem">
 						<login-facebook id ="facebook" class="button-login" key_app="928341650551653" scope="public_profile,email" sort={{sort}}></login-facebook>
