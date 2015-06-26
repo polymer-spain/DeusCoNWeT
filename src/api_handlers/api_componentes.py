@@ -92,8 +92,6 @@ class ComponentListHandler(webapp2.RequestHandler):
             input_type = self.request.POST['input_type']
             output_type = self.request.POST['output_type']
             listening = self.request.POST['listening']
-            height = self.request.POST['height']
-            width = self.request.POST['width']
 
             path = url.split('/')
             basePath = '/repos/' + path[len(path) - 2] + '/' \
@@ -106,7 +104,7 @@ class ComponentListHandler(webapp2.RequestHandler):
             repoDetails = cliente_gitHub.getRepoInfo()
 
             if not repoDetails == None:
-                ndb_pb.insertaComponente(entity_key, component_id, input_type, output_type, url, height, width, listening)
+                ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
             else:
                 response = {'error': 'The url supplied in the request does not correspond to a github repo'}
                 self.response.content_type = 'application/json'
@@ -139,36 +137,36 @@ class ComponentHandler(webapp2.RequestHandler):
         self -- info about the request build by webapp2
         component_id -- path url directory corresponding to the component id
         """
-        # # Get the cookie in the request
-        # cookie_value = self.request.cookies.get('session')
-        # # Format is an optional param
-        # # TODO: Use format param to determine the response format
-        # format = self.request.get('format', default_value='none')
-        # if not cookie_value == None:
-        #     user_id = SessionHandler.getUserInfo(cookie_value)
-        #     if not user_id == None:
-        #         component = ndb_pb.getComponente()
-        #         if not component == None:
-        #             self.response.content_type = 'application/json'
-        #             self.response.write(component)
-        #             self.request.set_status(200)
-        #         else:
-        #             response = \
-        #             {'error': 'Component not found in the system'}
-        #             self.response.content_type = 'application/json'
-        #             self.response.write(json.dumps(response))
-        #             self.response.set_status(404)            
-        #     else:
-        #         response = \
-        #             {'error': 'The cookie session provided does not belongs to any active user'}
-        #         self.response.content_type = 'application/json'
-        #         self.response.write(json.dumps(response))
-        #         self.response.set_status(400)
-        # else:
-        #     response = {'error': 'You must provide a session cookie'}
-        #     self.response.content_type = 'application/json'
-        #     self.response.write(json.dumps(response))
-        #     self.request.set_status(401)
+        # Get the cookie in the request
+        cookie_value = self.request.cookies.get('session')
+        # Format is an optional param
+        # TODO: Use format param to determine the response format
+        format = self.request.get('format', default_value='reduced')
+        if not cookie_value == None:
+            user_id = SessionHandler.getUserInfo(cookie_value)
+            if not user_id == None and format == 'reduced' or format == 'complete':
+                component = ndb_pb.getComponente(user_id, component_id, format)
+                if not component == None:
+                    self.response.content_type = 'application/json'
+                    self.response.write(component)
+                    self.request.set_status(200)
+                else:
+                    response = \
+                    {'error': 'Component not found in the system'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)            
+            else:
+                response = \
+                    {'error': 'The cookie session or the format param provided are incorrect'}
+                self.response.content_type = 'application/json'
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        else:
+            response = {'error': 'You must provide a session cookie'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.request.set_status(401)
 
 
     # POST Method
@@ -184,20 +182,27 @@ class ComponentHandler(webapp2.RequestHandler):
         rating = self.request.get('rating', default_value='none')
         x_axis = self.request.get('x_axis', default_value='none')
         y_axis = self.request.get('y_axis', default_value='none')
+        # TODO: Tener en cuenta valores incorrectos en los parametros
+        print "DEBUG Tipo parámetro x", type(x_axis)
+        print "DEBUG Tipo parámetro y", type(y_axis)
         if not cookie_value == None:
             user_id = SessionHandler.getUserInfo(cookie_value)
             if not user_id == None:
                 data = {}
                 if not x_axis == 'none':
                     data['x'] = x_axis
+                
                 if not y_axis == 'none':
                     data['y'] = y_axis
-                # if not rating == 'none' and rating > 0 and rating < 5:
-                #     # TODO: Add rating
-
+                
                 # Update the info about the component
                 if not len(data) == 0:
                     ndb_pb.modificarComponente(user_id, component_id, data)
+
+                # Update the component rating
+                if not rating == 'none' and rating > 0 and rating < 5:
+                    ndb_pb.addRate(user_id, component_id, rating)
+
                 self.response.set_status(200)
             else:
                 response = \
@@ -219,5 +224,6 @@ class ComponentHandler(webapp2.RequestHandler):
         self -- info about the request build by webapp2
         component_id -- path url directory corresponding to the component id
         """
-        # TODO
-        pass
+        # Deletes the component in the datastore
+        ndb_pb.deleteComponent(component_id)
+        self.request.set_status(204)
