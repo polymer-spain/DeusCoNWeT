@@ -1,8 +1,8 @@
 <link rel="stylesheet" href="styles/userHome.css">
 
-<div style="padding-top:150px;">
+<div style="padding-top:50px;">
 
-  <img id="foto" src="../images/picture.png">
+  <img id="picture" src="../images/picture.png">
 
   <div horizontal around-justified layout>
 
@@ -23,7 +23,7 @@
           <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('add'); setSelected('add')">
             <core-icon icon="add-box" style="display:inline-block"></core-icon>
           </div>
-          <div flex ng-click="setList('add')" class="desplegable">
+          <div flex ng-click="setList('add')" class="dropdown">
             <span  ng-show="showElement?true:showSingle=='add'">{{language.user_action.add}}</span>
             <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" icon="arrow-drop-down" style="float:right">
             </core-icon>
@@ -41,7 +41,7 @@
           <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('delete'); setSelected('delete')">
             <core-icon icon="delete" style="display:inline-block"></core-icon>
           </div>
-          <div flex ng-click="setList('delete')" class="desplegable">
+          <div flex ng-click="setList('delete')" class="dropdown">
             <span ng-show="showElement?true:showSingle=='delete'"> {{language.user_action.delete}}</span>
             <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" id="arrow" icon="arrow-drop-down" style="float:right">
             </core-icon>
@@ -59,7 +59,7 @@
           <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('modify'); setSelected('modify')">
             <core-icon  icon="create"></core-icon>
           </div>
-          <div flex ng-click="setList('modify')" class="desplegable">
+          <div flex ng-click="setList('modify')" class="dropdown">
             <span ng-show="showElement?true:showSingle=='modify'"> {{language.user_action.modify}}</span>
             <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" icon="arrow-drop-down" style="float:right">
             </core-icon>
