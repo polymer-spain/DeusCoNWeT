@@ -418,7 +418,7 @@ def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
 
 def getComponents(rs="", user_id="", all_info=False):
   res = []
-  if user_id == "" and not all_info: # The general information of the components must be returned
+  if user_id == "" and not all_info and rs == "": # The general information of the components must be returned
     components = Component.query()
     comp = {}
     for component in components:
@@ -437,9 +437,23 @@ def getComponents(rs="", user_id="", all_info=False):
       user_comps = user.componentes
       for comp in user_comps:
         # General info for components
-        comp = {}
+        general_comp = {}
         info_comp = Component.query(Component.component_id == comp.id_componente).get()
-        comp["component_id"] = 
+        rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+        general_comp["component_id"] = comp["id_componente"]
+        general_comp["url"] = info_comp["url"]
+        general_comp["social_net"] = info_comp["rs"]
+        general_comp["description"] = info_comp["description"]
+        general_comp["rate"] = rate["rating_value"]
+        general_comp["x"] = comp["x"]
+        general_comp["y"] = comp["y"]
+        general_comp["input_type"] = info_comp["input_type"]
+        general_comp["output_type"] = info_comp["output_type"]
+        general_comp["listening"] = comp["listening"]
+        general_comp["height"] = comp["height"]
+        general_comp["width"] = comp["width"]
+        res.append(json.dumps(general_comp))
+
 
     return res
 
