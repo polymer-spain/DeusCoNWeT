@@ -5,28 +5,28 @@
   Copyright 2015 Miguel Ortega Moreno
   Copyright 2015 Juan Francisco Salamanca Carmona
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+      http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 """
 
-import webapp2
-from google.appengine.ext import ndb
+import webapp2, json
+import ndb_pb
 from google.appengine.api import memcache
+from api_oauth import SessionHandler
+class UserListHandler(SessionHandler):
 
-class UserListHandler(webapp2.RequestHandler):
-
-    """
+  """
   Class that defines the user resource
-  It acts as the handler of the /usuarios/{user_id} resource
+  It acts as the handler of the /usuarios/ resource
   Methods:
   get -- Returns a list of all the users stored in the system
   post -- Adds a new user to the system
@@ -35,85 +35,124 @@ class UserListHandler(webapp2.RequestHandler):
   # GET Method
 
     def get(self):
-        """ Returns a list of all the users stored in the system
-    Keyword arguments: 
-      self -- info about the request build by webapp2
-    """
-
-        results = Usuario.query().fetch()
-
+      users_list = ndb_pb.getUsers()
+      if len(users_list) == 0:
         self.response.content_type = 'application/json'
-        self.response.write(json.dumps(results))
+        self.response.write('')
+        self.response.set_status(204)
+      else:
+        self.response.content_type = 'application/json'
+        self.response.write(users_list)
+        self.response.set_status(200)
 
-  # POST Method
+class UserHandler(SessionHandler):
 
-    def post(self):
-        """ Adds a new user to the system
-    Keyword arguments: 
-      self -- info about the request build by webapp2
-    """
-
-        name = self.request.get('name', default_value='None')
-        email = self.request.get('email', default_value='None')
-        if not name == 'None' and not email == 'None':
-
-      # Checks if the user was previously stored
-
-            user = Usuario.query(Usuario.email == email).get()
-            if user == None:
-
-        # Creates the new user
-
-                newUser = Usuario(nombre=name, identificador=name,
-                                  email=email, lista_Redes=[],
-                                  lista_Grupos=[])
-                newUser.put()
-                self.response.set_status(200)
-            else:
-
-        # Returns a Not Modified status
-
-                self.response.set_status(304)
-        else:
-
-      # Returns a Bad Request status
-
-            self.response.set_status(400)
-
-
-class UserHandler(webapp2.RequestHandler):
-
-    """
+  """
   Class that defines the user resource
   It acts as the handler of the /usuarios/{user_id} resource
   Methods:
   get -- Gets the info about a user  
   """
-
-  # GET Method
-
-    def get(self, user_id):
-        """ Gets the info about an user
-    Keyword arguments: 
-      self -- info about the request build by webapp2
-      user_id -- id of the user 
-    """
-
-    # Returns the component queried
-
-        user = Usuario.query(Usuario.identificador == user_id).get()
-        if user == None:
-            self.response.set_status(404)
+  def get(self, user_id):
+    cookie_value = self.request.cookies.get('session')
+    if not cookie_value == None:
+      # Obtains info related to the user authenticated in the system
+      user_key = self.getUserInfo(cookie_value)
+      user_info = ndb_pb.getUser(user_key)
+      if user_info == None:
+        self.response.content_type = 'application/json'
+        self.response.write({"error": "The user requested does not exist"})
+        self.response.set_status(404)
+      else:
+        user = json.dumps(user_info)
+        # Depending on the user making the request, the info returned will be one or another
+        if user["id_usuario"] == user_id:
+          self.response.content_type = 'application/json'
+          self.response.write(user_info)
+          self.response.set_status(200)
         else:
+          user_dict = {"id_usuario": user["id_usuario"],
+                        "descripcion": user["descripcion"],
+                        "imagen": user["imagen"],
+                        "sitio_web": user["sitio_web"],
+                        "redes": user["redes"],
+                        "componentes": user["components"]}
+          if user["private_email"] == False:
+            user_dict["email"] = user["email"]
+          if user["private_phone"] == False:
+            user_dict["telefono"] = user["telefono"]
+          self.response.content_type = 'application/json'
+          self.response.write(user_dict)
+          self.response.set_status(200)
 
-      # Builds the response
+  def post(self, user_id):
+    cookie_value = self.request.cookies.get('session')
+    if not cookie_value == None:
+      user_key = self.getUserInfo(cookie_value)
+      # It is neccesary to get the parameters from the request
+      user_info = ndb_pb.getUser(user_key)
+      if not user_info == None:
+        self.response.content_type = 'application/json'
+        self.response.write({"error": "The user requested does not exist"})
+        self.response.set_status(404)
+      else:
+        user = json.dumps(user_info)
+        # Depending on the user making the request, the info returned will be one or another
+        if user["id_usuario"] == user_id:
+          values = self.request.POST
+          update_data = {}
+          if values.has_key("description"):
+            update_data["description"] = values.get("description")
+          if values.has_key("web_site"):
+            update_data["web_site"] = values.get("web_site")
+          if values.has_key("image"):
+            update_data["image"] = values.get("image")
+          if values.has_key("phone"):
+            update_data["phone"] = values.get("phone")
+          if values.has_key("email"):
+            update_data["email"] = values.get("email")
+          if values.has_key("private_phone"):
+            update_data["private_phone"] = values.get("private_phone")
+          if values.has_key("private_email"):
+            update_data["private_email"] = values.get("private_email")
+          if values.has_key("component"):
+            update_data["component"] = values.get("component")
+          if values.has_key("rate"):
+            update_data["rate"] = values.get("rate")
+        
+          user_info = ndb_pb.actualizaUsuario(user_key, update_data)
 
-            response = {
-                'name': user.nombre,
-                'user_id': user.identificador,
-                'email': user.email,
-                'network_list': user.lista_Redes,
-                'group_list': user.lista_Grupos,
-                }
-            self.response.content_type = 'application/json'
-            self.response.write(json.dumps(response))
+          self.response.content_type = 'application/json'
+          self.response.write({"success": "The update has been successfully executed"})
+          self.response.write(200)
+
+        else:
+          self.response.content_type = 'application/json'
+          self.response.write({"error": "The user is not authenticated"})
+          self.response.set_status(401)
+
+  def delete(self, user_id):
+    cookie_value = self.request.cookies.get('session')
+    if not cookie_value == None:
+      user_key = self.getUserInfo(cookie_value)
+      # It is neccesary to get the parameters from the request
+      user_info = ndb_pb.getUser(user_key)
+      if not user_info == None:
+        self.response.content_type = 'application/json'
+        self.response.write({"error": "The user requested does not exist"})
+        self.response.set_status(404)
+      else:
+        user = json.dumps(user_info)
+        # Depending on the user making the request, the info returned will be one or another
+        if user["id_usuario"] == user_id:
+          
+          ndb_pb.deleteUser(user_key)
+
+          self.response.content_type = 'application/json'
+          self.response.write({})
+          self.response.set_status(204)
+
+        else:
+          self.response.content_type = 'application/json'
+          self.response.write({"error": "The user is not authenticated"})
+          self.response.set_status(401)
