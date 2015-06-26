@@ -51,7 +51,7 @@ def main():
 	basepath = "/api/usuarios/"
 
 	# PRETEST: Inicio de sesion con Google+ en el sistema
-	request_uri = "/api/oauth/googleplus/login"
+	request_uri = "/api/oauth/googleplus?action=login"
 	print "\nPRETEST 1: Haciendo petición POST a " + request_uri + " (login)\n Ignorar el status de este caso"
 	token_id_login = "idgoogle"
 	access_token_login = "googleTEST"
