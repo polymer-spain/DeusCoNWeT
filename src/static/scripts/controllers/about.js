@@ -1,3 +1,3 @@
 angular.module('picbit')
-  .controller('aboutCtrl', function($scope, $routeParams,$timeout) {
+  .controller('AboutController', function($scope, $routeParams,$timeout) {
 });

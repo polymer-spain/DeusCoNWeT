@@ -1,9 +1,13 @@
 application: example-project-13
-version: stable
+
+version: test-backend
+
 runtime: python27
 threadsafe: true
 api_version: 1
 
+skip_files:
+- test
 handlers:
 # Route handlers
 - url: /favicon\.ico
@@ -44,12 +48,16 @@ handlers:
   secure: always
   
 - url: /
+
   static_dir: static 
   secure: always
   
+
 
 libraries:
 - name: webapp2
   version: latest
 - name: ssl
+  version: latest
+- name: pycrypto
   version: latest

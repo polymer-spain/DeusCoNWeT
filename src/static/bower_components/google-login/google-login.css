@@ -1,22 +1,44 @@
 :host {
-  display: inline-block;
+	display: inline-block;
 }
-.login {
-  background: #DF4A32;
-  color: white;
-  border-radius: 3px;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  text-transform: none;
-  vertical-align: center;
-  width: 100%;
+.GoogleButton {
+	background: #DF4A32;
+	color: #fff;
+	border-radius: 3px;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	text-transform: none;
+	vertical-align: center;
+	width: 205px;
+	height: 50px;
+	font-size: 16px;
 }
-paper-button > core-icon {
-   padding-right: 5px; 
-}
-paper-button > core-icon > div {
-  height: auto;
-  width: 30px;
 
+.GoogleButton2{
+	background: #DF4A32;
+	border-radius: 3px;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	text-transform: none;
+	vertical-align: center;
+	height: 46px;
+	width: 82px;
+}
+
+.desconectar{
+	background: grey;
+}
+
+.icono{
+	width: 30px;
+	height: 25px;
+	background-repeat: no-repeat;
+}
+
+.icono2{
+	width: 35px;
+	height: 25px;
+	background-repeat:no-repeat;
 }

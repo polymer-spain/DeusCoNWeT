@@ -5,6 +5,7 @@
   Copyright 2015 Miguel Ortega Moreno
   Copyright 2015 Juan Francisco Salamanca Carmona
   
+
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -25,7 +26,7 @@ import re
 import sys
 sys.path.insert(1, 'api_handlers/')
 sys.path.insert(1, 'api_handlers/lib/')
-import api_usuarios, api_componentes, api_oauth, api_contacto, api_oauth_refactored
+import api_usuarios, api_componentes, api_oauth, api_oauth_refactored, api_auxiliar
 
 
 app = webapp2.WSGIApplication([
@@ -38,9 +39,8 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/github', api_oauth_refactored.OAuthGithubHandler),
     (r'/api/oauth/linkedin', api_oauth_refactored.OauthLinkedinHandler),
     (r'/api/oauth/instagram', api_oauth_refactored.OAuthInstagramHandler),
+    (r'/api/aux/instagramTimeline', api_auxiliar.instagramRequest),
     (r'/api/oauth/facebook', api_oauth_refactored.OauthFacebookHandler),
     (r'/api/oauth/stackoverflow', api_oauth_refactored.OauthStackOverflowHandler),
     (r'/api/oauth/googleplus', api_oauth_refactored.OauthGooglePlusHandler),
-    (r'/api/contacts', api_contacto.ContactHandler),
-    (r'/api/subscriptions', api_contacto.SubscriptionHandler),
-    ], debug=True)
+  ], debug=True)

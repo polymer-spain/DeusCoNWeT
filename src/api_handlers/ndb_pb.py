@@ -113,9 +113,11 @@ rs_list = [
   #               componentId=self.full_name_id)
 
 class UsuarioBeta(ndb.Model):
-  email = ndb.StringProperty(required=True)
-  nombre = ndb.StringProperty()
-  apellidos = ndb.StringProperty()
+
+    email = ndb.StringProperty(required=True)
+    nombre = ndb.StringProperty()
+    apellidos = ndb.StringProperty()
+
 
 class Component(ndb.Model):
   component_id = ndb.StringProperty()
@@ -204,7 +206,6 @@ def getToken(entity_key, rs):  # FUNCIONA
 
     return res
 
-
 def getUser(entity_key): #FUNCIONA
   user = entity_key.get()
   rates = user.rates; redes = user.lista_Redes
@@ -230,6 +231,7 @@ def getUser(entity_key): #FUNCIONA
   return usuario
 
 @ndb.transactional(xg=True)
+
 def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   usuario = Usuario()
   token = Token(identificador=ide, token=token, nombre_rs=rs)
@@ -385,14 +387,14 @@ def modificarComponente(entity_key, nombre, datos): #FUNCIONA
   usuario.put()
 
 def addListening(entity_key, nombre, events):
-  usuario = entity_key.get()
-  comps = usuario.componentes
-  for comp in comps:
-    if comp.nombre == nombre:
-      for event in events:
-        comp.listening += event + ""
+    usuario = entity_key.get()
+    comps = usuario.componentes
+    for comp in comps:
+        if comp.nombre == nombre:
+            for event in events:
+                comp.listening += event + ''
 
-  usuario.put()
+    usuario.put()
 
 def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
   user = entity_key.get()
@@ -414,7 +416,8 @@ def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
       res["salida"] = comp.output_type
       res["escuchando"] = comp.listening
 
-  return json.dumps(res)
+    usuario.put()
+    return usuario.key
 
 def getComponents(rs="", user_id="", all_info=False):
   res = []
@@ -462,20 +465,19 @@ def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
       token_aux.token = nuevo_token
       token_aux.put()
 
-  usuario.put()
-  return usuario.key
+def nuevoUsuarioBeta(email, nombre, apellidos):  # FUNCIONA
+    user_beta = UsuarioBeta(email=email, nombre=nombre,
+                            apellidos=apellidos)
+    user_beta.put()
 
-def nuevoUsuarioBeta(email, nombre, apellidos): #FUNCIONA
-  user_beta = UsuarioBeta(email=email, nombre=nombre, apellidos=apellidos)
-  user_beta.put()
 
-def getEmails(): #FUNCIONA
-  users_beta = UsuarioBeta.query().fetch(100)
-  lista_emails = []
-  for user in users_beta:
-    lista_emails.append(user.email)
+def getEmails():  # FUNCIONA
+    users_beta = UsuarioBeta.query().fetch(100)
+    lista_emails = []
+    for user in users_beta:
+        lista_emails.append(user.email)
 
-  return lista_emails
+    return lista_emails
 
 def usuarioSuscrito(email):
   emails = getEmails()
@@ -645,4 +647,3 @@ def searchUserById(user_id):
 # app = webapp2.WSGIApplication([
 #       ('/', MainPage),
 # ], debug=True)
-
