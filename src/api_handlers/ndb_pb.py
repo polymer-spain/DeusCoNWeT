@@ -453,6 +453,13 @@ def getComponents(rs="", user_id="", all_info=False):
         general_comp["height"] = comp["height"]
         general_comp["width"] = comp["width"]
         res.append(json.dumps(general_comp))
+      else:
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user_comps = user.componentes
+        # Now we get the general info about the components used by the user
+        for comp in user_comps:
+          general_comp = {}
+          info_comp = Component.query(Component.component_id == comp.id_componente).get()
 
 
     return res
