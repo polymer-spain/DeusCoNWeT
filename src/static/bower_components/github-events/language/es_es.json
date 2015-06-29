@@ -6,5 +6,19 @@
   "push" : "Realizó un push sobre ",
   "follow" : "Empezó a seguir el repositorio ",
   "create" : "Ha creado el repositorio en ",
-  "pull_request" : "Realizó una pull request sobre "
+  "pull_request" : "Realizó una pull request sobre ",
+  "date" : "Fecha: ",
+  "january" : "Enero",
+  "february" : "Febrero",
+  "march" : "Marzo",
+  "april" : "Abril",
+  "may" : "Mayo",
+  "june" : "Junio",
+  "july" : "Julio",
+  "august" : "Agosto",
+  "september" : "Septiembre",
+  "october" : "Octubre",
+  "november" : "Noviembre",
+  "december" : "Diciembre",
+  "of" : " de "
 }

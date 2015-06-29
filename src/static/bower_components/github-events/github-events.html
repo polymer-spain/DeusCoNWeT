@@ -213,9 +213,8 @@ Element providing solution to no problem in particular.
             break;
         };
         var date = new Date(list[i].created_at);
-        var month = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
-                     'Septiembre','Octubre','Noviembre','Diciembre'];
-        list[i].date ="Fecha: "+date.getDate()+" de "+month[date.getMonth()]+" de "+date.getFullYear();
+        var month = [this.language_data.january,this.language_data.february,this.language_data.march,this.language_data.april, this.language_data.may,this.language_data.june,this.language_data.july,this.language_data.august,this.language_data.september,this.language_data.october,this.language_data.november,this.language_data.december];
+        list[i].date =this.language_data.date+date.getDate()+ this.language_data.of +month[date.getMonth()]+this.language_data.of+date.getFullYear();
       }
       return list;
     },
