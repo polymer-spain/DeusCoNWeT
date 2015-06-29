@@ -16,7 +16,7 @@ def main():
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token':access_token_login})
 	session1 = test_utils.make_request("POST", request_uri, params, 201, None)
 
-
+	print "##############################################################################"
 	# TEST 1
 	print "TEST 1: : Obtener la lista de componentes. Debe retornar una lista vacia de componentes"
 	print "Status esperado: 204 "
@@ -29,25 +29,90 @@ def main():
 	print "TEST 2: Subir un componente al sistema, proporcionando una URI incorrecta."
 	print "Status esperado: 404 "
 	request_uri = basepath
-	params = urllib.urlencode({})
-	test_utils.make_request("GET", request_uri, params, 204, session1)	
+	params = urllib.urlencode({'url': 'https://github.com/JuanFryS/badURI',
+            'component_id': 'twitterTimeline',
+            'description': 'Web component for obtain the timeline of Twitter using Polymer',
+            'social_network': 'Twitter',
+            'input_type': 'None',
+            'output_type': 'tweet',
+            'listening': 'None'
+	 })
+	test_utils.make_request("GET", request_uri, params, 204, session1)
 
-	# TEST 3: Subir un componente al sistema, proporcionando un parametro erroneo.
-	# Status esperado: 400
+	print "##############################################################################"
+
+	# TEST 3
+	print "TEST 3: Subir un componente al sistema, proporcionando un parametro erróneo (red social)."
+	print "Status esperado: 400 "
+	request_uri = basepath
+	params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
+            'component_id': 'twitterTimeline',
+            'description': 'Web component for obtain the timeline of Twitter using Polymer',
+            'social_network': 'RedError' ,
+            'input_type': 'None',
+            'output_type': 'tweet',
+            'listening': 'None'
+	 })
+	test_utils.make_request("PUT", request_uri, params, 400, None)
+
+	# TEST 4
+	print "TEST 4: Subir un componente al sistema, proporcionando menos parámetros de los necesarios."
+	print "Status esperado: 400 "
+	# request_uri = basepath
+	params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
+            'component_id': 'twitterTimeline',
+            'description': 'Web component for obtain the timeline of Twitter using Polymer',
+            'social_network': 'Twitter' ,
+            'input_type': 'None',
+            'output_type': 'tweet'
+	 })
+	test_utils.make_request("PUT", request_uri, params, 400, None)
 
 	# Subimos dos componentes al sistema
-	# TEST 4: Subir un componente al sistema (componente 1).
-	# Status esperado: 200
+	# TEST 5
+	print "TEST 5: Subir un componente al sistema (componente 1)."
+	print "Status esperado: 200 "
+	# request_uri = basepath
+	params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
+            'component_id': 'twitterTimeline',
+            'description': 'Web component for obtain the timeline of Twitter using Polymer',
+            'social_network': 'Twitter' ,
+            'input_type': 'None',
+            'output_type': 'tweet',
+            'listening': 'None'
+	 })
+	test_utils.make_request("PUT", request_uri, params, 200, None)
+	
+	# TEST 6: Subir un componente al sistema (componente 2).
+	print "TEST 6: Subir un componente al sistema (componente 2)."
+	print "Status esperado: 200 "
+	# request_uri = basepath
+	params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
+            'component_id': 'instagram-timeline',
+            'description': 'Web component for obtain the timeline of the social network Instagram using Polymer',
+            'social_network': 'Instagram',
+            'input_type': 'None',
+            'output_type': 'photo',
+            'listening': 'None'
+	 })
+	test_utils.make_request("PUT", request_uri, params, 200, None)
 
-	# TEST 5: Subir un componente al sistema (componente 2).
-	# Status esperado: 200
-
+	print "##############################################################################"
+	
 	# TESTs Metodo GET Lista de componentes 
-	# TEST 6: Obtener la lista de componentes, sin proporcionar una cookie de sesion
-	# Status esperado: 401
+	# TEST 7
+	print "TEST 7: Obtener la lista de componentes, sin proporcionar una cookie de sesion"
+	print "Status esperado: 401 "
+	request_uri = basepath
+	params = urllib.urlencode({})
+	test_utils.make_request("GET", request_uri, params, 401, None)	
 
-	# TEST 7 : Obtener la lista de componentes, proporcionando una cookie de sesion
-	# Status esperado: 200
+	# TEST 8
+	print "TEST 8: Obtener la lista de componentes, proporcionando una cookie de sesion"
+	print "Status esperado: 200 "
+	request_uri = basepath
+	params = urllib.urlencode({})
+	test_utils.make_request("GET", request_uri, params, 200, session1)
 
 	# TODO TESTs Metodo GET Componente (obtener info de un componente en particular)
 	# TODO TESTs Metodo POST Componente (modificar info de un componente)

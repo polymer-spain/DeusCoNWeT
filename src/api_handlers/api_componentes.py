@@ -27,6 +27,8 @@ import ndb_pb
 from api_oauth_refactored import SessionHandler
 import cliente_gitHub
 
+social_list = ['twitter', 'facebook', 'stackoverflow', 'instagram', 'linkedin', 'google', 'github', '']
+
 class ComponentListHandler(webapp2.RequestHandler):
 
     """
@@ -48,20 +50,31 @@ class ComponentListHandler(webapp2.RequestHandler):
         # Get the cookie in the request
         cookie_value = self.request.cookies.get('session')
         # Social_network,filter_param and list_format are optional params
-        # TODO: Use filter params to compound the response
-        social_network = self.request.get('social_network', default_value='none')
-        filter_param = self.request.get('filter',default_value='none')
-        list_format = self.request.get('list_format', default_value='none') 
+        social_network = self.request.get('social_network', default_value='')
+        filter_param = self.request.get('filter',default_value='')
+        list_format = self.request.get('list_format', default_value='') 
+
+        # Lists of posible values for each param
+        filter_list = ['general','user','']
+        format_list = ['all','reduced','']
         if not cookie_value == None:
             user_id = SessionHandler.getUserInfo(cookie_value)
             if not user_id == None:
-                component_list = ndb_pb.getComponentes()
-                if not component == None:
-                    self.response.content_type = 'application/json'
-                    self.response.write(component_list)
-                    self.request.set_status(200)
+                if social_network in social_list and filter_param in filter_list and list_format in format_list:
+                    format_flag = True if list_format == 'all'
+                    component_list = ndb_pb.getComponents(social_network, user_id, format_flag)
+                    if not component == None:
+                        self.response.content_type = 'application/json'
+                        self.response.write(component_list)
+                        self.request.set_status(200)
+                    else:
+                        self.response.set_status(204)
                 else:
-                    self.response.set_status(204)            
+                    response = \
+                    {'error': 'Invalid value for param social_network, filter o list_format'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)        
             else:
                 response = \
                     {'error': 'The cookie session provided does not belongs to any active user'}
@@ -93,9 +106,11 @@ class ComponentListHandler(webapp2.RequestHandler):
             output_type = self.request.POST['output_type']
             listening = self.request.POST['listening']
 
+            # Auxiliar params
             path = url.split('/')
             basePath = '/repos/' + path[len(path) - 2] + '/' \
             + path[len(path) - 1]
+           
 
             # Open connection to the API endpoint
             cliente_gitHub.openConnection(basePath)
@@ -104,7 +119,13 @@ class ComponentListHandler(webapp2.RequestHandler):
             repoDetails = cliente_gitHub.getRepoInfo()
 
             if not repoDetails == None:
-                ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
+                if social_network in social_list:
+                    ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
+                else:
+                    response = {'error': 'Bad value for the social_network param'}
+                    self.response.content_type = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.request.set_status(400)        
             else:
                 response = {'error': 'The url supplied in the request does not correspond to a github repo'}
                 self.response.content_type = 'application/json'
