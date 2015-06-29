@@ -10,13 +10,13 @@
 
     <title>PicBit</title>
 
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/elements.html">
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/landingPage.css">
-    <link href='https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic" rel="stylesheet" type="text/css">
   </head>
   <body unresolved ng-app="picbit" ng-controller="MainController">
 
@@ -73,7 +73,7 @@
       <span style="margin:7% 10%;font-size:1.4em">{{language.select_network}}</span>
       <div vertical center-justified layout class="button-login">
         <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-        <twitter-login class="button-login" endpoint='{{domain}}/api/oauth/twitter' static="true"></twitter-login>
+        <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static="true"></twitter-login>
         <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static="true"></login-facebook>
 
       </div>
@@ -95,5 +95,6 @@
     <script src="scripts/controllers/contact.js"></script>
     <script src="scripts/controllers/profile.js"></script>
     <script src="scripts/controllers/privacy.js"></script>
+    <script src="scripts/backend/dragdrop.js"></script>
   </body>
 </html>

@@ -1,18 +1,18 @@
 <link rel="stylesheet" href="styles/userHome.css">
 
-<div style="padding-top:50px;">
+<div style="padding-top:50px;height: 100%" ng-container id="container">
+    <img id="picture" src="../images/picture.png">
 
-  <img id="picture" src="../images/picture.png">
 
   <div horizontal around-justified layout>
 
-    <twitter-timeline style="color: black" accessToken={{twitter.token}} secretToken="VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY" consumerKey="J4bjMZmJ6hh7r0wlG9H90cgEe" consumerSecret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" endpoint="{{domain}}/api/oauth/twitterTimeline" count="200" language="{{idioma}}"></twitter-timeline>
+    <!--    <twitter-timeline style="color: black" accessToken={{twitter.token}} secretToken="VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY" consumerKey="J4bjMZmJ6hh7r0wlG9H90cgEe" consumerSecret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" endpoint="{{domain}}/api/oauth/twitterTimeline" count="200" language="{{idioma}}"></twitter-timeline>
 
-    <instagram-timeline endpoint="{{domain}}/api/aux/instagramTimeline" accessToken="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{idioma}}">
-    </instagram-timeline>
+<instagram-timeline endpoint="{{domain}}/api/aux/instagramTimeline" accessToken="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{idioma}}">
+</instagram-timeline>
 
-    <github-events style="color:black" username={{github.username}} token={{github.token}} mostrar=10 language="{{idioma}}"></github-events>
-
+<github-events style="color:black" username={{github.username}} token={{github.token}} mostrar=10 language="{{idioma}}"></github-events>-->
+    <!--        <li imagesrc="https://cdn2.iconfinder.com/data/icons/despicable-me-2-minions/128/despicable-me-2-Minion-icon-6.png" id="github-events" ng-create-element list-attributes='{"username": "juanfrys"}'>timeline</li>-->
     <div vertical layout end id="listOption" style="width: 57px;">
       <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
         <core-icon id="menu-icon" icon="arrow-back"></core-icon>
@@ -31,7 +31,7 @@
         </div>
         <div id="list" class="animate-show" ng-show="!hidelist('add')">
           <div ng-repeat="element in list">
-            <p>{{element.name}}</p>
+            <p ng-create-element id-element="{{element.name}}" list-attributes="{{element.attributes}}">{{element.name}}</p>
           </div>
         </div>
       </div>

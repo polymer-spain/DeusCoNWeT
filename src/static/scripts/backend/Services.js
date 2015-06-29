@@ -1,18 +1,19 @@
-angular.module('picbit').service('$backend', function ($http, $location) {
+/*global angular, document */
+angular.module("picbit").service("$backend", function ($http, $location) {
 
-  'use strict';
+  "use strict";
 
-  this.endpoint = 'https://' + $location.host();
+  this.endpoint = "https://" + $location.host();
 
   /* Envia el token y el identificador del token correspondiente a una red social */
   this.sendData = function (token, tokenId, redSocial, callback, errorCallback) {
     var request, uri, params;
-    uri = this.endpoint + '/api/oauth/' + redSocial;
+    uri = this.endpoint + "/api/oauth/" + redSocial;
     params = "token_id=" + tokenId + "&access_token=" + token + "&action=login";
     request = {
-      method: 'post',
+      method: "post",
       url: uri,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
       data: params
     };
     $http(request).success(function (data) {
@@ -30,21 +31,21 @@ angular.module('picbit').service('$backend', function ($http, $location) {
   this.sendEmail = function (message, sender, subject, callback, errorCallback) {
     var request, uri, params;
 
-    uri = this.endpoint + '/api/contact';
+    uri = this.endpoint + "/api/contact";
     params = "action=contact&message=" + message + "&sender=" + sender;
 
     if (subject) {
-      params += '&subject=' + subject;
+      params += "&subject=" + subject;
     }
     request = {
-      method: 'post',
+      method: "post",
       url: uri,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
       data: params
     };
     $http(request).success(function (data, status) {
       if (callback) {
-        callback(data);
+        callback(data, status);
       }
     }).error(function (data, status) {
       if (errorCallback) {
@@ -55,19 +56,19 @@ angular.module('picbit').service('$backend', function ($http, $location) {
 
   this.sendSub = function (name, sender, surname, callback, errorCallback) {
     var request, uri, params;
-    uri = this.endpoint + '/api/subscriptions';
+    uri = this.endpoint + "/api/subscriptions";
     params = "name=" + name + "&email=" + sender + "&surname=" + surname;
     request = {
-      method: 'post',
+      method: "post",
       url: uri,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
       data: params
     };
 
     $http(request).success(function (data, status) {
 
       if (callback) {
-        callback(data,status);
+        callback(data, status);
       }
     }).error(function (data, status) {
       if (errorCallback) {
@@ -79,29 +80,29 @@ angular.module('picbit').service('$backend', function ($http, $location) {
   this.logout = function (callback, errorCallback) {
     var request, uri, params;
 
-    uri = this.endpoint + '/api/oauth/googleplus';
+    uri = this.endpoint + "/api/oauth/googleplus";
     params = "action=logout";
 
     request = {
-      method: 'post',
+      method: "post",
       url: uri,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
       data: params
     };
     $http(request).success(function (data, status) {
       if (callback) {
-        callback(data,status); 
-      };
+        callback(data, status);
+      }
     }).error(function (data, status) {
       if (errorCallback) {
-        callback(data,status); 
-      };
+        callback(data, status);
+      }
     });
   };
 
 
-}).service('$anchorSmoothScroll', function () {
-  'use strict';
+}).service("$anchorSmoothScroll", function () {
+  "use strict";
 
   this.scrollTo = function (eID) {
     var startY = currentYPosition();
@@ -148,38 +149,41 @@ angular.module('picbit').service('$backend', function ($http, $location) {
 
   };
 
-}).service('$cookie', function () {
+}).service("$cookie", function () {
+  "use strict";
   this.get = function (name) {
     var value = "; " + document.cookie;
     var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift()
-      };
-  
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+  };
+
   this.put  = function (key, value, expires, path, domain, secure) {
     var cookie;
-    cookie = key + '=' + value;
+    cookie = key + "=" + value;
     if (expires) {
-      cookie += '; expires=' + expires;
+      cookie += "; expires=" + expires;
     }
     if (path) {
-      cookie += '; path=' + path; 
+      cookie += "; path=" + path;
     }
     if (domain) {
-      cookie += '; domain=' + domain;
+      cookie += "; domain=" + domain;
     }
     if (secure) {
-      cookie +='; secure';
+      cookie += "; secure";
     }
     document.cookie = cookie;
   };
 
   this.delete = function (name) {
-    document.cookie = name + '=; expires= Thu, 01 jan 1970 00:00:00 UTC';
-  }
+    document.cookie = name + "=; expires= Thu, 01 jan 1970 00:00:00 UTC";
+  };
   this.set = function (key, value, expires, path, domain, secure) {
-    this.put(key, value, expires, path, domain, secure); 
+    this.put(key, value, expires, path, domain, secure);
   };
   this.getAll = function () {
     return document.cookie;
-  }
+  };
 });
