@@ -499,13 +499,15 @@ def buscaToken(id_usuario, rs): #FUNCIONA
 def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   usuario = Usuario.query(Usuario.tokens==token_aux).get()
-  print "Usuario ", usuario
+  # print "Usuario ", usuario
   tokens = usuario.tokens
   for token in tokens:
     if token.identificador==id_usuario and token.nombre_rs==rs:
       token.token = nuevo_token
       token_aux.token = nuevo_token
       token_aux.put()
+  print "Id usuario ", usuario.id()
+  return usuario.id()
 
 def nuevoUsuarioBeta(email, nombre, apellidos):  # FUNCIONA
     user_beta = UsuarioBeta(email=email, nombre=nombre,
