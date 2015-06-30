@@ -113,11 +113,9 @@ rs_list = [
   #               componentId=self.full_name_id)
 
 class UsuarioBeta(ndb.Model):
-
-    email = ndb.StringProperty(required=True)
-    nombre = ndb.StringProperty()
-    apellidos = ndb.StringProperty()
-
+  email = ndb.StringProperty(required=True)
+  nombre = ndb.StringProperty()
+  apellidos = ndb.StringProperty()
 
 class Component(ndb.Model):
   component_id = ndb.StringProperty()
@@ -200,7 +198,7 @@ def getToken(entity_key, rs):  # FUNCIONA
     if not rs in rs_list:
       return 'La red social no esta contemplada'
     for token in tokens:
-      print "DEBUG: TOKEN ACTUAL ", token.identificador 
+      print "DEBUG: TOKEN ACTUAL ", token.nombre_rs 
       if token.nombre_rs == rs:
         res = token
 
@@ -222,7 +220,7 @@ def getUser(entity_key): #FUNCIONA
               "descripcion": user.descripcion,
               "imagen": user.imagen,
               "sitio_web": user.sitio_web,
-              "private_email": user.private_email,
+              "private_email"_ user.private_email,
               "email": user.email,
               "private_phone": user.private_phone,
               "telefono": user.telefono,
@@ -231,9 +229,7 @@ def getUser(entity_key): #FUNCIONA
   usuario = json.dumps(usuario)
   return usuario
 
-
 @ndb.transactional(xg=True)
-
 def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
   usuario = Usuario()
   token = Token(identificador=ide, token=token, nombre_rs=rs)
@@ -389,14 +385,14 @@ def modificarComponente(entity_key, nombre, datos): #FUNCIONA
   usuario.put()
 
 def addListening(entity_key, nombre, events):
-    usuario = entity_key.get()
-    comps = usuario.componentes
-    for comp in comps:
-        if comp.nombre == nombre:
-            for event in events:
-                comp.listening += event + ''
+  usuario = entity_key.get()
+  comps = usuario.componentes
+  for comp in comps:
+    if comp.nombre == nombre:
+      for event in events:
+        comp.listening += event + ""
 
-    usuario.put()
+  usuario.put()
 
 def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
   user = entity_key.get()
@@ -418,74 +414,70 @@ def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
       res["salida"] = comp.output_type
       res["escuchando"] = comp.listening
 
-    usuario.put()
-    return usuario.key
+  return json.dumps(res)
+
+def getComponents(rs="", user_id="", all_info=False):
+  res = []
+  if not user_id == "":
+    if rs == "":
+      if all_info:
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        # Info for the components used by the specified user
+        user_comps = user.componentes
+        for comp in user_comps:
+          # General info for components
+          general_comp = {}
+          info_comp = Component.query(Component.component_id == comp.id_componente).get()
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["component_id"] = comp["id_componente"]
+          general_comp["url"] = info_comp["url"]
+          general_comp["social_net"] = info_comp["rs"]
+          general_comp["description"] = info_comp["description"]
+          general_comp["rate"] = rate["rating_value"]
+          general_comp["x"] = comp["x"]
+          general_comp["y"] = comp["y"]
+          general_comp["input_type"] = info_comp["input_type"]
+          general_comp["output_type"] = info_comp["output_type"]
+          general_comp["listening"] = comp["listening"]
+          general_comp["height"] = comp["height"]
+          general_comp["width"] = comp["width"]
+          res.append(json.dumps(general_comp))
+      else:
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user_comps = user.componentes
+        # Now we get the general info about the components used by the user
+        for comp in user_comps:
+          general_comp = {}
+          info_comp = Component.query(Component.component_id == comp.id_componente).get()
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["component_id"] = info_comp["component_id"]
+          general_comp["url"] = info_comp["url"]
+          general_comp["social_net"] = info_comp["rs"]
+          general_comp["description"] = info_comp["description"]
+          general_comp["rate"] = rate["rating_value"]
+          res.append(json.dumps(general_comp))
 
 
-# def getComponents(rs="", user_id="", all_info=False):
-#   res = []
-#   if not user_id == "":
-#     if rs == "":
-#       if all_info:
-#         user = Usuario.query(Usuario.id_usuario == user_id).get()
-#         # Info for the components used by the specified user
-#         user_comps = user.componentes
-#         for comp in user_comps:
-#           # General info for components
-#           general_comp = {}
-#           info_comp = Component.query(Component.component_id == comp.id_componente).get()
-#           rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
-#           general_comp["component_id"] = comp["id_componente"]
-#           general_comp["url"] = info_comp["url"]
-#           general_comp["social_net"] = info_comp["rs"]
-#           general_comp["description"] = info_comp["description"]
-#           general_comp["rate"] = rate["rating_value"]
-#           general_comp["x"] = comp["x"]
-#           general_comp["y"] = comp["y"]
-#           general_comp["input_type"] = info_comp["input_type"]
-#           general_comp["output_type"] = info_comp["output_type"]
-#           general_comp["listening"] = comp["listening"]
-#           general_comp["height"] = comp["height"]
-#           general_comp["width"] = comp["width"]
-#           res.append(json.dumps(general_comp))
-#       else:
-#         user = Usuario.query(Usuario.id_usuario == user_id).get()
-#         user_comps = user.componentes
-#         # Now we get the general info about the components used by the user
-#         for comp in user_comps:
-#           general_comp = {}
-#           info_comp = Component.query(Component.component_id == comp.id_componente).get()
-#           rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
-#           general_comp["component_id"] = info_comp["component_id"]
-#           general_comp["url"] = info_comp["url"]
-#           general_comp["social_net"] = info_comp["rs"]
-#           general_comp["description"] = info_comp["description"]
-#           general_comp["rate"] = rate["rating_value"]
-#           res.append(json.dumps(general_comp))
+    else:
+
+  else:
+  if user_id == "" and not all_info and rs == "": # The general information of the components must be returned
+    components = Component.query()
+    comp = {}
+    for component in components:
+      comp["id_componente"] = component.id_componente
+      comp["url"] = component.url
+      comp["rs"] = component.rs
+      comp["description"] = component.description
+      comp["input_type"] = component.input_type
+      comp["output_type"] = component.output_type
+      comp["listening"] = component.listening
+      res.append(json.dumps(comp))
+  elif not user_id == "":
+    if all_info:
 
 
-#     else:
-#       pass
-
-#   else:
-#   if user_id == "" and not all_info and rs == "": # The general information of the components must be returned
-#     components = Component.query()
-#     comp = {}
-#     for component in components:
-#       comp["id_componente"] = component.id_componente
-#       comp["url"] = component.url
-#       comp["rs"] = component.rs
-#       comp["description"] = component.description
-#       comp["input_type"] = component.input_type
-#       comp["output_type"] = component.output_type
-#       comp["listening"] = component.listening
-#       res.append(json.dumps(comp))
-#   elif not user_id == "":
-#     if all_info:
-
-
-#     return res
-
+    return res
 
 def buscaToken(id_usuario, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
@@ -499,29 +491,27 @@ def buscaToken(id_usuario, rs): #FUNCIONA
 def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   usuario = Usuario.query(Usuario.tokens==token_aux).get()
-  # print "Usuario ", usuario
   tokens = usuario.tokens
   for token in tokens:
     if token.identificador==id_usuario and token.nombre_rs==rs:
       token.token = nuevo_token
       token_aux.token = nuevo_token
       token_aux.put()
-  print "Id usuario ", usuario.id()
-  return usuario.id()
 
-def nuevoUsuarioBeta(email, nombre, apellidos):  # FUNCIONA
-    user_beta = UsuarioBeta(email=email, nombre=nombre,
-                            apellidos=apellidos)
-    user_beta.put()
+  usuario.put()
+  return usuario.key
 
+def nuevoUsuarioBeta(email, nombre, apellidos): #FUNCIONA
+  user_beta = UsuarioBeta(email=email, nombre=nombre, apellidos=apellidos)
+  user_beta.put()
 
-def getEmails():  # FUNCIONA
-    users_beta = UsuarioBeta.query().fetch(100)
-    lista_emails = []
-    for user in users_beta:
-        lista_emails.append(user.email)
+def getEmails(): #FUNCIONA
+  users_beta = UsuarioBeta.query().fetch(100)
+  lista_emails = []
+  for user in users_beta:
+    lista_emails.append(user.email)
 
-    return lista_emails
+  return lista_emails
 
 def usuarioSuscrito(email):
   emails = getEmails()
@@ -551,7 +541,7 @@ def deleteComponent(component_name):
 
 def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
-  tok = Token.query(ndb.AND(Token.identificador == id_rs, Token.nombre_rs == rs)).get()
+  tok = Token.query(token_aux).get()
   tok.key.delete()
   user = entity_key.get()
   user.tokens.remove(token_aux)
