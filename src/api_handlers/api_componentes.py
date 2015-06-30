@@ -61,9 +61,10 @@ class ComponentListHandler(webapp2.RequestHandler):
             user_id = SessionHandler.getUserInfo(cookie_value)
             if not user_id == None:
                 if social_network in social_list and filter_param in filter_list and list_format in format_list:
-                    format_flag = True if list_format == 'all'
-                    component_list = ndb_pb.getComponents(social_network, user_id, format_flag)
-                    if not component == None:
+                    format_flag = True if list_format == 'all' else False
+                    # component_list = ndb_pb.getComponents(social_network, user_id, format_flag)
+                    component_list = None
+                    if not component_list == None:
                         self.response.content_type = 'application/json'
                         self.response.write(component_list)
                         self.request.set_status(200)
@@ -85,7 +86,7 @@ class ComponentListHandler(webapp2.RequestHandler):
             response = {'error': 'You must provide a session cookie'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
-            self.request.set_status(401)
+            self.response.set_status(401)
         
 
     # POST Method
@@ -125,18 +126,18 @@ class ComponentListHandler(webapp2.RequestHandler):
                     response = {'error': 'Bad value for the social_network param'}
                     self.response.content_type = 'application/json'
                     self.response.write(json.dumps(response))
-                    self.request.set_status(400)        
+                    self.response.set_status(400)        
             else:
                 response = {'error': 'The url supplied in the request does not correspond to a github repo'}
                 self.response.content_type = 'application/json'
                 self.response.write(json.dumps(response))
-                self.request.set_status(404)        
+                self.response.set_status(404)        
 
         except KeyError:
             response = {'error': 'Missing params in the request body'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
-            self.request.set_status(400)
+            self.response.set_status(400)
 
 
 
@@ -170,7 +171,7 @@ class ComponentHandler(webapp2.RequestHandler):
                 if not component == None:
                     self.response.content_type = 'application/json'
                     self.response.write(component)
-                    self.request.set_status(200)
+                    self.response.set_status(200)
                 else:
                     response = \
                     {'error': 'Component not found in the system'}
@@ -187,7 +188,7 @@ class ComponentHandler(webapp2.RequestHandler):
             response = {'error': 'You must provide a session cookie'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
-            self.request.set_status(401)
+            self.response.set_status(401)
 
 
     # POST Method
@@ -235,7 +236,7 @@ class ComponentHandler(webapp2.RequestHandler):
             response = {'error': 'You must provide a session cookie'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
-            self.request.set_status(401)
+            self.response.set_status(401)
 
 
     # DELETE Method
@@ -247,4 +248,4 @@ class ComponentHandler(webapp2.RequestHandler):
         """
         # Deletes the component in the datastore
         ndb_pb.deleteComponent(component_id)
-        self.request.set_status(204)
+        self.response.set_status(204)

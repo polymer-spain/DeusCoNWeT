@@ -35,7 +35,7 @@ def main():
 		# TEST 2
 		print "TEST 2: Subir un componente al sistema, proporcionando una URI incorrecta."
 		print "Status esperado: 404 "
-		request_uri = basepath
+		# request_uri = basepath
 		params = urllib.urlencode({'url': 'https://github.com/JuanFryS/badURI',
 	            'component_id': 'twitterTimeline',
 	            'description': 'Web component for obtain the timeline of Twitter using Polymer',
