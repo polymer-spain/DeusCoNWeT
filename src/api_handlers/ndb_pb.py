@@ -418,6 +418,49 @@ def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
 
 def getComponents(rs="", user_id="", all_info=False):
   res = []
+  if not user_id == "":
+    if rs == "":
+      if all_info:
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        # Info for the components used by the specified user
+        user_comps = user.componentes
+        for comp in user_comps:
+          # General info for components
+          general_comp = {}
+          info_comp = Component.query(Component.component_id == comp.id_componente).get()
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["component_id"] = comp["id_componente"]
+          general_comp["url"] = info_comp["url"]
+          general_comp["social_net"] = info_comp["rs"]
+          general_comp["description"] = info_comp["description"]
+          general_comp["rate"] = rate["rating_value"]
+          general_comp["x"] = comp["x"]
+          general_comp["y"] = comp["y"]
+          general_comp["input_type"] = info_comp["input_type"]
+          general_comp["output_type"] = info_comp["output_type"]
+          general_comp["listening"] = comp["listening"]
+          general_comp["height"] = comp["height"]
+          general_comp["width"] = comp["width"]
+          res.append(json.dumps(general_comp))
+      else:
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user_comps = user.componentes
+        # Now we get the general info about the components used by the user
+        for comp in user_comps:
+          general_comp = {}
+          info_comp = Component.query(Component.component_id == comp.id_componente).get()
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["component_id"] = info_comp["component_id"]
+          general_comp["url"] = info_comp["url"]
+          general_comp["social_net"] = info_comp["rs"]
+          general_comp["description"] = info_comp["description"]
+          general_comp["rate"] = rate["rating_value"]
+          res.append(json.dumps(general_comp))
+
+
+    else:
+
+  else:
   if user_id == "" and not all_info and rs == "": # The general information of the components must be returned
     components = Component.query()
     comp = {}
@@ -432,34 +475,6 @@ def getComponents(rs="", user_id="", all_info=False):
       res.append(json.dumps(comp))
   elif not user_id == "":
     if all_info:
-      user = Usuario.query(Usuario.id_usuario == user_id).get()
-      # Info for the components used by the specified user
-      user_comps = user.componentes
-      for comp in user_comps:
-        # General info for components
-        general_comp = {}
-        info_comp = Component.query(Component.component_id == comp.id_componente).get()
-        rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
-        general_comp["component_id"] = comp["id_componente"]
-        general_comp["url"] = info_comp["url"]
-        general_comp["social_net"] = info_comp["rs"]
-        general_comp["description"] = info_comp["description"]
-        general_comp["rate"] = rate["rating_value"]
-        general_comp["x"] = comp["x"]
-        general_comp["y"] = comp["y"]
-        general_comp["input_type"] = info_comp["input_type"]
-        general_comp["output_type"] = info_comp["output_type"]
-        general_comp["listening"] = comp["listening"]
-        general_comp["height"] = comp["height"]
-        general_comp["width"] = comp["width"]
-        res.append(json.dumps(general_comp))
-      else:
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
-        user_comps = user.componentes
-        # Now we get the general info about the components used by the user
-        for comp in user_comps:
-          general_comp = {}
-          info_comp = Component.query(Component.component_id == comp.id_componente).get()
 
 
     return res
