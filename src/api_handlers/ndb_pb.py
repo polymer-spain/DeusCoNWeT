@@ -221,7 +221,7 @@ def getUser(entity_key): #FUNCIONA
               "descripcion": user.descripcion,
               "imagen": user.imagen,
               "sitio_web": user.sitio_web,
-              "private_email"_ user.private_email,
+              "private_email": user.private_email,
               "email": user.email,
               "private_phone": user.private_phone,
               "telefono": user.telefono,

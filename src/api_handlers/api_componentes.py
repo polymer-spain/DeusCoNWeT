@@ -51,12 +51,12 @@ class ComponentListHandler(webapp2.RequestHandler):
         cookie_value = self.request.cookies.get('session')
         # Social_network,filter_param and list_format are optional params
         social_network = self.request.get('social_network', default_value='')
-        filter_param = self.request.get('filter',default_value='')
-        list_format = self.request.get('list_format', default_value='') 
+        filter_param = self.request.get('filter',default_value='general')
+        list_format = self.request.get('list_format', default_value='reduced') 
 
         # Lists of posible values for each param
-        filter_list = ['general','user','']
-        format_list = ['all','reduced','']
+        filter_list = ['general','user']
+        format_list = ['all','reduced']
         if not cookie_value == None:
             user_id = SessionHandler.getUserInfo(cookie_value)
             if not user_id == None:

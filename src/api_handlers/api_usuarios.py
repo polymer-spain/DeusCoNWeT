@@ -33,17 +33,16 @@ class UserListHandler(SessionHandler):
   """
 
   # GET Method
-
-    def get(self):
-      users_list = ndb_pb.getUsers()
-      if len(users_list) == 0:
-        self.response.content_type = 'application/json'
-        self.response.write('')
-        self.response.set_status(204)
-      else:
-        self.response.content_type = 'application/json'
-        self.response.write(users_list)
-        self.response.set_status(200)
+  def get(self):
+    users_list = ndb_pb.getUsers()
+    if len(users_list) == 0:
+      self.response.content_type = 'application/json'
+      self.response.write('')
+      self.response.set_status(204)
+    else:
+      self.response.content_type = 'application/json'
+      self.response.write(users_list)
+      self.response.set_status(200)
 
 class UserHandler(SessionHandler):
 
