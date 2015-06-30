@@ -44,12 +44,16 @@ handlers:
   secure: always
   
 - url: /
+
   static_dir: static 
   secure: always
   
+
 
 libraries:
 - name: webapp2
   version: latest
 - name: ssl
+  version: latest
+- name: pycrypto
   version: latest

@@ -1,0 +1,10 @@
+{
+  "refresh" : "Refrescar",
+  "title" : "Últimos eventos",
+  "loading" : "Cargando...",
+  "load_more" : "Mostrar más eventos",
+  "push" : "Realizó un push sobre ",
+  "follow" : "Empezó a seguir el repositorio ",
+  "create" : "Ha creado el repositorio en ",
+  "pull_request" : "Realizó una pull request sobre "
+}

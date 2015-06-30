@@ -5,6 +5,7 @@
   Copyright 2015 Miguel Ortega Moreno
   Copyright 2015 Juan Francisco Salamanca Carmona
   
+
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -25,6 +26,7 @@ import re
 import sys
 sys.path.insert(1, 'api_handlers/')
 sys.path.insert(1, 'api_handlers/lib/')
+
 import api_usuarios, api_componentes, api_contacto, api_oauth, api_auxiliar
 
 
@@ -65,3 +67,4 @@ app = webapp2.WSGIApplication([
 
     (r'/api/subscriptions', api_contacto.SubscriptionHandler),
     ], debug=True)
+

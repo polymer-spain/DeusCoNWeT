@@ -1,9 +1,41 @@
-#boton-facebook{
-  background-color: #4A6EA9;
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  color: white;
-  text-transform: none;
+.FacebookButton{
+	background-color: #3B579D;
+	color: #fff;
+	border-radius: 3px;
+	height: 50px;
+	width: 205px;
+	padding: 0;
+	margin: 0;
+	text-transform: none;
+	cursor: pointer;
+	font-size: 16px;
+
+}
+
+.FacebookButton2{
+	background: #3B579D;
+	border-radius: 3px;
+	margin:0;
+	cursor: pointer;
+	height: 46px;
+	width: 82px;
+}
+
+.icono {
+	width: 35px;
+	height: 28px;
+}
+
+.desconectar{
+	background: grey;
+}
+
+#logout{
+	background-color: #04334a;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	color: white;
+	text-transform: none;
 
 }
