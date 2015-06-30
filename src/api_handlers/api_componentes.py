@@ -24,7 +24,8 @@ import string
 import json
 
 import ndb_pb
-from api_oauth_refactored import SessionHandler
+from api_oauth import SessionHandler
+
 import cliente_gitHub
 
 social_list = ['twitter', 'facebook', 'stackoverflow', 'instagram', 'linkedin', 'google', 'github', '']

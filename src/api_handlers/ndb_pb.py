@@ -200,11 +200,12 @@ def getToken(entity_key, rs):  # FUNCIONA
     if not rs in rs_list:
       return 'La red social no esta contemplada'
     for token in tokens:
-      print "DEBUG: TOKEN ACTUAL ", token.nombre_rs 
+      print "DEBUG: TOKEN ACTUAL ", token.identificador 
       if token.nombre_rs == rs:
         res = token
 
     return res
+
 
 def getUser(entity_key): #FUNCIONA
   user = entity_key.get()
@@ -229,6 +230,7 @@ def getUser(entity_key): #FUNCIONA
               "components": rates_list}
   usuario = json.dumps(usuario)
   return usuario
+
 
 @ndb.transactional(xg=True)
 
@@ -419,6 +421,7 @@ def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
     usuario.put()
     return usuario.key
 
+
 # def getComponents(rs="", user_id="", all_info=False):
 #   res = []
 #   if not user_id == "":
@@ -483,6 +486,7 @@ def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
 
 #     return res
 
+
 def buscaToken(id_usuario, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   tokens = Token.query()
@@ -495,6 +499,7 @@ def buscaToken(id_usuario, rs): #FUNCIONA
 def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
   usuario = Usuario.query(Usuario.tokens==token_aux).get()
+  print "Usuario ", usuario
   tokens = usuario.tokens
   for token in tokens:
     if token.identificador==id_usuario and token.nombre_rs==rs:
@@ -544,7 +549,7 @@ def deleteComponent(component_name):
 
 def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
-  tok = Token.query(token_aux).get()
+  tok = Token.query(ndb.AND(Token.identificador == id_rs, Token.nombre_rs == rs)).get()
   tok.key.delete()
   user = entity_key.get()
   user.tokens.remove(token_aux)

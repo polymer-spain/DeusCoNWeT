@@ -26,21 +26,45 @@ import re
 import sys
 sys.path.insert(1, 'api_handlers/')
 sys.path.insert(1, 'api_handlers/lib/')
-import api_usuarios, api_componentes, api_oauth, api_oauth_refactored, api_auxiliar
+
+import api_usuarios, api_componentes, api_contacto, api_oauth, api_auxiliar
 
 
 app = webapp2.WSGIApplication([
     (r'/api/componentes', api_componentes.ComponentListHandler),
     (r'/api/componentes/(.*)', api_componentes.ComponentHandler),
+    
     (r'/api/usuarios', api_usuarios.UserListHandler),
     (r'/api/usuarios/(.*)', api_usuarios.UserHandler),
-    (r'/api/oauth/twitterTimeline', api_oauth_refactored.OAuthTwitterTimelineHandler),
-    (r'/api/oauth/twitter', api_oauth_refactored.OAuthTwitterHandler),
-    (r'/api/oauth/github', api_oauth_refactored.OAuthGithubHandler),
-    (r'/api/oauth/linkedin', api_oauth_refactored.OauthLinkedinHandler),
-    (r'/api/oauth/instagram', api_oauth_refactored.OAuthInstagramHandler),
-    (r'/api/aux/instagramTimeline', api_auxiliar.instagramRequest),
-    (r'/api/oauth/facebook', api_oauth_refactored.OauthFacebookHandler),
-    (r'/api/oauth/stackoverflow', api_oauth_refactored.OauthStackOverflowHandler),
-    (r'/api/oauth/googleplus', api_oauth_refactored.OauthGooglePlusHandler),
-  ], debug=True)
+    
+    (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
+    
+    (r'/api/oauth/twitter/login', api_oauth.TwitterLoginHandler),
+    (r'/api/oauth/twitter/logout', api_oauth.TwitterLogoutHandler),
+    (r'/api/oauth/twitter/authorization', api_oauth.TwitterAuthorizationHandler),
+    (r'/api/oauth/twitter/requestToken', api_oauth.TwitterRequestLoginHandler),
+    (r'/api/oauth/twitter/credenciales/(.*)', api_oauth.TwitterHandler),
+
+    (r'/api/oauth/facebook/login', api_oauth.FacebookLoginHandler),
+    (r'/api/oauth/facebook/logout', api_oauth.FacebookLogoutHandler),
+    (r'/api/oauth/facebook/credenciales/(.*)', api_oauth.FacebookHandler),
+    
+    (r'/api/oauth/googleplus/login', api_oauth.GooglePlusLoginHandler),
+    (r'/api/oauth/googleplus/logout', api_oauth.GooglePlusLogoutHandler),
+    (r'/api/oauth/googleplus/credenciales/(.*)', api_oauth.GooglePlusHandler),
+    
+    (r'/api/oauth/stackoverflow', api_oauth.StackOverflowContainerHandler),
+    (r'/api/oauth/stackoverflow/credenciales/(.*)', api_oauth.StackOverflowHandler),
+
+    (r'/api/oauth/github', api_oauth.GitHubContainerHandler),
+    (r'/api/oauth/github/credenciales/(.*)', api_oauth.GitHubHandler),
+
+    (r'/api/oauth/linkedin', api_oauth.LinkedinContainerHandler),
+    (r'/api/oauth/linkedin/credenciales/(.*)', api_oauth.LinkedinHandler),
+
+    (r'/api/oauth/instagram', api_oauth.InstagramContainerHandler),
+    (r'/api/oauth/instagram/credenciales/(.*)', api_oauth.InstagramHandler),
+
+    (r'/api/subscriptions', api_contacto.SubscriptionHandler),
+    ], debug=True)
+
