@@ -3,10 +3,10 @@ html {
 	background-size: cover;
 	background-attachment: fixed;
 }
+#view {
+ margin:0px 60px 0 5px; 
+}
 #picture {
-	margin-right: 5%;
-  margin-top: -25px;
-  margin-bottom: 25px;
 	width: 150px;
 	height: 150px;
 	border-radius: 100%;

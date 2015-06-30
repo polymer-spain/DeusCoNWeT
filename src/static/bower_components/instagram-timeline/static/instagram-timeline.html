@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../core-icons/core-icons.html">
 <link rel="import" href="../../core-icon-button/core-icon-button.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
-<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
 
 <polymer-element name="instagram-timeline" attributes="endpoint accessToken language">
   <template>
@@ -140,6 +140,7 @@ on-core-response="{{response_megusta}}"
       count: 10,
       peticion: "",
       media_id: "",
+      language: 'es',
       /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
         if(this.accessToken && this.endpoint != ""){

@@ -101,7 +101,8 @@ Element providing solution to no problem in particular.
     lastPage:'',
     show:true,
     page:'1',
-    ready: function () {
+    language:'en',
+/*    ready: function () {
       // Set Header for authorize request
       if (this.token != '') {
         this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
@@ -116,7 +117,7 @@ Element providing solution to no problem in particular.
         this.$.requestLanguage.go();
         this.$.request.go();
       }
-    },
+    },*/
     domReady : function() {
       if (this.token != '') {
         this.$.request.headers = '{"Authorization":"token '+this.token+'"}';
@@ -129,7 +130,6 @@ Element providing solution to no problem in particular.
           this.idioma = 'en_en.json'
         }
         this.$.requestLanguage.go();
-        this.$.request.go();
       }
     },
     response: function(event,detail,sender){
@@ -156,6 +156,7 @@ Element providing solution to no problem in particular.
     language_response: function(event, detail,sender){
       this.language_data = sender.response;
       this.events = this.changeEvent(this.events);
+      this.$.request.go();
     },
 
     attributeChanged: function(attrName, oldVal, newVal){

@@ -14,9 +14,10 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
   /* Network infomation */
   $scope.twitter = {};
   $scope.github = {};
+  $scope.instagram = {};
+  $scope.instagram.token = "2062815740.34af286.169a9c42e1404ae58591d066c00cb979";
   $scope.twitter.token = "3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x";
   $scope.github.username = "mortega5";
-
 
 
   $scope.list = [
@@ -27,7 +28,8 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
        consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
        consumeSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
        endpoint: $scope.domain + "/api/oauth/twitterTimeline",
-       language: $scope.idioma
+       language: "{{idioma}}",
+       count: "200"
      }
     },
     {name: "github-events",
@@ -38,7 +40,13 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
        language: "{{idioma}}"
      }
     },
-    {name: "instragram-timeline"}
+    {name: "instagram-timeline",
+     attributes: {
+       endpoint: $scope.domain + "/api/aux/instagramTimeline",
+       language: "{{idioma}}",
+       accessToken: $scope.instagram.token
+     }
+    }
   ];
 
 

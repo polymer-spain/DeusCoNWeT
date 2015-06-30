@@ -29,8 +29,8 @@
     })
       .when("/user/:userId", {
       templateUrl: "views/userHome.html",
-      controller: "UserHomeController"
-/*      resolve: {
+      controller: "UserHomeController",
+      resolve: {
         auth: ["$q", "$cookie", function($q, $cookie){
 
           var session = $cookie.get("session");
@@ -41,7 +41,7 @@
             return $q.reject({authenticated: false});
           }
         }]
-      }*/
+      }
     })
       .when("/about", {
       templateUrl: "views/about.html",
@@ -53,8 +53,8 @@
     })
       .when("/user/:userId/profile", {
       templateUrl: "views/profile.html",
-      controller: "ProfileController"
-      /* Para poder editar el perfil en localhost
+      controller: "ProfileController",
+/*       Para poder editar el perfil en localhost*/
     resolve: {
         auth: ["$q", "$cookie", function($q, $cookie){
 
@@ -63,10 +63,10 @@
           if (session) {
             return $q.when(session);
           } else {
-            return $q.reject({authenticated: false})
+            return $q.reject({authenticated: false});
           }
         }]
-      }*/
+      }
     })
       .when("/privacy", {
       templateUrl: "views/privacy.html",

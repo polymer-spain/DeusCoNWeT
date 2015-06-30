@@ -10,6 +10,15 @@ picbit.directive("ngDrag", function () {
     /*Indicamos que es arrastrable */
     element.attr("draggable", "true");
     scope.move = {};
+    element.css({position: "absolute"});
+    /* Obligamos a hacer el binding de las variables parametrizadas */
+    for (var attr in attrs.$attr) {
+      if (attrs.hasOwnProperty(attr)) {
+        attrs.$observe(attr, function(value) {
+          element.attr(attr, value);
+        });
+      }
+    }
 
     // Hace el efecto de arrastrarse cuando se mueve el elemento
     scope.dragging = function (event) {
@@ -79,6 +88,7 @@ picbit.directive("ngDrag", function () {
     scope.deleteMove = function () {
       scope.move = {};
     };
+
     // Asociamos los eventos necesarios para producir los efectos
     element.on("drag", scope.dragging);
     element.on("dragstart", scope.deleteShadow);
@@ -134,7 +144,8 @@ picbit.directive("ngContainer", function () {
         /* Forzamos la fase de compile de angular para que cargue las directivas del
          * nuevo elemento
          */
-        injector = newTimeline.injector();
+
+        injector = element.injector();
         $compile = injector.get("$compile");
         $compile(newTimeline)(newTimeline.scope());
 
@@ -169,8 +180,8 @@ picbit.directive("ngContainer", function () {
     /* Enlazamos las funciones con los eventos correspondientes */
     element.on("drop", scope.dropObject);
     element.on("dragover", scope.dragEntry);
-    element.on("dragleave", scope.removeShadow);
-    element.on("dragenter", scope.showShadow);
+    //element.on("dragleave", scope.removeShadow);
+    // element.on("dragenter", scope.showShadow);
   }
   /* enviamos el link y cogemos la lista de los atributos y la añadimos al scope*/
   return {link: link};
