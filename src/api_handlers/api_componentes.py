@@ -30,7 +30,7 @@ import cliente_gitHub
 
 social_list = ['twitter', 'facebook', 'stackoverflow', 'instagram', 'linkedin', 'google', 'github', '']
 
-class ComponentListHandler(webapp2.RequestHandler):
+class ComponentListHandler(SessionHandler):
 
     """
     Class that defines the component list resource.
@@ -59,10 +59,11 @@ class ComponentListHandler(webapp2.RequestHandler):
         filter_list = ['general','user']
         format_list = ['all','reduced']
         if not cookie_value == None:
-            user_id = SessionHandler.getUserInfo(cookie_value)
+            user_id = self.getUserInfo(cookie_value)
             if not user_id == None:
                 if social_network in social_list and filter_param in filter_list and list_format in format_list:
                     format_flag = True if list_format == 'all' else False
+                    # TODO: Get the component list, according to the filters given
                     # component_list = ndb_pb.getComponents(social_network, user_id, format_flag)
                     component_list = None
                     if not component_list == None:
@@ -97,8 +98,6 @@ class ComponentListHandler(webapp2.RequestHandler):
         self -- info about the request build by webapp2
         """
         try:
-            # Get the cookie in the request
-            cookie_value = self.request.cookies.get('session')
             # Get the request POST params 
             url = self.request.POST['url']
             component_id = self.request.POST['component_id']
@@ -112,17 +111,19 @@ class ComponentListHandler(webapp2.RequestHandler):
             path = url.split('/')
             basePath = '/repos/' + path[len(path) - 2] + '/' \
             + path[len(path) - 1]
-           
 
             # Open connection to the API endpoint
             cliente_gitHub.openConnection(basePath)
 
             # Get repo info
             repoDetails = cliente_gitHub.getRepoInfo()
-
+            cliente_gitHub.closeConnection()
             if not repoDetails == None:
                 if social_network in social_list:
                     ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
+                    response = {'status': 'Component uploaded succesfully'}
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(201)
                 else:
                     response = {'error': 'Bad value for the social_network param'}
                     self.response.content_type = 'application/json'
@@ -142,7 +143,7 @@ class ComponentListHandler(webapp2.RequestHandler):
 
 
 
-class ComponentHandler(webapp2.RequestHandler):
+class ComponentHandler(SessionHandler):
     """
     Class that defines the component resource
     It acts as the handler of the /components/{component_id} resource
@@ -166,7 +167,7 @@ class ComponentHandler(webapp2.RequestHandler):
         # TODO: Use format param to determine the response format
         format = self.request.get('format', default_value='reduced')
         if not cookie_value == None:
-            user_id = SessionHandler.getUserInfo(cookie_value)
+            user_id = self.getUserInfo(cookie_value)
             if not user_id == None and format == 'reduced' or format == 'complete':
                 component = ndb_pb.getComponente(user_id, component_id, format)
                 if not component == None:
@@ -209,7 +210,7 @@ class ComponentHandler(webapp2.RequestHandler):
         print "DEBUG Tipo parámetro x", type(x_axis)
         print "DEBUG Tipo parámetro y", type(y_axis)
         if not cookie_value == None:
-            user_id = SessionHandler.getUserInfo(cookie_value)
+            user_id = self.getUserInfo(cookie_value)
             if not user_id == None:
                 data = {}
                 if not x_axis == 'none':

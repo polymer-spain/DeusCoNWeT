@@ -28,7 +28,7 @@ params = urllib.urlencode({})
 # "Authorization": "token 4b844fda635ed7e58460a1c65252df7090c38438"
 headers = {"Accept": "application/vnd.github.v3+json",
 "User-Agent": "PicBit-App",
-"Authorization": "token TOKEN_GITHUB"}
+"Authorization": "token TOKEN"}
 
 # Opens the connection to the GitHub API endpoint
 def openConnection(basePathRepo):
@@ -52,6 +52,7 @@ def getRepoInfo():
     return None
   elif not response.status == 200:
     print "ERROR: El servidor de github devolvio un status de error: " + str(response.status)
+    print "Cuerpo de la respuesta ", response.read()
     return None
 
   aux = response.read()

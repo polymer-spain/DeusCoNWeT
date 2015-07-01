@@ -5,6 +5,17 @@ import json
 
 connection = None
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 # Módulo con operaciones para realizar pruebas a la API REST del sistema 
 def openConnection():
 	global connection
@@ -15,7 +26,7 @@ def closeConnection():
 	global connection
 	connection.close()
 
-def make_request(method, request_uri, params, status_ok, session):
+def make_request(method, request_uri, params, status_ok, session, printHeaders=False):
 	"""
 	Metodo make_request: Realiza llamadas HTTP a la API REST, retornando la
 	cookie de sesion enviada por el servidor. 
@@ -30,21 +41,28 @@ def make_request(method, request_uri, params, status_ok, session):
 	print "Realizando petición", method, request_uri
 	headers = {"User-Agent": "PicBit-App"}
 	session_cookie = None
+
+	# Adds the cookie session header
 	if not session == None:
 		headers['Cookie']  = session
-		print "\tHEADERS " + headers['Cookie']
+		if printHeaders:
+			print "\tHEADERS " + headers['Cookie']
+	
+	# Request to API endpoint
 	connection.request(method, request_uri, params, headers)
   	response = connection.getresponse()
-	session_cookie = response.getheader('Set-Cookie')
   	responseData = response.read()
+  	
+  	# Prints the result of the request
   	if not response.status == status_ok:
-  		print "\t!!! STATUS: ERROR " + str(response.status)
-  		print "\tDatos de la respuesta: "
-  		print responseData
+  		print bcolors.FAIL + "\t!!! STATUS: ERROR " + str(response.status)
+  		print "\tDatos de la respuesta: " + responseData + bcolors.ENDC +"\n"
   	else:
-  		print "\t>>> STATUS: OK"
-  		print "\tRESPUESTA: ", responseData
-  	#print "Cookie de la peticion: " + str(headers['Cookie'])
-	if not session_cookie == None:
+  		print bcolors.OKGREEN + "\t>>> STATUS: OK"
+  		print "\tRESPUESTA: ", responseData + bcolors.ENDC + "\n"
+  	# Print the response session cookie, if proceed
+	if not session_cookie == None and printHeaders:
+		session_cookie = response.getheader('Set-Cookie')
   		print "\tCookie de la respuesta: " + session_cookie
+  	
   	return session_cookie
