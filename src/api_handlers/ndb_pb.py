@@ -112,10 +112,10 @@ rs_list = [
   #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
 
-class UsuarioBeta(ndb.Model):
+class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
-  nombre = ndb.StringProperty()
-  apellidos = ndb.StringProperty()
+  name = ndb.StringProperty()
+  surname = ndb.StringProperty()
 
 class Component(ndb.Model):
   component_id = ndb.StringProperty()
@@ -125,8 +125,8 @@ class Component(ndb.Model):
   rs = ndb.StringProperty()
   description = ndb.StringProperty()
 
-class ComponenteUsuario(ndb.Model):
-  id_componente = ndb.StringProperty(required=True)
+class UserComponent(ndb.Model):
+  component_id = ndb.StringProperty(required=True)
   x = ndb.FloatProperty()
   y = ndb.FloatProperty()
   height = ndb.StringProperty()
@@ -138,54 +138,37 @@ class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
   rating_value = ndb.FloatProperty()
 
-
-# Entidad Grupo
-
-class Grupo(ndb.Model):
-
-  nombre_grupo = ndb.StringProperty(required=True)
-  lista_Usuarios = ndb.StringProperty()
-  descripcion = ndb.StringProperty()
-
-
-# Entidad Token
+class Group(ndb.Model):
+  group_name = ndb.StringProperty(required=True)
+  user_list = ndb.StringProperty()
+  description = ndb.StringProperty()
 
 class Token(ndb.Model):
-
-  identificador = ndb.StringProperty()
+  identifier = ndb.StringProperty()
   token = ndb.StringProperty()
-  nombre_rs = ndb.StringProperty()
+  social_name = ndb.StringProperty()
 
+class SocialUser(ndb.Model):
+  social_name = ndb.StringProperty(required=True)
+  following = ndb.IntegerProperty()
+  followers = ndb.IntegerProperty()
+  following_url = ndb.StringProperty()
+  followers_url = ndb.StringProperty()
 
-# Entidad UsuarioSocial
-
-class UsuarioSocial(ndb.Model):
-
-  nombre_rs = ndb.StringProperty(required=True)
-  siguiendo = ndb.IntegerProperty()
-  seguidores = ndb.IntegerProperty()
-  url_sig = ndb.StringProperty()
-  url_seg = ndb.StringProperty()
-
-# Entidad usuario
-
-class Usuario(ndb.Model):
-  id_usuario = ndb.StringProperty()
+class User(ndb.Model):
+  user_id = ndb.StringProperty()
   email = ndb.StringProperty()
   private_email = ndb.BooleanProperty()
-  telefono = ndb.IntegerProperty()
+  phone = ndb.IntegerProperty()
   private_phone = ndb.BooleanProperty()
-  descripcion = ndb.TextProperty()
-  sitio_web = ndb.StringProperty()
-  imagen = ndb.StringProperty()
+  description = ndb.TextProperty()
+  website = ndb.StringProperty()
+  image = ndb.StringProperty()
   tokens = ndb.StructuredProperty(Token, repeated=True)
-  lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
-  lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
+  net_list = ndb.StructuredProperty(UsuarioSocial, repeated=True)
+  group_list = ndb.StructuredProperty(Grupo, repeated=True)
   rates = ndb.StructuredProperty(UserRating, repeated=True)
-  componentes = ndb.StructuredProperty(ComponenteUsuario, repeated=True)
-
-
-  # tarjeta = ndb.StructuredProperty(Tarjeta)
+  components = ndb.StructuredProperty(ComponenteUsuario, repeated=True)
 
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
