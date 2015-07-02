@@ -24,8 +24,6 @@ basePath = "" # Path for the repo (:user/:repo)
 connection = None
 params = urllib.urlencode({})
 
-# Other OAuth token posible 
-# "Authorization": "token 4b844fda635ed7e58460a1c65252df7090c38438"
 headers = {"Accept": "application/vnd.github.v3+json",
 "User-Agent": "PicBit-App",
 "Authorization": "token TOKEN"}

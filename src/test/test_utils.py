@@ -51,6 +51,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
 	# Request to API endpoint
 	connection.request(method, request_uri, params, headers)
   	response = connection.getresponse()
+	session_cookie = response.getheader('Set-Cookie')
   	responseData = response.read()
   	
   	# Prints the result of the request
@@ -60,9 +61,9 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
   	else:
   		print bcolors.OKGREEN + "\t>>> STATUS: OK"
   		print "\tRESPUESTA: ", responseData + bcolors.ENDC + "\n"
+  	
   	# Print the response session cookie, if proceed
 	if not session_cookie == None and printHeaders:
-		session_cookie = response.getheader('Set-Cookie')
-  		print "\tCookie de la respuesta: " + session_cookie
+  			print "\tCookie de la respuesta: " + session_cookie + "\n"
   	
   	return session_cookie

@@ -530,7 +530,7 @@ def deleteUser(entity_key):
   entity_key.delete()
 
 def deleteComponent(component_name): 
-  component = Component.query(Component.id_componente==component_name).get()
+  component = Component.query(Component.component_id==component_name).get()
   component.key.delete()
 
   # Now, it's necessary to delete this component from all the users

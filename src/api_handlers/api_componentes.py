@@ -28,7 +28,7 @@ from api_oauth import SessionHandler
 
 import cliente_gitHub
 
-social_list = ['twitter', 'facebook', 'stackoverflow', 'instagram', 'linkedin', 'google', 'github', '']
+social_list = ['twitter', 'facebook', 'stackoverflow', 'instagram', 'linkedin', 'google', 'github']
 
 class ComponentListHandler(SessionHandler):
 
@@ -61,11 +61,11 @@ class ComponentListHandler(SessionHandler):
         if not cookie_value == None:
             user_id = self.getUserInfo(cookie_value)
             if not user_id == None:
-                if social_network in social_list and filter_param in filter_list and list_format in format_list:
+                if social_network in social_list  or social_network == '' and filter_param in filter_list and list_format in format_list:
                     format_flag = True if list_format == 'all' else False
                     # TODO: Get the component list, according to the filters given
                     # component_list = ndb_pb.getComponents(social_network, user_id, format_flag)
-                    component_list = None
+                    component_list = None # TODO DELETE ME
                     if not component_list == None:
                         self.response.content_type = 'application/json'
                         self.response.write(component_list)
