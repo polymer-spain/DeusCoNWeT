@@ -36,6 +36,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
 		params: parametros de la peticion
 		status_ok: status HTTP de retorno esperado de la peticion
 		session: cookie de sesion para adjuntar en la peticion
+		printHeaders: Si es True, se imprimirán los Headers de peticion y respuesta
 	"""
 	global connection
 	print "Realizando petición", method, request_uri
@@ -56,7 +57,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
   	
   	# Prints the result of the request
   	if not response.status == status_ok:
-  		print bcolors.FAIL + "\t!!! STATUS: ERROR " + str(response.status)
+  		print bcolors.FAIL + "\t!!! STATUS: ERROR (STATUS " + str(response.status) + ")"
   		print "\tDatos de la respuesta: " + responseData + bcolors.ENDC +"\n"
   	else:
   		print bcolors.OKGREEN + "\t>>> STATUS: OK"

@@ -206,28 +206,43 @@ class ComponentHandler(SessionHandler):
         rating = self.request.get('rating', default_value='none')
         x_axis = self.request.get('x_axis', default_value='none')
         y_axis = self.request.get('y_axis', default_value='none')
-        # TODO: Tener en cuenta valores incorrectos en los parametros
-        print "DEBUG Tipo parámetro x", type(x_axis)
-        print "DEBUG Tipo parámetro y", type(y_axis)
+
         if not cookie_value == None:
+            # Checks whether the cookie belongs to an active user and the request has provided at least one param
             user_id = self.getUserInfo(cookie_value)
-            if not user_id == None:
+            if not user_id == None and not rating == 'none' or not x_axis == 'none' or not y_axis == 'none':
                 data = {}
-                if not x_axis == 'none':
-                    data['x'] = x_axis
-                
-                if not y_axis == 'none':
-                    data['y'] = y_axis
-                
+                response = {'status': 'Component updated succesfully'}
+                response_status = 200
+                try:
+                    if not rating == 'none':
+                        rating_value = float(rating)
+                    if not x_axis == 'none':
+                        data['x'] = float(x_axis)
+                    if not y_axis == 'none':
+                        data['y'] = float(y_axis)
+                except ValueError:
+                    response = \
+                    {'error': 'x_axis, y_axis and rating must have a numeric value'}
+                    response_status = 400
+
                 # Update the info about the component
                 if not len(data) == 0:
                     ndb_pb.modificarComponente(user_id, component_id, data)
-
+                
                 # Update the component rating
-                if not rating == 'none' and rating > 0 and rating < 5:
-                    ndb_pb.addRate(user_id, component_id, rating)
+                if not rating == 'none':
+                    if rating_value > 0 and rating_value < 5:
+                        ndb_pb.addRate(user_id, component_id, rating_value)
+                    else:
+                        response = \
+                        {'error': 'Rating must be a numeric value between 0.0 and 5.0'}
+                        response_status = 400
 
-                self.response.set_status(200)
+                self.response.content_type = 'application/json'                
+                self.response.write(json.dumps(response))
+                self.response.set_status(response_status)    
+
             else:
                 response = \
                     {'error': 'The cookie session provided does not belongs to any active user'}

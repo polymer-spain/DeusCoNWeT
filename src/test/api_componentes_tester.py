@@ -18,7 +18,7 @@ def main():
 			token_id_login = "idgoogle"
 			access_token_login = "googleTEST"
 			params = urllib.urlencode({'token_id': token_id_login, 'access_token':access_token_login})
-			session1 = test_utils.make_request("POST", request_uri, params, 201, None, True)
+			session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
 
 			if option == "subida":
 				request_uri = basepath
@@ -180,52 +180,59 @@ def main():
 				print "TEST 14: Modificar información sobre el componente 1 (Valor incorrecto para parámetro X)"
 				print "Status esperado: 400"
 				request_uri = basepath + '/twitter-timeline'
-				params = urllib.urlencode({'x': 'string',
-						'y': 250})
+				params = urllib.urlencode({'x_axis': 'string',
+						'y_axis': 250})
 				test_utils.make_request("POST", request_uri, params, 400, session1)
 
 				# TEST 15
-				print "TEST 15: Modificar información sobre el componente 1 (Cambiar posición del componente)"
-				print "Status esperado: 200"
-				request_uri = basepath + '/twitter-timeline'
-				params = urllib.urlencode({'x': 150,
-						'y': 250})
-				test_utils.make_request("POST", request_uri, params, 200, session1)
+				print "TEST 15: Modificar información sobre el componente 2 (Valor incorrecto para parámetro Rating, mayor que 5)"
+				print "Status esperado: 400"
+				request_uri = basepath + '/instagram-timeline'
+				params = urllib.urlencode({'rating': 6})
+				test_utils.make_request("POST", request_uri, params, 400, session1)
 
 				# TEST 16
-				print "TEST 16: Modificar información sobre el componente 2 (Cambiar valoración del componente 2)"
-				print "Status esperado: 200"	
-				request_uri = basepath + '/instagram-timeline'
+				print "TEST 16: Modificar información sobre el componente 1, caso cambiar posición del componente (x:150, y:250)"
+				print "Status esperado: 200"
+				request_uri = basepath + '/twitter-timeline'
+				params = urllib.urlencode({'x_axis': 150,
+						'y_axis': 250})
 				test_utils.make_request("POST", request_uri, params, 200, session1)
 
 				# TEST 17
-				print "TEST 17: Obtención de la lista de componentes del sistema, para verificar "
+				print "TEST 17: Modificar información sobre el componente 2, caso cambiar valoración. (Rating: 4.5)"
+				print "Status esperado: 200"	
+				request_uri = basepath + '/instagram-timeline'
+				params = urllib.urlencode({'rating': 4.5})
+				test_utils.make_request("POST", request_uri, params, 200, session1)
+
+				# TEST 18
+				print "TEST 18: Obtención de la lista de componentes del sistema, para verificar "
 				print "que se ha modificado la información solicitada en las anteriores pruebas"
 				print "Status esperado: 200"
 				request_uri = basepath
-				test_utils.make_request("POST", request_uri, params, 200, session1)
+				params = urllib.urlencode({})
+				test_utils.make_request("GET", request_uri, params, 200, session1)
 				
 			elif option == 'borrado':
+				params = urllib.urlencode({})
 				# TESTs relativos al método DELETE Componente 
-				# TEST 18
-				print "TEST 18: Borrar componente 1 del sistema"
+				# TEST 19
+				print "TEST 19: Borrar componente 1 del sistema"
 				print "Status esperado: 204 "
 				request_uri = basepath + '/twitter-timeline'
-				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 204, None)
 				
-				# TEST 19
-				print "TEST 19: Borrar componente 1 del sistema (el componente se había borrado previamente) "
+				# TEST 20
+				print "TEST 20: Borrar componente 1 del sistema (el componente se había borrado previamente) "
 				print "Status esperado: 404 "
 				# request_uri = basepath + '/twitter-timeline'
-				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 404, None)	
 
-				# TEST 20
-				print "TEST 20: Borrar componente 2 del sistema"
+				# TEST 21
+				print "TEST 21: Borrar componente 2 del sistema"
 				print "Status esperado: 204 "
 				request_uri = basepath + '/instagram-timeline'
-				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 204, None)
 			
 			# Realizamos logout en el sistema, tras llevar a cabo las pruebas
