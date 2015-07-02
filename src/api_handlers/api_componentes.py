@@ -47,7 +47,6 @@ class ComponentListHandler(SessionHandler):
         Keyword arguments: 
         self -- info about the request build by webapp2
         """
-
         # Get the cookie in the request
         cookie_value = self.request.cookies.get('session')
         # Social_network,filter_param and list_format are optional params
@@ -60,12 +59,13 @@ class ComponentListHandler(SessionHandler):
         format_list = ['all','reduced']
         if not cookie_value == None:
             user_id = self.getUserInfo(cookie_value)
+            print "DEBUG: Tipo user_id ", type(user_id)
             if not user_id == None:
                 if social_network in social_list  or social_network == '' and filter_param in filter_list and list_format in format_list:
                     format_flag = True if list_format == 'all' else False
-                    # TODO: Get the component list, according to the filters given
-                    # component_list = ndb_pb.getComponents(social_network, user_id, format_flag)
-                    component_list = None # TODO DELETE ME
+                    user_filter = user_id if filter_param == 'user' else ''
+                    # Get the component list, according to the filters given
+                    component_list = ndb_pb.getComponents(social_network, user_id, format_flag)
                     if not component_list == None:
                         self.response.content_type = 'application/json'
                         self.response.write(component_list)
@@ -105,7 +105,6 @@ class ComponentListHandler(SessionHandler):
             social_network = self.request.POST['social_network']
             input_type = self.request.POST['input_type']
             output_type = self.request.POST['output_type']
-            listening = self.request.POST['listening']
 
             # Auxiliar params
             path = url.split('/')
@@ -120,10 +119,15 @@ class ComponentListHandler(SessionHandler):
             cliente_gitHub.closeConnection()
             if not repoDetails == None:
                 if social_network in social_list:
-                    ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
-                    response = {'status': 'Component uploaded succesfully'}
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(201)
+                    created = ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
+                    if created:
+                        response = {'status': 'Component uploaded succesfully'}
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(201)
+                    else:
+                        response = {'status': 'Component updated'}
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(200)
                 else:
                     response = {'error': 'Bad value for the social_network param'}
                     self.response.content_type = 'application/json'
@@ -164,7 +168,6 @@ class ComponentHandler(SessionHandler):
         # Get the cookie in the request
         cookie_value = self.request.cookies.get('session')
         # Format is an optional param
-        # TODO: Use format param to determine the response format
         format = self.request.get('format', default_value='reduced')
         if not cookie_value == None:
             user_id = self.getUserInfo(cookie_value)

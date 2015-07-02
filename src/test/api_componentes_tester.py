@@ -38,8 +38,7 @@ def main():
 			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter',
 			            'input_type': 'None',
-			            'output_type': 'tweet',
-			            'listening': 'None'
+			            'output_type': 'tweet'
 				})
 				test_utils.make_request("PUT", request_uri, params, 404, session1)
 
@@ -51,8 +50,7 @@ def main():
 			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
 			            'social_network': 'RedError' ,
 			            'input_type': 'None',
-			            'output_type': 'tweet',
-			            'listening': 'None'
+			            'output_type': 'tweet'
 				})
 				test_utils.make_request("PUT", request_uri, params, 400, None)
 
@@ -63,38 +61,47 @@ def main():
 			            'component_id': 'twitterTimeline',
 			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter' ,
-			            'input_type': 'None',
-			            'output_type': 'tweet'
+			            'input_type': 'None'
 				})
 				test_utils.make_request("PUT", request_uri, params, 400, None)
 
 				# Subimos dos componentes al sistema
 				# TEST 5
 				print "TEST 5: Subir un componente al sistema (componente 1)."
-				print "Status esperado: 200 "
+				print "Status esperado: 201 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
 			            'component_id': 'twitterTimeline',
 			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter' ,
 			            'input_type': 'None',
-			            'output_type': 'tweet',
-			            'listening': 'None'
+			            'output_type': 'tweet'
 				})
 				test_utils.make_request("PUT", request_uri, params, 201, None)
 				
 				# TEST 6: Subir un componente al sistema (componente 2).
 				print "TEST 6: Subir un componente al sistema (componente 2)."
-				print "Status esperado: 200 "
+				print "Status esperado: 201 "
 				# request_uri = basepath
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
 			            'component_id': 'instagram-timeline',
 			            'description': 'Web component for obtain the timeline of the social network Instagram using Polymer',
 			            'social_network': 'instagram',
 			            'input_type': 'None',
-			            'output_type': 'photo',
-			            'listening': 'None'
+			            'output_type': 'photo'
 				})
 				test_utils.make_request("PUT", request_uri, params, 201, None)
+
+				# TEST 7
+				print "TEST 7: Subida de un componente repetido al sistema (componente 2)."
+				print "Status esperado: 200 "
+				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
+			            'component_id': 'instagram-timeline',
+			            'description': 'New description for the web component (Description changed in TEST 7)',
+			            'social_network': 'instagram',
+			            'input_type': 'None',
+			            'output_type': 'photo'
+				})
+				test_utils.make_request("PUT", request_uri, params, 200, None)
 
 			elif option == "obtención":
 				# TESTs relativos al método GET Lista de componentes 
