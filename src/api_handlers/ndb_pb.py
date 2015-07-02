@@ -202,7 +202,8 @@ def getToken(entity_key, rs):  # FUNCIONA
       if token.nombre_rs == rs:
         res = token
 
-    return res
+    return {"token": res,
+            "user_id": user.id_usuario}
 
 
 def getUser(entity_key): #FUNCIONA
@@ -357,9 +358,26 @@ def buscaRed(entity_key): # FUNCIONA
 
   return json.dumps(res)
 
-def insertComponent(name, url, description, rs, input_t, output):
-  comp = Component(component_id=name, url=url, input_type=input_t, output_type=output, rs=rs, description=description)
+def insertComponent(name, url="", description="", rs="", input_t="", output=""):
+  component = Component.query(Component.component_id == name).get()
+  res = False
+  if component == None:
+    comp = Component(component_id=name, url=url, input_type=input_t, output_type=output, rs=rs, description=description)
+    res = True
+  else:
+    if not url == "":
+      component["url"] = url
+    if not description == "":
+      component["description"] = description
+    if not rs == "":
+      component["rs"] = rs
+    if not input_t == "":
+      component["input_type"] = input_t
+    if not output == "":
+      component["output_type"] = output
   comp.put()
+
+  return res
 
 def insertarUserComponent(entity_key, nombre, coord_x=0, coord_y=0, height="", width="", listening=""): # FUNCIONA
   usuario = entity_key.get()
@@ -381,6 +399,8 @@ def modificarComponente(entity_key, nombre, datos): #FUNCIONA
         comp.height = datos["height"]
       if datos.has_key("width"):
         comp.width = datos["width"]
+      if datos.has_key("listening"):
+        comp.listening += datos["listening"]
       
   usuario.put()
 
@@ -394,90 +414,132 @@ def addListening(entity_key, nombre, events):
 
   usuario.put()
 
-def getComponente(entity_key, nombre, format="reduced"): # FUNCIONA
-  user = entity_key.get()
-  comps = user.componentes
-  res = {"nombre": nombre,
-          "x": 0,
-          "y": 0,
-          "url": "",
-          "height": "",
-          "width": ""}
-  for comp in comps:
-    if comp.nombre == nombre:
-      res["x"] = comp.x
-      res["y"] = comp.y
-      res["url"] = comp.url
-      res["height"] = comp.height
-      res["width"] = comp.width
-      res["entrada"] = comp.input_type
-      res["salida"] = comp.output_type
-      res["escuchando"] = comp.listening
+def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
+  comp = Component.query(Component.component_id == nombre)
+  if comp == None:
+    res = None
+  else:
+    rate = UserRating(UserRating.full_name_id == nombre).get()
+    general_comp = {"component_id": "component_id"}
+    if all_info:
+      user = entity_key.get()
+      user_comp = [cte for cte in user.componentes if comp.id_componente == nombre]
+      general_comp["url"] = comp.url
+      general_comp["rs"] = comp.rs
+      general_comp["description"] = comp.description
+      general_comp["input_type"] = comp.input_type
+      general_comp["output_type"] = comp.output_type
+      general_comp["rate"] = rate.rating_value
+      general_comp["x"] = user_comp["x"]
+      general_comp["y"] = user_comp["y"]
+      general_comp["height"] = user_comp["height"]
+      general_comp["width"] = user_comp["width"]
+      general_comp["listening"] = user_comp["listening"]
+  return res
 
-  return json.dumps(res)
+def getComponents(rs="", user_id="", all_info=False):
+  res = []
+  general_comp = {}
+  if not user_id == "":
+    # user id specified
+    if rs == "":
+      # without social network
+      if all_info:
+        # complete information
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        # Info for the components used by the specified user
+        user_comps = user.componentes
+        for comp in user_comps:
+          info_comp = Component.query(Component.component_id == comp.id_componente).get()
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["component_id"] = comp["id_componente"]
+          general_comp["url"] = info_comp["url"]
+          general_comp["social_net"] = info_comp["rs"]
+          general_comp["description"] = info_comp["description"]
+          general_comp["rate"] = rate["rating_value"]
+          general_comp["x"] = comp["x"]
+          general_comp["y"] = comp["y"]
+          general_comp["input_type"] = info_comp["input_type"]
+          general_comp["output_type"] = info_comp["output_type"]
+          general_comp["listening"] = comp["listening"]
+          general_comp["height"] = comp["height"]
+          general_comp["width"] = comp["width"]
+          res.append(json.dumps(general_comp))
+      else:
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user_comps = user.componentes
+        # Now we get the general info about the components used by the user
+        for comp in user_comps:
+          info_comp = Component.query(Component.component_id == comp.id_componente).get()
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["component_id"] = info_comp["component_id"]
+          general_comp["url"] = info_comp["url"]
+          general_comp["social_net"] = info_comp["rs"]
+          general_comp["description"] = info_comp["description"]
+          general_comp["rate"] = rate["rating_value"]
+          res.append(json.dumps(general_comp))
+    else:
+      if all_info:
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user_comps = user.componentes
+        for comp in user_comps:
+          info_comp = Component.query(Component.component_id == comp.id_componente).filter(Component.rs == rs).get()
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["component_id"] = comp["id_componente"]
+          general_comp["url"] = info_comp["url"]
+          general_comp["social_net"] = info_comp["rs"]
+          general_comp["description"] = info_comp["description"]
+          general_comp["rate"] = rate["rating_value"]
+          general_comp["x"] = comp["x"]
+          general_comp["y"] = comp["y"]
+          general_comp["input_type"] = info_comp["input_type"]
+          general_comp["output_type"] = info_comp["output_type"]
+          general_comp["listening"] = comp["listening"]
+          general_comp["height"] = comp["height"]
+          general_comp["width"] = comp["width"]
+          res.append(json.dumps(general_comp))
+      else:
+        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user_comps = user.componentes
+        # Now we get the general info about the components used by the user
+        for comp in user_comps:
+          info_comp = Component.query(Component.component_id == comp.id_componente).filter(Component.rs == rs).get()
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["component_id"] = info_comp["component_id"]
+          general_comp["url"] = info_comp["url"]
+          general_comp["social_net"] = info_comp["rs"]
+          general_comp["description"] = info_comp["description"]
+          general_comp["rate"] = rate["rating_value"]
+          res.append(json.dumps(general_comp))
+  else:
+    # Not user id. In this case, the info returned will be always reduced
+    if not all_info:
+      if rs == "":
+        components = Component.query()
+        for component in components:
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["id_componente"] = component.id_componente
+          general_comp["url"] = component.url
+          general_comp["rs"] = component.rs
+          general_comp["description"] = component.description
+          general_comp["input_type"] = component.input_type
+          general_comp["output_type"] = component.output_type
+          general_comp["rate"] = rate.rating_value
+          res.append(json.dumps(general_comp))
+      else:
+        components = Component.query(Component.rs == rs)
+        for comp in components:
+          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          general_comp["id_componente"] = comp.id_componente
+          general_comp["url"] = comp.url
+          general_comp["rs"] = comp.rs
+          general_comp["description"] = comp.description
+          general_comp["input_type"] = component.input_type
+          general_comp["output_type"] = component.output_type
+          general_comp["rate"] = rate.rating_value
+          res.append(json.dumps(general_comp))
 
-# def getComponents(rs="", user_id="", all_info=False):
-#   res = []
-#   if not user_id == "":
-#     if rs == "":
-#       if all_info:
-#         user = Usuario.query(Usuario.id_usuario == user_id).get()
-#         # Info for the components used by the specified user
-#         user_comps = user.componentes
-#         for comp in user_comps:
-#           # General info for components
-#           general_comp = {}
-#           info_comp = Component.query(Component.component_id == comp.id_componente).get()
-#           rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
-#           general_comp["component_id"] = comp["id_componente"]
-#           general_comp["url"] = info_comp["url"]
-#           general_comp["social_net"] = info_comp["rs"]
-#           general_comp["description"] = info_comp["description"]
-#           general_comp["rate"] = rate["rating_value"]
-#           general_comp["x"] = comp["x"]
-#           general_comp["y"] = comp["y"]
-#           general_comp["input_type"] = info_comp["input_type"]
-#           general_comp["output_type"] = info_comp["output_type"]
-#           general_comp["listening"] = comp["listening"]
-#           general_comp["height"] = comp["height"]
-#           general_comp["width"] = comp["width"]
-#           res.append(json.dumps(general_comp))
-#       else:
-#         user = Usuario.query(Usuario.id_usuario == user_id).get()
-#         user_comps = user.componentes
-#         # Now we get the general info about the components used by the user
-#         for comp in user_comps:
-#           general_comp = {}
-#           info_comp = Component.query(Component.component_id == comp.id_componente).get()
-#           rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
-#           general_comp["component_id"] = info_comp["component_id"]
-#           general_comp["url"] = info_comp["url"]
-#           general_comp["social_net"] = info_comp["rs"]
-#           general_comp["description"] = info_comp["description"]
-#           general_comp["rate"] = rate["rating_value"]
-#           res.append(json.dumps(general_comp))
-
-
-#     else:
-
-#   else:
-#   if user_id == "" and not all_info and rs == "": # The general information of the components must be returned
-#     components = Component.query()
-#     comp = {}
-#     for component in components:
-#       comp["id_componente"] = component.id_componente
-#       comp["url"] = component.url
-#       comp["rs"] = component.rs
-#       comp["description"] = component.description
-#       comp["input_type"] = component.input_type
-#       comp["output_type"] = component.output_type
-#       comp["listening"] = component.listening
-#       res.append(json.dumps(comp))
-#   elif not user_id == "":
-#     if all_info:
-
-
-#     return res
+    return res
 
 def buscaToken(id_usuario, rs): #FUNCIONA
   token_aux = Token(identificador=id_usuario, nombre_rs=rs)
