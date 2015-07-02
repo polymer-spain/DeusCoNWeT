@@ -435,6 +435,14 @@ def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
       general_comp["height"] = user_comp["height"]
       general_comp["width"] = user_comp["width"]
       general_comp["listening"] = user_comp["listening"]
+    else:
+      general_comp["url"] = comp.url
+      general_comp["rs"] = comp.rs
+      general_comp["description"] = comp.description
+      general_comp["input_type"] = comp.input_type
+      general_comp["output_type"] = comp.output_type
+      general_comp["rate"] = rate.rating_value
+    res = json.dumps(general_comp)
   return res
 
 def getComponents(rs="", user_id="", all_info=False):
