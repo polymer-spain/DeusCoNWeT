@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>google-login Demo</title>
+    <script src="../webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="google-login.html">
+  </head>
+  <body unresolved>
+    <google-login clientID="37385538925-4g90dngnd3u8ch17pgf9n0tlqocl8iro.apps.googleusercontent.com" callback="http://localhost:8080/demo.html" scope="https://www.googleapis.com/auth/userinfo.profile"></google-login>
+  </body>
+
+  <script>
+	  document.querySelector('google-login').addEventListener('response', function(e) {
+
+	  });
+	</script>

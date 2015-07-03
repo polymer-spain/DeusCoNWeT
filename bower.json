@@ -1,7 +1,11 @@
 {
   "name": "polymer-bricks",
-  "version": "0.0.1",
-  "dependencies": {},
+  "version": "2.0.0",
+  "dependencies": {
+    "google-login": "~1.0.0",
+    "login-fb": "~1.0.0",
+    "linkedin-login": "~1.0.0"
+  },
   "devDependencies": {
     "grunt-contrib-uglify": "~0.9.1",
     "grunt-contrib-imagemin": "~0.9.4",

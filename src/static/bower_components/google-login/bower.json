@@ -1,0 +1,23 @@
+{
+  "name": "google-login",
+  "version": "1.0.0",
+  "keywords": [
+    "seed",
+    "polymer",
+    "web-components",
+    "google",
+    "plus",
+    "login",
+    "signin"
+  ],
+  "main": "google-login.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.5",
+    "paper-button": "Polymer/paper-button#~0.5.6",
+    "core-icon": "Polymer/core-icon#~0.5.6",
+    "core-ajax": "Polymer/core-ajax#~0.5.6"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.0"
+  }
+}
