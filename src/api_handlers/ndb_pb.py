@@ -362,20 +362,20 @@ def insertComponent(name, url="", description="", rs="", input_t="", output=""):
   component = Component.query(Component.component_id == name).get()
   res = False
   if component == None:
-    comp = Component(component_id=name, url=url, input_type=input_t, output_type=output, rs=rs, description=description)
+    component = Component(component_id=name, url=url, input_type=input_t, output_type=output, rs=rs, description=description)
     res = True
   else:
     if not url == "":
-      component["url"] = url
+      component.url = url
     if not description == "":
-      component["description"] = description
+      component.description = description
     if not rs == "":
-      component["rs"] = rs
+      component.rs = rs
     if not input_t == "":
-      component["input_type"] = input_t
+      component.input_type = input_t
     if not output == "":
-      component["output_type"] = output
-  comp.put()
+      component.output_type = output
+  component.put()
 
   return res
 
@@ -423,7 +423,7 @@ def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
     general_comp = {"component_id": "component_id"}
     if all_info:
       user = entity_key.get()
-      user_comp = [cte for cte in user.componentes if comp.id_componente == nombre]
+      user_comp = [cte for cte in user.componentes if comp.component_id == nombre]
       general_comp["url"] = comp.url
       general_comp["rs"] = comp.rs
       general_comp["description"] = comp.description
@@ -450,8 +450,8 @@ def getComponents(rs="", user_id="", all_info=False):
         # Info for the components used by the specified user
         user_comps = user.componentes
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.id_componente).get()
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          info_comp = Component.query(Component.component_id == comp.component_id).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = comp["id_componente"]
           general_comp["url"] = info_comp["url"]
           general_comp["social_net"] = info_comp["rs"]
@@ -470,8 +470,8 @@ def getComponents(rs="", user_id="", all_info=False):
         user_comps = user.componentes
         # Now we get the general info about the components used by the user
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.id_componente).get()
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          info_comp = Component.query(Component.component_id == comp.component_id).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = info_comp["component_id"]
           general_comp["url"] = info_comp["url"]
           general_comp["social_net"] = info_comp["rs"]
@@ -483,8 +483,8 @@ def getComponents(rs="", user_id="", all_info=False):
         user = Usuario.query(Usuario.id_usuario == user_id).get()
         user_comps = user.componentes
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.id_componente).filter(Component.rs == rs).get()
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = comp["id_componente"]
           general_comp["url"] = info_comp["url"]
           general_comp["social_net"] = info_comp["rs"]
@@ -503,8 +503,8 @@ def getComponents(rs="", user_id="", all_info=False):
         user_comps = user.componentes
         # Now we get the general info about the components used by the user
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.id_componente).filter(Component.rs == rs).get()
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = info_comp["component_id"]
           general_comp["url"] = info_comp["url"]
           general_comp["social_net"] = info_comp["rs"]
@@ -517,8 +517,8 @@ def getComponents(rs="", user_id="", all_info=False):
       if rs == "":
         components = Component.query()
         for component in components:
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
-          general_comp["id_componente"] = component.id_componente
+          rate = UserRating.query(UserRating.component_id == component.component_id).get()
+          general_comp["id_componente"] = component.component_id
           general_comp["url"] = component.url
           general_comp["rs"] = component.rs
           general_comp["description"] = component.description
@@ -529,8 +529,8 @@ def getComponents(rs="", user_id="", all_info=False):
       else:
         components = Component.query(Component.rs == rs)
         for comp in components:
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
-          general_comp["id_componente"] = comp.id_componente
+          rate = UserRating.query(UserRating.component_id == component.component_id).get()
+          general_comp["id_componente"] = comp.component_id
           general_comp["url"] = comp.url
           general_comp["rs"] = comp.rs
           general_comp["description"] = comp.description

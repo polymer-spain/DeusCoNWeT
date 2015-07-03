@@ -59,17 +59,16 @@ class ComponentListHandler(SessionHandler):
         format_list = ['all','reduced']
         if not cookie_value == None:
             user_id = self.getUserInfo(cookie_value)
-            print "DEBUG: Tipo user_id ", type(user_id)
             if not user_id == None:
                 if social_network in social_list  or social_network == '' and filter_param in filter_list and list_format in format_list:
                     format_flag = True if list_format == 'all' else False
-                    user_filter = user_id if filter_param == 'user' else ''
+                    user_filter = str(user_id.id()) if filter_param == 'user' else ''
                     # Get the component list, according to the filters given
-                    component_list = ndb_pb.getComponents(social_network, user_id, format_flag)
-                    if not component_list == None:
+                    component_list = ndb_pb.getComponents(social_network, user_filter, format_flag)
+                    if not len(component_list) == 0:
                         self.response.content_type = 'application/json'
                         self.response.write(component_list)
-                        self.request.set_status(200)
+                        self.response.set_status(200)
                     else:
                         self.response.set_status(204)
                 else:
