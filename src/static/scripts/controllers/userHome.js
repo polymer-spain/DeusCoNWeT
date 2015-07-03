@@ -26,7 +26,7 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
        accessToken: $scope.twitter.token,
        secretToken: "VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY",
        consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
-       consumeSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+       consumerSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
        endpoint: $scope.domain + "/api/oauth/twitterTimeline",
        language: "{{idioma}}",
        count: "200"
