@@ -56,7 +56,7 @@ Element providing solution to no problem in particular.
 
     <paper-shadow z=2>
       <core-icon src="foto.png" style="width: 100px;height: 50px;display:inline-block;float:left"></core-icon>
-      <core-icon-button class="boton_refrescar" style="display:inline-block; float: right; padding-top: 12px" title="{{language_data.refresh}}" icon="refresh" on-click={{load}}></core-icon-button>
+      <core-icon-button class="boton_refrescar" style="display:inline-block; float: right; padding-top: 12px" title="{{language_data.refresh}}" icon="refresh" on-click={{refresh}}></core-icon-button>
       <div id ="cabecera">
         <p style="padding-left: 170px">{{language_data.title}}</p>
       </div>
@@ -101,6 +101,8 @@ Element providing solution to no problem in particular.
     lastPage:'',
     show:true,
     page:'1',
+    language:'{{idioma}}',
+
     ready: function () {
       // Set Header for authorize request
       if (this.token != '') {
@@ -114,7 +116,6 @@ Element providing solution to no problem in particular.
           this.idioma = 'en_en.json'
         }
         this.$.requestLanguage.go();
-        this.$.request.go();
       }
     },
     domReady : function() {
@@ -129,7 +130,6 @@ Element providing solution to no problem in particular.
           this.idioma = 'en_en.json'
         }
         this.$.requestLanguage.go();
-        this.$.request.go();
       }
     },
     response: function(event,detail,sender){
@@ -155,7 +155,14 @@ Element providing solution to no problem in particular.
 
     language_response: function(event, detail,sender){
       this.language_data = sender.response;
-      this.events = this.changeEvent(this.events);
+      if(!this.events){
+        this.$.request.go()
+      }
+      else{
+        this.events = this.changeEvent(this.events)
+        var t = this.$.contenido;
+        t.events = this.events;
+      }
     },
 
     attributeChanged: function(attrName, oldVal, newVal){
@@ -173,6 +180,10 @@ Element providing solution to no problem in particular.
 
     load: function(){
       this.$.request.go();
+    },
+
+    refresh: function(){
+      this.events = this.changeEvent(this.events);
     },
 
     changeEvent: function(list){

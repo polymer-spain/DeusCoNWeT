@@ -112,7 +112,7 @@ on-core-response="{{response_megusta}}"
             </template>
             <div style="margin-left: 6px; margin-right: 0px">
               <core-icon-button id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
-              <span id="liked_count">{{evento.likes.count}} Me gusta</span>
+              <span id="liked_count">{{evento.likes.count}}{{language_data.like}}</span>
             </div>
             <div id="descripcion" hidden?="{{evento.caption == null}}">
               <span><a href="https://instagram.com/{{evento.user.username}}/" target='_blank'>{{evento.user.username}}</a></span>
@@ -140,6 +140,8 @@ on-core-response="{{response_megusta}}"
       count: 10,
       peticion: "",
       media_id: "",
+      language: "{{idioma}}",
+
       /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
         if(this.accessToken && this.endpoint != ""){
@@ -149,7 +151,6 @@ on-core-response="{{response_megusta}}"
             this.idioma = 'en_en.json'
           }
           this.$.requestLanguage.go();
-          this.$.request.go()
         }
       },
 
@@ -161,7 +162,6 @@ on-core-response="{{response_megusta}}"
             this.idioma = 'en_en.json'
           }
           this.$.requestLanguage.go();
-          this.$.request.go()
         }
       },
 
@@ -169,14 +169,12 @@ on-core-response="{{response_megusta}}"
         if(newVal === "en" && attrName == "language"){
           this.language = "en";
           this.idioma = "en_en.json"
-          this.$.requestLanguage.go();
-          this.$.request.go();
+          this.$.requestLanguage.go();;
         }
         else if(newVal === "es" && attrName == "language"){
           this.language = "es";
           this.idioma = "es_es.json"
-          this.$.requestLanguage.go();
-          this.$.request.go();
+          this.$.requestLanguage.go();;
         }
       },
 
@@ -191,6 +189,15 @@ on-core-response="{{response_megusta}}"
 
       language_response: function(event, detail,sender){
         this.language_data = sender.response;
+        if(!this.events){
+          this.$.request.go()
+        }
+        else{
+          this.events  = this.changeTime(this.events)
+          this.events = this.parsear(this.events)
+          var t = this.$.contenido;
+          t.events =  this.events
+        }
         /*console.log(this.language_data)*/
       },
 

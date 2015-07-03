@@ -43,7 +43,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                url='bower_components/twitter-timeline/static/language/{{idioma}}'
                method="GET"
                handleAs='json'
-               on-core-response="{{languaje_response}}"
+               on-core-response="{{language_response}}"
                >
     </core-ajax>
 
@@ -99,7 +99,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       show: true,
       since_id: "",
       endpoint:'',
-
+      language: '{{idioma}}',
+      count: '200',
 
       ready: function(event, detail, sender) {
         if (this.accesToken && this.endpoint){
@@ -109,7 +110,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.idioma = 'en_en.json'
           }
           this.$.requestLanguage.go();
-          this.$.requestTimeline.go();
         }
       },
 
@@ -121,7 +121,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.idioma = 'en_en.json'
           }
           this.$.requestLanguage.go();
-          this.$.requestTimeline.go();
         }
       },
 
@@ -136,7 +135,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.idioma = "es_es.json"
           this.$.requestLanguage.go();
         }
-        this.$.requestTimeline.go();
       },
 
       /*Funcion que prepara los tweets antes de mostrarlos*/
@@ -145,8 +143,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.events = this.parsear(this.events)
         this.mostrar()
       },
-      languaje_response: function(event, detail,sender){
+      language_response: function(event, detail,sender){
         this.data = sender.response;
+        if(!this.events){
+          this.$.requestTimeline.go();
+        }
+        else{
+          this.events = this.changeTime(this.events)
+          var t = this.$.contenido;
+          var tweets = new Array();
+          for(i = 0; i < t.events.length; i++){
+            tweets[i]=this.events[i]
+          }
+          t.events = tweets;
+        }
       },
       /*Funcion que inyecta el codigo html del tweet para que se pueda visualizar*/
       cambiar: function(evento,index){

@@ -1,3 +1,4 @@
+/*global angular, document*/
 'use strict';
 
 /**
@@ -126,11 +127,7 @@ angular.module('picbit').controller('UserHomeController', function ($scope,$time
     }
   };
   $scope.isSelected = function(event) {
-    return $scope.selected === event && event != undefined
-    $scope.listaOpciones = ['false','false','false'];
-    document.querySelector('#arrowAdd').icon = "arrow-drop-down";
-    document.querySelector('#arrowDelete').icon = "arrow-drop-down";
-    document.querySelector('#arrowModify').icon = "arrow-drop-down";
+    return $scope.selected === event && event !== undefined;
   };
 
   $scope.setSelected = function(event) {
