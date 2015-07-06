@@ -20,31 +20,34 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
   $scope.github.username = "mortega5";
 
   $scope.list = [
-    {name: "twitter-timeline",
-     attributes: {
-       accessToken: $scope.twitter.token,
-       secretToken: "VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY",
-       consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
-       consumerSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
-       endpoint: $scope.domain + "/api/oauth/twitterTimeline",
-       language: "{{idioma}}",
-       count: "200"
-     }
+    {
+      name: "twitter-timeline",
+      attributes: {
+        accessToken: $scope.twitter.token,
+        secretToken: "VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY",
+        consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
+        consumerSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+        endpoint: $scope.domain + "/api/oauth/twitterTimeline",
+        language: "{{idioma}}",
+        count: "200"
+      }
     },
-    {name: "github-events",
-     attributes: {
-       username: $scope.github.username,
-       token: $scope.github.token || "",
-       mostrar: "10",
-       language: "{{idioma}}"
-     }
+    {
+      name: "github-events",
+      attributes: {
+        username: $scope.github.username,
+        token: $scope.github.token || "",
+        mostrar: "10",
+        language: "{{idioma}}"
+      }
     },
-    {name: "instagram-timeline",
-     attributes: {
-       endpoint: $scope.domain + "/api/aux/instagramTimeline",
-       language: "{{idioma}}",
-       accessToken: $scope.instagram.token
-     }
+    {
+      name: "instagram-timeline",
+      attributes: {
+        accessToken: $scope.instagram.token,
+        endpoint: $scope.domain + "/api/aux/instagramTimeline",
+        language: "{{idioma}}"
+      }
     }
   ];
 
