@@ -103,7 +103,7 @@ Element providing solution to no problem in particular.
     lastPage:'',
     show:true,
     page:'1',
-    language:'{{idioma}}',
+    language:'',
 
     ready: function () {
       // Set Header for authorize request
@@ -112,6 +112,7 @@ Element providing solution to no problem in particular.
       }
       // Call Github Api
       if (this.username) {
+        console.log(this.language)
         if(this.language == 'es'){
           this.idioma = 'es_es.json'
         }else if(this.language == 'en'){
@@ -126,6 +127,7 @@ Element providing solution to no problem in particular.
       }
       // Call Github Api
       if (this.username) {
+        console.log(this.language)
         if(this.language == 'es'){
           this.idioma = 'es_es.json'
         }else if(this.language == 'en'){

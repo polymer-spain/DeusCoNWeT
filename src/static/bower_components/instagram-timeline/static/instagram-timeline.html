@@ -61,7 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <core-ajax
                id="requestLanguage"
-               url='bower_components/instagram-timeline/static/language/{{idiom}}'
+               url='bower_components/instagram-timeline/static/language/{{idioma}}'
                method="GET"
                handleAs='json'
                on-core-response="{{language_response}}"
@@ -139,10 +139,9 @@ on-core-response="{{response_megusta}}"
       /*"Count" is the number of elements to load*/
       count: 10,
       media_id: "",
-      language: "{{idiom}}",
+      language: "es",
 
       ready: function(event, detail, sender){
-        console.log("pene")
         if(this.accessToken && this.endpoint != ""){
           if(this.language == 'es'){
             this.idiom = 'es_es.json'
