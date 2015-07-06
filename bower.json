@@ -21,7 +21,8 @@
     "instagram-login": "~1.0.0",
     "instagram-timeline": "*",
     "twitter-timeline": "*",
-    "events-github": "~1.0.0"
+    "events-github": "~1.0.0",
+    "paper-icon-button": "Polymer/paper-icon-button#~0.5.6"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "~0.9.1",

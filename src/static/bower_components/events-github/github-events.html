@@ -18,7 +18,7 @@ limitations under the License.
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-ajax/core-ajax.html">
-<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 <link rel="import" href="../paper-shadow/paper-shadow.html">
 <link rel="import" href="../core-icon/core-icon.html">
 
@@ -49,7 +49,7 @@ Element providing solution to no problem in particular.
 
     <core-ajax
                id="requestLanguage"
-               url='language/{{idioma}}'
+               url='bower_components/events-github/language/{{idioma}}'
                method="GET"
                handleAs='json'
                on-core-response="{{language_response}}"
@@ -112,6 +112,7 @@ Element providing solution to no problem in particular.
       }
       // Call Github Api
       if (this.username) {
+        console.log(this.language)
         if(this.language == 'es'){
           this.idioma = 'es_es.json'
         }else if(this.language == 'en'){
@@ -126,6 +127,7 @@ Element providing solution to no problem in particular.
       }
       // Call Github Api
       if (this.username) {
+        console.log(this.language)
         if(this.language == 'es'){
           this.idioma = 'es_es.json'
         }else if(this.language == 'en'){

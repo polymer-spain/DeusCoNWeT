@@ -19,7 +19,6 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
   $scope.twitter.token = "3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x";
   $scope.github.username = "mortega5";
 
-
   $scope.list = [
     {name: "twitter-timeline",
      attributes: {
