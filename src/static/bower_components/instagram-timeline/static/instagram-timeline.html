@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/core-ajax/core-ajax.html">
-<link rel="import" href="bower_components/core-icon/core-icon.html">
-<link rel="import" href="bower_components/core-icons/core-icons.html">
-<link rel="import" href="bower_components/core-icon-button/core-icon-button.html">
-<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../core-ajax/core-ajax.html">
+<link rel="import" href="../../core-icon/core-icon.html">
+<link rel="import" href="../../core-icons/core-icons.html">
+<link rel="import" href="../../core-icon-button/core-icon-button.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
 <polymer-element name="instagram-timeline" attributes="endpoint accessToken language">
@@ -61,7 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <core-ajax
                id="requestLanguage"
-               url='language/{{idiom}}'
+               url='bower_components/instagram-timeline/static/language/{{idiom}}'
                method="GET"
                handleAs='json'
                on-core-response="{{language_response}}"
@@ -139,9 +139,10 @@ on-core-response="{{response_megusta}}"
       /*"Count" is the number of elements to load*/
       count: 10,
       media_id: "",
-      language: "es",
+      language: "{{idiom}}",
 
       ready: function(event, detail, sender){
+        console.log("pene")
         if(this.accessToken && this.endpoint != ""){
           if(this.language == 'es'){
             this.idiom = 'es_es.json'
