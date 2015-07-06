@@ -1,0 +1,14 @@
+{
+  "name": "instagram-timeline",
+  "homepage": "https://github.com/JuanFryS/instagram-timeline",
+  "_release": "daa850f7e3",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "daa850f7e33091fc9b3138b9eeb598154909b4f2"
+  },
+  "_source": "git://github.com/JuanFryS/instagram-timeline.git",
+  "_target": "*",
+  "_originalSource": "instagram-timeline",
+  "_direct": true
+}

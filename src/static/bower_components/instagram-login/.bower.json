@@ -1,0 +1,39 @@
+{
+  "name": "instagram-login",
+  "version": "1.0.0",
+  "authors": [
+    "Ana Isabel Lopera <lopera.martinez.ana.isabel@gmail.com>"
+  ],
+  "description": "Sign in with Instagram web component",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "instagram"
+  ],
+  "main": "instagram-login.html",
+  "license": "MIT",
+  "homepage": "https://github.com/ailopera/instagram-login/",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.2",
+    "paper-button": "Polymer/paper-button#~0.5.2",
+    "core-icon": "Polymer/core-icon"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.5"
+  },
+  "_release": "1.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.0",
+    "commit": "e58d7e68f0e5680cfda1e21bd6b374b6eeb4bc17"
+  },
+  "_source": "git://github.com/ailopera/instagram-login.git",
+  "_target": "~1.0.0",
+  "_originalSource": "instagram-login",
+  "_direct": true
+}

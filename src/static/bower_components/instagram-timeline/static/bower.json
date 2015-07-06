@@ -1,0 +1,37 @@
+{
+  "name": "instagram-timeline",
+  "version": "1.0",
+  "authors": [
+    "Juan Francisco Salamanca Carmona <jfsalca@gmail.com>"
+  ],
+  "description": "Web component for instagram timeline",
+  "main": "instagram-timeline.html",
+  "keywords": [
+    "web-component",
+    "instagram",
+    "timeline",
+    "polymer"
+  ],
+  "license": "Apache",
+  "homepage": "https://github.com/JuanFryS/instagram-timeline",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.5",
+    "core-ajax": "Polymer/core-ajax#~0.5.6",
+    "paper-button": "Polymer/paper-button#~0.5.6",
+    "core-icon": "Polymer/core-icon#~0.5.6",
+    "core-icons": "Polymer/core-icons#~0.5.6",
+    "core-icon-button": "Polymer/core-icon-button#~0.5.6",
+    "paper-icon-button": "Polymer/paper-icon-button#~0.5.6"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.5",
+    "core-ajax": "Polymer/core-ajax#~0.5.2"
+  }
+}
