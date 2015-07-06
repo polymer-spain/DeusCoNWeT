@@ -25,7 +25,7 @@ import webapp2
 
 # Definimos la lista de redes sociales con las que trabajamos
 
-rs_list = [
+social_list = [
     'twitter',
     'facebook',
     'stackoverflow',
@@ -112,10 +112,10 @@ rs_list = [
   #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
 
-class UsuarioBeta(ndb.Model):
+class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
-  nombre = ndb.StringProperty()
-  apellidos = ndb.StringProperty()
+  name = ndb.StringProperty()
+  surname = ndb.StringProperty()
 
 class Component(ndb.Model):
   component_id = ndb.StringProperty()
@@ -125,8 +125,8 @@ class Component(ndb.Model):
   rs = ndb.StringProperty()
   description = ndb.StringProperty()
 
-class ComponenteUsuario(ndb.Model):
-  id_componente = ndb.StringProperty(required=True)
+class UserComponent(ndb.Model):
+  component_id = ndb.StringProperty(required=True)
   x = ndb.FloatProperty()
   y = ndb.FloatProperty()
   height = ndb.StringProperty()
@@ -138,224 +138,209 @@ class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
   rating_value = ndb.FloatProperty()
 
-
-# Entidad Grupo
-
-class Grupo(ndb.Model):
-
-  nombre_grupo = ndb.StringProperty(required=True)
-  lista_Usuarios = ndb.StringProperty()
-  descripcion = ndb.StringProperty()
-
-
-# Entidad Token
+class Group(ndb.Model):
+  group_name = ndb.StringProperty(required=True)
+  user_list = ndb.StringProperty()
+  description = ndb.StringProperty()
 
 class Token(ndb.Model):
-
-  identificador = ndb.StringProperty()
+  identifier = ndb.StringProperty()
   token = ndb.StringProperty()
-  nombre_rs = ndb.StringProperty()
+  social_name = ndb.StringProperty()
 
+class SocialUser(ndb.Model):
+  social_name = ndb.StringProperty(required=True)
+  following = ndb.IntegerProperty()
+  followers = ndb.IntegerProperty()
+  following_url = ndb.StringProperty()
+  followers_url = ndb.StringProperty()
 
-# Entidad UsuarioSocial
-
-class UsuarioSocial(ndb.Model):
-
-  nombre_rs = ndb.StringProperty(required=True)
-  siguiendo = ndb.IntegerProperty()
-  seguidores = ndb.IntegerProperty()
-  url_sig = ndb.StringProperty()
-  url_seg = ndb.StringProperty()
-
-# Entidad usuario
-
-class Usuario(ndb.Model):
-  id_usuario = ndb.StringProperty()
+class User(ndb.Model):
+  user_id = ndb.StringProperty()
   email = ndb.StringProperty()
   private_email = ndb.BooleanProperty()
-  telefono = ndb.IntegerProperty()
+  phone = ndb.IntegerProperty()
   private_phone = ndb.BooleanProperty()
-  descripcion = ndb.TextProperty()
-  sitio_web = ndb.StringProperty()
-  imagen = ndb.StringProperty()
+  description = ndb.TextProperty()
+  website = ndb.StringProperty()
+  image = ndb.StringProperty()
   tokens = ndb.StructuredProperty(Token, repeated=True)
-  lista_Redes = ndb.StructuredProperty(UsuarioSocial, repeated=True)
-  lista_Grupos = ndb.StructuredProperty(Grupo, repeated=True)
+  net_list = ndb.StructuredProperty(UsuarioSocial, repeated=True)
+  group_list = ndb.StructuredProperty(Grupo, repeated=True)
   rates = ndb.StructuredProperty(UserRating, repeated=True)
-  componentes = ndb.StructuredProperty(ComponenteUsuario, repeated=True)
-
-
-  # tarjeta = ndb.StructuredProperty(Tarjeta)
+  components = ndb.StructuredProperty(ComponenteUsuario, repeated=True)
 
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
 #####################################################################################
 
-def getToken(entity_key, rs):  # FUNCIONA
+def getToken(entity_key, social_net):  # FUNCIONA
     user = entity_key.get()
     tokens = user.tokens
-    res = None
-    if not rs in rs_list:
-      return 'La red social no esta contemplada'
-    for token in tokens: 
-      if token.nombre_rs == rs:
-        res = token
+    ans = None
+    if not social_net in social_list:
+      return 'The social network is not implemented'
+    for token in tokens:
+      print "DEBUG: TOKEN ACTUAL ", token.social_name 
+      if token.social_name == social_net:
+        ans = token.token
 
-    return {"token": res,
-            "user_id": user.id_usuario}
+    return {"token": ans,
+            "user_id": user.user_id}
 
 
 def getUser(entity_key): #FUNCIONA
   user = entity_key.get()
-  rates = user.rates; redes = user.lista_Redes
-  rates_list = []; nombres_redes = []
+  rates = user.rates; nets = user.net_list
+  rates_list = []; net_names = []
   for rate in rates:
     comp = rate.component_id
     value = rate.rating_value
     tup = (comp, value)
     rates_list.append(tup)
-  for red in redes:
-    nombres_redes.append(red.nombre_rs)
-  usuario = {"id_usuario": user.id_usuario,
-              "descripcion": user.descripcion,
-              "imagen": user.imagen,
-              "sitio_web": user.sitio_web,
+  for net in nets:
+    net_names.append(net.social_name)
+  user_info = {"user_id": user.user_id,
+              "description": user.description,
+              "image": user.image,
+              "website": user.website,
               "private_email": user.private_email,
               "email": user.email,
               "private_phone": user.private_phone,
-              "telefono": user.telefono,
-              "redes": nombres_redes,
+              "phone": user.phone,
+              "nets": net_names,
               "components": rates_list}
-  usuario = json.dumps(usuario)
-  return usuario
+  user = json.dumps(user_info)
+  return user
 
 @ndb.transactional(xg=True)
-def insertaUsuario(rs, ide, token, datos=None): #FUNCIONA
-  usuario = Usuario()
-  token = Token(identificador=ide, token=token, nombre_rs=rs)
+def insertUser(rs, ide, token, data=None): #FUNCIONA
+  user = User()
+  token = Token(identifier=ide, token=token, social_name=rs)
   token.put()
-  usuario.tokens.append(token)
-  if not datos == None:
-    if datos.has_key("email"):
-      usuario.email = datos["email"]
-    if datos.has_key("private_email"):
-      usuario.private_email = datos["private_email"]
-    if datos.has_key("telefono"):
-      usuario.telefono = datos["telefono"]
-    if datos.has_key("private_phone"):
-      usuario.private_phone = datos["private_phone"]
-    if datos.has_key("descripcion"):
-      usuario.descripcion = datos["descripcion"]
-    if datos.has_key("imagen"):
-      usuario.imagen = datos["imagen"]
+  user.tokens.append(token)
+  if not data == None:
+    if data.has_key("email"):
+      user.email = data["email"]
+    if data.has_key("private_email"):
+      user.private_email = data["private_email"]
+    if data.has_key("phone"):
+      user.phone = datos["phone"]
+    if data.has_key("private_phone"):
+      user.private_phone = data["private_phone"]
+    if data.has_key("description"):
+      user.description = data["description"]
+    if data.has_key("image"):
+      user.image = data["image"]
+    if data.has_key("website"):
+      user.website = data["website"]
 
-  user_key = usuario.put()
+  user_key = user.put()
 
   return user_key
 
 
-def actualizaUsuario(entity_key, datos): #FUNCIONA
-  usuario = entity_key.get()
-  if datos.has_key("email"):
-    usuario.email = datos["email"]
-  if datos.has_key("private_email"):
-    usuario.private_email = datos["private_email"]
-  if datos.has_key("telefono"):
-    usuario.telefono = datos["telefono"]
-  if datos.has_key("private_phone"):
-    usuario.private_phone = datos["private_phone"]
-  if datos.has_key("descripcion"):
-    usuario.descripcion = datos["descripcion"]
-  if datos.has_key("imagen"):
-    usuario.imagen = datos["imagen"]
-  if datos.has_key("sitio_web"):
-    usuario.imagen = datos["sitio_web"]
-  if datos.has_key("componente"):
-    nom_comp = datos["componente"]
-    if datos.has_key("valoracion"):
-      rate = datos["valoracion"]
-      rating = UserRating(component_id=nom_comp, rating_value=rate)
-      usuario.rates.append(rating)
-
-  usuario.put()
-
-def insertaToken(entity_key, rs, token, id_usuario): #FUNCIONA
+def updateUser(entity_key, data): #FUNCIONA
   user = entity_key.get()
-  tok_aux = Token(identificador=id_usuario, token=token, nombre_rs=rs)
+  if data.has_key("email"):
+    user.email = data["email"]
+  if data.has_key("private_email"):
+    user.private_email = data["private_email"]
+  if data.has_key("phone"):
+    user.phone = data["phone"]
+  if data.has_key("private_phone"):
+    user.private_phone = data["private_phone"]
+  if data.has_key("description"):
+    user.description = data["description"]
+  if data.has_key("image"):
+    user.image = data["image"]
+  if data.has_key("website"):
+    user.image = data["website"]
+  if data.has_key("componente"):
+    comp_name = data["component"]
+    if data.has_key("rate"):
+      rate = data["rate"]
+      rating = UserRating(component_id=comp_name, rating_value=rate)
+      user.rates.append(rating)
+
+  user.put()
+
+def insertToken(entity_key, social_name, token, user_id): #FUNCIONA
+  user = entity_key.get()
+  tok_aux = Token(identifier=user_id, token=token, social_name=social_name)
   user.tokens.append(tok_aux)
   user.put()
 
-def insertaGrupo(entity_key, nombre, datos=None): #FUNCIONA
-  usuario = entity_key.get()
-  grupo = Grupo(nombre_grupo=nombre)
+def insertGroup(entity_key, name, data=None): #FUNCIONA
+  user = entity_key.get()
+  group = Group(group_name=name)
   users = ""
   
-  if not datos == None:
-    if datos.has_key("descripcion"): grupo.descripcion = datos["descripcion"]
-    if datos.has_key("usuarios"):
-      for user in datos["usuarios"]:
-        users += user + ", "
+  if not data == None:
+    if data.has_key("description"): group.description = data["description"]
+    if data.has_key("usuarios"):
+      [users += user + ", " for user in datos["usuarios"]]
 
-  grupo.lista_Usuarios = users
-  usuario.lista_Grupos.append(grupo)
-  usuario.put()
+  group.user_list = users
+  user.group_list.append(group)
+  user.put()
 
-def addUsuarioAGrupo(entity_key, nombre_grupo, usuario): #FUNCIONA
+def addUserToGroup(entity_key, group_name, username): #FUNCIONA
   user = entity_key.get()
-  grupos = user.lista_Grupos
+  groups = user.group_list
 
-  for grupo in grupos:
-    if grupo.nombre_grupo == nombre_grupo:
-      grupo.lista_Usuarios += usuario
+  for group in groups:
+    if group.group_name == group_name:
+      group.user_list += username
 
-def addDescripcionAGrupo(entity_key, nombre, descripcion): #FUNCIONA
-  usuario = entity_key.get()
-  grupos = usuario.lista_Grupos
-
-  for grupo in grupos:
-    if grupo.nombre_grupo == nombre:
-      grupo.descripcion = descripcion
-
-  usuario.put()
-
-def buscaGrupos(entity_key): #FUNCIONA
+def addDescriptionToGroup(entity_key, group_name, description): #FUNCIONA
   user = entity_key.get()
-  res = {}
-  contador = 1
-  if user.lista_Grupos:
-    for grupo in user.lista_Grupos:
-      res[contador] = grupo.nombre_grupo
-      contador += 1
+  groups = user.group_list
 
-  return json.dumps(res)
+  for group in groups:
+    if group.group_name == group_name:
+      group.description = description
 
-def insertaRed(entity_key, nombre, datos=None): # FUNCIONA
-  usuario = entity_key.get()
-  user_social = UsuarioSocial(nombre_rs=nombre)
+  user.put()
+
+def searchGroups(entity_key): #FUNCIONA
+  user = entity_key.get()
+  ans = {}
+  counter = 1
+  if user.group_list:
+    for group in user.group_list:
+      ans[counter] = group.group_name
+      counter += 1
+
+  return json.dumps(ans)
+
+def insertNetwork(entity_key, name, data=None): # FUNCIONA
+  user = entity_key.get()
+  user_social = SocialUser(social_name=name)
   if not datos == None:
-    if datos.has_key("siguiendo"):
-      user_social.siguiendo = datos["siguiendo"]
-    if datos.has_key("seguidores"):
-      user_social.seguidores = datos["seguidores"]
-    if datos.has_key("url_seg"):
-      user_social.url_seg = datos["url_seg"]
-    if datos.has_key("url_sig"):
-      user_social.url_sig = datos["url_sig"]
+    if data.has_key("following"):
+      user_social.following = data["following"]
+    if data.has_key("followers"):
+      user_social.followers = data["followers"]
+    if data.has_key("followers_url"):
+      user_social.followers_url = data["followers_url"]
+    if data.has_key("following_url"):
+      user_social.following_url = data["url_sig"]
 
-  usuario.lista_Redes.append(user_social)
-  usuario.put()
+  user.net_list.append(user_social)
+  user.put()
     
 
-def buscaRed(entity_key): # FUNCIONA
-  usuario = entity_key.get()
-  res = {}
-  contador = 1
-  if usuario.lista_Redes:
-    for red in usuario.lista_Redes:
-      res[contador] = red.nombre_rs
-      contador += 1
+def searchNetwork(entity_key): # FUNCIONA
+  user = entity_key.get()
+  ans = {}
+  counter = 1
+  if user.net_list:
+    for net in user.net_list:
+      ans[counter] = net.social_name
+      counter += 1
 
-  return json.dumps(res)
+  return json.dumps(ans)
 
 def insertComponent(name, url="", description="", rs="", input_t="", output=""):
   component = Component.query(Component.component_id == name).get()
@@ -374,49 +359,49 @@ def insertComponent(name, url="", description="", rs="", input_t="", output=""):
       component.input_type = input_t
     if not output == "":
       component.output_type = output
-  component.put()
+  comp.put()
 
   return res
 
-def insertarUserComponent(entity_key, nombre, coord_x=0, coord_y=0, height="", width="", listening=""): # FUNCIONA
-  usuario = entity_key.get()
-  componente = ComponenteUsuario(nombre=nombre, x=coord_x, y=coord_y, height=height, width=width, listening=listening)
-  usuario.componentes.append(componente)
+def insertUserComponent(entity_key, name, x=0, y=0, height="", width="", listening=""): # FUNCIONA
+  user = entity_key.get()
+  component = UserComponent(name=name, x=x, y=y, height=height, width=width, listening=listening)
+  user.components.append(component)
 
-  usuario.put()
+  user.put()
 
-def modificarComponente(entity_key, nombre, datos): #FUNCIONA
-  usuario = entity_key.get()
-  comps = usuario.componentes
+def modifyComponent(entity_key, name, data): #FUNCIONA
+  user = entity_key.get()
+  comps = user.components
   for comp in comps:
-    if comp.nombre == nombre:
-      if datos.has_key("x"):
-        comp.x = datos["x"]
-      if datos.has_key("y"):
-        comp.y = datos["y"]
-      if datos.has_key("height"):
-        comp.height = datos["height"]
-      if datos.has_key("width"):
-        comp.width = datos["width"]
-      if datos.has_key("listening"):
-        comp.listening += datos["listening"]
+    if comp.name == name:
+      if data.has_key("x"):
+        comp.x = data["x"]
+      if data.has_key("y"):
+        comp.y = data["y"]
+      if data.has_key("height"):
+        comp.height = data["height"]
+      if data.has_key("width"):
+        comp.width = data["width"]
+      if data.has_key("listening"):
+        comp.listening += data["listening"]
       
-  usuario.put()
+  user.put()
 
-def addListening(entity_key, nombre, events):
-  usuario = entity_key.get()
-  comps = usuario.componentes
+def addListening(entity_key, name, events):
+  user = entity_key.get()
+  comps = user.components
   for comp in comps:
-    if comp.nombre == nombre:
+    if comp.component_id == name:
       for event in events:
         comp.listening += event + ""
 
-  usuario.put()
+  user.put()
 
-def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
-  comp = Component.query(Component.component_id == nombre).get()
+def getComponente(entity_key, name, all_info=False): # FUNCIONA
+  comp = Component.query(Component.component_id == name)
   if comp == None:
-    res = None
+    ans = None
   else:
     rate = UserRating.query(UserRating.component_id == nombre).get()
     user = entity_key.get()
@@ -437,20 +422,20 @@ def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
       general_comp["height"] = user_comp.height
       general_comp["width"] = user_comp.width
       general_comp["listening"] = user_comp.listening
-    res = json.dumps(general_comp)
-  return res
+    ans = json.dumps(general_comp)
+  return ans
 
-def getComponents(rs="", user_id="", all_info=False):
-  print "DEBUG User id recibido", user_id
-  res = []
+
+def getComponents(entity_key="", rs="", all_info=False):
+  ans = []
   general_comp = {}
-  if not user_id == "":
+  if not entity_key == "":
     # user id specified
     if rs == "":
       # without social network
       if all_info:
         # complete information
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user = entity_key.get()
         # Info for the components used by the specified user
         user_comps = user.componentes
         for comp in user_comps:
@@ -471,10 +456,11 @@ def getComponents(rs="", user_id="", all_info=False):
             general_comp["rate"] = rate.rating_value
           else:
             general_comp["rate"] = 0
-          res = general_comp
-          res.append(json.dumps(general_comp))
+          ans = general_comp
+          ans.append(json.dumps(general_comp))
+
       else:
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user = entity_key.get()
         user_comps = user.componentes
         # Now we get the general info about the components used by the user
         for comp in user_comps:
@@ -488,10 +474,11 @@ def getComponents(rs="", user_id="", all_info=False):
             general_comp["rate"] = rate.rating_value
           else:
             general_comp["rate"] = 0
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
+
     else:
       if all_info:
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user = entity_key.get()
         user_comps = user.componentes
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
@@ -514,8 +501,6 @@ def getComponents(rs="", user_id="", all_info=False):
           res.append(json.dumps(general_comp))
       else:
         user = Usuario.query(Usuario.id_usuario == user_id).get()
-        print "DEBUG: Parametro user_id recibido ", user_id
-        print "DEBUG User: ", user
         user_comps = user.componentes
         # Now we get the general info about the components used by the user
         for comp in user_comps:
@@ -547,7 +532,7 @@ def getComponents(rs="", user_id="", all_info=False):
             general_comp["rate"] = rate.rating_value
           else:
             general_comp["rate"] = 0
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
       else:
         components = Component.query(Component.rs == rs).fetch(20)
         print "DEBUG: tipo componentes ", type(components)
@@ -563,45 +548,44 @@ def getComponents(rs="", user_id="", all_info=False):
             general_comp["rate"] = rate.rating_value
           else:
             general_comp["rate"] = 0
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
 
-    return res
+    return ans
 
-def buscaToken(id_usuario, rs): #FUNCIONA
-  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+def searchToken(user_id, rs): #FUNCIONA
   tokens = Token.query()
-  token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
+  token = tokens.filter(Token.identifier==user_id).filter(Token.social_name==rs).get() 
   if token:
     return token.token
   else:
     return None
 
-def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
-  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
-  usuario = Usuario.query(Usuario.tokens==token_aux).get()
-  tokens = usuario.tokens
+def modifyToken(user_id, new_token, rs): #FUNCIONA
+  token_aux = Token(identifier=user_id, social_name=rs)
+  user = User.query(User.tokens==token_aux).get()
+  tokens = user.tokens
   for token in tokens:
-    if token.identificador==id_usuario and token.nombre_rs==rs:
-      token.token = nuevo_token
-      token_aux.token = nuevo_token
+    if token.identifier==user_id and token.social_name==rs:
+      token.token = new_token
+      token_aux.token = new_token
       token_aux.put()
 
-  usuario.put()
-  return usuario.key
+  user.put()
+  return user.key
 
-def nuevoUsuarioBeta(email, nombre, apellidos): #FUNCIONA
-  user_beta = UsuarioBeta(email=email, nombre=nombre, apellidos=apellidos)
-  user_beta.put()
+def newUserBeta(email, name, surname): #FUNCIONA
+  beta_user = UserBeta(email=email, name=name, surname=surname)
+  beta_user.put()
 
 def getEmails(): #FUNCIONA
-  users_beta = UsuarioBeta.query().fetch(100)
-  lista_emails = []
-  for user in users_beta:
-    lista_emails.append(user.email)
+  beta_users = BetaUser.query().fetch(100)
+  email_list = []
+  for user in beta_users:
+    email_list.append(user.email)
 
-  return lista_emails
+  return email_list
 
-def usuarioSuscrito(email):
+def subscribedUser(email):
   emails = getEmails()
   if email in emails:
     return True
@@ -623,9 +607,9 @@ def deleteComponent(component_name):
 
   # Now, it's necessary to delete this component from all the users
   comp = Component(component_id=component_name)
-  users = Usuario.query(Usuario.componentes==component).fetch(100)
+  users = User.query(User.components==comp).fetch(100)
 
-  [user.componentes.remove(comp) for user in users]
+  [user.components.remove(comp) for user in users]
 
 def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
@@ -635,23 +619,23 @@ def deleteCredentials(entity_key, rs, id_rs):
   user.tokens.remove(token_aux)
 
 def getUsers():
-  users = Usuario.query()
+  users = User.query()
   users_list = []
   for user in users:
-    groups = user.lista_Grupos; networks = user.lista_Redes
+    groups = user.group_list; networks = user.net_list
     group_names = []; net_names = []
-    [group_names.append(group.nombre_grupo) for group in groups]
-    [net_names.append(net.nombre_rs) for net in networks]
+    [group_names.append(group.group_name) for group in groups]
+    [net_names.append(net.social_name) for net in networks]
     usuario = {"email": user.email,
-              "telefono": user.telefono,
-              "descripcion": user.descripcion,
-              "grupos": nombres_grupos,
-              "redes": nombres_redes}
-    usuario = json.dumps(usuario)
-    users_list.append(usuario)
+              "phone": user.phone,
+              "description": user.description,
+              "groups": group_names,
+              "networks": net_names}
+    user_info = json.dumps(user)
+    users_list.append(user_info)
 
 def searchUserById(user_id):
-  user = Usuario.query(id_usuario=user_id).get()
+  user = User.query(id_usuario=user_id).get()
   if user:
     return True
   else:
