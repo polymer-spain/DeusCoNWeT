@@ -500,7 +500,7 @@ def getComponents(entity_key="", rs="", all_info=False):
             general_comp["rate"] = 0
           res.append(json.dumps(general_comp))
       else:
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user = entity_key.get()
         user_comps = user.componentes
         # Now we get the general info about the components used by the user
         for comp in user_comps:
