@@ -2,16 +2,8 @@
 (function () {
 
   "use strict";
-  /**
-	 * @ngdoc overview
-	 * @name picbit
-	 * @description
-	 * # PicBit
-	 *
-	 * Main module of the application.
-	*/
-  var app = angular
-  .module("picbit", [
+
+  var app = angular.module("picbit", [
     "ngAnimate",
     "ngResource",
     "ngRoute",
@@ -19,6 +11,7 @@
     "ngTouch",
     "ng-polymer-elements"
   ]);
+
   app.config(function ($locationProvider, $routeProvider, $httpProvider) {
     $httpProvider.defaults.withCredentials = true;
     $routeProvider
@@ -54,8 +47,7 @@
       .when("/user/:userId/profile", {
       templateUrl: "views/profile.html",
       controller: "ProfileController",
-/*       Para poder editar el perfil en localhost*/
-    resolve: {
+      resolve: {
         auth: ["$q", "$cookie", function($q, $cookie){
 
           var session = $cookie.get("session");
@@ -85,8 +77,5 @@
       }
     });
 
-/*    $rootScope.$on("$locationChangeStart", function(event, current, previus, eventObj) {
-      console.log(event, current, previus, eventObj);
-    });*/
   }]);
 })(wrap(document));
