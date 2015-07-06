@@ -14,8 +14,7 @@ picbit.directive("ngDrag", function () {
     /* Obligamos a hacer el binding de las variables parametrizadas */
     for (var attr in attrs.$attr) {
       if (attrs.hasOwnProperty(attr)) {
-        attrs.$observe(attr, function() {
-        });
+        attrs.$observe(attr);
       }
     }
 
