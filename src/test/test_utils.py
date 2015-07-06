@@ -4,6 +4,9 @@ import httplib, urllib
 import json
 
 connection = None
+nTest = 0
+nTestOK = 0
+nTestError = 0
 
 class bcolors:
     HEADER = '\033[95m'
@@ -38,8 +41,9 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
 		session: cookie de sesion para adjuntar en la peticion
 		printHeaders: Si es True, se imprimirán los Headers de peticion y respuesta
 	"""
-	global connection
-	print "Realizando petición", method, request_uri
+	global connection, nTest, nTestOK, nTestError
+	nTest += 1
+	print "Realizando petición ", method, " ", request_uri
 	headers = {"User-Agent": "PicBit-App"}
 	session_cookie = None
 
@@ -57,9 +61,11 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
   	
   	# Prints the result of the request
   	if not response.status == status_ok:
+  		nTestError += 1
   		print bcolors.FAIL + "\t!!! STATUS: ERROR (STATUS " + str(response.status) + ")"
   		print "\tDatos de la respuesta: " + responseData + bcolors.ENDC +"\n"
   	else:
+  		nTestOK += 1
   		print bcolors.OKGREEN + "\t>>> STATUS: OK"
   		print "\tRESPUESTA: ", responseData + bcolors.ENDC + "\n"
   	
@@ -68,3 +74,10 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
   			print "\tCookie de la respuesta: " + session_cookie + "\n"
   	
   	return session_cookie
+
+def tests_status():
+	print "==============================="
+	print bcolors.BOLD + "Tests ejecutados: " + str(nTest)
+	print "Test Ok: ", nTestOK
+	print "Tests Erróneos: ", nTestError, bcolors.ENDC
+	print "==============================="

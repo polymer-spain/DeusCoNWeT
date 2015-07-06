@@ -56,12 +56,12 @@ class ComponentListHandler(SessionHandler):
 
         # Lists of posible values for each param
         filter_list = ['general','user']
-        format_list = ['all','reduced']
+        format_list = ['complete','reduced']
         if not cookie_value == None:
             user_id = self.getUserInfo(cookie_value)
             if not user_id == None:
                 if social_network in social_list  or social_network == '' and filter_param in filter_list and list_format in format_list:
-                    format_flag = True if list_format == 'all' else False
+                    format_flag = True if list_format == 'complete' else False
                     user_filter = str(user_id.id()) if filter_param == 'user' else ''
                     # Get the component list, according to the filters given
                     component_list = ndb_pb.getComponents(social_network, user_filter, format_flag)
@@ -171,7 +171,8 @@ class ComponentHandler(SessionHandler):
         if not cookie_value == None:
             user_id = self.getUserInfo(cookie_value)
             if not user_id == None and format == 'reduced' or format == 'complete':
-                component = ndb_pb.getComponente(user_id, component_id, format)
+                format_flag = True if format == 'complete' else False
+                component = ndb_pb.getComponente(user_id, component_id, format_flag)
                 if not component == None:
                     self.response.content_type = 'application/json'
                     self.response.write(component)

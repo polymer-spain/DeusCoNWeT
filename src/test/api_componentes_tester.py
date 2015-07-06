@@ -34,7 +34,7 @@ def main():
 				print "TEST 2: Subir un componente al sistema, proporcionando una URI incorrecta."
 				print "Status esperado: 404 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/badURI',
-			            'component_id': 'twitterTimeline',
+			            'component_id': 'twitter-timeline',
 			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter',
 			            'input_type': 'None',
@@ -46,7 +46,7 @@ def main():
 				print "TEST 3: Subir un componente al sistema, proporcionando un parametro erróneo (red social)."
 				print "Status esperado: 400 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
-			            'component_id': 'twitterTimeline',
+			            'component_id': 'twitter-timeline',
 			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
 			            'social_network': 'RedError' ,
 			            'input_type': 'None',
@@ -58,7 +58,7 @@ def main():
 				print "TEST 4: Subir un componente al sistema, proporcionando menos parámetros de los necesarios."
 				print "Status esperado: 400 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
-			            'component_id': 'twitterTimeline',
+			            'component_id': 'twitter-timeline',
 			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter' ,
 			            'input_type': 'None'
@@ -70,7 +70,7 @@ def main():
 				print "TEST 5: Subir un componente al sistema (componente 1)."
 				print "Status esperado: 201 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
-			            'component_id': 'twitterTimeline',
+			            'component_id': 'twitter-timeline',
 			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter' ,
 			            'input_type': 'None',
@@ -137,14 +137,14 @@ def main():
 				print "TEST 12: Obtener la lista de componentes, proporcionando una cookie de sesion"
 				print "(formato de lista completo)"
 				print "Status esperado: 200"
-				request_uri = basepath + "?format=all"
+				request_uri = basepath + "?format=complete"
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 				# TEST 13
 				print "TEST 13: Obtener la lista de componentes, proporcionando una cookie de sesion"
 				print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista completo)"
 				print "Status esperado: 200"
-				request_uri = basepath + "?social_network=twitter&filter=user&format=all"
+				request_uri = basepath + "?social_network=twitter&filter=user&format=complete"
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 				
 				# TESTs relativos al metodo GET Componente (obtener info de un componente en particular)
@@ -167,12 +167,13 @@ def main():
 				test_utils.make_request("GET", request_uri, params, 200, session1)	
 				
 				# TEST 17
-				print "TEST 17: Obtener información sobre el componente 2"
+				print "TEST 17: Obtener información sobre el componente 2."
+				print "Se especifica formato completo, pero se retornará el formato reducido,"
+				print " ya que el componente está incluido en el conjunto de componentes del usuario"
 				print "Status esperado: 200"
-				request_uri = basepath + '/instagram-timeline'
+				request_uri = basepath + '/instagram-timeline?format=complete'
 				test_utils.make_request("GET", request_uri, params, 200, session1)	
 				
-				# TODO TEST GET Component con formato completo
 				# TODO Cubrir casos de obtención de info completa sobre componentes que no son del usuario
 			
 			elif option == "modificación":
@@ -248,7 +249,7 @@ def main():
 			print "POST-TEST 1: Haciendo petición POST a " + request_uri + " (logout)\n Ignorar el status de este caso"
 			params = urllib.urlencode({})
 			test_utils.make_request("POST", request_uri, params, 200, session1)
-		
+			test_utils.tests_status()
 		else:
 			print "Error: Parámetro incorrecto"
 			print "Uso: python api_componentes_tester.py {subida|obtención|modificación|borrado}"

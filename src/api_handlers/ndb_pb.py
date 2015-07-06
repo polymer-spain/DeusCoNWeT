@@ -197,8 +197,7 @@ def getToken(entity_key, rs):  # FUNCIONA
     res = None
     if not rs in rs_list:
       return 'La red social no esta contemplada'
-    for token in tokens:
-      print "DEBUG: TOKEN ACTUAL ", token.nombre_rs 
+    for token in tokens: 
       if token.nombre_rs == rs:
         res = token
 
@@ -415,29 +414,34 @@ def addListening(entity_key, nombre, events):
   usuario.put()
 
 def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
-  comp = Component.query(Component.component_id == nombre)
+  comp = Component.query(Component.component_id == nombre).get()
   if comp == None:
     res = None
   else:
-    rate = UserRating(UserRating.full_name_id == nombre).get()
-    general_comp = {"component_id": "component_id"}
-    if all_info:
-      user = entity_key.get()
-      user_comp = [cte for cte in user.componentes if comp.component_id == nombre]
-      general_comp["url"] = comp.url
-      general_comp["rs"] = comp.rs
-      general_comp["description"] = comp.description
+    rate = UserRating.query(UserRating.component_id == nombre).get()
+    user = entity_key.get()
+    user_comp = [cte for cte in user.componentes if cte.component_id == nombre]
+    general_comp = {"component_id": nombre}
+    general_comp["url"] = comp.url
+    general_comp["social_network"] = comp.rs
+    general_comp["description"] = comp.description
+    if not rate == None: 
+      general_comp["rate"] = rate.rating_value
+    else:
+      general_comp["rate"] = 0
+    if all_info and not len(user_comp) == 0:
       general_comp["input_type"] = comp.input_type
       general_comp["output_type"] = comp.output_type
-      general_comp["rate"] = rate.rating_value
-      general_comp["x"] = user_comp["x"]
-      general_comp["y"] = user_comp["y"]
-      general_comp["height"] = user_comp["height"]
-      general_comp["width"] = user_comp["width"]
-      general_comp["listening"] = user_comp["listening"]
+      general_comp["x"] = user_comp.x
+      general_comp["y"] = user_comp.y
+      general_comp["height"] = user_comp.height
+      general_comp["width"] = user_comp.width
+      general_comp["listening"] = user_comp.listening
+    res = json.dumps(general_comp)
   return res
 
 def getComponents(rs="", user_id="", all_info=False):
+  print "DEBUG User id recibido", user_id
   res = []
   general_comp = {}
   if not user_id == "":
@@ -452,18 +456,22 @@ def getComponents(rs="", user_id="", all_info=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = comp["id_componente"]
-          general_comp["url"] = info_comp["url"]
-          general_comp["social_net"] = info_comp["rs"]
-          general_comp["description"] = info_comp["description"]
-          general_comp["rate"] = rate["rating_value"]
-          general_comp["x"] = comp["x"]
-          general_comp["y"] = comp["y"]
-          general_comp["input_type"] = info_comp["input_type"]
-          general_comp["output_type"] = info_comp["output_type"]
-          general_comp["listening"] = comp["listening"]
-          general_comp["height"] = comp["height"]
-          general_comp["width"] = comp["width"]
+          general_comp["component_id"] = comp.component_id
+          general_comp["url"] = info_comp.url
+          general_comp["social_network"] = info_comp.rs
+          general_comp["description"] = info_comp.description
+          general_comp["x"] = comp.x
+          general_comp["y"] = comp.y
+          general_comp["input_type"] = info_comp.input_type
+          general_comp["output_type"] = info_comp.output_type
+          general_comp["listening"] = comp.listening
+          general_comp["height"] = comp.height
+          general_comp["width"] = comp.width
+          if not rate == None: 
+            general_comp["rate"] = rate.rating_value
+          else:
+            general_comp["rate"] = 0
+          res = general_comp
           res.append(json.dumps(general_comp))
       else:
         user = Usuario.query(Usuario.id_usuario == user_id).get()
@@ -472,11 +480,14 @@ def getComponents(rs="", user_id="", all_info=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = info_comp["component_id"]
-          general_comp["url"] = info_comp["url"]
-          general_comp["social_net"] = info_comp["rs"]
-          general_comp["description"] = info_comp["description"]
-          general_comp["rate"] = rate["rating_value"]
+          general_comp["component_id"] = info_comp.component_id
+          general_comp["url"] = info_comp.url
+          general_comp["social_network"] = info_comp.rs
+          general_comp["description"] = info_comp.description
+          if not rate == None: 
+            general_comp["rate"] = rate.rating_value
+          else:
+            general_comp["rate"] = 0
           res.append(json.dumps(general_comp))
     else:
       if all_info:
@@ -485,58 +496,73 @@ def getComponents(rs="", user_id="", all_info=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = comp["id_componente"]
-          general_comp["url"] = info_comp["url"]
-          general_comp["social_net"] = info_comp["rs"]
-          general_comp["description"] = info_comp["description"]
-          general_comp["rate"] = rate["rating_value"]
-          general_comp["x"] = comp["x"]
-          general_comp["y"] = comp["y"]
-          general_comp["input_type"] = info_comp["input_type"]
-          general_comp["output_type"] = info_comp["output_type"]
-          general_comp["listening"] = comp["listening"]
-          general_comp["height"] = comp["height"]
-          general_comp["width"] = comp["width"]
+          general_comp["component_id"] = comp.component_id
+          general_comp["url"] = info_comp.url
+          general_comp["social_network"] = info_comp.rs
+          general_comp["description"] = info_comp.description
+          general_comp["x"] = comp.x
+          general_comp["y"] = comp.y
+          general_comp["input_type"] = info_comp.input_type
+          general_comp["output_type"] = info_comp.output_type
+          general_comp["listening"] = comp.listening
+          general_comp["height"] = comp.height
+          general_comp["width"] = comp.width
+          if not rate == None: 
+            general_comp["rate"] = rate.rating_value
+          else:
+            general_comp["rate"] = 0
           res.append(json.dumps(general_comp))
       else:
         user = Usuario.query(Usuario.id_usuario == user_id).get()
+        print "DEBUG: Parametro user_id recibido ", user_id
+        print "DEBUG User: ", user
         user_comps = user.componentes
         # Now we get the general info about the components used by the user
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = info_comp["component_id"]
-          general_comp["url"] = info_comp["url"]
-          general_comp["social_net"] = info_comp["rs"]
-          general_comp["description"] = info_comp["description"]
-          general_comp["rate"] = rate["rating_value"]
+          general_comp["component_id"] = info_comp.component_id
+          general_comp["url"] = info_comp.url
+          general_comp["social_network"] = info_comp.rs
+          general_comp["description"] = info_comp.description
+          if not rate == None: 
+            general_comp["rate"] = rate.rating_value
+          else:
+            general_comp["rate"] = 0
           res.append(json.dumps(general_comp))
   else:
     # Not user id. In this case, the info returned will be always reduced
     if not all_info:
       if rs == "":
-        components = Component.query()
+        components = Component.query().fetch(20)
         for component in components:
           rate = UserRating.query(UserRating.component_id == component.component_id).get()
-          general_comp["id_componente"] = component.component_id
+          general_comp["component_id"] = component.component_id
           general_comp["url"] = component.url
-          general_comp["rs"] = component.rs
+          general_comp["social_network"] = component.rs
           general_comp["description"] = component.description
-          general_comp["input_type"] = component.input_type
-          general_comp["output_type"] = component.output_type
-          general_comp["rate"] = rate.rating_value
+          # general_comp["input_type"] = component.input_type
+          # general_comp["output_type"] = component.output_type
+          if not rate == None: 
+            general_comp["rate"] = rate.rating_value
+          else:
+            general_comp["rate"] = 0
           res.append(json.dumps(general_comp))
       else:
-        components = Component.query(Component.rs == rs)
+        components = Component.query(Component.rs == rs).fetch(20)
+        print "DEBUG: tipo componentes ", type(components)
         for comp in components:
-          rate = UserRating.query(UserRating.component_id == component.component_id).get()
-          general_comp["id_componente"] = comp.component_id
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
+          general_comp["component_id"] = comp.component_id
           general_comp["url"] = comp.url
-          general_comp["rs"] = comp.rs
+          general_comp["social_network"] = comp.rs
           general_comp["description"] = comp.description
-          general_comp["input_type"] = component.input_type
-          general_comp["output_type"] = component.output_type
-          general_comp["rate"] = rate.rating_value
+          # general_comp["input_type"] = component.input_type
+          # general_comp["output_type"] = component.output_type
+          if not rate == None: 
+            general_comp["rate"] = rate.rating_value
+          else:
+            general_comp["rate"] = 0
           res.append(json.dumps(general_comp))
 
     return res
