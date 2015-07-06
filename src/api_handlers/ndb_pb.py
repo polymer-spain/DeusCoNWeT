@@ -313,35 +313,34 @@ def searchGroups(entity_key): #FUNCIONA
       counter += 1
 
   return json.dumps(ans)
-################################################################
 
-def insertaRed(entity_key, nombre, datos=None): # FUNCIONA
-  usuario = entity_key.get()
-  user_social = UsuarioSocial(nombre_rs=nombre)
+def insertNetwork(entity_key, name, data=None): # FUNCIONA
+  user = entity_key.get()
+  user_social = SocialUser(social_name=name)
   if not datos == None:
-    if datos.has_key("siguiendo"):
-      user_social.siguiendo = datos["siguiendo"]
-    if datos.has_key("seguidores"):
-      user_social.seguidores = datos["seguidores"]
-    if datos.has_key("url_seg"):
-      user_social.url_seg = datos["url_seg"]
-    if datos.has_key("url_sig"):
-      user_social.url_sig = datos["url_sig"]
+    if data.has_key("following"):
+      user_social.following = data["following"]
+    if data.has_key("followers"):
+      user_social.followers = data["followers"]
+    if data.has_key("followers_url"):
+      user_social.followers_url = data["followers_url"]
+    if data.has_key("following_url"):
+      user_social.following_url = data["url_sig"]
 
-  usuario.lista_Redes.append(user_social)
-  usuario.put()
+  user.net_list.append(user_social)
+  user.put()
     
 
-def buscaRed(entity_key): # FUNCIONA
-  usuario = entity_key.get()
-  res = {}
-  contador = 1
-  if usuario.lista_Redes:
-    for red in usuario.lista_Redes:
-      res[contador] = red.nombre_rs
-      contador += 1
+def searchNetwork(entity_key): # FUNCIONA
+  user = entity_key.get()
+  ans = {}
+  counter = 1
+  if user.net_list:
+    for net in user.net_list:
+      ans[counter] = net.social_name
+      counter += 1
 
-  return json.dumps(res)
+  return json.dumps(ans)
 
 def insertComponent(name, url="", description="", rs="", input_t="", output=""):
   component = Component.query(Component.component_id == name).get()
@@ -351,58 +350,58 @@ def insertComponent(name, url="", description="", rs="", input_t="", output=""):
     res = True
   else:
     if not url == "":
-      component["url"] = url
+      component.url = url
     if not description == "":
-      component["description"] = description
+      component.description = description
     if not rs == "":
-      component["rs"] = rs
+      component.rs = rs
     if not input_t == "":
-      component["input_type"] = input_t
+      component.input_type = input_t
     if not output == "":
-      component["output_type"] = output
+      component.output_type = output
   comp.put()
 
   return res
 
-def insertarUserComponent(entity_key, nombre, coord_x=0, coord_y=0, height="", width="", listening=""): # FUNCIONA
-  usuario = entity_key.get()
-  componente = ComponenteUsuario(nombre=nombre, x=coord_x, y=coord_y, height=height, width=width, listening=listening)
-  usuario.componentes.append(componente)
+def insertUserComponent(entity_key, name, x=0, y=0, height="", width="", listening=""): # FUNCIONA
+  user = entity_key.get()
+  component = UserComponent(name=name, x=x, y=y, height=height, width=width, listening=listening)
+  user.components.append(component)
 
-  usuario.put()
+  user.put()
 
-def modificarComponente(entity_key, nombre, datos): #FUNCIONA
-  usuario = entity_key.get()
-  comps = usuario.componentes
+def modifyComponent(entity_key, name, data): #FUNCIONA
+  user = entity_key.get()
+  comps = user.components
   for comp in comps:
-    if comp.nombre == nombre:
-      if datos.has_key("x"):
-        comp.x = datos["x"]
-      if datos.has_key("y"):
-        comp.y = datos["y"]
-      if datos.has_key("height"):
-        comp.height = datos["height"]
-      if datos.has_key("width"):
-        comp.width = datos["width"]
-      if datos.has_key("listening"):
-        comp.listening += datos["listening"]
+    if comp.name == name:
+      if data.has_key("x"):
+        comp.x = data["x"]
+      if data.has_key("y"):
+        comp.y = data["y"]
+      if data.has_key("height"):
+        comp.height = data["height"]
+      if data.has_key("width"):
+        comp.width = data["width"]
+      if data.has_key("listening"):
+        comp.listening += data["listening"]
       
-  usuario.put()
+  user.put()
 
-def addListening(entity_key, nombre, events):
-  usuario = entity_key.get()
-  comps = usuario.componentes
+def addListening(entity_key, name, events):
+  user = entity_key.get()
+  comps = user.components
   for comp in comps:
-    if comp.nombre == nombre:
+    if comp.component_id == name:
       for event in events:
         comp.listening += event + ""
 
-  usuario.put()
+  user.put()
 
-def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
-  comp = Component.query(Component.component_id == nombre)
+def getComponente(entity_key, name, all_info=False): # FUNCIONA
+  comp = Component.query(Component.component_id == name)
   if comp == None:
-    res = None
+    ans = None
   else:
     rate = UserRating(UserRating.full_name_id == nombre).get()
     general_comp = {"component_id": "component_id"}
@@ -415,11 +414,11 @@ def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
       general_comp["input_type"] = comp.input_type
       general_comp["output_type"] = comp.output_type
       general_comp["rate"] = rate.rating_value
-      general_comp["x"] = user_comp["x"]
-      general_comp["y"] = user_comp["y"]
-      general_comp["height"] = user_comp["height"]
-      general_comp["width"] = user_comp["width"]
-      general_comp["listening"] = user_comp["listening"]
+      general_comp["x"] = user_comp.x
+      general_comp["y"] = user_comp.y
+      general_comp["height"] = user_comp.height
+      general_comp["width"] = user_comp.width
+      general_comp["listening"] = user_comp.listening
     else:
       general_comp["url"] = comp.url
       general_comp["rs"] = comp.rs
@@ -427,24 +426,24 @@ def getComponente(entity_key, nombre, all_info=False): # FUNCIONA
       general_comp["input_type"] = comp.input_type
       general_comp["output_type"] = comp.output_type
       general_comp["rate"] = rate.rating_value
-    res = json.dumps(general_comp)
-  return res
+    ans = json.dumps(general_comp)
+  return ans
 
-def getComponents(rs="", user_id="", all_info=False):
-  res = []
+def getComponents(entity_key="", rs="", all_info=False):
+  ans = []
   general_comp = {}
-  if not user_id == "":
+  if not entity_key == "":
     # user id specified
     if rs == "":
       # without social network
       if all_info:
         # complete information
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user = entity_key.get()
         # Info for the components used by the specified user
         user_comps = user.componentes
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.id_componente).get()
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          info_comp = Component.query(Component.component_id == comp.component_id).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = comp["id_componente"]
           general_comp["url"] = info_comp["url"]
           general_comp["social_net"] = info_comp["rs"]
@@ -457,27 +456,27 @@ def getComponents(rs="", user_id="", all_info=False):
           general_comp["listening"] = comp["listening"]
           general_comp["height"] = comp["height"]
           general_comp["width"] = comp["width"]
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
       else:
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user = entity_key.get()
         user_comps = user.componentes
         # Now we get the general info about the components used by the user
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.id_componente).get()
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          info_comp = Component.query(Component.component_id == comp.component_id).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = info_comp["component_id"]
           general_comp["url"] = info_comp["url"]
           general_comp["social_net"] = info_comp["rs"]
           general_comp["description"] = info_comp["description"]
           general_comp["rate"] = rate["rating_value"]
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
     else:
       if all_info:
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user = entity_key.get()
         user_comps = user.componentes
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.id_componente).filter(Component.rs == rs).get()
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = comp["id_componente"]
           general_comp["url"] = info_comp["url"]
           general_comp["social_net"] = info_comp["rs"]
@@ -490,27 +489,27 @@ def getComponents(rs="", user_id="", all_info=False):
           general_comp["listening"] = comp["listening"]
           general_comp["height"] = comp["height"]
           general_comp["width"] = comp["width"]
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
       else:
-        user = Usuario.query(Usuario.id_usuario == user_id).get()
+        user = entity_key.get()
         user_comps = user.componentes
         # Now we get the general info about the components used by the user
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.id_componente).filter(Component.rs == rs).get()
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = info_comp["component_id"]
           general_comp["url"] = info_comp["url"]
           general_comp["social_net"] = info_comp["rs"]
           general_comp["description"] = info_comp["description"]
           general_comp["rate"] = rate["rating_value"]
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
   else:
     # Not user id. In this case, the info returned will be always reduced
     if not all_info:
       if rs == "":
         components = Component.query()
         for component in components:
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["id_componente"] = component.id_componente
           general_comp["url"] = component.url
           general_comp["rs"] = component.rs
@@ -518,11 +517,11 @@ def getComponents(rs="", user_id="", all_info=False):
           general_comp["input_type"] = component.input_type
           general_comp["output_type"] = component.output_type
           general_comp["rate"] = rate.rating_value
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
       else:
         components = Component.query(Component.rs == rs)
         for comp in components:
-          rate = UserRating.query(UserRating.component_id == comp.id_componente).get()
+          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["id_componente"] = comp.id_componente
           general_comp["url"] = comp.url
           general_comp["rs"] = comp.rs
@@ -530,45 +529,44 @@ def getComponents(rs="", user_id="", all_info=False):
           general_comp["input_type"] = component.input_type
           general_comp["output_type"] = component.output_type
           general_comp["rate"] = rate.rating_value
-          res.append(json.dumps(general_comp))
+          ans.append(json.dumps(general_comp))
 
-    return res
+    return ans
 
-def buscaToken(id_usuario, rs): #FUNCIONA
-  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
+def searchToken(user_id, rs): #FUNCIONA
   tokens = Token.query()
-  token = tokens.filter(Token.identificador==id_usuario).filter(Token.nombre_rs==rs).get() 
+  token = tokens.filter(Token.identifier==user_id).filter(Token.social_name==rs).get() 
   if token:
     return token.token
   else:
     return None
 
-def modificaToken(id_usuario, nuevo_token, rs): #FUNCIONA
-  token_aux = Token(identificador=id_usuario, nombre_rs=rs)
-  usuario = Usuario.query(Usuario.tokens==token_aux).get()
-  tokens = usuario.tokens
+def modifyToken(user_id, new_token, rs): #FUNCIONA
+  token_aux = Token(identifier=user_id, social_name=rs)
+  user = User.query(User.tokens==token_aux).get()
+  tokens = user.tokens
   for token in tokens:
-    if token.identificador==id_usuario and token.nombre_rs==rs:
-      token.token = nuevo_token
-      token_aux.token = nuevo_token
+    if token.identifier==user_id and token.social_name==rs:
+      token.token = new_token
+      token_aux.token = new_token
       token_aux.put()
 
-  usuario.put()
-  return usuario.key
+  user.put()
+  return user.key
 
-def nuevoUsuarioBeta(email, nombre, apellidos): #FUNCIONA
-  user_beta = UsuarioBeta(email=email, nombre=nombre, apellidos=apellidos)
-  user_beta.put()
+def newUserBeta(email, name, surname): #FUNCIONA
+  beta_user = UserBeta(email=email, name=name, surname=surname)
+  beta_user.put()
 
 def getEmails(): #FUNCIONA
-  users_beta = UsuarioBeta.query().fetch(100)
-  lista_emails = []
-  for user in users_beta:
-    lista_emails.append(user.email)
+  beta_users = BetaUser.query().fetch(100)
+  email_list = []
+  for user in beta_users:
+    email_list.append(user.email)
 
-  return lista_emails
+  return email_list
 
-def usuarioSuscrito(email):
+def subscribedUser(email):
   emails = getEmails()
   if email in emails:
     return True
@@ -590,9 +588,9 @@ def deleteComponent(component_name):
 
   # Now, it's necessary to delete this component from all the users
   comp = Component(component_id=component_name)
-  users = Usuario.query(Usuario.componentes==component).fetch(100)
+  users = User.query(User.components==comp).fetch(100)
 
-  [user.componentes.remove(comp) for user in users]
+  [user.components.remove(comp) for user in users]
 
 def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
@@ -602,23 +600,23 @@ def deleteCredentials(entity_key, rs, id_rs):
   user.tokens.remove(token_aux)
 
 def getUsers():
-  users = Usuario.query()
+  users = User.query()
   users_list = []
   for user in users:
-    groups = user.lista_Grupos; networks = user.lista_Redes
+    groups = user.group_list; networks = user.net_list
     group_names = []; net_names = []
-    [group_names.append(group.nombre_grupo) for group in groups]
-    [net_names.append(net.nombre_rs) for net in networks]
+    [group_names.append(group.group_name) for group in groups]
+    [net_names.append(net.social_name) for net in networks]
     usuario = {"email": user.email,
-              "telefono": user.telefono,
-              "descripcion": user.descripcion,
-              "grupos": nombres_grupos,
-              "redes": nombres_redes}
-    usuario = json.dumps(usuario)
-    users_list.append(usuario)
+              "phone": user.phone,
+              "description": user.description,
+              "groups": group_names,
+              "networks": net_names}
+    user_info = json.dumps(user)
+    users_list.append(user_info)
 
 def searchUserById(user_id):
-  user = Usuario.query(id_usuario=user_id).get()
+  user = User.query(id_usuario=user_id).get()
   if user:
     return True
   else:
