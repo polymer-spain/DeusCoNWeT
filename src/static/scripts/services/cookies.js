@@ -1,5 +1,5 @@
 /*global angular, document*/
-angular.module("pickbit").service("$cookie", function () {
+angular.module("picbit").service("$cookie", function () {
   "use strict";
   this.get = function (name) {
     var value = "; " + document.cookie;
