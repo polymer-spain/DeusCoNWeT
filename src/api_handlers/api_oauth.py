@@ -163,18 +163,20 @@ class OauthCredentialsHandler(SessionHandler):
             if not user == None:
                 user_credentials = ndb_pb.getToken(user, social_network)
                 if not user_credentials == None:
-                    if user_credentials.identificador == token_id: 
+                    print "DEBUG Token: ", user_credentials
+                    if user_credentials["user_id"] == user: 
                         response = \
-                            {'token_id': user_credentials.identificador,
-                            'access_token': user_credentials.token}
+                            {'user_id': user_credentials["user_id"],
+                            'access_token': user_credentials["token"]}
                         self.response.content_type = 'application/json'
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
                     else:
-                        response = {'error': 'You don\'t have permission to access this resource.'}            
+                        response = \
+                            {'user_id': user_credentials["user_id"]}
                         self.response.content_type = 'application/json'
                         self.response.write(json.dumps(response))
-                        self.response.set_status(401)
+                        self.response.set_status(200)
                 else:
                     response = \
                         {'error': 'The active user does not have a pair of token_id' \

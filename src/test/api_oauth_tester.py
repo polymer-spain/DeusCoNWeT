@@ -299,8 +299,8 @@ def main():
 		print "Uso: python api_oauth_tester.py {googleplus|stackoverflow|facebook|instagram|linkedin|twitter} [borrado]"
 
 	# Cerramos conexión
+	test_utils.tests_status()
 	test_utils.closeConnection()
-
 
 if __name__ == "__main__":
     main()
