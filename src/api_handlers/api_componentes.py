@@ -172,7 +172,7 @@ class ComponentHandler(SessionHandler):
             user_id = self.getUserInfo(cookie_value)
             if not user_id == None and format == 'reduced' or format == 'complete':
                 format_flag = True if format == 'complete' else False
-                component = ndb_pb.getComponente(user_id, component_id, format_flag)
+                component = ndb_pb.getComponent(user_id, component_id, format_flag)
                 if not component == None:
                     self.response.content_type = 'application/json'
                     self.response.write(component)
@@ -231,7 +231,7 @@ class ComponentHandler(SessionHandler):
 
                 # Update the info about the component
                 if not len(data) == 0:
-                    ndb_pb.modificarComponente(user_id, component_id, data)
+                    ndb_pb.modifyComponent(user_id, component_id, data)
                 
                 # Update the component rating
                 if not rating == 'none':

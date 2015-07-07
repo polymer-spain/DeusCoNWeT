@@ -30,7 +30,7 @@ from google.appengine.ext import ndb
 from google.appengine.api import memcache
 import time
 import ndb_pb
-from ndb_pb import Token, Usuario
+from ndb_pb import Token, User
 
 # Imports for TwitterHandler
 import oauth
@@ -93,12 +93,12 @@ class OauthLoginHandler(SessionHandler):
             print "Token id recibido ", token_id
 
             # Checks if the username was stored previously
-            stored_credentials = ndb_pb.buscaToken(token_id,
+            stored_credentials = ndb_pb.searchToken(token_id,
                     social_network)
             if stored_credentials == None:
                 print stored_credentials
                 # Generate a valid username for a new user
-                user_id = ndb_pb.insertaUsuario(social_network,
+                user_id = ndb_pb.insertUser(social_network,
                         token_id, access_token)
                 session_id = self.login(user_id)
 
@@ -111,7 +111,7 @@ class OauthLoginHandler(SessionHandler):
             else:
                 print stored_credentials
                 # We store the new set of credentials
-                user_id = ndb_pb.modificaToken(token_id,
+                user_id = ndb_pb.modifyToken(token_id,
                         access_token, social_network)
                 session_id = self.login(user_id)
 
@@ -239,19 +239,19 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     token_id = self.request.POST['token_id']
 
                     # Checks if the username was stored previously
-                    stored_credentials = ndb_pb.buscaToken(token_id,
+                    stored_credentials = ndb_pb.searchToken(token_id,
                             social_network)
                     print "Stored credentials ", stored_credentials
                     if stored_credentials == None:
 
                       # Stores the credentials in a Token Entity
-                        ndb_pb.insertaUsuario(social_network, token_id,
+                        ndb_pb.insertUser(social_network, token_id,
                                 access_token)
                         self.response.set_status(201)
                     else:
 
                         # We store the new set of credentials
-                        user_id = ndb_pb.modificaToken(token_id, access_token,
+                        user_id = ndb_pb.modifyToken(token_id, access_token,
                                 social_network)
                         self.response.set_status(200)
                 except KeyError:
@@ -372,18 +372,18 @@ class GitHubContainerHandler(OAuthCredentialsContainerHandler):
         print aux
 
         # Buscamos el par id usuario/token autenticado en la base
-        stored_credentials = ndb_pb.buscaToken(str(user_details['id'
+        stored_credentials = ndb_pb.searchToken(str(user_details['id'
                 ]), 'github')
         if stored_credentials == None:
 
             # Almacena las credenciales en una entidad Token
-            user_credentials = ndb_pb.insertaUsuario('github',
+            user_credentials = ndb_pb.insertUser('github',
                     str(user_details['id']), access_token)
             self.response.set_status(201)
         else:
 
             # Almacenamos el access token recibido
-            user_id = ndb_pb.modificaToken(str(user_details['id']),
+            user_id = ndb_pb.modifyToken(str(user_details['id']),
                     access_token, 'github')
             self.response.set_status(200)
 
@@ -556,19 +556,19 @@ class TwitterAuthorizationHandler(webapp2.RequestHandler):
                 auth_verifier=oauth_verifier)
 
         # Query for the stored user
-        stored_user = ndb_pb.buscaToken(user_info['username'],
+        stored_user = ndb_pb.searchToken(user_info['username'],
                 'twitter')
         if stored_user == None:
 
             # We store the user id and token into a Token Entity
-            user_id = ndb_pb.insertaUsuario('twitter',
+            user_id = ndb_pb.insertUser('twitter',
                     user_info['username'], user_info['token'])
             response_status = 201
             self.response.set_status(response_status)
         else:
 
             # We store the new user's access_token
-            user_id = ndb_pb.modificaToken(user_info['username'],
+            user_id = ndb_pb.modifyToken(user_info['username'],
                     user_info['token'], 'twitter')
             response_status = 200
             self.response.set_status(response_status)

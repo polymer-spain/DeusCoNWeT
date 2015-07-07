@@ -165,10 +165,10 @@ class User(ndb.Model):
   website = ndb.StringProperty()
   image = ndb.StringProperty()
   tokens = ndb.StructuredProperty(Token, repeated=True)
-  net_list = ndb.StructuredProperty(UsuarioSocial, repeated=True)
-  group_list = ndb.StructuredProperty(Grupo, repeated=True)
+  net_list = ndb.StructuredProperty(SocialUser, repeated=True)
+  group_list = ndb.StructuredProperty(Group, repeated=True)
   rates = ndb.StructuredProperty(UserRating, repeated=True)
-  components = ndb.StructuredProperty(ComponenteUsuario, repeated=True)
+  components = ndb.StructuredProperty(UserComponent, repeated=True)
 
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
@@ -279,7 +279,8 @@ def insertGroup(entity_key, name, data=None): #FUNCIONA
   if not data == None:
     if data.has_key("description"): group.description = data["description"]
     if data.has_key("usuarios"):
-      [users += user + ", " for user in datos["usuarios"]]
+      for user in datos["usuarios"]:
+        users = users + user + ", "
 
   group.user_list = users
   user.group_list.append(group)
@@ -359,7 +360,7 @@ def insertComponent(name, url="", description="", rs="", input_t="", output=""):
       component.input_type = input_t
     if not output == "":
       component.output_type = output
-  comp.put()
+  component.put()
 
   return res
 
