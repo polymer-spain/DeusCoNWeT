@@ -129,9 +129,9 @@ def main():
 				# TEST 11
 				print "TEST 11: Obtener la lista de componentes, proporcionando una cookie de sesion"
 				print "(parámetro de filtrado por usuario)"
-				print "Status esperado: 200"
+				print "Status esperado: 204"
 				request_uri = basepath + "?filter=user"
-				test_utils.make_request("GET", request_uri, params, 200, session1)
+				test_utils.make_request("GET", request_uri, params, 204, session1)
 
 				# TEST 12
 				print "TEST 12: Obtener la lista de componentes, proporcionando una cookie de sesion"

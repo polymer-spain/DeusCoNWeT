@@ -62,9 +62,10 @@ class ComponentListHandler(SessionHandler):
             if not user_id == None:
                 if social_network in social_list  or social_network == '' and filter_param in filter_list and list_format in format_list:
                     format_flag = True if list_format == 'complete' else False
-                    user_filter = str(user_id.id()) if filter_param == 'user' else ''
+                    user_filter = True if filter_param == 'user' else False
                     # Get the component list, according to the filters given
-                    component_list = ndb_pb.getComponents(social_network, user_filter, format_flag)
+                    component_list = ndb_pb.getComponents(user_id, social_network, format_flag, user_filter)
+                    print "DEBUG: tipo component_list ", type(component_list)
                     if not len(component_list) == 0:
                         self.response.content_type = 'application/json'
                         self.response.write(component_list)
