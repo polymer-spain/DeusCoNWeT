@@ -602,15 +602,21 @@ def addRate(entity_key, component_id, value):
 def deleteUser(entity_key):
   entity_key.delete()
 
-def deleteComponent(component_name): 
+def deleteComponent(component_name):
+  status = False
   component = Component.query(Component.component_id==component_name).get()
-  component.key.delete()
+  if not component == None:
+    status = True
 
-  # Now, it's necessary to delete this component from all the users
-  comp = Component(component_id=component_name)
-  users = User.query(User.components==comp).fetch(100)
+    # We delete the component entity from the datastore
+    component.key.delete()
 
-  [user.components.remove(comp) for user in users]
+    # Now, it's necessary to delete this component from all the users
+    comp = UserComponent(component_id=component_name)
+    users = User.query(User.components==comp).fetch(100)
+
+    [user.components.remove(comp) for user in users]
+  return status
 
 def deleteCredentials(entity_key, rs, id_rs):
   token_aux = Token(identificador=id_rs, nombre_rs=rs)
@@ -646,7 +652,7 @@ def getGitHubAPIKey():
   githubKey = GitHubAPIKey.query().get()
   return githubKey.token
 
-  
+
 # class MainPage(webapp2.RequestHandler):
 #   def get(self):
 #     self.response.headers['Content-Type'] = 'text/plain'

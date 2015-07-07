@@ -8,10 +8,10 @@ import test_utils
 def main():
 	if len(sys.argv) == 2:
 		option = sys.argv[1]
-		test_utils.openConnection()
 		basepath = "/api/componentes"
 		option_list = ['subida', 'obtención', 'modificación', 'borrado']
 		if option in option_list:
+			test_utils.openConnection()
 			# PRE-TEST 1: Hacer login en el sistema mediante googleplus
 			request_uri = "/api/oauth/googleplus/login"
 			print "\nPRETEST 1: Haciendo petición POST a " + request_uri + " (login)\n Ignorar el status de este caso"
@@ -131,7 +131,7 @@ def main():
 				print "(parámetro de filtrado por usuario)"
 				print "Status esperado: 204"
 				request_uri = basepath + "?filter=user"
-				test_utils.make_request("GET", request_uri, params, 204, session1)
+				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 				# TEST 12
 				print "TEST 12: Obtener la lista de componentes, proporcionando una cookie de sesion"
@@ -223,27 +223,34 @@ def main():
 				print "TEST 24: Obtención de la lista de componentes del sistema, para verificar "
 				print "que se ha modificado la información solicitada en las anteriores pruebas"
 				print "Status esperado: 200"
-				request_uri = basepath
+				request_uri = basepath + "?filter=user&format=complete"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 				
 			elif option == 'borrado':
 				params = urllib.urlencode({})
 				# TESTs relativos al método DELETE Componente 
+				
 				# TEST 25
-				print "TEST 25: Borrar componente 1 del sistema"
+				print "TEST 25: Borrar componente no existente en el sistema "
+				print "Status esperado: 404 "
+				request_uri = basepath + '/componenteERROR'
+				test_utils.make_request("DELETE", request_uri, params, 404, None)	
+
+				# TEST 26
+				print "TEST 26: Borrar componente 1 del sistema"
 				print "Status esperado: 204 "
 				request_uri = basepath + '/twitter-timeline'
 				test_utils.make_request("DELETE", request_uri, params, 204, None)
 				
-				# TEST 26
-				print "TEST 26: Borrar componente 1 del sistema (el componente se había borrado previamente) "
+				# TEST 27
+				print "TEST 27: Borrar componente 1 del sistema (el componente se había borrado previamente) "
 				print "Status esperado: 404 "
 				# request_uri = basepath + '/twitter-timeline'
 				test_utils.make_request("DELETE", request_uri, params, 404, None)	
 
-				# TEST 27
-				print "TEST 27: Borrar componente 2 del sistema"
+				# TEST 28
+				print "TEST 28: Borrar componente 2 del sistema"
 				print "Status esperado: 204 "
 				request_uri = basepath + '/instagram-timeline'
 				test_utils.make_request("DELETE", request_uri, params, 204, None)
@@ -255,6 +262,7 @@ def main():
 			params = urllib.urlencode({})
 			test_utils.make_request("POST", request_uri, params, 200, session1)
 			test_utils.tests_status()
+			test_utils.closeConnection()
 		else:
 			print "Error: Parámetro incorrecto"
 			print "Uso: python api_componentes_tester.py {subida|obtención|modificación|borrado}"
@@ -264,6 +272,5 @@ def main():
 		print "Uso: python api_componentes_tester.py {subida|obtención|modificación|borrado}"
 
 
-	test_utils.closeConnection()
 if __name__ == "__main__":
 	main()

@@ -268,5 +268,15 @@ class ComponentHandler(SessionHandler):
         component_id -- path url directory corresponding to the component id
         """
         # Deletes the component in the datastore
-        ndb_pb.deleteComponent(component_id)
-        self.response.set_status(204)
+        status = ndb_pb.deleteComponent(component_id)
+        if status:
+            response = {'status': 'Component deleted succesfully'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(204)
+        else:
+            response = {'error': 'Component not found in the system'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(404)
+
