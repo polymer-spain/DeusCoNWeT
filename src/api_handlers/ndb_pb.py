@@ -567,8 +567,7 @@ def modifyToken(user_id, new_token, rs): #FUNCIONA
   for token in tokens:
     if token.identifier==user_id and token.social_name==rs:
       token.token = new_token
-      token_aux.token = new_token
-      token_aux.put()
+      token.put()
 
   user.put()
   return user.key
