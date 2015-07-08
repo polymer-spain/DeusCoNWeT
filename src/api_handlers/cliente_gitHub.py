@@ -17,21 +17,22 @@
 
 # -*- coding: utf8 -*-
 import sys
-import httplib, urllib
-import json
+import httplib, urllib, json
+import ndb_pb
 
 basePath = "" # Path for the repo (:user/:repo)
 connection = None
 params = urllib.urlencode({})
 
 headers = {"Accept": "application/vnd.github.v3+json",
-"User-Agent": "PicBit-App",
-"Authorization": "token TOKEN"}
+"User-Agent": "PicBit-App"}
 
 # Opens the connection to the GitHub API endpoint
 def openConnection(basePathRepo):
-  global basePath, repoId, connection
+  global basePath, repoId, connection, headers
   basePath = basePathRepo
+  githubToken = ndb_pb.getGitHubAPIKey()
+  headers["Authorization"] = "token " + githubToken
   connection = httplib.HTTPSConnection("api.github.com")
   
 # Closes the connection to the GitHub API endpoint

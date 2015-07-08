@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-""" Copyright 2015 Luis Ruiz Ruiz
+""" Copyright 2015 Luis Ruiz Ruizf
   Copyright 2015 Ana Isabel Lopera Martínez
   Copyright 2015 Miguel Ortega Moreno
   Copyright 2015 Juan Francisco Salamanca Carmona
@@ -119,7 +119,7 @@ class UserHandler(SessionHandler):
           if values.has_key("rate"):
             update_data["rate"] = values.get("rate")
         
-          user_info = ndb_pb.actualizaUsuario(user_key, update_data)
+          user_info = ndb_pb.updateUser(user_key, update_data)
 
           self.response.content_type = 'application/json'
           self.response.write({"success": "The update has been successfully executed"})

@@ -62,9 +62,10 @@ class ComponentListHandler(SessionHandler):
             if not user_id == None:
                 if social_network in social_list  or social_network == '' and filter_param in filter_list and list_format in format_list:
                     format_flag = True if list_format == 'complete' else False
-                    user_filter = str(user_id.id()) if filter_param == 'user' else ''
+                    user_filter = True if filter_param == 'user' else False
                     # Get the component list, according to the filters given
-                    component_list = ndb_pb.getComponents(social_network, user_filter, format_flag)
+                    component_list = ndb_pb.getComponents(user_id, social_network, format_flag, user_filter)
+                    print "DEBUG: tipo component_list ", type(component_list)
                     if not len(component_list) == 0:
                         self.response.content_type = 'application/json'
                         self.response.write(component_list)
@@ -172,7 +173,7 @@ class ComponentHandler(SessionHandler):
             user_id = self.getUserInfo(cookie_value)
             if not user_id == None and format == 'reduced' or format == 'complete':
                 format_flag = True if format == 'complete' else False
-                component = ndb_pb.getComponente(user_id, component_id, format_flag)
+                component = ndb_pb.getComponent(user_id, component_id, format_flag)
                 if not component == None:
                     self.response.content_type = 'application/json'
                     self.response.write(component)
@@ -231,7 +232,7 @@ class ComponentHandler(SessionHandler):
 
                 # Update the info about the component
                 if not len(data) == 0:
-                    ndb_pb.modificarComponente(user_id, component_id, data)
+                    ndb_pb.modifyComponent(user_id, component_id, data)
                 
                 # Update the component rating
                 if not rating == 'none':
@@ -267,5 +268,15 @@ class ComponentHandler(SessionHandler):
         component_id -- path url directory corresponding to the component id
         """
         # Deletes the component in the datastore
-        ndb_pb.deleteComponent(component_id)
-        self.response.set_status(204)
+        status = ndb_pb.deleteComponent(component_id)
+        if status:
+            response = {'status': 'Component deleted succesfully'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(204)
+        else:
+            response = {'error': 'Component not found in the system'}
+            self.response.content_type = 'application/json'
+            self.response.write(json.dumps(response))
+            self.response.set_status(404)
+
