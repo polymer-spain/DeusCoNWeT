@@ -177,17 +177,10 @@ class GitHubAPIKey(ndb.Model):
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
 #####################################################################################
 
-def getToken(entity_key, social_net):  # FUNCIONA
-    user = entity_key.get()
-    tokens = user.tokens
-    ans = None
-    if not social_net in social_list:
-      return 'The social network is not implemented'
-    for token in tokens:
-      if token.social_name == social_net:
-        ans = token.token
-
-    return {"token": ans,
+def getToken(id_rs, social_net):  # FUNCIONA
+    token = Token.query(Token.identifier == id_rs).filter(Token.social_name == social_name).get()
+    user = User.query(Usuario.tokens == token).get()
+    return {"token": token.token,
             "user_id": user.user_id}
 
 
