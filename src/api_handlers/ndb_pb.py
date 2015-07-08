@@ -184,7 +184,6 @@ def getToken(entity_key, social_net):  # FUNCIONA
     if not social_net in social_list:
       return 'The social network is not implemented'
     for token in tokens:
-      print "DEBUG: TOKEN ACTUAL ", token.social_name 
       if token.social_name == social_net:
         ans = token.token
 
@@ -223,6 +222,8 @@ def insertUser(rs, ide, token, data=None): #FUNCIONA
   token.put()
   user.tokens.append(token)
   if not data == None:
+    if data.has_key("user_id"):
+      user.user_id = data["user_id"]
     if data.has_key("email"):
       user.email = data["email"]
     if data.has_key("private_email"):

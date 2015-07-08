@@ -23,27 +23,32 @@ def main():
 		session2 = None
 		token_id1 = "id" + social_network
 		token_id2 = "id" + social_network + "2"
+		user_id1 = "user" + social_network + "1"
+		user_id2 = "user" + social_network + "2"
 		if option == None:
 			#Logins
 			# TEST 1
 			request_uri = basePath + "/login"
 			print "\nTEST 1: Haciendo petición POST a " + request_uri + " (login)\n Status esperado: 201"
 			access_token = social_network + "TEST"
-			params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
+			params = urllib.urlencode({'token_id': token_id1, 'access_token': "test 1",
+				'user_identifier': user_id1})
 			session1 = test_utils.make_request("POST", request_uri, params, 201, None)
 
 			# TEST 2
 			request_uri = basePath + "/login"
 			print "\nTEST 2: Haciendo petición POST a " + request_uri + " (login de sesion iniciada anteriormente)\n Status esperado: 200"
 			access_token = social_network + "ModifyTEST"
-			params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
+			params = urllib.urlencode({'token_id': token_id1, 'access_token': "test 2",
+				'user_identifier': user_id1})
 			test_utils.make_request("POST", request_uri, params,200, None)	
 
 			# TEST 3
 			request_uri = basePath + "/login"
 			print "\nTEST 3: Haciendo petición POST a " + request_uri + " (login)\n Status esperado: 201"
 			access_token = social_network + "TEST"
-			params = urllib.urlencode({'token_id': token_id2, 'access_token': access_token})
+			params = urllib.urlencode({'token_id': token_id2, 'access_token': "test 3",
+				'user_identifier': user_id2})
 			test_utils.make_request("POST", request_uri, params,201, None)
 
 			# GETs de credenciales
@@ -52,9 +57,9 @@ def main():
 			request_uri = basePath + "/credenciales/" + token_id2
 			print "\nTEST 4: Haciendo petición GET a " + request_uri 
 			print " (obtener credenciales con cookie de sesion, a una credencial que no es propiedad del usuario)"
-			print "Status esperado: 401"
+			print "Status esperado: 200"
 			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 401, session1)
+			test_utils.make_request("GET", request_uri, params, 200, session1)
 
 			# Obtener credenciales con cookie
 			# TEST 5	
@@ -90,7 +95,8 @@ def main():
 			request_uri = basePath + "/login"
 			print "\nTEST 9: Haciendo petición POST a " + request_uri + " (prueba de nueva sesión y actualizar credenciales)\n Status esperado: 200"
 			access_token = social_network + "Modify2TEST"
-			params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token})	
+			params = urllib.urlencode({'token_id': token_id1, 'access_token':"TEST 9",
+				'user_identifier': user_id1})	
 			test_utils.make_request("POST", request_uri, params, 200, None)
 
 			# TEST 10
@@ -114,8 +120,18 @@ def main():
 			print "\nPRE-TEST 1: Haciendo petición POST a " + request_uri
 			print " (Login en el sistema de usuario de prueba 1)\n Status esperado: 200"
 			access_token = social_network + "tokenTODELETE1"
-			params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token})	
+			params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token, 
+				"user_identifier": user_id1})	
 			session1 = test_utils.make_request("POST", request_uri, params, 200, None)
+
+			# PRE-TEST 2: Login en el sistema de usuario de prueba 2
+			request_uri = basePath + "/login"
+			print "\nPRE-TEST 2: Haciendo petición POST a " + request_uri
+			print " (Login en el sistema de usuario de prueba 1)\n Status esperado: 200"
+			access_token = social_network + "tokenTODELETE2"
+			params = urllib.urlencode({'token_id': token_id2, 'access_token':access_token, 
+				"user_identifier": user_id2})	
+			session2 = test_utils.make_request("POST", request_uri, params, 200, None)
 
 			# TEST 12
 			# Borrar credenciales de usuarios de prueba2
@@ -123,15 +139,7 @@ def main():
 			print "\nTEST 12: Haciendo petición DELETE a " + request_uri + " (Borrar creedenciales sin cookie de sesion)"
 			print " Status esperado: 401"
 			params = urllib.urlencode({})
-			test_utils.make_request("DELETE", request_uri, params, 401, None)
-			
-			# PRE-TEST 2: Login en el sistema de usuario de prueba 2
-			request_uri = basePath + "/login"
-			print "\nPRE-TEST 2: Haciendo petición POST a " + request_uri
-			print " (Login en el sistema de usuario de prueba 1)\n Status esperado: 200"
-			access_token = social_network + "tokenTODELETE2"
-			params = urllib.urlencode({'token_id': token_id2, 'access_token':access_token})	
-			session2 = test_utils.make_request("POST", request_uri, params, 200, None)
+			test_utils.make_request("DELETE", request_uri, params, 401, None)			
 
 			# TEST 13
 			# Borrar credenciales de usuario de prueba1 (Estando logeado)
@@ -141,30 +149,30 @@ def main():
 			params = urllib.urlencode({})
 			test_utils.make_request("DELETE", request_uri, params, 204, session1)
 			
-			# # TEST 14
-			# # Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
-			# request_uri = basePath + "/" + token_id2
-			# print "\nTEST 14: Haciendo petición DELETE a " + request_uri
-			# print " (Borrado de credenciales estando logeado, pero sin ser propietario de las mismas)"
-			# print " Status esperado: 401"
-			# params = urllib.urlencode({})
-			# make_request("DELETE", request_uri, params, 401, session1)
+			# TEST 14
+			# Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
+			request_uri = basePath + "/" + token_id2
+			print "\nTEST 14: Haciendo petición DELETE a " + request_uri
+			print " (Borrado de credenciales estando logeado, pero sin ser propietario de las mismas)"
+			print " Status esperado: 401"
+			params = urllib.urlencode({})
+			make_request("DELETE", request_uri, params, 401, session1)
 
-			# # TEST 15
-			# # Borrar credenciales de usuario de prueba2 (Estando logeado)
-			# request_uri = basePath + "/" + token_id2
-			# print "\nTEST 15: Haciendo petición DELETE a " + request_uri + " (Borrado de credenciales estando logeado)"
-			# print " Status esperado: 204"
-			# params = urllib.urlencode({})
-			# make_request("DELETE", request_uri, params, 204, session2)
+			# TEST 15
+			# Borrar credenciales de usuario de prueba2 (Estando logeado)
+			request_uri = basePath + "/" + token_id2
+			print "\nTEST 15: Haciendo petición DELETE a " + request_uri + " (Borrado de credenciales estando logeado)"
+			print " Status esperado: 204"
+			params = urllib.urlencode({})
+			make_request("DELETE", request_uri, params, 204, session2)
 
-			# # TEST 16
-			# # Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
-			# request_uri = basePath + "/" + token_id2
-			# print "\nTEST 16: Haciendo petición DELETE a " + request_uri + " (Intento de borado por segunda vez)"
-			# print " Status esperado: 404"
-			# params = urllib.urlencode({})
-			# make_request("DELETE", request_uri, params, 404, session2)
+			# TEST 16
+			# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
+			request_uri = basePath + "/" + token_id2
+			print "\nTEST 16: Haciendo petición DELETE a " + request_uri + " (Intento de borado por segunda vez)"
+			print " Status esperado: 404"
+			params = urllib.urlencode({})
+			make_request("DELETE", request_uri, params, 404, session2)
 
 			# POST-TEST 1: Realizar logout en el sistema (usuario 1)
 			request_uri = basePath + "/logout"
@@ -194,7 +202,8 @@ def main():
 		print "\nPRETEST 1: Haciendo petición POST a " + request_uri + " (login)\n Ignorar el status de este caso"
 		token_id_login = "idgoogle"
 		access_token_login = "googleTEST"
-		params = urllib.urlencode({'token_id': token_id_login, 'access_token':access_token_login})
+		params = urllib.urlencode({'token_id': token_id_login, 'access_token':access_token_login, 
+			"user_identifier": user_id1})
 		session1 = test_utils.make_request("POST", request_uri, params, 201, None)
 
 		request_uri = "/api/oauth/googleplus/login"

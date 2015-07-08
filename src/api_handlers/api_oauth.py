@@ -89,42 +89,38 @@ class OauthLoginHandler(SessionHandler):
         try:
             access_token = self.request.POST['access_token']
             token_id = self.request.POST['token_id']
-            print "Access token recibido ", access_token
-            print "Token id recibido ", token_id
+            user_identifier = self.request.POST['user_identifier']
 
             # Checks if the username was stored previously
             stored_credentials = ndb_pb.searchToken(token_id,
                     social_network)
             if stored_credentials == None:
-                print stored_credentials
+                data = {}
+                data['user_id'] = user_identifier
                 # Generate a valid username for a new user
-                user_id = ndb_pb.insertUser(social_network,
-                        token_id, access_token)
-                session_id = self.login(user_id)
+                user_key = ndb_pb.insertUser(social_network,
+                        token_id, access_token, data)
+                session_id = self.login(user_key)
 
                 # Returns the session cookie
                 self.response.set_cookie('session', session_id,
                         path='/', domain=domain, secure=True)
 
-                # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
                 self.response.set_status(201)
             else:
-                print stored_credentials
                 # We store the new set of credentials
-                user_id = ndb_pb.modifyToken(token_id,
+                user_key = ndb_pb.modifyToken(token_id,
                         access_token, social_network)
-                session_id = self.login(user_id)
+                session_id = self.login(user_key)
 
                 # Returns the session cookie
-                # self.response.set_cookie('session',value=session_id, secure=False)
-                # self.response.headers.add_header('Set-Cookie', 'session=%s' % session_id)
-
                 self.response.set_cookie('session', session_id,
                         path='/', domain=domain, secure=True)
                 self.response.set_status(200)
         except KeyError:
             response = \
-                {'error': 'You must provide a valid pair of access_token and token_id in the request'}
+                {'error': 'You must provide a valid pair of access_token and token_id in the request,' +
+                ' along with the user_identifier owner of the credentials'}
             self.response.content_type = 'application/json'
             self.response.write(json.dumps(response))
             self.response.set_status(400)
@@ -158,13 +154,17 @@ class OauthCredentialsHandler(SessionHandler):
         cookie_value = self.request.cookies.get('session')
         if not cookie_value == None:
             # Obtains info related to the user authenticated in the system
-            user = self.getUserInfo(cookie_value)
+            logged_user = self.getUserInfo(cookie_value)
             # Searchs for user's credentials
-            if not user == None:
-                user_credentials = ndb_pb.getToken(user, social_network)
+            if not logged_user == None:
+                # Obtains user info
+                logged_user_info = json.loads(ndb_pb.getUser(logged_user))
+                logged_user_id = logged_user_info["user_id"]
+                # Obtains user credentials
+                user_credentials = ndb_pb.getToken(token_id, social_network)
+                print "DEBUG: user_credentials", user
                 if not user_credentials == None:
-                    print "DEBUG Token: ", user_credentials
-                    if user_credentials["user_id"] == user: 
+                    if user_credentials["user_id"] == logged_user_id: 
                         response = \
                             {'user_id': user_credentials["user_id"],
                             'access_token': user_credentials["token"]}
