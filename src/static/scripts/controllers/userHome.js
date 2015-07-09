@@ -56,6 +56,7 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
   /* Authentication */
 
   $scope.menuStatus = false;
+  $scope.sort = [false, false, false];
   $scope.showElement = false;
   $scope.listaOpciones = ["false", "false", "false"];
 
@@ -152,6 +153,7 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
         return false;
     }
   };
+
   $scope.isSelected = function(event) {
     return $scope.selected === event && event !== undefined;
   };
@@ -174,5 +176,19 @@ angular.module("picbit").controller("UserHomeController", function ($scope, $tim
 
   $scope.isMenuHidden = function(event) {
     return !($scope.menuStatus | $scope.isSelected(event));
+  };
+
+  $scope.setSort = function(event) {
+    switch(event){
+      case "add":
+        $scope.sort = [!$scope.sort[0], false, false];
+        break;
+      case "delete":
+        $scope.sort = [false, !$scope.sort[1], false];
+        break;
+      case "modify":
+        $scope.sort = [false, false, !$scope.sort[2]];
+        break;
+    }
   };
 });

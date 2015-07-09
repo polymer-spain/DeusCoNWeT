@@ -22,7 +22,7 @@
     })
       .when("/user/:userId", {
       templateUrl: "views/userHome.html",
-      controller: "UserHomeController",
+      controller: "UserHomeController"/*,
       resolve: {
         auth: ["$q", "$cookie", function($q, $cookie){
 
@@ -34,7 +34,7 @@
             return $q.reject({authenticated: false});
           }
         }]
-      }
+      }*/
     })
       .when("/about", {
       templateUrl: "views/about.html",

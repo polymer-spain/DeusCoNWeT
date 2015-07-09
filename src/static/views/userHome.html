@@ -7,17 +7,17 @@
   <div horizontal around-justified layout>
 
     <div vertical layout end id="listOption" style="width: 57px;">
-      <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
+      <div id="menuArrow" ng-click="showMenu(); sort=false" ng-class="{hidden: isMenuHidden()}">
         <core-icon id="menu-icon" icon="arrow-back"></core-icon>
       </div>
 
       <!-- Añadir un elemento -->
       <div id="add" style="padding-top: 0px; padding-bottom: 0px;" ng-class="{hidden: isMenuHidden('add')}">
         <div horizontal layout>
-          <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('add'); setSelected('add')">
+          <div class="div_button" ng-click="ocultar('add'); setSelected('add'); sort=[false, false, false]" ng-class="{sort: sort[0]}">
             <core-icon icon="add-box" style="display:inline-block"></core-icon>
           </div>
-          <div flex ng-click="setList('add')" class="dropdown">
+          <div flex ng-click="setList('add'); setSort('add')" class="dropdown" ng-class="{sort: sort[0]}">
             <span  ng-show="showElement?true:showSingle=='add'">{{language.user_action.add}}</span>
             <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" icon="arrow-drop-down" style="float:right">
             </core-icon>
@@ -33,10 +33,10 @@
       <!-- Borrar un elemento -->
       <div id="delete" style="padding-top: 0px; padding-bottom: 0px;" ng-class="{hidden: isMenuHidden('delete')}">
         <div horizontal layout>
-          <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('delete'); setSelected('delete')">
+          <div class="div_button" ng-click="ocultar('delete'); setSelected('delete'); sort=[false, false, false]" ng-class="{sort: sort[1]}">
             <core-icon icon="delete" style="display:inline-block"></core-icon>
           </div>
-          <div flex ng-click="setList('delete')" class="dropdown">
+          <div flex ng-click="setList('delete'); setSort('delete')" class="dropdown" ng-class="{sort: sort[1]}">
             <span ng-show="showElement?true:showSingle=='delete'"> {{language.user_action.delete}}</span>
             <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" id="arrow" icon="arrow-drop-down" style="float:right">
             </core-icon>
@@ -52,10 +52,10 @@
       <!-- Eliminar un elemento -->
       <div id="modify" style="padding-top: 0px; padding-bottom: 0px;" ng-class="{hidden: isMenuHidden('modify')}">
         <div horizontal layout>
-          <div style="padding-top:35px; padding-bottom:35px;padding-right: 5px;" ng-click="ocultar('modify'); setSelected('modify')">
+          <div class="div_button" ng-click="ocultar('modify'); setSelected('modify'); sort=[false, false, false]" ng-class="{sort: sort[2]}">
             <core-icon  icon="create"></core-icon>
           </div>
-          <div flex ng-click="setList('modify')" class="dropdown">
+          <div flex ng-click="setList('modify'); setSort('modify')" class="dropdown" ng-class="{sort: sort[2]}">
             <span ng-show="showElement?true:showSingle=='modify'"> {{language.user_action.modify}}</span>
             <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" icon="arrow-drop-down" style="float:right">
             </core-icon>
