@@ -163,7 +163,7 @@ class OauthCredentialsHandler(SessionHandler):
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
                 if not user_credentials == None:
-                    if user_credentials["user_id"] == logged_user_id: 
+                    if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {'user_id': user_credentials["user_id"],
                             'access_token': user_credentials["token"]}
