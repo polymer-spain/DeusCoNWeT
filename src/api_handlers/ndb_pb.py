@@ -558,13 +558,15 @@ def searchToken(user_id, rs): #FUNCIONA
     return None
 
 def modifyToken(user_id, new_token, rs): #FUNCIONA
+  tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
+  tok.token = new_token
+  tok.put()
   token_aux = Token(identifier=user_id, social_name=rs)
   user = User.query(User.tokens==token_aux).get()
   tokens = user.tokens
   for token in tokens:
     if token.identifier==user_id and token.social_name==rs:
       token.token = new_token
-      token.put()
 
   user.put()
   return user.key
@@ -615,9 +617,11 @@ def deleteComponent(component_name):
 
 def deleteCredentials(entity_key, rs, id_rs):
   tok = Token.query(Token.identifier == id_rs).filter(Token.social_name == rs).get()
+  token_aux = tok.token
+  del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
   tok.key.delete()
   user = entity_key.get()
-  user.tokens.remove(tok)
+  user.tokens.remove(del_token)
 
 def getUsers():
   users = User.query()
