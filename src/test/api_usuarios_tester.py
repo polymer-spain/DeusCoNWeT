@@ -82,10 +82,9 @@ def main():
 		request_uri = basepath + idUsuario1
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
-		
 		# TESTs Relativos a la Modificación de información de un usuario en particular
 		# TEST 8
-		print "TEST 8: Modificar info de usuario 1(sin cookie de sesión)"
+		print "TEST 8: Modificar info de usuario 1 (sin cookie de sesión)"
 		print "Status esperado: 401"
 		request_uri = basepath + idUsuario1
 		test_utils.make_request("POST", request_uri, params, 401, None)
@@ -96,25 +95,57 @@ def main():
 		request_uri = basepath + idUsuario1
 		test_utils.make_request("POST", request_uri, params, 401, session2)
 
-		# TEST 10: Modificar info de usuario, caso parámetros incorrectos (Cookie de sesión correcta)
-		# TEST 11: Modificar info de usuario, caso añadir un componente con su correspondiente valoración (Cookie de sesión correcta)
-		# TEST 12: Modificar info de usuario, caso modificar todos los campos del usuario, cambiando ámbito de email y teléfono a privado
-		#         (cookie de sesión correcta)
+		# TEST 10
+		print "TEST 10: Modificar info de usuario, caso parámetros incorrectos (Cookie de sesión correcta)"
+		print "Status esperado: 200"
+		params = urllib.urlencode({"badParam": "valueERROR"})
+		test_utils.make_request("POST", request_uri, params, 200, session1)
 
-		
+		# TEST 11
+		print "TEST 11: Modificar info de usuario, sin proporcionar parámetros (Cookie de sesión correcta)"
+		print "Status esperado: 200 (El recurso no se modifica)"
+		params = urllib.urlencode({})
+		test_utils.make_request("POST", request_uri, params, 200, session1)
+
+		# TEST 12
+		print "TEST 12: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (Cookie de sesión correcta)"
+		print "Status esperado: 200"
+		params = urllib.urlencode({'component': 'instagram-timeline'})
+		test_utils.make_request("POST", request_uri, params, 200, session1)
+
+		# TEST 13
+		print "TEST 13: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (El componente no existe en el sistema)"
+		print "Status esperado: 200 (El recurso no se modifica)"
+		params = urllib.urlencode({'component': 'componenteError'})
+		test_utils.make_request("POST", request_uri, params, 200, session1)
+
+		# TEST 14
+		print "TEST 14: Modificar info de usuario, caso modificar todos los campos del usuario 2, cambiando ámbito de email y teléfono a privado"
+		print "(cookie de sesión correcta)"
+		print "Status esperado: 200 (Se modifican todos los campos del usuario)"
+		params = urllib.urlencode({'description': 'Metric Lover',
+			'web_site': 'PicBit.es',
+			'image': 'unsplash.com/superCoolImage.jpeg',
+			'phone': 911235813,
+			'email': 'deus@PicBit.es',
+			'private_phone': 'True',
+			'private_email': 'True'})
+		test_utils.make_request("POST", request_uri, params, 200, session2)
+
 		# Comprobamos caso de uso de obtención de información privada de usuario
-		# TEST 13: GET Usuario, (cookie de sesión distinta al recurso solicitado)
-		# TEST 14: GET Usuario, (cookie de sesión asociada al usuario solicitado)
+		# TEST 14: GET Usuario, (cookie de sesión distinta al recurso solicitado)
+		# TEST 15: GET Usuario, (cookie de sesión asociada al usuario solicitado)
 		# Cambiamos el ámbito de campos de usuario a público
-		# TEST 15: POST Usuario, caso cambiar a ámbito público el email y telefono de usuario (cookie de sesión correcta)
+		# TEST 16: POST Usuario, caso cambiar a ámbito público el email y telefono de usuario (cookie de sesión correcta)
+		# TEST 17: Obtener usuario 1 con cookie de sesión de otro usuario (Verificar que se retorna el email y el teléfono)
 	elif option == 'borrado':
-
+		pass
 		# TESTs Relativos a la eliminación de un usuario del sistema
-		# TEST 16: DELETE Usuario (cookie de sesión incorrecta)
-		# TEST 17: DELETE Usuario (usuario no existente en el sistema)
-		# TEST 18: DELETE Usuario (cookie de sesión correcta)
+		# TEST 17: DELETE Usuario (cookie de sesión incorrecta)
+		# TEST 18: DELETE Usuario (usuario no existente en el sistema)
+		# TEST 19: DELETE Usuario (cookie de sesión correcta)
 
-	# POSTESTs: Inicio de sesion con Google+ en el sistema
+	# POSTESTs: Cierre de sesión con Google+ en el sistema
 	params = urllib.urlencode({})
 	print "POSTEST 1: Login de usuario 1 en el sistema"
 	print "Ignorar el status de este caso"
@@ -124,6 +155,9 @@ def main():
 	print "Ignorar el status de este caso"
 	test_utils.make_request("POST", request_uri, params, 200, session2, True)
 	
+	# Cerramos conexión e imprimimos el ratio de test ok vs erróneos
+	test_utils.closeConnection()
+	test_utils.test_status()
 
 if __name__ == "__main__":
     main()

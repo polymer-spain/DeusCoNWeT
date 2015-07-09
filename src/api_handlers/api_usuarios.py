@@ -22,6 +22,7 @@ import webapp2, json
 import ndb_pb
 from google.appengine.api import memcache
 from api_oauth import SessionHandler
+
 class UserListHandler(SessionHandler):
 
   """
@@ -135,15 +136,20 @@ class UserHandler(SessionHandler):
           if values.has_key("private_email"):
             update_data["private_email"] = values.get("private_email")
           if values.has_key("component"):
-            update_data["component"] = values.get("component")
-          if values.has_key("rate"):
-            update_data["rate"] = values.get("rate")
+            component_id = values.get("component")      
+            component = ndb_pb.getComponent(user_info, component_id)
+            if not component == None:
+              update_data["component"] = component_id
         
-          user_info = ndb_pb.updateUser(user_key, update_data)
-
-          self.response.content_type = 'application/json'
-          self.response.write({"success": "The update has been successfully executed"})
-          self.response.write(200)
+          if not len(update_data) == 0:
+            user_info = ndb_pb.updateUser(user_key, update_data)
+            self.response.content_type = 'application/json'
+            self.response.write({"success": "The update has been successfully executed", "status": "Updated"})
+            self.response.write(200)
+          else:
+            self.response.content_type = 'application/json'
+            self.response.write({"success": "Resource not modified (check parameters provided)", "status": "Not Modified"})
+            self.response.write(200)
       else:
         self.response.content_type = 'application/json'
         self.response.write({"error": "You do\'nt have the proper rights to modify this resource" +
