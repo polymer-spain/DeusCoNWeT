@@ -25,6 +25,7 @@ def main():
 		token_id2 = "id" + social_network + "2"
 		user_id1 = "user" + social_network + "1"
 		user_id2 = "user" + social_network + "2"
+		access_token2 = social_network + "2TEST"
 		if option == None:
 			#Tests relativos a los casos de Login
 			# TEST 1
@@ -47,8 +48,7 @@ def main():
 			# TEST 3
 			print "TEST 3: Login de usuario 2"
 			print "Status esperado: 201"
-			access_token = social_network + "TEST"
-			params = urllib.urlencode({'token_id': token_id2, 'access_token': access_token,
+			params = urllib.urlencode({'token_id': token_id2, 'access_token': access_token2,
 				'user_identifier': user_id2})
 			test_utils.make_request("POST", request_uri, params, 201, None)
 
@@ -159,7 +159,7 @@ def main():
 			print "TEST 14: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
 			print "Status esperado: 401"
 			params = urllib.urlencode({})
-			make_request("DELETE", request_uri, params, 401, session1)
+			test_utils.make_request("DELETE", request_uri, params, 401, session1)
 
 			# TEST 15
 			# Borrar credenciales de usuario de prueba2 (Estando logeado)
@@ -167,7 +167,7 @@ def main():
 			print "TEST 15: Borrado de credenciales estando logeado"
 			print "Status esperado: 204"
 			params = urllib.urlencode({})
-			make_request("DELETE", request_uri, params, 204, session2)
+			test_utils.make_request("DELETE", request_uri, params, 204, session2)
 
 			# TEST 16
 			# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
@@ -175,7 +175,7 @@ def main():
 			print "TEST 16: Intento de borrado por segunda vez (credenciales de usuario 2)"
 			print "Status esperado: 404"
 			params = urllib.urlencode({})
-			make_request("DELETE", request_uri, params, 404, session2)
+			test_utils.make_request("DELETE", request_uri, params, 404, session2)
 
 			# POST-TEST 1: Realizar logout en el sistema (usuario 1)
 			request_uri = basePath + "/logout"

@@ -178,11 +178,13 @@ class GitHubAPIKey(ndb.Model):
 #####################################################################################
 
 def getToken(id_rs, social_net):  # FUNCIONA
-    token = Token.query(Token.identifier == id_rs).filter(Token.social_name == social_name).get()
-    user = User.query(Usuario.tokens == token).get()
-    return {"token": token.token,
-            "user_id": user.user_id}
-
+  ans = None
+  token = Token.query(Token.identifier == id_rs).filter(Token.social_name == social_net).get()
+  user = User.query(User.tokens == token).get()
+  if not user == None:
+    ans = {"token": token.token,
+          "user_id": user.user_id}
+  return ans
 
 def getUser(entity_key): #FUNCIONA
   user = entity_key.get()
@@ -612,11 +614,10 @@ def deleteComponent(component_name):
   return status
 
 def deleteCredentials(entity_key, rs, id_rs):
-  token_aux = Token(identificador=id_rs, nombre_rs=rs)
-  tok = Token.query(token_aux).get()
+  tok = Token.query(Token.identifier == id_rs).filter(Token.social_name == rs).get()
   tok.key.delete()
   user = entity_key.get()
-  user.tokens.remove(token_aux)
+  user.tokens.remove(tok)
 
 def getUsers():
   users = User.query()
