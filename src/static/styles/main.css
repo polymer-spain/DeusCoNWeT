@@ -1,3 +1,6 @@
+* {
+  font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif; 
+}
 body,html {
   margin:0;
   color:rgba(255, 255, 255, 0.85);

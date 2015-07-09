@@ -8,32 +8,33 @@ picbit.directive("ngDrag", function () {
   "use strict";
   function link(scope, element, attrs) {
     /*Indicamos que es arrastrable */
-    element.attr("draggable", "true");
     scope.move = {};
     element.css({position: "absolute"});
     /* Obligamos a hacer el binding de las variables parametrizadas */
     for (var attr in attrs.$attr) {
       if (attrs.hasOwnProperty(attr)) {
-        attrs.$observe(attr);
+        attrs.$observe(attr, function(){});
       }
     }
 
     // Hace el efecto de arrastrarse cuando se mueve el elemento
     scope.dragging = function (event) {
-      // Calculamos la cantidad de movimiento que ha sufrido el objeto
-      var x, y, newPosition;
-      if (event.clientX !== 0 && event.clientY !== 0) {
-        scope.move.x = scope.move.x || event.clientX - event.target.offsetLeft;
-        scope.move.y = scope.move.y || event.clientY - event.target.offsetTop;
+      if (element.attr("draggable") === "true") {
+        // Calculamos la cantidad de movimiento que ha sufrido el objeto
+        var x, y, newPosition;
+        if (event.clientX !== 0 && event.clientY !== 0) {
+          scope.move.x = scope.move.x || event.clientX - event.target.offsetLeft;
+          scope.move.y = scope.move.y || event.clientY - event.target.offsetTop;
 
-        x = (event.clientX - event.target.offsetLeft - scope.move.x);
-        y = (event.clientY - event.target.offsetTop - scope.move.y);
+          x = (event.clientX - event.target.offsetLeft - scope.move.x);
+          y = (event.clientY - event.target.offsetTop - scope.move.y);
 
-        newPosition = scope.calculatePosition(event.target, x, y);
-        // actualizamos la posicion
-        event.target.style.top = newPosition.top + "px";
-        event.target.style.left = newPosition.left + "px";
-      }
+          newPosition = scope.calculatePosition(event.target, x, y);
+          // actualizamos la posicion
+          event.target.style.top = newPosition.top + "px";
+          event.target.style.left = newPosition.left + "px";
+        }
+      }// end if
     };// end function
 
     scope.calculatePosition = function(target, x, y) {
@@ -105,9 +106,9 @@ picbit.directive("ngContainer", function () {
       /* Evitamos la accion por defecto y la propagacion a los hijos*/
       evento.preventDefault();
       evento.stopPropagation();
-      /* Reseteamos el estilo del contenedor (quitamos la sombra) */
-      evento.target.style.transition = "";
-      evento.target.style.boxShadow = "";
+
+
+
 
       var id, attributes, newTimeline, injector, $compile, key;
       /* Cogemos el objeto que tuvo lugar en el intercambio de datos */
@@ -115,29 +116,37 @@ picbit.directive("ngContainer", function () {
 
       /* Si no esta repetido, lo añadimos al dashboard */
       if (id && document.getElementsByTagName(id).length === 0) {
+
+        /* Lo eliminamos de la lista */
+        for (var i=0;i < scope.listComponents.length;i++) {
+          if (scope.listComponents[i].name == id) {
+            scope.listComponents.splice(i,1);
+            break;
+          }
+        };
+
         /* Creamos el nuevo objeto en funcion del identificador intercambiado */
         newTimeline = angular.element("<" + id + "/>");
         /* Añadimos los atributos necesarios para su funcionamiento */
-        /* TODO: parametrizar los attributos para que se le pasen como una lista
-         * y que se añadan de manera automatica
-         */
+
         newTimeline.attr("ng-drag", "");
 
         /* Añadimos todos los attributos necesarios */
         attributes = evento.dataTransfer.getData("attributes");
         if (attributes) {
           attributes = JSON.parse(attributes);
-
           for (key in attributes) {
             if (attributes.hasOwnProperty(key)) {
               newTimeline.attr(key, attributes[key]);
             }
           }
         }
+        newTimeline.attr("draggable", "{{modifySelected === '" + id + "'}}");
         /* Caracteristicas del estilo para arrastrarlo */
 
         /* Enlazamos el elemento al contenedor*/
         element.append(newTimeline);
+        element.scope().listComponentAdded.push(id);
 
         /* Forzamos la fase de compile de angular para que cargue las directivas del
          * nuevo elemento
@@ -160,26 +169,10 @@ picbit.directive("ngContainer", function () {
     /* Funcion que evita la accion por defecto cuando entra un elemento */
     scope.dragEntry = function (evento) {evento.preventDefault(); };
 
-    /* quitamos las sombras una vez que el elemento no está en el contenedor */
-    /* quitamos las sombras una vez que el elemento no está en el contenedor */
-    scope.removeShadow = function (event) {
-      event.preventDefault();
-      event.target.style.transition = "";
-      event.target.style.boxShadow = "";
-    };
-    /* Mostramos sombra en el contenedor con un pequeño delay (0.2s)*/
-    /* Mostramos sombra en el contenedor con un pequeño delay (0.2s)*/
-    scope.showShadow = function (event) {
-      if (event.target.id === "container") {
-        event.target.style.transition = "boxShadow 0.2s";
-        event.target.style.boxShadow = "0px 0px 10px black";
-      }
-    };
     /* Enlazamos las funciones con los eventos correspondientes */
     element.on("drop", scope.dropObject);
     element.on("dragover", scope.dragEntry);
-    //element.on("dragleave", scope.removeShadow);
-    // element.on("dragenter", scope.showShadow);
+
   }
   /* enviamos el link y cogemos la lista de los atributos y la añadimos al scope*/
   return {link: link};
@@ -197,13 +190,11 @@ picbit.directive("ngCreateElement", function () {
         evento.dataTransfer.setData("attributes", scope.attributes);
       }
 
-      var image, container;
+      var image;
       image = document.createElement("img");
 
       image.src = scope.imagesrc || "";
       evento.dataTransfer.setDragImage(image, 0, 0);
-      container = document.querySelector("#container");
-      container.style.boxShadow = "5px 5px 5px solid black";
     };
 
     element.attr("draggable", "true");

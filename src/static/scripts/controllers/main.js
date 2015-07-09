@@ -1,5 +1,5 @@
-/*global angular, document, console, window */
-angular.module("picbit").controller("MainController", function ($scope, $location, $timeout, $backend, $http, $window, $cookie, $rootScope) {
+/*global angular, document, console */
+angular.module("picbit").controller("MainController", function ($scope, $location, $timeout, $backend, $http, $window, $cookie) {
   "use strict";
 
   $scope.status = $cookie.get("session") !== undefined; // Registr el stado de logueado
@@ -40,7 +40,7 @@ angular.module("picbit").controller("MainController", function ($scope, $locatio
     $http.get("../../language/en_en.json").success(function (data){
       $scope.language = data;
       $scope.idioma = "en";
-      $cookie.put("language", "en")
+      $cookie.put("language", "en");
       $scope.language_selected = data.lang[$scope.idioma];
     }).error( function (data, status) {
       console.error(data, status);
@@ -116,7 +116,7 @@ angular.module("picbit").controller("MainController", function ($scope, $locatio
     $scope.shadow = false;
   };
 
-  window.addEventListener("scroll", function() {
+  $window.addEventListener("scroll", function() {
     $scope.$apply(function() {
       var size = 	document.body.scrollTop;
       $scope.scrolled = size > 0;
