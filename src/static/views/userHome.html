@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="styles/userHome.css">
 
 <div style="height: 100%" ng-container id="container">
-  <img ng-drag id="picture" src="../images/picture.png">
+  <img ng-drag id="picture" src="../images/picture.png" draggable="{{modifyActive('picture')}}">
 
 
   <div horizontal around-justified layout>
@@ -23,9 +23,12 @@
             </core-icon>
           </div>
         </div>
-        <div id="list" class="animate-show" ng-show="!hidelist('add')">
-          <div ng-repeat="element in list">
+        <div class="animate-show list" ng-show="!hidelist('add')">
+          <div ng-repeat="element in listComponents">
             <p ng-create-element id-element="{{element.name}}" list-attributes="{{element.attributes}}">{{element.name}}</p>
+          </div>
+          <div ng-if="listComponents.length == 0">
+            <p>No tenemos más componentes</p>
           </div>
         </div>
       </div>
@@ -38,18 +41,22 @@
           </div>
           <div flex ng-click="setList('delete'); setSort('delete')" class="dropdown" ng-class="{sort: sort[1]}">
             <span ng-show="showElement?true:showSingle=='delete'"> {{language.user_action.delete}}</span>
-            <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" id="arrow" icon="arrow-drop-down" style="float:right">
+            <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" icon="arrow-drop-down" style="float:right">
             </core-icon>
           </div>
         </div>
-        <div id="list" class="animate-show" ng-show="!hidelist('delete')">
-          <div draggable="true" ng-repeat="element in list">
-            <p>{{element.name}}</p>
+        <div class="animate-show list" ng-show="!hidelist('delete')">
+          <div horizontal layout center draggable="true" ng-repeat="element in listComponentAdded" ng-mouseover="deleteTimelineHovered($index)" ng-mouseleave="deleteTimelineLeaveHover()">
+            <p flex >{{element}}</p>
+            <core-icon-button ng-click="deleteTimeline(element)" ng-show="hovered===$index" icon="cancel" ></core-icon-button>
+          </div>
+          <div ng-if="listComponentAdded.length == 0">
+            <p>No tiene componentes añadidos</p>
           </div>
         </div>
       </div>
 
-      <!-- Eliminar un elemento -->
+      <!-- modifica un elemento -->
       <div id="modify" style="padding-top: 0px; padding-bottom: 0px;" ng-class="{hidden: isMenuHidden('modify')}">
         <div horizontal layout>
           <div class="div_button" ng-click="ocultar('modify'); setSelected('modify'); sort=[false, false, false]" ng-class="{sort: sort[2]}">
@@ -61,17 +68,36 @@
             </core-icon>
           </div>
         </div>
-        <div id="list" class="animate-show" ng-show="!hidelist('modify')">
-          <div ng-repeat="element in list">
-            <p>{{element.name}}</p>
+        <div class="animate-show list" ng-show="!hidelist('modify')">
+          <div ng-repeat="element in listComponentAdded">
+            <p  ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">{{element}}</p>
+          </div>
+          <div ng-if="listComponentAdded.length == 0">
+            <p>No tiene componentes añadidos</p>
           </div>
         </div>
       </div>
 
       <!-- Opcion de ayuda -->
-      <div id="help" ng-class="{hidden: isMenuHidden('help')}">
+      <div id="help" ng-class="{hidden: isMenuHidden('help')}" ng-click="setToggleHelp($event)">
         <core-icon icon="help"></core-icon>
         <span ng-show="showElement">{{language.user_action.help}}</span>
+        <div ng-show="toggleHelp" class="shadow">
+          <div class="helpModal" >
+            <div style="width:100%;height:24px;margin-bottom:30px">
+              <core-icon-button style="position:absolute;right:0" ng-click="setToggleHelp($event)" icon="close"></core-icon-button>
+            </div>
+            <div style="height:65%;margin-bottom:15px;text-align:left" vertical center-justified layout>
+              <p><strong>{{language.user_action.add}}</strong>: permite añadir un nuevo componente a tu timeline.
+                Busca el componente que quieres añadir y arrastralo hasta el lugar donde quieras colocarlo.
+              </p>
+              <p><strong>{{language.user_action.delete}}</strong>: permite eliminar los componentes ya añadidos al timeline.
+                Seleciona el componente que quieras eliminar y presiona sobre el botón.</p>
+              <p><strong>{{language.user_action.modify}}</strong>: añade componentes a tu timeline</p>
+            </div>
+            <paper-button>Cerrar</paper-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
