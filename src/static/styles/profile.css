@@ -5,7 +5,7 @@ html {
 	background-attachment: fixed;
 }
 
-#titulo{
+#title{
 	text-align: center;
 	text-decoration: underline;
 	font-size: 1.875em;
@@ -19,7 +19,7 @@ html {
 	z-index: 1000;
 }
 
-#titulo2{
+#title2{
 	font-size: 1.875em;
 	text-align: center;
 	margin-top: -0.625em;
@@ -34,7 +34,7 @@ html {
 	width: 100%;
 }
 
-#fondo{
+#background{
 	background-color: rgba(245, 245, 245, 0.5);
 	border-radius: 2.5em;
 	padding: 3.125em 3.75em;
@@ -46,7 +46,7 @@ html {
 	padding-bottom: 0.625em;
 }
 
-#fondo2{
+#background2{
 	background-color: rgba(245, 245, 245, 0.5);
 	border-radius: 2.5em;
 	padding: 3.125em 3.75em;
@@ -56,7 +56,7 @@ html {
 	margin-right: auto;
 }
 
-.boton{
+.button{
 	margin-top: 1.875em;
 	margin-bottom: 1.25em;
 }
@@ -75,44 +75,44 @@ html {
 }
 
 /*Texto a introducir*/
-.formulario{
+.form{
 	color: black;
 	font-size: 1.25em;
 	margin: -1.25em;
 }
 
 /*Transicion texto*/
-.formulario /deep/ #labelText {
+.form /deep/ #labelText {
 	color: black;
 }
 
 /*Color letra*/
-.formulario /deep/ ::-webkit-input-placeholder {
+.form /deep/ ::-webkit-input-placeholder {
 	color: black;
 }
 
 /*Texto despues transicion*/
-.formulario /deep/ .floated-label #floatedLabelText{
+.form /deep/ .floated-label #floatedLabelText{
 	color: black;
 }
 
-.formulario /deep/ #underline .unfocused-underline{
+.form /deep/ #underline .unfocused-underline{
 	background-color: black;
 }
 
-.formulario /deep/ #underline .focused-underline{
+.form /deep/ #underline .focused-underline{
 	background-color: black;
 }
 
-.formulario.invalid /deep/ .floated-label #floatedLabelText{
+.form.invalid /deep/ .floated-label #floatedLabelText{
 	color: red;
 }
 
-.formulario.invalid /deep/ #underline .focused-underline{
+.form.invalid /deep/ #underline .focused-underline{
 	background-color: red;
 }
 
-.formulario.invalid /deep/ #underline .unfocused-underline{
+.form.invalid /deep/ #underline .unfocused-underline{
 	background-color: red;
 }
 
