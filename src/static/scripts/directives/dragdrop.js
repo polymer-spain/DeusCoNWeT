@@ -118,12 +118,15 @@ picbit.directive("ngContainer", function () {
       if (id && document.getElementsByTagName(id).length === 0) {
 
         /* Lo eliminamos de la lista */
-        for (var i=0;i < scope.listComponents.length;i++) {
-          if (scope.listComponents[i].name == id) {
-            scope.listComponents.splice(i,1);
+        /* TODO: si se elimina existe un problema con añadirlo de nuevo
+         * habría que hacer un AND entre dos listas (idk como )
+         */
+/*        for (var i = 0; i < scope.listComponents.length; i++) {
+          if (scope.listComponents[i].name === id) {
+            scope.listComponents.splice(i, 1);
             break;
           }
-        };
+        }*/
 
         /* Creamos el nuevo objeto en funcion del identificador intercambiado */
         newTimeline = angular.element("<" + id + "/>");
