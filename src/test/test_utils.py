@@ -65,7 +65,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
   		print "\tDatos de la respuesta: " + responseData + bcolors.ENDC +"\n"
   	else:
   		nTestOK += 1
-  		print bcolors.OKGREEN + "\t>>> STATUS: OK"
+  		print bcolors.OKGREEN + "\t>>> STATUS: OK (STATUS " + str(response.status) + ")"
   		print "\tRESPUESTA: ", responseData + bcolors.ENDC + "\n"
   	
   	# Print the response session cookie, if proceed

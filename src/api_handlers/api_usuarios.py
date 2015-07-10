@@ -186,8 +186,8 @@ class UserHandler(SessionHandler):
       user_logged_id = ndb_pb.getUserId(user_logged_key)
       if user_logged_id == user_id:
         # It is neccesary to get the parameters from the request
-        user_info = ndb_pb.getUser(user_logged_id)
-        if not user_info == None:
+        user_info = ndb_pb.getUser(user_id)
+        if user_info == None:
           self.response.content_type = 'application/json'
           self.response.write({"error": "The user requested does not exist"})
           self.response.set_status(404)

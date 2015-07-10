@@ -173,10 +173,10 @@ def main():
 		# TESTs Relativos a la eliminación de un usuario del sistema
 		# TEST 20
 		print "TEST 20: Borrar usuario del sistema (cookie de sesión incorrecta)"
-		print "Status esperado: 401"
+		print "Status esperado: 400"
 		request_uri = basepath + user_id1
 		params = urllib.urlencode({})
-		test_utils.make_request("GET", request_uri, params, 401, session_error)				
+		test_utils.make_request("GET", request_uri, params, 400, session_error)				
 
 		# TEST 21
 		print "TEST 21: Borrar usuario el sistema (usuario no existente en el sistema)"
@@ -190,14 +190,14 @@ def main():
 		print "Status esperado: 204"
 		request_uri = basepath + user_id1
 		params = urllib.urlencode({})
-		test_utils.make_request("GET", request_uri, params, 204, session1)
+		test_utils.make_request("DELETE", request_uri, params, 204, session1)
 
 		# TEST 23
 		print "TEST 23: Borrar usuario 2 del sistema (cookie de sesión correcta)"
 		print "Status esperado: 204"
 		request_uri = basepath + user_id2
 		params = urllib.urlencode({})
-		test_utils.make_request("GET", request_uri, params, 204, session2)
+		test_utils.make_request("DELETE", request_uri, params, 204, session2)
 
 		# Obtenemos la lista de usuarios para verificar que se han eliminado los dos usuarios
 		# TEST 24
