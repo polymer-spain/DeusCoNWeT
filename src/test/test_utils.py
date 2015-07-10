@@ -46,7 +46,6 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
 	print "Realizando petición ", method, " ", request_uri
 	headers = {"User-Agent": "PicBit-App"}
 	session_cookie = None
-
 	# Adds the cookie session header
 	if not session == None:
 		headers['Cookie']  = session

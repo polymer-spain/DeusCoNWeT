@@ -158,9 +158,9 @@ class SocialUser(ndb.Model):
 class User(ndb.Model):
   user_id = ndb.StringProperty()
   email = ndb.StringProperty()
-  private_email = ndb.BooleanProperty()
+  private_email = ndb.BooleanProperty(default=False)
   phone = ndb.IntegerProperty()
-  private_phone = ndb.BooleanProperty()
+  private_phone = ndb.BooleanProperty(default=False)
   description = ndb.TextProperty()
   website = ndb.StringProperty()
   image = ndb.StringProperty()
@@ -186,29 +186,35 @@ def getToken(id_rs, social_net):  # FUNCIONA
           "user_id": user.user_id}
   return ans
 
-def getUser(entity_key): #FUNCIONA
+def getUser(user_id): #FUNCIONA
+  user = User.query(User.user_id == user_id).get()
+  user_info = None
+  if not user == None:
+    rates = user.rates; nets = user.net_list
+    rates_list = []; net_names = []
+    for rate in rates:
+      comp = rate.component_id
+      value = rate.rating_value
+      tup = (comp, value)
+      rates_list.append(tup)
+    for net in nets:
+      net_names.append(net.social_name)
+    user_info = {"user_id": user.user_id,
+                "description": user.description,
+                "image": user.image,
+                "website": user.website,
+                "private_email": user.private_email,
+                "private_phone": user.private_phone,
+                "email": user.email,
+                "phone": user.phone,
+                "nets": net_names,
+                "components": rates_list}
+  return user_info
+
+def getUserId(entity_key):
   user = entity_key.get()
-  rates = user.rates; nets = user.net_list
-  rates_list = []; net_names = []
-  for rate in rates:
-    comp = rate.component_id
-    value = rate.rating_value
-    tup = (comp, value)
-    rates_list.append(tup)
-  for net in nets:
-    net_names.append(net.social_name)
-  user_info = {"user_id": user.user_id,
-              "description": user.description,
-              "image": user.image,
-              "website": user.website,
-              "private_email": user.private_email,
-              "email": user.email,
-              "private_phone": user.private_phone,
-              "phone": user.phone,
-              "nets": net_names,
-              "components": rates_list}
-  user = json.dumps(user_info)
-  return user
+  user_id = user.user_id
+  return user_id
 
 @ndb.transactional(xg=True)
 def insertUser(rs, ide, token, data=None): #FUNCIONA
@@ -625,20 +631,22 @@ def deleteCredentials(entity_key, rs, id_rs):
   user.tokens.remove(del_token)
 
 def getUsers():
-  users = User.query()
+  users = User.query().fetch(100)
   users_list = []
   for user in users:
     groups = user.group_list; networks = user.net_list
     group_names = []; net_names = []
     [group_names.append(group.group_name) for group in groups]
     [net_names.append(net.social_name) for net in networks]
-    usuario = {"email": user.email,
+    usuario = {"user_id": user.user_id,
+              "email": user.email,
               "phone": user.phone,
               "description": user.description,
               "groups": group_names,
               "networks": net_names}
-    user_info = json.dumps(user)
+    user_info = json.dumps(usuario)
     users_list.append(user_info)
+  return users_list
 
 def searchUserById(user_id):
   user = User.query(id_usuario=user_id).get()

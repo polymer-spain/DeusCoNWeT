@@ -11,11 +11,11 @@ def main():
 	option = None
 	session1 = None
 	session2 = None
-	session_error = "session_error"
-	user_id1 = "idUsuario1"
-	user_id2 = "idUsuario2"
-	user_id_error = "idERROR"
-	basepath = "/api/usuarios/"
+	session_error = "session=session_error"
+	user_id1 = "/idUsuario1"
+	user_id2 = "/idUsuario2"
+	user_id_error = "/idERROR"
+	basepath = "/api/usuarios"
 	
 	if len(sys.argv) == 2:
 		option = sys.argv[1]
@@ -27,7 +27,7 @@ def main():
 	access_token_login = "googleTEST"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
 	 'user_identifier': user_id1 })
-	session1 = test_utils.make_request("POST", request_uri, params, 201, None, True)
+	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
 	
 	print "PRETEST 2: Login de usuario 2 en el sistema"
 	print "Ignorar el status de este caso"
@@ -43,12 +43,12 @@ def main():
 		# TESTs Relativos a la obtención de lista de usuarios
 		# TEST 1
 		print "TEST 1: Obtener lista de usuarios (sin proporcionar una cookie de sesion)"
-		print " Status esperado: 401"
+		print "Status esperado: 401"
 		test_utils.make_request("GET", basepath, params, 401, None)
 
 		# TEST 2
 		print "TEST 2: Obtener lista de usuarios (proporcionando una cookie de sesion no válida)"
-		print " Status esperado: 400"
+		print "Status esperado: 400"
 		test_utils.make_request("GET", basepath, params, 400, session_error)
 		
 		# TEST 3
@@ -98,7 +98,7 @@ def main():
 
 		# TEST 10
 		print "TEST 10: Modificar info de usuario, caso parámetros incorrectos (Cookie de sesión correcta)"
-		print "Status esperado: 200"
+		print "Status esperado: 200 (El recurso no se modifica)"
 		params = urllib.urlencode({"badParam": "valueERROR"})
 		test_utils.make_request("POST", request_uri, params, 200, session1)
 
@@ -108,17 +108,17 @@ def main():
 		params = urllib.urlencode({})
 		test_utils.make_request("POST", request_uri, params, 200, session1)
 
-		# TEST 12
-		print "TEST 12: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (Cookie de sesión correcta)"
-		print "Status esperado: 200"
-		params = urllib.urlencode({'component': 'instagram-timeline'})
-		test_utils.make_request("POST", request_uri, params, 200, session1)
-
-		# TEST 13
-		print "TEST 13: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (El componente no existe en el sistema)"
-		print "Status esperado: 200 (El recurso no se modifica)"
-		params = urllib.urlencode({'component': 'componenteError'})
-		test_utils.make_request("POST", request_uri, params, 200, session1)
+		# # TEST 12
+		# print "TEST 12: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (El componente no existe en el sistema)"
+		# print "Status esperado: 200 (El recurso no se modifica)"
+		# params = urllib.urlencode({'component': 'componenteError'})
+		# test_utils.make_request("POST", request_uri, params, 200, session1)
+		
+		# # TEST 13
+		# print "TEST 13: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (Cookie de sesión correcta)"
+		# print "Status esperado: 200"
+		# params = urllib.urlencode({'component': 'instagram-timeline'})
+		# test_utils.make_request("POST", request_uri, params, 200, session1)
 
 		# TEST 14
 		print "TEST 14: Modificar info de usuario, caso modificar todos los campos del usuario 2, cambiando ámbito de email y teléfono a privado"
@@ -126,7 +126,7 @@ def main():
 		print "Status esperado: 200 (Se modifican todos los campos del usuario)"
 		request_uri = basepath + user_id2
 		params = urllib.urlencode({'description': 'Metric Lover',
-			'web_site': 'PicBit.es',
+			'website': 'PicBit.es',
 			'image': 'unsplash.com/superCoolImage.jpeg',
 			'phone': 911235813,
 			'email': 'deus@PicBit.es',
@@ -144,7 +144,7 @@ def main():
 		# Comprobamos caso de uso de obtención de información privada de usuario
 		# TEST 16
 		print "TEST 16: Obtener info de usuario 2, (cookie de sesión distinta al recurso solicitado)"
-		print "Status esperado: 200 (No deben aparecer los campos correspondientes al teléfono'y email)"
+		print "Status esperado: 200 (No deben aparecer los campos correspondientes al teléfono y email)"
 		request_uri = basepath + user_id2
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
@@ -208,12 +208,13 @@ def main():
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
 	# POSTESTs: Cierre de sesión con Google+ en el sistema
+	request_uri = '/api/oauth/googleplus/logout'
 	params = urllib.urlencode({})
-	print "POSTEST 1: Login de usuario 1 en el sistema"
+	print "POSTEST 1: Logout de usuario 1 en el sistema"
 	print "Ignorar el status de este caso"
-	test_utils.make_request("POST", request_uri, params, 201, session1, True)
+	test_utils.make_request("POST", request_uri, params, 200, session1, True)
 	
-	print "POSTEST 2: Login de usuario 2 en el sistema"
+	print "POSTEST 2: Logout de usuario 2 en el sistema"
 	print "Ignorar el status de este caso"
 	test_utils.make_request("POST", request_uri, params, 200, session2, True)
 	

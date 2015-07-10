@@ -36,9 +36,10 @@ class UserListHandler(SessionHandler):
   # GET Method
   def get(self):
     cookie_value = self.request.cookies.get('session')
+    print "DEBUG: cookie_value ", cookie_value
     if not cookie_value == None:
-      user_key = self.getUserInfo(cookie_value)
-      if not user_key == None:
+      user_logged_key = self.getUserInfo(cookie_value)
+      if not user_logged_key == None:
         users_list = ndb_pb.getUsers()
         if len(users_list) == 0:
           self.response.content_type = 'application/json'
@@ -63,39 +64,42 @@ class UserHandler(SessionHandler):
   Class that defines the user resource
   It acts as the handler of the /usuarios/{user_id} resource
   Methods:
-  get -- Gets the info about a user  
+  get -- Gets the info about a user
+  post -- Modifies the info related to an user
   """
   def get(self, user_id):
     cookie_value = self.request.cookies.get('session')
     if not cookie_value == None:
       # Obtains info related to the user authenticated in the system
-      user_key = self.getUserInfo(cookie_value)
-      if not user_key == None:
+      user_logged_key = self.getUserInfo(cookie_value)
+      if not user_logged_key == None:
+        # Obtains the info related to the resource requested
         user_info = ndb_pb.getUser(user_id)
         if user_info == None:
           self.response.content_type = 'application/json'
           self.response.write({"error": "The user requested does not exist"})
           self.response.set_status(404)
         else:
-          user = json.dumps(user_info)
+          # Obtains the user_id to check if the user active is the resource owner
+          user_logged_id = ndb_pb.getUserId(user_logged_key)
           # Depending on the user making the request, the info returned will be one or another
-          if user["id_usuario"] == user_key:
+          if user_id == user_logged_id:
             self.response.content_type = 'application/json'
             self.response.write(user_info)
             self.response.set_status(200)
           else:
-            user_dict = {"id_usuario": user["id_usuario"],
-                          "descripcion": user["descripcion"],
-                          "imagen": user["imagen"],
-                          "sitio_web": user["sitio_web"],
-                          "redes": user["redes"],
-                          "componentes": user["components"]}
-            if user["private_email"] == False:
-              user_dict["email"] = user["email"]
-            if user["private_phone"] == False:
-              user_dict["telefono"] = user["telefono"]
+            user_dict = {"user_id": user_info["user_id"],
+                          "description": user_info["description"],
+                          "image": user_info["image"],
+                          "website": user_info["website"],
+                          "nets": user_info["nets"],
+                          "components": user_info["components"]}
+            if user_info["private_email"] == False:
+              user_dict["email"] = user_info["email"]
+            if user_info["private_phone"] == False:
+              user_dict["phone"] = user_info["phone"]
             self.response.content_type = 'application/json'
-            self.response.write(user_dict)
+            self.response.write(json.dumps(user_dict))
             self.response.set_status(200)
       else:
         self.response.content_type = 'application/json'
@@ -109,10 +113,11 @@ class UserHandler(SessionHandler):
   def post(self, user_id):
     cookie_value = self.request.cookies.get('session')
     if not cookie_value == None:
-      user_key = self.getUserInfo(cookie_value)
-      if user_key == user_id:
-        # It is neccesary to get the parameters from the request
-        user_info = ndb_pb.getUser(user_key)
+      user_logged_key = self.getUserInfo(cookie_value)
+      user_logged_id = ndb_pb.getUserId(user_logged_key)
+      # Checks if the user active is the owner of the resource
+      if user_logged_id == user_id:
+        user_info = ndb_pb.getUser(user_logged_id)
         if user_info == None:
           self.response.content_type = 'application/json'
           self.response.write({"error": "The user requested does not exist"})
@@ -121,6 +126,7 @@ class UserHandler(SessionHandler):
           user = json.dumps(user_info)  
           values = self.request.POST
           update_data = {}
+          # We parse the data received in the request
           if values.has_key("description"):
             update_data["description"] = values.get("description")
           if values.has_key("web_site"):
@@ -128,21 +134,34 @@ class UserHandler(SessionHandler):
           if values.has_key("image"):
             update_data["image"] = values.get("image")
           if values.has_key("phone"):
-            update_data["phone"] = values.get("phone")
+            update_data["phone"] = int(values.get("phone"))
           if values.has_key("email"):
             update_data["email"] = values.get("email")
           if values.has_key("private_phone"):
-            update_data["private_phone"] = values.get("private_phone")
+            # Checks if private_phone has a proper value
+            if values.get("private_phone") == 'True':
+              private_phone = True
+              update_data["private_phone"] = private_phone
+            elif values.get("private_phone") == 'False':
+              private_phone = False
+              update_data["private_phone"] = private_phone
           if values.has_key("private_email"):
-            update_data["private_email"] = values.get("private_email")
+             # Checks if private_email has a proper value
+            if values.get("private_email") == 'True':
+              private_email = True
+              update_data["private_email"] = private_email
+            elif values.get("private_email") == 'False':
+              private_email = False
+              update_data["private_email"] = private_email
           if values.has_key("component"):
             component_id = values.get("component")      
             component = ndb_pb.getComponent(user_info, component_id)
             if not component == None:
               update_data["component"] = component_id
-        
+          
+          # Updates the resource 
           if not len(update_data) == 0:
-            user_info = ndb_pb.updateUser(user_key, update_data)
+            user_info = ndb_pb.updateUser(user_logged_key, update_data)
             self.response.content_type = 'application/json'
             self.response.write({"success": "The update has been successfully executed", "status": "Updated"})
             self.response.write(200)
@@ -152,7 +171,7 @@ class UserHandler(SessionHandler):
             self.response.write(200)
       else:
         self.response.content_type = 'application/json'
-        self.response.write({"error": "You do\'nt have the proper rights to modify this resource" +
+        self.response.write({"error": "You don\'t have the proper rights to modify this resource" +
           " (The cookie session header does not match with the resource requested)"})
         self.response.set_status(401)
     else:
@@ -163,24 +182,22 @@ class UserHandler(SessionHandler):
   def delete(self, user_id):
     cookie_value = self.request.cookies.get('session')
     if not cookie_value == None:
-      user_key = self.getUserInfo(cookie_value)
-      if user_key == user_id:
+      user_logged_key = self.getUserInfo(cookie_value)
+      user_logged_id = ndb_pb.getUserId(user_logged_key)
+      if user_logged_id == user_id:
         # It is neccesary to get the parameters from the request
-        user_info = ndb_pb.getUser(user_key)
+        user_info = ndb_pb.getUser(user_logged_id)
         if not user_info == None:
           self.response.content_type = 'application/json'
           self.response.write({"error": "The user requested does not exist"})
           self.response.set_status(404)
         else:
-          user = json.dumps(user_info)
-          # Depending on the user making the request, the info returned will be one or another
-          if user["id_usuario"] == user_id:
-            
-            ndb_pb.deleteUser(user_key)
-
-            self.response.content_type = 'application/json'
-            self.response.write({})
-            self.response.set_status(204)
+          # Deletes the user from the datastore
+          ndb_pb.deleteUser(user_logged_key)
+          # Buids the response
+          self.response.content_type = 'application/json'
+          self.response.write({})
+          self.response.set_status(204)
       else:
         self.response.content_type = 'application/json'
         self.response.write({"error": "You do\'nt have the proper rights to delete this resource" +
