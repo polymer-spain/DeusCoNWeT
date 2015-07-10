@@ -7,13 +7,14 @@ import test_utils
 
 
 def main():
+	test_utils.openConnection()
 	option = None
 	session1 = None
 	session2 = None
 	session_error = "session_error"
 	user_id1 = "idUsuario1"
 	user_id2 = "idUsuario2"
-	user_id_error = "idError"
+	user_id_error = "idERROR"
 	basepath = "/api/usuarios/"
 	
 	if len(sys.argv) == 2:
@@ -59,40 +60,40 @@ def main():
 		# TEST 4
 		print "TEST 4: Obtener info de usuario (sin proporcionar una cookie de sesión)"
 		print "Status esperado: 401"
-		request_uri = basepath + idUsuario1
+		request_uri = basepath + user_id1
 		test_utils.make_request("GET", request_uri, params, 401, None)		
 		
 		# TEST 5
 		print "TEST 5: Obtener info de usuario (no existente en el sistema)"
 		print "Status esperado: 404"
-		request_uri = basepath + idError
+		request_uri = basepath + user_id_error
 		test_utils.make_request("GET", request_uri, params, 404, session1)		
 
 		# TEST 6 
 		print "TEST 6: Obtener info de usuario, caso obtención de información pública de un usuario en concreto"
 		print "(proporcionando una cookie de sesión diferente al recurso usuario solicitado)"
 		print "Status esperado: 200"
-		request_uri = basepath + idUsuario1
+		request_uri = basepath + user_id1
 		test_utils.make_request("GET", request_uri, params, 200, session2)
 
 		# TEST 7 
 		print "TEST 7: Obtener info de usuario, caso obtención de información privada de un usuario en concreto"
 		print "(cookie de sesión coincide con recurso usuario solicitado)"
 		print "Status esperado: 200"
-		request_uri = basepath + idUsuario1
+		request_uri = basepath + user_id1
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
 		# TESTs Relativos a la Modificación de información de un usuario en particular
 		# TEST 8
 		print "TEST 8: Modificar info de usuario 1 (sin cookie de sesión)"
 		print "Status esperado: 401"
-		request_uri = basepath + idUsuario1
+		request_uri = basepath + user_id1
 		test_utils.make_request("POST", request_uri, params, 401, None)
 
 		# TEST 9
 		print "TEST 9: Modificar info de usuario 1 (Con cookie de sesión distinta a la del recurso usuario)"
 		print "Status esperado: 401"
-		request_uri = basepath + idUsuario1
+		request_uri = basepath + user_id1
 		test_utils.make_request("POST", request_uri, params, 401, session2)
 
 		# TEST 10
@@ -123,6 +124,7 @@ def main():
 		print "TEST 14: Modificar info de usuario, caso modificar todos los campos del usuario 2, cambiando ámbito de email y teléfono a privado"
 		print "(cookie de sesión correcta)"
 		print "Status esperado: 200 (Se modifican todos los campos del usuario)"
+		request_uri = basepath + user_id2
 		params = urllib.urlencode({'description': 'Metric Lover',
 			'web_site': 'PicBit.es',
 			'image': 'unsplash.com/superCoolImage.jpeg',
@@ -132,18 +134,78 @@ def main():
 			'private_email': 'True'})
 		test_utils.make_request("POST", request_uri, params, 200, session2)
 
+		# TEST 15
+		print "TEST 15: Obtener info de usuario 1"
+		print "Status esperado: 200 (Debe aparecer el componente que se ha añadido en la prueba anterior)"
+		request_uri = basepath + user_id1
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 200, session1)
+
 		# Comprobamos caso de uso de obtención de información privada de usuario
-		# TEST 14: GET Usuario, (cookie de sesión distinta al recurso solicitado)
-		# TEST 15: GET Usuario, (cookie de sesión asociada al usuario solicitado)
+		# TEST 16
+		print "TEST 16: Obtener info de usuario 2, (cookie de sesión distinta al recurso solicitado)"
+		print "Status esperado: 200 (No deben aparecer los campos correspondientes al teléfono'y email)"
+		request_uri = basepath + user_id2
+		test_utils.make_request("GET", request_uri, params, 200, session1)
+
+		# TEST 17
+		print "TEST 17: Obtener info de usuario 2(usuario activo solicita su propia información)"
+		print "Status esperado: 200"
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 200, session2)
+
 		# Cambiamos el ámbito de campos de usuario a público
-		# TEST 16: POST Usuario, caso cambiar a ámbito público el email y telefono de usuario (cookie de sesión correcta)
-		# TEST 17: Obtener usuario 1 con cookie de sesión de otro usuario (Verificar que se retorna el email y el teléfono)
+		# TEST 18
+		print "TEST 18: Cambiar info de usuario 2, caso cambiar a ámbito público el email y telefono de usuario (cookie de sesión correcta)"
+		print "Status esperado: 200"
+		params = urllib.urlencode({'private_phone': 'False',
+			'private_email': 'False'})
+		test_utils.make_request("POST", request_uri, params, 200, session2)		
+
+		# TEST 19
+		print "TEST 19: Obtener usuario 2 con cookie de sesión de otro usuario (Verificar que se retorna el email y el teléfono)"
+		print "Status esperado: 200"
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 200, session1)		
+
 	elif option == 'borrado':
-		pass
+		
 		# TESTs Relativos a la eliminación de un usuario del sistema
-		# TEST 17: DELETE Usuario (cookie de sesión incorrecta)
-		# TEST 18: DELETE Usuario (usuario no existente en el sistema)
-		# TEST 19: DELETE Usuario (cookie de sesión correcta)
+		# TEST 20
+		print "TEST 20: Borrar usuario del sistema (cookie de sesión incorrecta)"
+		print "Status esperado: 401"
+		request_uri = basepath + user_id1
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 401, session_error)				
+
+		# TEST 21
+		print "TEST 21: Borrar usuario el sistema (usuario no existente en el sistema)"
+		print "Status esperado: 404"
+		request_uri = basepath + user_id_error
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 404, session1)				
+		
+		# TEST 22
+		print "TEST 22: Borrar usuario 1 del sistema (cookie de sesión correcta)"
+		print "Status esperado: 204"
+		request_uri = basepath + user_id1
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 204, session1)
+
+		# TEST 23
+		print "TEST 23: Borrar usuario 2 del sistema (cookie de sesión correcta)"
+		print "Status esperado: 204"
+		request_uri = basepath + user_id2
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 204, session2)
+
+		# Obtenemos la lista de usuarios para verificar que se han eliminado los dos usuarios
+		# TEST 24
+		print "TEST 24: Obtener lista de usuarios en el sistema"
+		print "Status esperado: 200"
+		request_uri = basepath
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 200, session1)
 
 	# POSTESTs: Cierre de sesión con Google+ en el sistema
 	params = urllib.urlencode({})
@@ -157,7 +219,7 @@ def main():
 	
 	# Cerramos conexión e imprimimos el ratio de test ok vs erróneos
 	test_utils.closeConnection()
-	test_utils.test_status()
+	test_utils.tests_status()
 
 if __name__ == "__main__":
     main()

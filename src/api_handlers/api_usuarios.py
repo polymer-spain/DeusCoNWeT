@@ -35,7 +35,7 @@ class UserListHandler(SessionHandler):
 
   # GET Method
   def get(self):
-    cookie_value = self.request.get('session')
+    cookie_value = self.request.cookies.get('session')
     if not cookie_value == None:
       user_key = self.getUserInfo(cookie_value)
       if not user_key == None:
