@@ -213,7 +213,9 @@ def getUser(user_id): #FUNCIONA
 
 def getUserId(entity_key):
   user = entity_key.get()
-  user_id = user.user_id
+  user_id = None
+  if not user == None:
+    user_id = user.user_id
   return user_id
 
 @ndb.transactional(xg=True)
@@ -604,6 +606,12 @@ def addRate(entity_key, component_id, value):
   user.rates.append(rate)
 
 def deleteUser(entity_key):
+  user = entity_key.get()
+  token_list = user.tokens
+  # We delete the user tokens
+  for token in token_list:
+    deleteCredentials(entity_key, token.social_name, token.identifier)
+  # We delete the user
   entity_key.delete()
 
 def deleteComponent(component_name):

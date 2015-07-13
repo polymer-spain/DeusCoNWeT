@@ -164,11 +164,11 @@ class UserHandler(SessionHandler):
             user_info = ndb_pb.updateUser(user_logged_key, update_data)
             self.response.content_type = 'application/json'
             self.response.write({"success": "The update has been successfully executed", "status": "Updated"})
-            self.response.write(200)
+            self.response.set_status(200)
           else:
             self.response.content_type = 'application/json'
             self.response.write({"success": "Resource not modified (check parameters provided)", "status": "Not Modified"})
-            self.response.write(200)
+            self.response.set_status(200)
       else:
         self.response.content_type = 'application/json'
         self.response.write({"error": "You don\'t have the proper rights to modify this resource" +
@@ -183,26 +183,36 @@ class UserHandler(SessionHandler):
     cookie_value = self.request.cookies.get('session')
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
-      user_logged_id = ndb_pb.getUserId(user_logged_key)
-      if user_logged_id == user_id:
+      if not user_logged_key == None:
+        user_logged_id = ndb_pb.getUserId(user_logged_key)
         # It is neccesary to get the parameters from the request
         user_info = ndb_pb.getUser(user_id)
         if user_info == None:
           self.response.content_type = 'application/json'
           self.response.write({"error": "The user requested does not exist"})
           self.response.set_status(404)
-        else:
+        elif not user_info == None and user_logged_id == user_id:
+          # Logout of the user in the system
+          logout_status = self.logout(cookie_value)
+          # Invalidates the cookie
+          self.response.delete_cookie('session')
+
           # Deletes the user from the datastore
           ndb_pb.deleteUser(user_logged_key)
-          # Buids the response
+          
+          # Builds the response
           self.response.content_type = 'application/json'
           self.response.write({})
           self.response.set_status(204)
+        else:
+          self.response.content_type = 'application/json'
+          self.response.write({"error": "You do\'nt have the proper rights to delete this resource" +
+          " (The cookie session header does not match with the resource requested)"})
+          self.response.set_status(401)
       else:
         self.response.content_type = 'application/json'
-        self.response.write({"error": "You do\'nt have the proper rights to delete this resource" +
-          " (The cookie session header does not match with the resource requested)"})
-        self.response.set_status(401)
+        self.response.write({"error": "The session cookie header does not belong to an active user in the system"})
+        self.response.set_status(400)
     else:
       self.response.content_type = 'application/json'
       self.response.write({"error": "The user is not authenticated"})
