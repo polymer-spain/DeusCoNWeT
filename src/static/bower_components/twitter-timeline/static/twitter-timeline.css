@@ -1,6 +1,7 @@
 :host{
   display: inline-block;
   color:black;
+	z-index: inherit;
 }
 
 .box {
