@@ -202,37 +202,44 @@ def main():
 		request_uri = basepath + "/" + user_id_error
 		params = urllib.urlencode({})
 		test_utils.make_request("DELETE", request_uri, params, 404, session1, True)				
-		
+
 		# TEST 22
-		print "TEST 22: Borrar usuario 1 del sistema (cookie de sesión correcta)"
+		print "TEST 22: Borrar usuario 1 del sistema (cookie de sesión incorrecta)"
+		print "Status esperado: 401"
+		request_uri = basepath + "/" + user_id1
+		params = urllib.urlencode({})
+		test_utils.make_request("DELETE", request_uri, params, 401, session2, True)
+	
+		# TEST 23
+		print "TEST 23: Borrar usuario 1 del sistema (cookie de sesión correcta)"
 		print "Status esperado: 204. La cookie de sesión se invalida y se realiza logout del usuario en el sistema"
 		request_uri = basepath + "/" + user_id1
 		params = urllib.urlencode({})
 		test_utils.make_request("DELETE", request_uri, params, 204, session1, True)
 
-		# TEST 23
-		print "TEST 23: Borrar usuario 1 del sistema (usuario ya borrado del sistema)"
+		# TEST 24
+		print "TEST 24: Borrar usuario 1 del sistema (usuario ya borrado del sistema)"
 		print "Status esperado: 400 (La cookie proporcionada no corresponde con ningún usuario del sistema)"
 		request_uri = basepath + "/" + user_id1
 		params = urllib.urlencode({})
 		test_utils.make_request("DELETE", request_uri, params, 400, session1, True)	
 
-		# TEST 24
-		print "TEST 24: Obtener la lista de usuarios del sistema, para verificar que se ha eliminado el usuario"
+		# TEST 25
+		print "TEST 25: Obtener la lista de usuarios del sistema, para verificar que se ha eliminado el usuario"
 		print "Status esperado: 200"
 		request_uri = basepath
 		params = urllib.urlencode({})
 		test_utils.make_request("GET", request_uri, params, 200, session2, True)
 
-		# TEST 25
-		print "TEST 25: Borrar usuario 2 del sistema"
+		# TEST 26
+		print "TEST 26: Borrar usuario 2 del sistema"
 		print "Status esperado: 204"
 		request_uri = basepath + "/" + user_id2
 		params = urllib.urlencode({})
 		test_utils.make_request("DELETE", request_uri, params, 204, session2, True)
 
-		# TEST 24
-		print "TEST 24: Obtener la lista de usuarios del sistema, " + \
+		# TEST 27
+		print "TEST 27: Obtener la lista de usuarios del sistema, " + \
 		"para verificar que se ha invalidado la cookie de sesión del usuario tras su borrado del sistema"
 		print "Status esperado: 400"
 		request_uri = basepath

@@ -36,7 +36,6 @@ class UserListHandler(SessionHandler):
   # GET Method
   def get(self):
     cookie_value = self.request.cookies.get('session')
-    print "DEBUG: cookie_value ", cookie_value
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
@@ -114,18 +113,19 @@ class UserHandler(SessionHandler):
     cookie_value = self.request.cookies.get('session')
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
-      user_logged_id = ndb_pb.getUserId(user_logged_key)
-      # Checks if the user active is the owner of the resource
-      if user_logged_id == user_id:
-        user_info = ndb_pb.getUser(user_logged_id)
+      if not user_logged_key == None:
+        user_logged_id = ndb_pb.getUserId(user_logged_key)
+        user_info = ndb_pb.getUser(user_id)
+        # Checks if the user active is the owner of the resource (if exists)
         if user_info == None:
           self.response.content_type = 'application/json'
           self.response.write({"error": "The user requested does not exist"})
           self.response.set_status(404)
-        else:
+        elif not user_info == None and user_logged_id==user_id:
           user = json.dumps(user_info)  
           values = self.request.POST
           update_data = {}
+
           # We parse the data received in the request
           if values.has_key("description"):
             update_data["description"] = values.get("description")
@@ -163,21 +163,26 @@ class UserHandler(SessionHandler):
           if not len(update_data) == 0:
             user_info = ndb_pb.updateUser(user_logged_key, update_data)
             self.response.content_type = 'application/json'
-            self.response.write({"success": "The update has been successfully executed", "status": "Updated"})
+            self.response.write({"success": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()})
             self.response.set_status(200)
           else:
             self.response.content_type = 'application/json'
-            self.response.write({"success": "Resource not modified (check parameters provided)", "status": "Not Modified"})
-            self.response.set_status(200)
+            self.response.write({"success": "Resource not modified (check parameters and values provided)", "status": "Not Modified"})
+            self.response.set_status(200) 
+        else:
+          self.response.content_type = 'application/json'
+          self.response.write({"error": "You don\'t have the proper rights to modify this resource" +
+            " (The cookie session header does not match with the resource requested)"})
+          self.response.set_status(401)
       else:
         self.response.content_type = 'application/json'
-        self.response.write({"error": "You don\'t have the proper rights to modify this resource" +
-          " (The cookie session header does not match with the resource requested)"})
-        self.response.set_status(401)
+        self.response.write({"error": "The session cookie header does not belong to an active user in the system"})
+        self.response.set_status(400)
     else:
       self.response.content_type = 'application/json'
       self.response.write({"error": "The user is not authenticated"})
       self.response.set_status(401)
+  
 
   def delete(self, user_id):
     cookie_value = self.request.cookies.get('session')
