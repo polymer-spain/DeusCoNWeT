@@ -83,7 +83,7 @@
         <core-icon icon="help"></core-icon>
         <span ng-show="showElement">{{language.user_action.help}}</span>
         <div ng-show="toggleHelp" class="shadow">
-          <div class="helpModal" >
+          <div ng-show="toggleHelp" class="helpModal">
             <div style="width:100%;height:24px;margin-bottom:30px">
               <core-icon-button style="position:absolute;right:0" ng-click="setToggleHelp($event)" icon="close"></core-icon-button>
             </div>

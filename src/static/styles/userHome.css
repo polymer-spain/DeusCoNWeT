@@ -121,7 +121,17 @@ html {
   height: 20px;
   transition: all ease 1s;
 }
-#help .helpModal {
+
+.helpModal.ng-hide{
+  opacity: 0;
+}
+
+.helpModal.ng-hide-remove.ng-hide-remove-active {
+  transition: all linear 0.25s;
+}
+
+.helpModal{
+  opacity: 1;
   cursor:default;
   position:fixed;
   top:0;
