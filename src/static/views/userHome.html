@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="animate-show list" ng-show="!hidelist('add')">
-          <div ng-repeat="element in listComponents">
+          <div ng-repeat="element in listComponents | arrayFilter:listComponentAdded">
             <p ng-create-element id-element="{{element.name}}" list-attributes="{{element.attributes}}">{{element.name}}</p>
           </div>
           <div ng-if="listComponents.length == 0">
