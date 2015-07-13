@@ -145,7 +145,7 @@ html {
 	color:brown;
 	background-color:whitesmoke;
 	width: 30%;
-	max-height: 350px;
+	max-height: 330px;
 	z-index: 20000;
 	overflow-y: auto;
 	text-align: center;
@@ -163,6 +163,6 @@ html {
 }
 
 .helpModal .help-text {
-	margin: 15px 0;
+	margin: 24px 0;
 	text-align:justify;
 }
