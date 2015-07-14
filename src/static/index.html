@@ -14,6 +14,7 @@
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/elements.html">
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
+    
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/landingPage.css">
     <link href="https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic" rel="stylesheet" type="text/css">
@@ -38,7 +39,7 @@
       <!-- End Languages -->
 
       <core-icon-button ng-show="!status" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
-        <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.login}}</span>
+        <span id="nameId">{{language.login}}</span>
       </core-icon-button>
 
       <div ng-click="dropmenu()"  ng-show="status" relative>
@@ -69,9 +70,9 @@
 
     <div ng-show="shadow" class="shadow"></div>
     <div ng-show="popup" vertical center layout class="popup" id="popup">
-      <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
+      <core-icon-button  ng-click="hidePopup()" icon="close"></core-icon-button>
 
-      <span style="margin:7% 10%;font-size:1.4em">{{language.select_network}}</span>
+      <span>{{language.select_network}}</span>
       <div vertical center-justified layout class="button-login">
         <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
         <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static="true"></twitter-login>

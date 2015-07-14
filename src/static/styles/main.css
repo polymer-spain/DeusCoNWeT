@@ -72,6 +72,15 @@ paper-button {
   z-index: 200;
   text-align: center;
 }
+#popup > core-icon-button {
+  position:absolute;
+  right:0;
+}
+
+#popup > span {
+  margin: 7% 10%;
+  font-size:1.4em;
+}
 #popup > div {
   margin-top: 30px;
 }
@@ -234,4 +243,8 @@ select.language > option {
 }
 #dropmenu core-item[active] {
   font-weight: normal;
+}
+
+#siginButton > span {
+  padding-left: 3px;vertical-align:middle 
 }
