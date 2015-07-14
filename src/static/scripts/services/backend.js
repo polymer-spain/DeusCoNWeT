@@ -1,5 +1,5 @@
 /*global angular */
-angular.module("picbit").service("$backend", function ($http, $location) {
+angular.module("picbit").service("$backend",["$http", "$location", function ($http, $location) {
 
   "use strict";
 
@@ -101,4 +101,4 @@ angular.module("picbit").service("$backend", function ($http, $location) {
   };
 
 
-});
+}]);

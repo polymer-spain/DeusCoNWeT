@@ -1,5 +1,5 @@
 /*global angular, document */
-angular.module("picbit").controller("LandingController", function ($scope, $timeout, $location, $anchorSmoothScroll, $anchorScroll, $backend) {
+angular.module("picbit").controller("LandingController", ["$scope", "$timeout", "$location", "$anchorSmoothScroll", "$anchorScroll", "$backend", function ($scope, $timeout, $location, $anchorSmoothScroll, $anchorScroll, $backend) {
   "use strict";
   if ($location.hash() === "section1") {
     $scope.selected = 1;
@@ -126,4 +126,4 @@ angular.module("picbit").controller("LandingController", function ($scope, $time
   $scope.isSelected = function (sel) {
     return $scope.selected === sel;
   };
-});
+}]);
