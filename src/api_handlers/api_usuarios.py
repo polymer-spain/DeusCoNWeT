@@ -211,7 +211,7 @@ class UserHandler(SessionHandler):
           self.response.set_status(204)
         else:
           self.response.content_type = 'application/json'
-          self.response.write({"error": "You do\'nt have the proper rights to delete this resource" +
+          self.response.write({"error": "You do not have the proper rights to delete this resource" +
           " (The cookie session header does not match with the resource requested)"})
           self.response.set_status(401)
       else:
