@@ -356,7 +356,7 @@ class GitHubContainerHandler(OAuthCredentialsContainerHandler):
 
         # Gestion de la respuesta de webapp
         self.response.content_type = "application/json"
-        response = "{"token": "" + access_token + ""}"
+        response = {"token": "" + access_token + ""}
         self.response.write(response)
         connection.close()
         self.response.set_status(200)
