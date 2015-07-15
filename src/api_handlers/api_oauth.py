@@ -87,9 +87,13 @@ class OauthLoginHandler(SessionHandler):
     """
     def post_login(self, social_network):
         try:
+            # We get the params from the POST data
+            post_params = self.request.POST
             access_token = self.request.POST["access_token"]
             token_id = self.request.POST["token_id"]
-            user_identifier = self.request.POST["user_identifier"]
+            
+            if values.has_key("user_identifier"):
+                user_identifier = self.request.POST["user_identifier"]
 
             # Checks if the username was stored previously
             stored_credentials = ndb_pb.searchToken(token_id,
@@ -106,17 +110,29 @@ class OauthLoginHandler(SessionHandler):
                 self.response.set_cookie("session", session_id,
                         path="/", domain=domain, secure=True)
 
+                # Builds the response
+                response = {"status": "User logged successfully", "user_id": user_identifier}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+
                 self.response.set_status(201)
             else:
                 # We store the new set of credentials
                 user_key = ndb_pb.modifyToken(token_id,
                         access_token, social_network)
+                user_id = ndb_pb.getUserId(user_key)
                 session_id = self.login(user_key)
 
                 # Returns the session cookie
                 self.response.set_cookie("session", session_id,
                         path="/", domain=domain, secure=True)
+
+                # Builds the response
+                response = {"status": "User logged successfully", "user_id": user_id}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
                 self.response.set_status(200)
+
         except KeyError:
             response = \
                 {"error": "You must provide a valid pair of access_token and token_id in the request," +
@@ -152,14 +168,13 @@ class OauthLogoutHandler(SessionHandler):
 class OauthCredentialsHandler(SessionHandler):
     def get_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get("session")
+        # Obtains info related to the user authenticated in the system
         if not cookie_value == None:
-            # Obtains info related to the user authenticated in the system
             logged_user = self.getUserInfo(cookie_value)
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
-                logged_user_info = json.loads(ndb_pb.getUser(logged_user))
-                logged_user_id = logged_user_info["user_id"]
+                logged_user_id = ndb_pb.getUserId(logged_user)
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
                 if not user_credentials == None:
@@ -171,8 +186,7 @@ class OauthCredentialsHandler(SessionHandler):
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
                     else:
-                        response = \
-                            {"user_id": user_credentials["user_id"]}
+                        response = {"user_id": user_credentials["user_id"]}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
@@ -185,16 +199,16 @@ class OauthCredentialsHandler(SessionHandler):
                     self.response.set_status(404)
             else:
                 response = \
-                    {"error": "The cookie session provided does not belongs to any active user"}
+                {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)
+                self.response.set_status(400)       
         else:
-            response = {"error": "You must provide a session cookie"}
+            user = ndb_pb.getToken(token_id,social_network)
+            response =  {"user_id": user["user_id"]}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
-            self.response.set_status(401)
-
+            self.response.set_status(200)   
     
     def delete_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get("session")
@@ -356,7 +370,7 @@ class GitHubContainerHandler(OAuthCredentialsContainerHandler):
 
         # Gestion de la respuesta de webapp
         self.response.content_type = "application/json"
-        response = "{"token": "" + access_token + ""}"
+        response = {"token": "" + access_token + ""}
         self.response.write(response)
         connection.close()
         self.response.set_status(200)

@@ -53,44 +53,45 @@ def main():
 			test_utils.make_request("POST", request_uri, params, 201, None)
 
 			# Tests relativos al método GET de credenciales
-			# TEST 4
+			# Obtener credenciales sin cookie
+			# TEST 4	
+			request_uri = basePath + "/credenciales/" + token_id1
+			print "TEST 4: Obtener credenciales sin cookie de sesion"
+			print "Status esperado: 200 (Retorna únicamente el id de usuario propietario de las credenciales)"
+			params = urllib.urlencode({})
+			test_utils.make_request("GET", request_uri, params, 200, None)
+
+			# TEST 5
 			# Obtener credenciales con cookie	
 			request_uri = basePath + "/credenciales/" + token_id2
-			print "TEST 4: Obtener credenciales con cookie de sesion, a una credencial que no es propiedad del usuario"
+			print "TEST 5: Obtener credenciales con cookie de sesion, a una credencial que no es propiedad del usuario"
 			print "Status esperado: 200 (Solo retorna el id de usuario propietario del token)"
 			params = urllib.urlencode({})
 			test_utils.make_request("GET", request_uri, params, 200, session1)
 
+
 			# Obtener credenciales con cookie
-			# TEST 5	
+			# TEST 6	
 			request_uri = basePath + "/credenciales/" + token_id1
-			print "TEST 5: Obtener credenciales con cookie de sesion, a una credencial propiedad del usuario"
+			print "TEST 6: Obtener credenciales con cookie de sesion, a una credencial propiedad del usuario"
 			print "Status esperado: 200"
 			params = urllib.urlencode({})
 			test_utils.make_request("GET", request_uri, params, 200, session1)
 
 			#Logouts
-			# TEST 6
+			# TEST 7
 			request_uri = basePath + "/logout"
-			print "TEST 6: Logout sin cookie de sesion"
+			print "TEST 7: Logout sin cookie de sesion"
 			print "Status esperado: 401"
 			params = urllib.urlencode({})
 			test_utils.make_request("POST", request_uri, params, 401, None)
 
-			# TEST 7
+			# TEST 8
 			# Se desloguea el usuario logueado en el test1
-			print "TEST 7: Logout con cookie de sesion (usuario1)"
+			print "TEST 8: Logout con cookie de sesion (usuario1)"
 			print "Status esperado: 200"
 			test_utils.make_request("POST", request_uri, params, 200, session1)
 			
-			# TEST 8
-			# Get (Sin cookie)
-			request_uri = basePath + "/credenciales/" + token_id2
-			print "TEST 8: Obtener credenciales sin cookie"
-			print " Status esperado: 200 (Retorna únicamente el id de usuario)"
-			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 200, None)
-
 			# TEST 9
 			# Login (prueba de nueva sesión y actualizar credenciales)
 			request_uri = basePath + "/login"
@@ -105,9 +106,9 @@ def main():
 			# Obtener credenciales con cookie antigua
 			request_uri = basePath + "/credenciales/" + token_id1
 			print "TEST 10: Obtener credenciales con cookie de sesión antigua"
-			print "Status esperado: 200 (Retorna unicamente el id de usuario)"
+			print "Status esperado: 400 "
 			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 200, session1)
+			test_utils.make_request("GET", request_uri, params, 400, session1)
 
 			# TEST 11 
 			# Logout con cookie antigua
@@ -259,7 +260,7 @@ def main():
 			# Get (Sin cookie)
 			request_uri = "/api/oauth/" + social_network + "/credenciales/" + token_id1
 			print "TEST 6: Obtener credenciales sin cookie de sesión"
-			print "Status esperado: 401"
+			print "Status esperado: 200 (Retorna el propietario de las credenciales)"
 			params = urllib.urlencode({})
 			test_utils.make_request("GET", request_uri, params, 401, None)
 
