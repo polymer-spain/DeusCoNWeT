@@ -387,6 +387,7 @@ def insertUserComponent(entity_key, name, x=0, y=0, height="", width="", listeni
 def modifyComponent(entity_key, name, data): #FUNCIONA
   user = entity_key.get()
   comps = user.components
+  print "DEBUG: Lista de componentes del usuario: ", comps
   for comp in comps:
     if comp.name == name:
       if data.has_key("x"):
@@ -609,7 +610,13 @@ def subscribedUser(email):
 def addRate(entity_key, component_id, value):
   user = entity_key.get()
   rate = UserRating(component_id=component_id, rating_value=value)
-  user.rates.append(rate)
+  status = False
+  for comp_rate in user.rates:
+    if comp_rate.component_id == component_id:
+      comp_rate.rating_value = value
+      user.put()
+      status = True
+  return status
 
 def deleteUser(entity_key):
   user = entity_key.get()
@@ -632,8 +639,10 @@ def deleteComponent(component_name):
     # Now, it's necessary to delete this component from all the users
     comp = UserComponent(component_id=component_name)
     users = User.query(User.components==comp).fetch(100)
+    for user in users:
+      user.components.remove(comp)
+      user.put()
 
-    [user.components.remove(comp) for user in users]
   return status
 
 def deleteCredentials(entity_key, rs, id_rs):

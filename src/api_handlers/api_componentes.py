@@ -61,11 +61,10 @@ class ComponentListHandler(SessionHandler):
             user_id = self.getUserInfo(cookie_value)
             if not user_id == None:
                 if social_network in social_list  or social_network == '' and filter_param in filter_list and list_format in format_list:
-                    format_flag = True if list_format == 'complete' else False
+                    format_flag = True if list_format == 'complete' and filter_param == 'user' else False
                     user_filter = True if filter_param == 'user' else False
                     # Get the component list, according to the filters given
                     component_list = ndb_pb.getComponents(user_id, social_network, format_flag, user_filter)
-                    print "DEBUG: tipo component_list ", type(component_list)
                     if not len(component_list) == 0:
                         self.response.content_type = 'application/json'
                         self.response.write(component_list)
@@ -210,14 +209,15 @@ class ComponentHandler(SessionHandler):
         rating = self.request.get('rating', default_value='none')
         x_axis = self.request.get('x_axis', default_value='none')
         y_axis = self.request.get('y_axis', default_value='none')
-
+        listening = self.request.get('listening', default_value='none')
         if not cookie_value == None:
             # Checks whether the cookie belongs to an active user and the request has provided at least one param
             user_id = self.getUserInfo(cookie_value)
             if not user_id == None and not rating == 'none' or not x_axis == 'none' or not y_axis == 'none':
                 data = {}
-                response = {'status': 'Component updated succesfully'}
-                response_status = 200
+                component_modified_success = False
+                rating_error = False
+                # We get the data from the request
                 try:
                     if not rating == 'none':
                         rating_value = float(rating)
@@ -225,28 +225,46 @@ class ComponentHandler(SessionHandler):
                         data['x'] = float(x_axis)
                     if not y_axis == 'none':
                         data['y'] = float(y_axis)
+                    if not listening == 'none':
+                        data['listening'] = listening
                 except ValueError:
                     response = \
                     {'error': 'x_axis, y_axis and rating must have a numeric value'}
-                    response_status = 400
+                    self.response.content_type = 'application/json'                
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
 
-                # Update the info about the component
-                if not len(data) == 0:
-                    ndb_pb.modifyComponent(user_id, component_id, data)
-                
-                # Update the component rating
+                # Updates the component rating
                 if not rating == 'none':
                     if rating_value > 0 and rating_value < 5:
-                        ndb_pb.addRate(user_id, component_id, rating_value)
+                        rating_updated = ndb_pb.addRate(user_id, component_id, rating_value)
+                        if not rating_updated:
+                            rating_error = True
+                            response = {'error': 'The component_id specified does not belong to the user dashboard'}
+                            self.response.content_type = 'application/json'                
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(400)
+                        else:
+                            component_modified_success = True
                     else:
+                        rating_error = True
                         response = \
                         {'error': 'Rating must be a numeric value between 0.0 and 5.0'}
-                        response_status = 400
+                        self.response.content_type = 'application/json'                
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)
 
-                self.response.content_type = 'application/json'                
-                self.response.write(json.dumps(response))
-                self.response.set_status(response_status)    
+                # Updates the info about the component
+                if not len(data) == 0 and not rating_error:
+                    ndb_pb.modifyComponent(user_id, component_id, data)
+                    component_modified_success = True
 
+                # Compounds the success response if the component has ben updated successfully
+                if component_modified_success:
+                    response = {'status': 'Component updated succesfully'}
+                    self.response.content_type = 'application/json'                
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
             else:
                 response = \
                     {'error': 'The cookie session provided does not belongs to any active user'}
