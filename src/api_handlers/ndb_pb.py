@@ -265,11 +265,17 @@ def updateUser(entity_key, data): #FUNCIONA
     user.image = data["website"]
   if data.has_key("componente"):
     comp_name = data["component"]
+    # We add the component to the component_list of the user
+    component = UserComponent(component_id=comp_name, x=0, y=0, height=0, width=0, listening=None)
+    user.components.append(component)
+    # We add a Rating entity that represents the component rating
     if data.has_key("rate"):
       rate = data["rate"]
-      rating = UserRating(component_id=comp_name, rating_value=rate)
-      user.rates.append(rating)
-
+    else:
+      rate = 0  
+    rating = UserRating(component_id=comp_name, rating_value=rate)
+    user.rates.append(rating)
+  # Updates the data
   user.put()
 
 def insertToken(entity_key, social_name, token, user_id): #FUNCIONA

@@ -103,14 +103,14 @@ def main():
 		test_utils.make_request("POST", request_uri, params, 404, session2)
 
 		# TEST 11
-		print "TEST 11: Modificar info de usuario, caso parámetros incorrectos (Cookie de sesión correcta)"
+		print "TEST 11: Modificar info de usuario 1, caso parámetros incorrectos (Cookie de sesión correcta)"
 		print "Status esperado: 200 (El recurso no se modifica)"
 		request_uri = basepath + "/" + user_id1
 		params = urllib.urlencode({"badParam": "valueERROR"})
 		test_utils.make_request("POST", request_uri, params, 200, session1)
 
 		# TEST 12
-		print "TEST 12: Modificar info de usuario, sin proporcionar parámetros (Cookie de sesión correcta)"
+		print "TEST 12: Modificar info de usuario 1, sin proporcionar parámetros (Cookie de sesión correcta)"
 		print "Status esperado: 200 (El recurso no se modifica)"
 		params = urllib.urlencode({})
 		test_utils.make_request("POST", request_uri, params, 200, session1)
