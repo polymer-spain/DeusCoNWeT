@@ -35,25 +35,25 @@ class UserListHandler(SessionHandler):
 
   # GET Method
   def get(self):
-    cookie_value = self.request.cookies.get('session')
+    cookie_value = self.request.cookies.get("session")
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
         users_list = ndb_pb.getUsers()
         if len(users_list) == 0:
-          self.response.content_type = 'application/json'
-          self.response.write('')
+          self.response.content_type = "application/json"
+          self.response.write("")
           self.response.set_status(204)
         else:
-          self.response.content_type = 'application/json'
+          self.response.content_type = "application/json"
           self.response.write(users_list)
           self.response.set_status(200)
       else:
-        self.response.content_type = 'application/json'
+        self.response.content_type = "application/json"
         self.response.write({"error": "The session cookie header does not belong to an active user in the system"})
         self.response.set_status(400)
     else:
-      self.response.content_type = 'application/json'
+      self.response.content_type = "application/json"
       self.response.write({"error": "The user is not authenticated"})
       self.response.set_status(401)
 
@@ -67,7 +67,7 @@ class UserHandler(SessionHandler):
   post -- Modifies the info related to an user
   """
   def get(self, user_id):
-    cookie_value = self.request.cookies.get('session')
+    cookie_value = self.request.cookies.get("session")
     if not cookie_value == None:
       # Obtains info related to the user authenticated in the system
       user_logged_key = self.getUserInfo(cookie_value)
@@ -75,7 +75,7 @@ class UserHandler(SessionHandler):
         # Obtains the info related to the resource requested
         user_info = ndb_pb.getUser(user_id)
         if user_info == None:
-          self.response.content_type = 'application/json'
+          self.response.content_type = "application/json"
           self.response.write({"error": "The user requested does not exist"})
           self.response.set_status(404)
         else:
@@ -83,7 +83,7 @@ class UserHandler(SessionHandler):
           user_logged_id = ndb_pb.getUserId(user_logged_key)
           # Depending on the user making the request, the info returned will be one or another
           if user_id == user_logged_id:
-            self.response.content_type = 'application/json'
+            self.response.content_type = "application/json"
             self.response.write(user_info)
             self.response.set_status(200)
           else:
@@ -97,20 +97,20 @@ class UserHandler(SessionHandler):
               user_dict["email"] = user_info["email"]
             if user_info["private_phone"] == False:
               user_dict["phone"] = user_info["phone"]
-            self.response.content_type = 'application/json'
+            self.response.content_type = "application/json"
             self.response.write(json.dumps(user_dict))
             self.response.set_status(200)
       else:
-        self.response.content_type = 'application/json'
+        self.response.content_type = "application/json"
         self.response.write({"error": "The session cookie header does not belong to an active user in the system"})
         self.response.set_status(400)
     else:
-      self.response.content_type = 'application/json'
+      self.response.content_type = "application/json"
       self.response.write({"error": "The user is not authenticated"})
       self.response.set_status(401)
 
   def post(self, user_id):
-    cookie_value = self.request.cookies.get('session')
+    cookie_value = self.request.cookies.get("session")
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
@@ -118,7 +118,7 @@ class UserHandler(SessionHandler):
         user_info = ndb_pb.getUser(user_id)
         # Checks if the user active is the owner of the resource (if exists)
         if user_info == None:
-          self.response.content_type = 'application/json'
+          self.response.content_type = "application/json"
           self.response.write({"error": "The user requested does not exist"})
           self.response.set_status(404)
         elif not user_info == None and user_logged_id==user_id:
@@ -139,18 +139,18 @@ class UserHandler(SessionHandler):
             update_data["email"] = values.get("email")
           if values.has_key("private_phone"):
             # Checks if private_phone has a proper value
-            if values.get("private_phone") == 'True':
+            if values.get("private_phone") == "True":
               private_phone = True
               update_data["private_phone"] = private_phone
-            elif values.get("private_phone") == 'False':
+            elif values.get("private_phone") == "False":
               private_phone = False
               update_data["private_phone"] = private_phone
           if values.has_key("private_email"):
              # Checks if private_email has a proper value
-            if values.get("private_email") == 'True':
+            if values.get("private_email") == "True":
               private_email = True
               update_data["private_email"] = private_email
-            elif values.get("private_email") == 'False':
+            elif values.get("private_email") == "False":
               private_email = False
               update_data["private_email"] = private_email
           if values.has_key("component"):
@@ -162,30 +162,30 @@ class UserHandler(SessionHandler):
           # Updates the resource 
           if not len(update_data) == 0:
             user_info = ndb_pb.updateUser(user_logged_key, update_data)
-            self.response.content_type = 'application/json'
+            self.response.content_type = "application/json"
             self.response.write({"success": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()})
             self.response.set_status(200)
           else:
-            self.response.content_type = 'application/json'
+            self.response.content_type = "application/json"
             self.response.write({"success": "Resource not modified (check parameters and values provided)", "status": "Not Modified"})
             self.response.set_status(200) 
         else:
-          self.response.content_type = 'application/json'
-          self.response.write({"error": "You don\'t have the proper rights to modify this resource" +
+          self.response.content_type = "application/json"
+          self.response.write({"error": "You don\"t have the proper rights to modify this resource" +
             " (The cookie session header does not match with the resource requested)"})
           self.response.set_status(401)
       else:
-        self.response.content_type = 'application/json'
+        self.response.content_type = "application/json"
         self.response.write({"error": "The session cookie header does not belong to an active user in the system"})
         self.response.set_status(400)
     else:
-      self.response.content_type = 'application/json'
+      self.response.content_type = "application/json"
       self.response.write({"error": "The user is not authenticated"})
       self.response.set_status(401)
   
 
   def delete(self, user_id):
-    cookie_value = self.request.cookies.get('session')
+    cookie_value = self.request.cookies.get("session")
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
@@ -193,32 +193,32 @@ class UserHandler(SessionHandler):
         # It is neccesary to get the parameters from the request
         user_info = ndb_pb.getUser(user_id)
         if user_info == None:
-          self.response.content_type = 'application/json'
+          self.response.content_type = "application/json"
           self.response.write({"error": "The user requested does not exist"})
           self.response.set_status(404)
         elif not user_info == None and user_logged_id == user_id:
           # Logout of the user in the system
           logout_status = self.logout(cookie_value)
           # Invalidates the cookie
-          self.response.delete_cookie('session')
+          self.response.delete_cookie("session")
 
           # Deletes the user from the datastore
           ndb_pb.deleteUser(user_logged_key)
           
           # Builds the response
-          self.response.content_type = 'application/json'
+          self.response.content_type = "application/json"
           self.response.write({})
           self.response.set_status(204)
         else:
-          self.response.content_type = 'application/json'
+          self.response.content_type = "application/json"
           self.response.write({"error": "You do not have the proper rights to delete this resource" +
           " (The cookie session header does not match with the resource requested)"})
           self.response.set_status(401)
       else:
-        self.response.content_type = 'application/json'
+        self.response.content_type = "application/json"
         self.response.write({"error": "The session cookie header does not belong to an active user in the system"})
         self.response.set_status(400)
     else:
-      self.response.content_type = 'application/json'
+      self.response.content_type = "application/json"
       self.response.write({"error": "The user is not authenticated"})
       self.response.set_status(401)
