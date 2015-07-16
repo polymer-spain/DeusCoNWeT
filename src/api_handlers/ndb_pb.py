@@ -646,12 +646,22 @@ def deleteComponent(component_name):
   return status
 
 def deleteCredentials(entity_key, rs, id_rs):
+  status = False
   tok = Token.query(Token.identifier == id_rs).filter(Token.social_name == rs).get()
-  token_aux = tok.token
-  del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
-  tok.key.delete()
-  user = entity_key.get()
-  user.tokens.remove(del_token)
+  if not tok == None:
+    user = entity_key.get()
+    # We delete the token if it is not the only token stored for the user and
+    # does not belong to a social network to perform login in our system
+    if not rs in ['google', 'facebook', 'twitter'] and not len(user.tokens) == 1:
+      token_aux = tok.token
+      del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
+      tok.key.delete()
+      # Deletes the token from the user
+      if not user == None:
+        user.tokens.remove(del_token)
+        user.put()
+        status = True
+  return status
 
 def getUsers():
   users = User.query().fetch(100)

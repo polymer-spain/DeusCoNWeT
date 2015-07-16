@@ -150,33 +150,33 @@ def main():
 			# Borrar credenciales de usuario de prueba1 (Estando logeado)
 			request_uri = basePath + "/credenciales/" + token_id1
 			print "TEST 13: Borrado de credenciales estando logeado (usuario 1)"
-			print "Status esperado: 204"
+			print "Status esperado: 403 (Es el único token de login en el sistema)"
 			params = urllib.urlencode({})
-			test_utils.make_request("DELETE", request_uri, params, 204, session1)
+			test_utils.make_request("DELETE", request_uri, params, 403, session1)
 			
 			# TEST 14
 			# Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
-			request_uri = basePath + "/" + token_id2
+			request_uri = basePath + "/credenciales/" + token_id2
 			print "TEST 14: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
-			print "Status esperado: 401"
+			print "Status esperado: 401 (Es el único token de login en el sistema)"
 			params = urllib.urlencode({})
 			test_utils.make_request("DELETE", request_uri, params, 401, session1)
 
 			# TEST 15
 			# Borrar credenciales de usuario de prueba2 (Estando logeado)
-			request_uri = basePath + "/" + token_id2
+			request_uri = basePath + "/credenciales/" + token_id2
 			print "TEST 15: Borrado de credenciales estando logeado"
 			print "Status esperado: 204"
 			params = urllib.urlencode({})
-			test_utils.make_request("DELETE", request_uri, params, 204, session2)
+			test_utils.make_request("DELETE", request_uri, params, 403, session2)
 
-			# TEST 16
-			# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
-			request_uri = basePath + "/" + token_id2
-			print "TEST 16: Intento de borrado por segunda vez (credenciales de usuario 2)"
-			print "Status esperado: 404"
-			params = urllib.urlencode({})
-			test_utils.make_request("DELETE", request_uri, params, 404, session2)
+			# # TEST 16
+			# # Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
+			# request_uri = basePath + "/credenciales/" + token_id2
+			# print "TEST 16: Intento de borrado por segunda vez (credenciales de usuario 2)"
+			# print "Status esperado: 404"
+			# params = urllib.urlencode({})
+			# test_utils.make_request("DELETE", request_uri, params, 404, session2)
 
 			# POST-TEST 1: Realizar logout en el sistema (usuario 1)
 			request_uri = basePath + "/logout"

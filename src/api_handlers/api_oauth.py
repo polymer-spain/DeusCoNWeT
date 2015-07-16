@@ -92,7 +92,7 @@ class OauthLoginHandler(SessionHandler):
             access_token = self.request.POST["access_token"]
             token_id = self.request.POST["token_id"]
             
-            if values.has_key("user_identifier"):
+            if post_params.has_key("user_identifier"):
                 user_identifier = self.request.POST["user_identifier"]
 
             # Checks if the username was stored previously
@@ -154,7 +154,6 @@ class OauthLogoutHandler(SessionHandler):
         if not cookie_value == None:
             # Logout
             logout_status = self.logout(cookie_value)
-            # TODO: Invalidate the cookie!
             self.response.delete_cookie("session")
             self.response.set_status(200)
         else:
@@ -214,18 +213,39 @@ class OauthCredentialsHandler(SessionHandler):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
             # Searchs for user"s credentials
-            user = self.getUserInfo(cookie_value)
-            if not user == None:
-                deleteStatus = ndb_pb.deleteCredentials(user, social_network, token_id)
-                if deleteStatus:
-                    response = \
-                        {"status": "Credentials deleted successfully"}
-                    self.response.content_type = "application/json"
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(204)
+            logged_user_key = self.getUserInfo(cookie_value)
+            if not logged_user_key == None:
+                logged_user_id = ndb_pb.getUserId(logged_user_key)
+                token = ndb_pb.getToken(token_id, social_network)
+                print "DEBUG token encontrado: ", token
+                if not token == None:
+                    token_owner_id = token['user_id']
+                    if logged_user_id == token_owner_id:
+                        # Deletes the token from the user
+                        token_deleted = ndb_pb.deleteCredentials(logged_user_key, social_network, token_id)
+                        print "DEBUG status de borrado ", token_deleted
+                        if token_deleted:
+                            response = \
+                                {"status": "Credentials deleted successfully"}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(204)
+                        else:
+                            response = \
+                                {"error": "This token cannot be deleted, because it is being used as the only token" + \
+                                 "to perform the login action in the system"}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(403)
+                    else:
+                        response = \
+                            {"error": "You do not have permissions to perform this request"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(401)
                 else:
                     response = \
-                        {"status": "Token not found in the system"}
+                            {"error": "Token not found in the system"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
