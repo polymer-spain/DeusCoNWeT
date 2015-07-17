@@ -170,6 +170,7 @@ class OauthCredentialsHandler(SessionHandler):
         # Obtains info related to the user authenticated in the system
         if not cookie_value == None:
             logged_user = self.getUserInfo(cookie_value)
+            print "DEBUG: Usuario logueado: ", logged_user
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
@@ -203,11 +204,17 @@ class OauthCredentialsHandler(SessionHandler):
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)       
         else:
-            user = ndb_pb.getToken(token_id,social_network)
-            response =  {"user_id": user["user_id"]}
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps(response))
-            self.response.set_status(200)   
+            user_credentials = ndb_pb.getToken(token_id,social_network)
+            if not user_credentials == None:
+                response =  {"user_id": user_credentials["user_id"]}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)   
+            else:
+                response =  {"error": "Token not found in the system"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(404)
     
     def delete_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get("session")
@@ -232,7 +239,7 @@ class OauthCredentialsHandler(SessionHandler):
                             self.response.set_status(204)
                         else:
                             response = \
-                                {"error": "This token cannot be deleted, because it is being used as the only token" + \
+                                {"error": "This token cannot be deleted, because it is being used as the only token " + \
                                  "to perform the login action in the system"}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
@@ -274,20 +281,29 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     token_id = self.request.POST["token_id"]
 
                     # Checks if the username was stored previously
-                    stored_credentials = ndb_pb.searchToken(token_id,
+                    stored_credentials = ndb_pb.getToken(token_id,
                             social_network)
                     print "Stored credentials ", stored_credentials
                     if stored_credentials == None:
-
-                      # Stores the credentials in a Token Entity
-                        ndb_pb.insertUser(social_network, token_id,
-                                access_token)
+                        # Adds the token to the user credentials list
+                        ndb_pb.insertToken(user, social_network, access_token, token_id)
+                        
+                        #Builds the response
+                        user_id = ndb_pb.getUserId(user)
+                        response = {"user_id": user_id}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))    
                         self.response.set_status(201)
                     else:
 
-                        # We store the new set of credentials
+                        # We update the user credentials
                         user_id = ndb_pb.modifyToken(token_id, access_token,
                                 social_network)
+
+                        # Builds the response
+                        response = {"user_id": stored_credentials["user_id"]}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))    
                         self.response.set_status(200)
                 except KeyError:
                     response = \

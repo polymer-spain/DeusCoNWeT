@@ -197,9 +197,12 @@ def main():
 	elif social_network=="stackoverflow" or social_network=="instagram" or social_network=="linkedin":
 		session1 = None
 		session2 = None
-		token_id1 = "id" + social_network
+		token_id1 = "TOKENid" + social_network
 		access_token1 = social_network + "TEST"
 		token_id2 = "idERROR" + social_network + "2"
+		user_id1 = "usergoogleplus1"
+		user_id2 = "usergoogleplus2"
+		session_error = "session=sessionError"
 
 		# Iniciamos dos sesiones distintas en googleplus para realizar las pruebas
 		request_uri = "/api/oauth/googleplus/login"
@@ -210,13 +213,6 @@ def main():
 			"user_identifier": user_id1})
 		session1 = test_utils.make_request("POST", request_uri, params, 201, None)
 
-		request_uri = "/api/oauth/googleplus/login"
-		print "PRETEST 2: Login de usuario 2 por Googleplus\n Ignorar el status de este caso"
-		token_id_login2 = "idgoogle2"
-		access_token_login2 = "googleTEST"
-		params = urllib.urlencode({'token_id': token_id_login2, 'access_token':access_token_login2})
-		session2 = test_utils.make_request("POST", request_uri, params, 201, None)
-		
 		if option == None:
 			# Tests a la API seleccionada
 			# TESTs relativos a la creacion/actualizacion de credenciales (POST /api/oauth/{social_network})
@@ -239,7 +235,7 @@ def main():
 			print "TEST 3: Actualizar par de credenciales"
 			print "Status esperado: 200"
 			access_token1 = social_network + "ModifyTEST"
-			params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
+			params = urllib.urlencode({'token_id': token_id1, 'access_token':"ToKenMODIFICADO"})
 			test_utils.make_request("POST", request_uri, params, 200, session1)	
 			
 			# TEST 4
@@ -247,7 +243,7 @@ def main():
 			print "Status esperado: 400"
 			access_token1 = social_network + "ModifyTEST"
 			params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-			test_utils.make_request("POST", request_uri, params, 400, session2)	
+			test_utils.make_request("POST", request_uri, params, 400, session_error)	
 			
 			# TEST 5
 			print "TEST 5: Actualizar credenciales proporcionando un solo parámetro"
@@ -262,7 +258,7 @@ def main():
 			print "TEST 6: Obtener credenciales sin cookie de sesión"
 			print "Status esperado: 200 (Retorna el propietario de las credenciales)"
 			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 401, None)
+			test_utils.make_request("GET", request_uri, params, 200, None)
 
 			# TEST 7
 			# TODO Get (Con Cookie)
@@ -276,15 +272,15 @@ def main():
 			print "TEST 8: Obtener credenciales con cookie incorrecta"
 			print "Status esperado: 400"
 			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 400, session2)
+			test_utils.make_request("GET", request_uri, params, 400, session_error)
 			
 			# TEST 9
 			# TODO GET credenciales (Cookie de sesion correcta, a un token id no existente en el sistema)
-			request_uri = "/api/oauth/" + social_network + "credenciales/tokenERROR"
+			request_uri = "/api/oauth/" + social_network + "/credenciales/tokenERROR"
 			print "TEST 9: Intento de obtener un token no existente en el sistema"
 			print "Status esperado: 404"
 			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 404, session2)
+			test_utils.make_request("GET", request_uri, params, 404, session1)
 		elif option == 'borrado':
 			pass
 			# # TODO TESTs borrar credenciales de usuario activo (Conjunto de pruebas de delete)
@@ -297,12 +293,7 @@ def main():
 		print "Status esperado: 200"
 		test_utils.make_request("POST", request_uri, params,200, session1)
 
-		# POST-TEST 2: Realizar logout en el sistema (usuario 2)
-		# Se desloguea el usuario logueado en el PRE TEST 2
-		request_uri = "/api/oauth/googleplus/logout"
-		print "POST-TEST 2: Logout de usuario 1 con cookie de sesión"
-		print "Status esperado: 200"
-		test_utils.make_request("POST", request_uri, params,200, session2)
+
 	
 		print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 	else:

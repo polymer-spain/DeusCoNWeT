@@ -280,7 +280,10 @@ def updateUser(entity_key, data): #FUNCIONA
 
 def insertToken(entity_key, social_name, token, user_id): #FUNCIONA
   user = entity_key.get()
+  # We create a Token Entity in the datastore
   tok_aux = Token(identifier=user_id, token=token, social_name=social_name)
+  tok_aux.put()
+  # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
   user.put()
 
@@ -574,8 +577,10 @@ def searchToken(user_id, rs): #FUNCIONA
 
 def modifyToken(user_id, new_token, rs): #FUNCIONA
   tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
+  # Updates the token
   tok.token = new_token
   tok.put()
+  # Updates the token in the user credential list
   token_aux = Token(identifier=user_id, social_name=rs)
   user = User.query(User.tokens==token_aux).get()
   tokens = user.tokens
