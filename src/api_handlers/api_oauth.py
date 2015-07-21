@@ -601,33 +601,16 @@ class TwitterAuthorizationHandler(webapp2.RequestHandler):
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
 
-        # Query for the stored user
-        stored_user = ndb_pb.searchToken(user_info["username"],
-                "twitter")
-        if stored_user == None:
-
-            # We store the user id and token into a Token Entity
-            user_id = ndb_pb.insertUser("twitter",
-                    user_info["username"], user_info["token"])
-            response_status = 201
-            self.response.set_status(response_status)
-        else:
-
-            # We store the new user"s access_token
-            user_id = ndb_pb.modifyToken(user_info["username"],
-                    user_info["token"], "twitter")
-            response_status = 200
-            self.response.set_status(response_status)
-
-        # Create Session
-        session_id = self.login(user_id)
-
-        # Stores in memcache the session id associated with the oauth_verifierj
+        # Stores in memcache the session id associated with the oauth_verifier 
+        #and data associated to the logged user
         key_verifier = "oauth_verifier_" + oauth_verifier
-        data = {"session_id": session_id,
-                "response_status": response_status
+        data = {"token_id": user_info["username"],
+                "access_token": user_info["token"]
                 }
         memcache.add(key_verifier, data)
+        
+        # Set the status for the response
+        self.response.set_status(200)
 
 
 class TwitterHandler(OauthCredentialsHandler):
@@ -653,20 +636,57 @@ class TwitterLoginHandler(SessionHandler):
     def post(self):
         oauth_verifier = self.request.get("oauth_verifier",
                 default_value="None")
+        user_identifier = self.request.get("user_identifier", default_value="")
+        
         if not oauth_verifier == "":
             key_verifier = "oauth_verifier_" + oauth_verifier
-            data = memcache.get(key_verifier)
-            if not data == None:
-                session_id = data["session_id"]
-                response_status = data["response_status"]
-                # Set the cookie session with the session id stored in the system
-                self.response.set_cookie("session",
-                        value=session_id, path="/", domain=domain,
-                        secure=True)
+            twitter_user_data = memcache.get(key_verifier)
+            if not twitter_user_data == None:
+                # Checks if the username was stored previously
+                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter") 
+                if stored_credentials == None:
+                    user_info = {}
+                    if not user_identifier == "":
+                        user_info["user_id"] = user_identifier
+                        user_key = ndb_pb.insertUser("twitter",
+                        twitter_user_data["token_id"], twitter_user_data["access_token"], user_info)
 
-                # Delete the key-value for the pair oauth_verifier-session_id stored in memcache
-                memcache.delete(key_verifier)
-                self.response.set_status(response_status)
+                        # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
+                        memcache.delete(key_verifier)
+                        # Sets the cookie session with the session id stored in the system
+                        session_id = self.login(user_key)
+                        self.response.set_cookie("session",
+                                value=session_id, path="/", domain=domain,
+                                secure=True)
+
+                        # Builds the response
+                        response = {"status": "User logged successfully", "user_id": user_identifier}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))                    
+                        self.response.set_status(201)
+                    else:
+                        response = {"error": "You must provide a valid user_identifier in the request"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)
+
+                else:
+                    # We store the new set of credentials
+                    user_key = ndb_pb.modifyToken(twitter_user_data["token_id"],
+                            twitter_user_data["access_token"], "twitter")
+                    user_id = ndb_pb.getUserId(user_key)
+                    session_id = self.login(user_key)
+
+                    # Returns the session cookie
+                    self.response.set_cookie("session", session_id,
+                            path="/", domain=domain, secure=True)
+
+                    # Builds the response
+                    response = {"status": "User logged successfully", "user_id": user_id}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+
             else:
                 response = \
                     {"error": "There isn\"t any session in the system for the oauth_verifier value specified"}
