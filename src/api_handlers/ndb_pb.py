@@ -390,7 +390,6 @@ def insertUserComponent(entity_key, name, x=0, y=0, height="", width="", listeni
 def modifyComponent(entity_key, name, data): #FUNCIONA
   user = entity_key.get()
   comps = user.components
-  print "DEBUG: Lista de componentes del usuario: ", comps
   for comp in comps:
     if comp.name == name:
       if data.has_key("x"):
@@ -552,7 +551,6 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           ans.append(json.dumps(general_comp))
       else:
         components = Component.query(Component.rs == rs).fetch(20)
-        print "DEBUG: tipo componentes ", type(components)
         for comp in components:
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = comp.component_id

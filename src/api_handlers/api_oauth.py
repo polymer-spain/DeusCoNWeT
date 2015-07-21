@@ -170,7 +170,6 @@ class OauthCredentialsHandler(SessionHandler):
         # Obtains info related to the user authenticated in the system
         if not cookie_value == None:
             logged_user = self.getUserInfo(cookie_value)
-            print "DEBUG: Usuario logueado: ", logged_user
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
@@ -224,13 +223,11 @@ class OauthCredentialsHandler(SessionHandler):
             if not logged_user_key == None:
                 logged_user_id = ndb_pb.getUserId(logged_user_key)
                 token = ndb_pb.getToken(token_id, social_network)
-                print "DEBUG token encontrado: ", token
                 if not token == None:
                     token_owner_id = token['user_id']
                     if logged_user_id == token_owner_id:
                         # Deletes the token from the user
                         token_deleted = ndb_pb.deleteCredentials(logged_user_key, social_network, token_id)
-                        print "DEBUG status de borrado ", token_deleted
                         if token_deleted:
                             response = \
                                 {"status": "Credentials deleted successfully"}
@@ -283,7 +280,6 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     # Checks if the username was stored previously
                     stored_credentials = ndb_pb.getToken(token_id,
                             social_network)
-                    print "Stored credentials ", stored_credentials
                     if stored_credentials == None:
                         # Adds the token to the user credentials list
                         ndb_pb.insertToken(user, social_network, access_token, token_id)
@@ -420,7 +416,6 @@ class GitHubContainerHandler(OAuthCredentialsContainerHandler):
         response = connectionAPI.getresponse()
         aux = response.read()
         user_details = json.loads(aux)
-        print aux
 
         # Buscamos el par id usuario/token autenticado en la base
         stored_credentials = ndb_pb.searchToken(str(user_details["id"
@@ -661,7 +656,6 @@ class TwitterLoginHandler(SessionHandler):
         if not oauth_verifier == "":
             key_verifier = "oauth_verifier_" + oauth_verifier
             data = memcache.get(key_verifier)
-            print type(data)
             if not data == None:
                 session_id = data["session_id"]
                 response_status = data["response_status"]
