@@ -15,10 +15,10 @@ def main():
 	test_utils.openConnection()
 	social_network = sys.argv[1]
 	option = None
+	basePath = "/api/oauth/" + social_network
 	if len(sys.argv) == 3:
 		option = sys.argv[2]
 	if social_network == "googleplus" or social_network=="facebook":
-		basePath = "/api/oauth/" + social_network
 		session1 = None
 		session2 = None
 		token_id1 = "id" + social_network
@@ -50,7 +50,7 @@ def main():
 			print "Status esperado: 201"
 			params = urllib.urlencode({'token_id': token_id2, 'access_token': "TEST 3",
 				'user_identifier': user_id2})
-			test_utils.make_request("POST", request_uri, params, 201, None)
+			session2 = test_utils.make_request("POST", request_uri, params, 201, None)
 
 			# Tests relativos al método GET de credenciales
 			# Obtener credenciales sin cookie
@@ -211,7 +211,14 @@ def main():
 		access_token_login = "googleTEST"
 		params = urllib.urlencode({'token_id': token_id_login, 'access_token':access_token_login, 
 			"user_identifier": user_id1})
-		session1 = test_utils.make_request("POST", request_uri, params, 201, None)
+		session1 = test_utils.make_request("POST", request_uri, params, 200, None)
+
+		print "PRETEST 1: Login de usuario 1 por Googleplus\n Ignorar el status de este caso"
+		token_id_login2 = "idgoogle2"
+		access_token_login2 = "googleTEST2"
+		params = urllib.urlencode({'token_id': token_id_login2, 'access_token': access_token_login2,
+			'user_identifier': user_id2})
+		session2 = test_utils.make_request("POST", request_uri, params, 200, None)
 
 		if option == None:
 			# Tests a la API seleccionada
@@ -281,9 +288,40 @@ def main():
 			print "Status esperado: 404"
 			params = urllib.urlencode({})
 			test_utils.make_request("GET", request_uri, params, 404, session1)
+
 		elif option == 'borrado':
-			pass
-			# # TODO TESTs borrar credenciales de usuario activo (Conjunto de pruebas de delete)
+			
+			# TEST 10
+			# Borrar credenciales de usuarios de prueba 1
+			request_uri = basePath + "/credenciales/" + token_id1
+			print "TEST 10: Borrar creedenciales sin cookie de sesión"
+			print "Status esperado: 401"
+			params = urllib.urlencode({})
+			test_utils.make_request("DELETE", request_uri, params, 401, None)			
+			
+			# TEST 11
+			# Borrar credenciales de usuario de prueba1 (Con una cookie incorrecta)
+			request_uri = basePath + "/credenciales/" + token_id1
+			print "TEST 11: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
+			print "Status esperado: 401"
+			params = urllib.urlencode({})
+			test_utils.make_request("DELETE", request_uri, params, 401, session2)
+
+			# TEST 12
+			# Borrar credenciales de usuario de prueba1 (Estando logeado)
+			request_uri = basePath + "/credenciales/" + token_id1
+			print "TEST 12: Borrado de credenciales estando logeado (usuario 1)"
+			print "Status esperado: 204"
+			params = urllib.urlencode({})
+			test_utils.make_request("DELETE", request_uri, params, 204, session1)
+
+			# TEST 14
+			# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
+			request_uri = basePath + "/credenciales/" + token_id2
+			print "TEST 14: Intento de borrado por segunda vez (credenciales de usuario 2)"
+			print "Status esperado: 404"
+			params = urllib.urlencode({})
+			test_utils.make_request("DELETE", request_uri, params, 404, session2)
 
 
 		# POST-TEST 1: Realizar logout en el sistema (usuario 1)
