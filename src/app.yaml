@@ -68,7 +68,7 @@ skip_files:
   - (.*/)LICENSE
   - (.*/).*.log$
   - (.*/).*.gzip$
-  - (.*/).*.yaml$
+  - static/(.*/).*.yaml$
 
 libraries:
 - name: webapp2
