@@ -2,6 +2,7 @@
   "language":"Idioma",
   "title": "Bienvenido a PicBit",
   "login": "Entrar",
+  "send": "Enviar",
   "logout": "Desconectar",
   "entry": "Accede con tu Red Social",
   "select_network": "Selecciona tu red social",
@@ -37,5 +38,15 @@
     "title" : "Tu Timeline",
     "refresh" : "Refrescar",
     "Load more" : "Mostrar mas"
+  },
+  "help": {
+    "add":"permite añadir un nuevo componente a tu timeline. Busca el componente que quieres añadir y arrastralo hasta el lugar donde quieras colocarlo.",
+    "delete": "permite eliminar los componentes ya añadidos al timeline. Selecciona el componente que quieras eliminar y presiona sobre el botón.",
+    "modify": "permite modificar la posición de un componentes. Seleciona el componente de la lista, y arrastre el componente que se ha selecionado. Una vez se termine, deselecionelo pulsando de nuevo en su nombre en la lista."
+  },
+  "close": "Cerrar",
+  "select_id": {
+    "title":"Selecciona tu nombre de usuario",
+    "input_title": "Nombre de usuario"
   }
 }

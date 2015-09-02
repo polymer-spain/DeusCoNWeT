@@ -10,24 +10,29 @@
 
     <title>PicBit</title>
 
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Exo:400,300' rel='stylesheet' type='text/css'>
+    
+    <!-- Polymer -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements/elements.html">
-    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
+  
+    <!-- stylesheet -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/landingPage.css">
-    <link href='https://fonts.googleapis.com/css?family=IM+Fell+Great+Primer:400,400italic' rel='stylesheet' type='text/css'>
   </head>
+  
   <body unresolved ng-app="picbit" ng-controller="MainController">
 
     <core-toolbar ng-class="{small: scrolled}">
       <img class="logo" src="images/logo.png" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')">
       <div horizontal layout flex>
-        <h2 id="name" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')">PicBit</h2>
+        <h2 id="name" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')">Picbit</h2>
       </div>
 
       <!-- Languages --> 
-      <core-dropdown-menu id="language" label="{{language_selected}}">
+      <core-dropdown-menu id="language" label="{{languageSelected}}">
         <core-dropdown class="lang-menu dropdown" >
           <core-menu vertical layout>
             <core-item class="lenguage-button" ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
@@ -38,7 +43,7 @@
       <!-- End Languages -->
 
       <core-icon-button ng-show="!status" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
-        <span style="padding-left: 3px;vertical-align:middle" id="nameId">{{language.login}}</span>
+        <span id="nameId">{{language.login}}</span>
       </core-icon-button>
 
       <div ng-click="dropmenu()"  ng-show="status" relative>
@@ -59,25 +64,28 @@
 
     <footer horizontal center-justified layout>
       <paper-button ng-click="changeView('/about')">{{language.about}}</paper-button>
-      <paper-button><a href="https://mortega5.typeform.com/to/nRCzNz">{{language.contact}}</a></paper-button>
+      <paper-button><a href="https://deusconwet.typeform.com/to/opLyCo">{{language.contact}}</a></paper-button>
       <paper-button ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
+      <a href="https://mixpanel.com/f/partner"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
     </footer>
-    <div ng-view="" id="view" style="margin-top:100px;" class="view">
+    <div ng-view="" id="view" class="view">
 
     </div>
 
+    <!-- pop up social networks -->
     <div ng-show="shadow" class="shadow"></div>
     <div ng-show="popup" vertical center layout class="popup" id="popup">
-      <core-icon-button style="position:absolute;right:0" ng-click="hidePopup()" icon="close"></core-icon-button>
-
-      <span style="margin:7% 10%;font-size:1.4em">{{language.select_network}}</span>
+      <core-icon-button  ng-click="hidePopup()" icon="close"></core-icon-button>
+      <span>{{language.select_network}}</span>
       <div vertical center-justified layout class="button-login">
         <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-        <twitter-login class="button-login" endpoint='{{domain}}/api/oauth/twitter' static="true"></twitter-login>
+        <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static="true"></twitter-login>
         <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static="true"></login-facebook>
 
       </div>
     </div>
+
+    <!-- build:js scripts/min/dependencies.min.js -->
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
@@ -85,9 +93,10 @@
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
+    <!-- endbuild -->
 
+    <!-- build:js scripts/min/logic.min.js -->
     <script src="scripts/app.js"></script>
-    <script src="scripts/backend/Services.js"></script>
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/landingPage.js"></script>
     <script src="scripts/controllers/userHome.js"></script>
@@ -95,5 +104,13 @@
     <script src="scripts/controllers/contact.js"></script>
     <script src="scripts/controllers/profile.js"></script>
     <script src="scripts/controllers/privacy.js"></script>
+    <script src="scripts/controllers/selectId.js"></script>
+    <script src="scripts/directives/dragdrop.js"></script>
+    <script src="scripts/services/anchosmooth.js"></script>
+    <script src="scripts/services/backend.js"></script>
+    <script src="scripts/services/cookies.js"></script>
+    <script src="scripts/filter/arrayFilter.js"></script>
+    <!-- endbuild -->
+
   </body>
 </html>

@@ -19,10 +19,12 @@
     "/tests/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer",
-    "core-ajax": "Polymer/core-ajax",
-    "paper-button": "Polymer/paper-button",
-    "core-icon": "Polymer/core-icon"
+    "polymer": "Polymer/polymer#^0.5.5",
+    "core-ajax": "Polymer/core-ajax#~0.5.6",
+    "core-icon": "Polymer/core-icon#~0.5.6",
+    "core-icons": "Polymer/core-icons#~0.5.6",
+    "core-icon-button": "Polymer/core-icon-button#~0.5.6",
+    "paper-button": "Polymer/paper-button#~0.5.6"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^2.0.5",

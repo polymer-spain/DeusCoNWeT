@@ -1,0 +1,11 @@
+{
+  "name": "facebook",
+  "version": "1.0.0",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.5",
+    "paper-button": "Polymer/paper-button#~0.5.6"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.0"
+  }
+}

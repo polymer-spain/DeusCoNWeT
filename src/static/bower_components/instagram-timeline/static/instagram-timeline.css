@@ -2,7 +2,7 @@
   display: inline-block;
 }
 
-#cabecera {
+#header {
   background: -webkit-linear-gradient(top,#517fa4,#306088);
   color: #fff;
   font-family: 'Montserrat', sans-serif;
@@ -11,12 +11,12 @@
   text-align: center;
 }
 
-#boton_refrescar {
+#refresh_button {
   text-align: right;
   padding-bottom: 10px;
 }
 
-#contorno{
+#outline{
   overflow-y: auto;
   max-height: 400px;
   background: #E0E1E2;
@@ -54,7 +54,7 @@
   margin-left: 5px;
 }
 
-#hora{
+#hour{
   float: right;
   font-size: 13px;
   margin-top: 22px;
@@ -88,7 +88,7 @@ core-icon-button /deep/ core-icon[role=img] {
   font-size: 12px;
 }
 
-#descripcion{
+#description{
   display: inline-block;
   font-family: 'Montserrat', sans-serif;
   text-align: justify;
@@ -97,7 +97,6 @@ core-icon-button /deep/ core-icon[role=img] {
   margin-bottom: 15px;
   font-size: 13px;
   max-width: 400px;
-  color: black;
 }
 
 #video{
@@ -106,7 +105,7 @@ core-icon-button /deep/ core-icon[role=img] {
   margin-left: 10px;
 }
 
-#boton{
+#button{
   margin-top: -200px;
   margin-left: auto;
   margin-right: auto;
@@ -121,7 +120,7 @@ core-icon-button /deep/ core-icon[role=img] {
   background: #3f729b;
 }
 
-#fin {
+#end {
   background: #3f729b;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
