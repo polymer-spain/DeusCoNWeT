@@ -2,6 +2,7 @@
   "language":"Language",
   "title": "Welcome to PicBit",
   "login": "Log In",
+  "send": "Send",
   "logout": "Log out",
   "entry": "Sign In with your Social Network",
   "select_network": "Select your social network",
@@ -44,6 +45,18 @@
     "Logout_Linkedin" : "Log out Linkedin",
     "Login_Instagram" : "Log in Instagram",
     "Logout_Instagram" : "Log out Instagram"
+  },
+
+  "help": {
+    "add": "Allow adding a new component in your timeline. You have to search the component that you want to add and drag it into any place.",
+    "delete": "Allow deleting the components already added in the timeline. You have to select the component that you want to delete and click on the button.",
+    "modify": "Allow modifying the component position. You have to select the component in the list that you want to modify and drag it. When you finish, deselect it."
+  },
+  "close": "Close",
+  "select_id": {
+    "title":"Select your username",
+    "input_title": "Username"
   }
+
 }
 

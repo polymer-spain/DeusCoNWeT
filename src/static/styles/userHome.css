@@ -1,92 +1,185 @@
 html {
-	background: url('../images/background.jpg') no-repeat;
-	background-size: cover;
-	background-attachment: fixed;
+  background: url('../images/background.jpg') no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
+
+#view {
+  margin:0px 60px 0 5px;
+}
+
 #picture {
-	margin-right: 5%;
-  margin-top: -25px;
-  margin-bottom: 25px;
-	width: 150px;
-	height: 150px;
-	border-radius: 100%;
+  width: 150px;
+  height: 150px;
+  border-radius: 100%;
+}
+#container {
+  height: 100%; 
+}
+.div_button{
+  padding-top:35px;
+  padding-bottom:35px;
+  padding-right: 5px;
 }
 
 .dropdown{
   padding-top: 37px;
-  padding-left: 5px;
 }
 
-.small{
-	background: #6c533d;
-	box-shadow: 0px 4px 5px -1px #6c533d;
-	z-index: 1000;
+.sort{
+  transition: all 0.4s ease;
+  padding-bottom: 0px;
 }
 
 #listOption {
-	position:fixed;
-	top:100px;
-	right: 0;
-	vertical-align: middle;
-	width: 250px;
+  position:fixed;
+  top:100px;
+  right: 0;
+  vertical-align: middle;
+  /*width: 250px;*/
+  width: 57px;
 }
 
 #listOption > div {
-	border: 1px solid rgba(255,255,255,0.3);
-	background-color:#444;
-	color:white;
-	padding: 35px 5px;
-	transition: 0.3s linear all;
-	width: 200px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background-color:#444;
+  color:white;
+  padding: 0px 15px;
+  transition: 0.3s linear all;
+  width: 200px;
 }
 
-#list > div :hover {
-	background-color: #b71c1c;
-	color:white;
+.list > div :hover {
+  background-color: whitesmoke;
+  color:black;
 }
-#list div > p {
-	height: 40px;
-	margin:0;
-	padding: 15px 10px 0px 10px;
-	vertical-align: center;
+
+.list div > p {
+  height: 40px;
+  margin:0;
+  padding: 15px 10px 0px 10px;
+  vertical-align: center;
 }
+
+.list div > core-icon {
+  width: 15px;
+}
+
 #listOption > div:hover {
-	cursor: pointer;
+  cursor: pointer;
 }
+
 #listOption > div#menuArrow {
-	background-color: #B71C1C;
-	padding-top:15px;
-	padding-bottom:15px;
+  background-color: #B71C1C;
+  padding-top:15px;
+  padding-bottom:15px;
 }
 
 #listOption > div.hidden {
-	padding: 35px 15px;
-	width: 25px;
-	background-color: rgba(0,0,0,0.4);
+  width: 25px;
+  background-color: rgba(0,0,0,0.4);
 }
 
-#list {
-	border-top-color: whitesmoke;
-	margin-top:10px;
-	max-height: 200px;
-	overflow: auto;
-
+#listOption > div.dropdown {
+  padding-top: 10px;
+  padding-bottom: 0px;
 }
-#list.ng-hide-add.ng-hide-add-active,
-#list.ng-hide-remove.ng-hide-remove-active {
-	-webkit-transition: all linear 0.2s;
-	transition: all linear 0.2s;
+.list {
+  border-top-color: whitesmoke;
+  max-height: 200px;
+  overflow: auto;
+  transition: all 0.3s ease-out;
 }
 
-#list.ng-hide {
-	opacity: 0
-}
-#list::-webkit-scrollbar {
-	width: 6px;
-	background: #b9b9b9;
+.list.ng-hide {
+  max-height:0;
 }
 
-#list::-webkit-scrollbar-thumb {
-	background-color: #693232;
-	-webkit-border-radius: 2px;
+#add div.list {
+  cursor:copy;
+}
+.list.ng-hide-add.ng-hide-add-active,
+.list.ng-hide-remove.ng-hide-remove-active {
+  -webkit-transition: all linear 0.2s;
+  transition: all linear 0.2s;
+}
+
+.list::-webkit-scrollbar {
+  width: 6px;
+  background: #b9b9b9;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background-color: grey;
+  -webkit-border-radius: 2px;
+}
+
+#modify .modifySelected {
+  background-color: green;
+}
+
+#delete .list > div > core-icon-button /deep/ core-icon {
+  width: 20px;
+  height: 20px;
+  transition: all ease 1s;
+}
+
+.helpModal.ng-hide{
+  opacity: 0;
+}
+
+.helpModal.ng-hide-remove.ng-hide-remove-active {
+  transition: all linear 0.25s;
+}
+.helpModal > core-icon-button {
+  position:absolute;
+  right:0;
+}
+.helpModal{
+  opacity: 1;
+  cursor:default;
+  position:fixed;
+  top:0;
+  left:0;
+  border-radius: 5px;
+  right:0;
+  bottom:0;
+  padding-top:0;
+  margin: auto;
+  color:black;
+  background-color:white;
+  width: 30%;
+  height: 380px;
+  z-index: 20000;
+  overflow-y: auto;
+  text-align: center;
+}
+.helpModal > .titleHelp {
+  background: -webkit-linear-gradient(90deg, #e43a15 10%, #e65245 90%); 
+  background:    -moz-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
+  background:     -ms-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
+  background:      -o-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
+  background:         linear-gradient(90deg, #e43a15 10%, #e65245 90%);
+
+  border:1px 1px solid black;
+  box-shadow:1px 3px 3px #aaa;
+  font-size: 18px;
+  font-weight: bold;
+  color:white;
+}
+.helpModal > .titleHelp > p {
+  text-align:left;
+  margin-left:20px;
+}
+
+.helpModal paper-icon-button {
+  padding: 15px; 
+}
+
+.helpModal .help-text {
+  margin: 15px 30px;
+  text-align:justify;
+}
+#help {
+  padding: 35px 15px !important; 
 }

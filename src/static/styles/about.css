@@ -21,7 +21,6 @@ html {
   min-width: 300px;
 }
 .information .left {
-  background-image : url('https://centauro.ls.fi.upm.es/todos.jpg');
   background-size: contain;
   background-repeat: no-repeat;
 }

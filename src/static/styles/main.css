@@ -1,20 +1,24 @@
 @font-face {
-  font-family: myFont;
-  src: url(../font/font.ttf);
+   font-family: archistico;
+    src: url('../fonts/ArchisticoBold.ttf');
 }
+* {
+  font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
 
+}
 body,html {
   margin:0;
   color:rgba(255, 255, 255, 0.85);
   font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
   background-attachment: fixed;
   min-width: 1024px;
-  min-height: 100%;
+  height: 100%;
 }
 
 .view {
-  margin:0px 150px;
-  margin-bottom: 50px;
+  height: 85%;
+  margin: 0 150px;
+  padding-top: 100px;
 }
 
 core-toolbar {
@@ -26,6 +30,7 @@ core-toolbar {
   height: 100px;
   min-width: 600px;
   color:whitesmoke;
+  z-index: 10;
 }
 
 @media (max-width: 1200px) {
@@ -69,11 +74,17 @@ paper-button {
   background-color:whitesmoke;
   height: 250px;
   width: 300px;
-  z-index: 1;
+  z-index: 200;
   text-align: center;
 }
-#popup > div {
-  margin-top: 30px;
+#popup > core-icon-button {
+  position:absolute;
+  right:0;
+}
+
+#popup > span {
+  margin: 7% 10% 10% 10%;
+  font-size:1.4em;
 }
 .shadow {
   position:fixed;
@@ -85,12 +96,12 @@ paper-button {
 }
 .button-login twitter-login,
 .button-login login-facebook {
-  margin-top: 25px;
+  margin-top: 10px;
 }
 #name {
-  letter-spacing: 10px;
-  font-size: 45px;
-  font-family: myFont, serif;
+  font-size: 60px;
+  font-family: archistico;
+  color:#cbc7c7;
 }
 #name:hover{
   cursor: pointer;
@@ -151,7 +162,7 @@ footer {
   width:100%;
   background-color:rgba(0,0,0,0.5);
 
-  z-index: 1;
+  z-index: 10;
 }
 
 core-dropdown-menu {
@@ -160,7 +171,7 @@ core-dropdown-menu {
   min-width: 100px;
   cursor: pointer;
   outline:none;
-  margin-right:40px
+  margin-right:40px;
 }
 
 core-dropdown core-menu {
@@ -169,7 +180,7 @@ core-dropdown core-menu {
 core-dropdown core-menu core-item {
   padding: 3px 5px;
 }
-core-dropdown-menu /deep/ core-dropdown /deep/ core-item:hover{
+core-dropdown-menu /deep/ core-dropdown /deep/ core-item:hover {
   background-color: #bbb;
 }
 core-dropdown.lang-menu {
@@ -219,7 +230,7 @@ select.language > option {
   min-width: 125px;
   padding-left: 25px;
   padding-right: 12px;
-  vertical-align:middle"
+  vertical-align:"middle";
 }
 #user_options:hover {
   background-color: #B71C1C;
@@ -234,4 +245,8 @@ select.language > option {
 }
 #dropmenu core-item[active] {
   font-weight: normal;
+}
+
+#siginButton > span {
+  padding-left: 3px;vertical-align:middle 
 }
