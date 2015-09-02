@@ -22,7 +22,7 @@
     })
       .when("/user/:userId", {
       templateUrl: "views/userHome.html",
-      controller: "UserHomeController"/*,
+      controller: "UserHomeController",
       resolve: {
         auth: ["$q", "$cookie", function($q, $cookie){
 
@@ -34,7 +34,7 @@
             return $q.reject({authenticated: false});
           }
         }]
-      }*/
+      }
     })
       .when("/about", {
       templateUrl: "views/about.html",
@@ -64,18 +64,18 @@
       templateUrl: "views/privacy.html",
       controller: "PrivacyController"
     })
-      .when('/selectId', {
-      templateUrl: 'views/selectId.html',
-      controller: 'SelectidController',
+      .when("/selectId", {
+      templateUrl: "views/selectId.html",
+      controller: "SelectidController",
       resolve: {
-        auth: ["$q","$rootScope", function($q,$rootScope) {
+        auth: ["$q", "$rootScope", function($q, $rootScope) {
 
           if ($rootScope.register) {
-            return $q.when($rootScope.register)
+            return $q.when($rootScope.register);
           } else {
-            return $q.reject({register: false})
+            return $q.reject({register: false});
           }
-        }] 
+        }]
       }
     })
     /* Por defecto */

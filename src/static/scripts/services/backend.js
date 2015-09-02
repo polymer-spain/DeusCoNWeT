@@ -56,6 +56,7 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
     $rootScope.promise = $http(request);
     return $rootScope.promise;
   };
+ 
   /* Contacto: envia un email al backend */
   this.sendEmail = function (message, sender, subject) {
     var request, uri, params;
