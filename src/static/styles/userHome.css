@@ -141,34 +141,43 @@ html {
   position:fixed;
   top:0;
   left:0;
-  border-radius: 3px;
+  border-radius: 5px;
   right:0;
   bottom:0;
-  padding:30px;
   padding-top:0;
   margin: auto;
-  color:brown;
-  background-color:whitesmoke;
+  color:black;
+  background-color:white;
   width: 30%;
-  max-height: 330px;
+  height: 380px;
   z-index: 20000;
   overflow-y: auto;
   text-align: center;
 }
-.helpModal > paper-button {
-  background-color: #ba2727;
-  color:white;
-  border: 1px solid #2c2c2c;
+.helpModal > .titleHelp {
+  background: -webkit-linear-gradient(90deg, #e43a15 10%, #e65245 90%); 
+  background:    -moz-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
+  background:     -ms-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
+  background:      -o-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
+  background:         linear-gradient(90deg, #e43a15 10%, #e65245 90%);
 
+  border:1px 1px solid black;
+  box-shadow:1px 3px 3px #aaa;
+  font-size: 18px;
+  font-weight: bold;
+  color:white;
 }
-.helpModal > paper-button:hover {
-  background-color: #931c1c;
-  border: 1px solid #070707;
-  font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
+.helpModal > .titleHelp > p {
+  text-align:left;
+  margin-left:20px;
+}
+
+.helpModal paper-icon-button {
+  padding: 15px; 
 }
 
 .helpModal .help-text {
-  margin: 24px 0;
+  margin: 15px 30px;
   text-align:justify;
 }
 #help {
