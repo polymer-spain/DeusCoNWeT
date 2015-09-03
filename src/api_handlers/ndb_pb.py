@@ -27,7 +27,6 @@ import base64
 import os
 
 # Definimos la lista de redes sociales con las que trabajamos
-
 social_list = [
     'twitter',
     'facebook',
@@ -38,26 +37,6 @@ social_list = [
     'github',
     ]
 
-# TODO: almacenar secret!!
-# Definicion de metodos y variables para el cifrado de claves
-
-# Tamaño de bloque
-BLOCK_SIZE = 32
-
-# caracter para realizar un padding del mensaje a cifrar 
-# (para que sea multiplo del tamaño del bloque)
-PADDING = '{'
-#Funcion de padding del mensaje a cifrar
-pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
-
-# Funciones de encode y decode utilizando AES, con codec base64
-encodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
-decodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
-
-# genera una secret key aleatoria
-secret = os.urandom(BLOCK_SIZE)
-# Crea un objeto cipher
-cipher = AES.new(secret)
 
 #####################################################################################
 # Definicion de entidades de la base de datos
@@ -200,6 +179,32 @@ class User(ndb.Model):
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
 
+class TokenKey(ndb.Model):
+  secret_key = ndb.BlobProperty()
+
+
+# Definicion de metodos y variables para el cifrado de claves
+
+# Tamaño de bloque
+BLOCK_SIZE = 32
+
+# caracter para realizar un padding del mensaje a cifrar 
+# (para que sea multiplo del tamaño del bloque)
+PADDING = '{'
+#Funcion de padding del mensaje a cifrar
+pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+
+# Funciones de encode y decode utilizando AES, con codec base64
+encodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
+decodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
+
+# Obtiene la clave
+secret = TokenKey.query().get().secret_key
+
+
+# Crea un objeto cipher
+cipher = AES.new(secret)
+
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
 #####################################################################################
@@ -209,7 +214,7 @@ def getToken(id_rs, social_net):  # FUNCIONA
   token = Token.query(Token.identifier == id_rs).filter(Token.social_name == social_net).get()
   user = User.query(User.tokens == token).get()
   if not user == None:
-    ans = {"token": decodeAES(token.token),
+    ans = {"token": decodeAES(cipher, token.token),
           "user_id": user.user_id}
   return ans
 
@@ -249,7 +254,7 @@ def getUserId(entity_key):
 def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   user = User()
   # Encodes access token tha will be stored in the database
-  access_token = encodeAES(access_token)
+  access_token = encodeAES(cipher, access_token)
   
   token = Token(identifier=ide, token=access_token, social_name=rs)
   token.put()
@@ -311,7 +316,7 @@ def updateUser(entity_key, data): #FUNCIONA
 def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
   user = entity_key.get()
   # Encodes access token tha will be stored in the database
-  access_token = encodeAES(access_token)
+  access_token = encodeAES(cipher, access_token)
   # We create a Token Entity in the datastore
   tok_aux = Token(identifier=user_id, token=access_token, social_name=social_name)
   tok_aux.put()
@@ -601,13 +606,13 @@ def searchToken(user_id, rs): #FUNCIONA
   tokens = Token.query()
   token = tokens.filter(Token.identifier==user_id).filter(Token.social_name==rs).get() 
   if token:
-    return decodeAES(token.token)
+    return decodeAES(cipher, token.token)
   else:
     return None
 
 def modifyToken(user_id, new_token, rs): #FUNCIONA
   # Encodes access token tha will be stored in the database
-  new_token = encodeAES(new_token)
+  new_token = encodeAES(cipher, new_token)
   
   tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
   # Updates the token
