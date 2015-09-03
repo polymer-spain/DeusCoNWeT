@@ -17,23 +17,22 @@
 
 # -*- coding: utf8 -*-
 import sys
-import httplib, urllib
-import json
+import httplib, urllib, json
+import ndb_pb
 
 basePath = "" # Path for the repo (:user/:repo)
 connection = None
 params = urllib.urlencode({})
 
-# Other OAuth token posible 
-# "Authorization": "token 4b844fda635ed7e58460a1c65252df7090c38438"
 headers = {"Accept": "application/vnd.github.v3+json",
-"User-Agent": "PicBit-App",
-"Authorization": "token TOKEN_GITHUB"}
+"User-Agent": "PicBit-App"}
 
 # Opens the connection to the GitHub API endpoint
 def openConnection(basePathRepo):
-  global basePath, repoId, connection
+  global basePath, repoId, connection, headers
   basePath = basePathRepo
+  githubToken = ndb_pb.getGitHubAPIKey()
+  headers["Authorization"] = "token " + githubToken
   connection = httplib.HTTPSConnection("api.github.com")
   
 # Closes the connection to the GitHub API endpoint
@@ -52,6 +51,7 @@ def getRepoInfo():
     return None
   elif not response.status == 200:
     print "ERROR: El servidor de github devolvio un status de error: " + str(response.status)
+    print "Cuerpo de la respuesta ", response.read()
     return None
 
   aux = response.read()
