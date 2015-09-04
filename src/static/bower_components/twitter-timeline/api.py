@@ -22,7 +22,6 @@ class OAuthTwitterHandler(webapp2.RequestHandler):
         respuesta = client.make_request(
             "https://api.twitter.com/1.1/statuses/home_timeline.json",
             token=access_token, secret=secret_token,additional_params={"count": count}, protected=True)
-        
         self.response.write(respuesta.content)
 
 app = webapp2.WSGIApplication([

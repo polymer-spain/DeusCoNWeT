@@ -64,7 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var args = Polymer.Bind._marshalArgs(this._data, effect, source, value);
       if (args) {
         var computedHost = this._rootDataHost || this;
-        var computedvalue = 
+        var computedvalue =
           computedHost[effect.method].apply(computedHost, args);
         this._applyEffectValue(computedvalue, effect);
       }

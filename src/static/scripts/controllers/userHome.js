@@ -20,7 +20,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 				secretToken: "VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY",
 				consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
 				consumerSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
-				endpoint: $scope.domain + "/api/oauth/twitterTimeline",
+				endpoint: $scope.domain + "/api/aux/twitterTimeline",
 				language: "{{idioma}}",
 				count: "200"
 			}

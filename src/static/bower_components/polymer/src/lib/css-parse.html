@@ -42,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           n = {start: i+1, parent: p, previous: previous};
           p.rules.push(n);
           break;
-        case CLOSE_BRACE: 
+        case CLOSE_BRACE:
           //console.groupEnd(n.start);
           n.end = i+1;
           n = n.parent || root;
@@ -68,9 +68,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     if (r$) {
       for (var i=0, l=r$.length, r; (i<l) && (r=r$[i]); i++) {
         parseCss(r, text);
-      }  
+      }
     }
-    return node;  
+    return node;
   }
 
   // stringify parsed css.
@@ -83,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (r$ && !hasMixinRules(r$)) {
         for (var i=0, l=r$.length, r; (i<l) && (r=r$[i]); i++) {
           cssText = stringify(r, cssText);
-        }  
+        }
       } else {
         cssText = removeCustomProps(node.cssText).trim();
         if (cssText) {
@@ -129,7 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     mixinApply: /@mixin[\s]*\([^)]*?\)[\s]*;/gim
   };
 
-  // exports 
+  // exports
   Polymer.CssParse = {
     parse: parse,
     stringify: stringify

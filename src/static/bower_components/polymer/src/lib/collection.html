@@ -46,10 +46,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               break;
             case 'number':
               v = s[i] = u[i]= new Number(v);
-              break;          
+              break;
             case 'boolean':
               v = s[i] = u[i]= new Boolean(v);
-              break;          
+              break;
           }
         map.set(v, i);
         }
@@ -116,7 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (item != null && this.map) {
         return this.map.get(item);
       } else {
-        return this.store.indexOf(item);      
+        return this.store.indexOf(item);
       }
     },
 
@@ -172,7 +172,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   Polymer.Collection.get = function(userArray, noObserve) {
-    return Polymer._collections.get(userArray) 
+    return Polymer._collections.get(userArray)
       || new Polymer.Collection(userArray, noObserve);
   };
 

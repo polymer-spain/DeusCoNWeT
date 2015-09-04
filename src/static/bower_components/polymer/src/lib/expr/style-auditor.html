@@ -4,7 +4,7 @@ addEventListener('WebComponentsReady', function() {
   // given a list of elements, produce a report of rules that
   // match those elements.
   var auditor = {
-    
+
     matchesForDocument: function(elements) {
       var info = [];
       this.documentSheets.forEach(function(sheet) {
@@ -54,7 +54,7 @@ addEventListener('WebComponentsReady', function() {
       p.mozMatchesSelector || p.msMatchesSelector ||
       p.oMatchesSelector || p.webkitMatchesSelector;
 
-  
+
   // crawl the document and return a list of custom elements with shadyRoots
   // and their scoped contents
   var crawler = {
@@ -85,7 +85,7 @@ addEventListener('WebComponentsReady', function() {
     filterElementsWithRoots: function(elements) {
       return elements.filter(function(e) {
         return e.shadyRoot;
-      });  
+      });
     }
 
   };
@@ -110,7 +110,7 @@ addEventListener('WebComponentsReady', function() {
     }
 
   };
-  
+
   // pruduces a style audit and reports results on the console.
   function audit() {
     var report = auditor.matchesForDocument(crawler.list());

@@ -6,7 +6,7 @@ angular.module("picbit")
 		$scope.calC = function()	{
 			var nombre = document.getElementById("nombre").value;
 			var apellido = document.getElementById("apellido").value;
-			var mail = document.getElementById("sender").value;	
+			var mail = document.getElementById("sender").value;
 		};
 
 		$scope.takeInfoLog = function(e){

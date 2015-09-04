@@ -8,11 +8,11 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <script>
-  
+
   (function(scope) {
-  
+
   scope = scope || (window.Inspector = {});
-  
+
   var inspector;
 
   window.sinspect = function(inNode, inProxy) {
@@ -73,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     '  </body>',
     '</html>'
   ].join('\n');
-  
+
   var crumbs = [];
 
   var displayCrumbs = function() {
@@ -227,9 +227,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
   // export
-  
+
   scope.output = output;
-  
+
 })(window.Inspector);
 
 </script>

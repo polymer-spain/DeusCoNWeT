@@ -9,14 +9,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <script>
 
-  // until ES6 modules become standard, we follow Occam and simply stake out 
+  // until ES6 modules become standard, we follow Occam and simply stake out
   // a global namespace
 
-  // Polymer is a Function, but of course this is also an Object, so we 
+  // Polymer is a Function, but of course this is also an Object, so we
   // hang various other objects off of Polymer.*
   (function() {
     var userPolymer = window.Polymer;
-    
+
     window.Polymer = function(prototype) {
       var ctor = desugar(prototype);
       // native Custom Elements treats 'undefined' extends property
@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Raw usage
   [ctor =] Polymer.Class(prototype);
   document.registerElement(name, ctor);
-  
+
   // Simplified usage
   [ctor = ] Polymer(prototype);
   */

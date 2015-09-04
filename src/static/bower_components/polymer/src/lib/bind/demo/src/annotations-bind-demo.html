@@ -18,7 +18,7 @@
 
   // TODO(sjmiles): should 'bind-annotations' blend the other two modules
   // somehow so we don't need to include all three here?
-  using(['Annotations', 'bind', 'bind-annotations'], 
+  using(['Annotations', 'bind', 'bind-annotations'],
 
    function(Annotations, Bind, BindAnnotations) {
 
@@ -32,7 +32,7 @@
     var list = Templabindinate(prototype, template);
 
     // phase two: instancing
-    
+
     var model = Object.create(prototype);
     var dom = Instancinance(model, template);
     document.body.appendChild(dom);
@@ -47,14 +47,14 @@
     // effects visible in dom
 
     var foo = dom.querySelector('#foo');
-    out.innerHTML += 
+    out.innerHTML +=
       'foo.<b>path</b> = "' + model.path + '"<br>'
       + 'foo.<b>otherpath</b> = "' + model.otherpath + '"<br>'
       + 'foo.<b>specialStyle</b> = "' + JSON.stringify(model.specialStyle)+ '"<br>'
       ;
 
     // ad hoc abstractions
-    
+
     function Templabindinate(model, template) {
       Bind.prepareModel(model);
       var list = Annotations.parseAnnotations(template);
@@ -66,7 +66,7 @@
       Bind.prepareInstance(model);
       Bind.createBindings(model);
       var dom = document.importNode(template.content, true);
-      model._nodes = BindAnnotations.marshalAnnotatedNodes(model._nodes, dom, 
+      model._nodes = BindAnnotations.marshalAnnotatedNodes(model._nodes, dom,
         Annotations.findAnnotatedNode);
       return dom;
     }

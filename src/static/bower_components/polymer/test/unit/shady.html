@@ -402,7 +402,7 @@ suite('Mutate light DOM', function() {
     // NOTE: needed only for this imperative test that needs
     // to simulate distribution from `shadyRoot`
     child._distributeContent();
-    
+
     assert.deepEqual(Polymer.dom(host.root).querySelectorAll('span#main'), [hostLocalMain]);
     assert.deepEqual(Polymer.dom(host.root).querySelectorAll('div#sub'), [childLightSub]);
     assert.deepEqual(Polymer.dom(child.root).querySelectorAll('span#sub'), [childLocalSub]);

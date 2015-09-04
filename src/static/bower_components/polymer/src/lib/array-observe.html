@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 (function() {
 
   var callbacks = new WeakMap();
-  
+
   function observe(array, cb) {
     if (Array.observe) {
       var ncb = function(changes) {
@@ -112,7 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     observe: observe,
     unobserve: unobserve
   };
-  
+
 })();
 
 </script>

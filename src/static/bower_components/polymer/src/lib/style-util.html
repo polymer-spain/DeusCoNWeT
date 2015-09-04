@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     function toCssText(rules, callback) {
       if (typeof rules === 'string') {
         rules = Polymer.CssParse.parse(rules);
-      } 
+      }
       if (callback) {
         forEachStyleRule(rules, callback);
       }
@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if ((s.indexOf(AT_RULE) !== 0) && (s.indexOf(MIXIN_SELECTOR) !== 0)) {
           cb(node);
         }
-        skipRules = (s.indexOf(KEYFRAME_RULE) >= 0) || 
+        skipRules = (s.indexOf(KEYFRAME_RULE) >= 0) ||
           (s.indexOf(MIXIN_SELECTOR) >= 0);
       }
       var r$ = node.rules;

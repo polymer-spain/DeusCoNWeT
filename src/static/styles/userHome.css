@@ -14,7 +14,7 @@ html {
   border-radius: 100%;
 }
 #container {
-  height: 100%; 
+  height: 100%;
 }
 .div_button{
   padding-top:35px;
@@ -155,7 +155,7 @@ html {
   text-align: center;
 }
 .helpModal > .titleHelp {
-  background: -webkit-linear-gradient(90deg, #e43a15 10%, #e65245 90%); 
+  background: -webkit-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
   background:    -moz-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
   background:     -ms-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
   background:      -o-linear-gradient(90deg, #e43a15 10%, #e65245 90%);
@@ -173,7 +173,7 @@ html {
 }
 
 .helpModal paper-icon-button {
-  padding: 15px; 
+  padding: 15px;
 }
 
 .helpModal .help-text {
@@ -181,5 +181,5 @@ html {
   text-align:justify;
 }
 #help {
-  padding: 35px 15px !important; 
+  padding: 35px 15px !important;
 }

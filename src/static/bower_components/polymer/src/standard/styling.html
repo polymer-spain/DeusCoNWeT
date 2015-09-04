@@ -29,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         prepTemplate.call(this);
         var port = Polymer.DomModule.import(this.is);
         if (this._encapsulateStyle === undefined) {
-          this._encapsulateStyle = 
+          this._encapsulateStyle =
             Boolean(port && !nativeShadow);
         }
         // scope css
@@ -64,7 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var styles = [];
         if (cssText) {
           var s = document.createElement('style');
-          s.textContent = cssText;  
+          s.textContent = cssText;
           styles.push(s);
         }
         return styles;
@@ -91,7 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var cssText = '';
         for (var i=0, l=styles.length, s; (i<l) && (s = styles[i]); i++) {
           if (s && s.textContent) {
-            cssText += 
+            cssText +=
               Polymer.ResolveUrl.resolveCss(s.textContent, s.ownerDocument);
           }
         }
@@ -115,8 +115,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           } else {
             var rules = this._rulesForStyle(s);
             Polymer.StyleUtil.applyCss(
-              Polymer.StyleTransformer.css(rules, this.is, this.extends, 
-              null, this._scopeCssViaAttr), 
+              Polymer.StyleTransformer.css(rules, this.is, this.extends,
+              null, this._scopeCssViaAttr),
               this.is, null, true);
           }
         }
@@ -152,7 +152,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /**
-       * Apply style scoping to the specified `container` and all its 
+       * Apply style scoping to the specified `container` and all its
        * descendants. If `shoudlObserve` is true, changes to the container are
        * monitored via mutation observer and scoping is applied.
        */

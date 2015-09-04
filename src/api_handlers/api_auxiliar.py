@@ -23,6 +23,7 @@
 import webapp2
 # Imports for OAuthTwitterTimelineHandler
 import oauth
+import urllib2
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 

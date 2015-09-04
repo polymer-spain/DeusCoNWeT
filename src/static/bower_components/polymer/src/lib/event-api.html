@@ -21,7 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     if (Settings.useShadow) {
 
       EventApi.prototype = {
-        
+
         get rootTarget() {
           return this.event.path[0];
         },
@@ -39,7 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     } else {
 
       EventApi.prototype = {
-      
+
         get rootTarget() {
           return this.event.target;
         },

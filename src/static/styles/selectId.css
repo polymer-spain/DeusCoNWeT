@@ -29,11 +29,11 @@
   width: 500px;
 }
 #selectId paper-input-decorator /deep/ .unfocused-underline {
-  background-color: #c39457; 
+  background-color: #c39457;
 }
 
 #selectId paper-input-decorator /deep/ .focused-underline {
-  background-color: #334c9b; 
+  background-color: #334c9b;
 }
 
 #selectId paper-button {
@@ -47,5 +47,5 @@
 }
 
 paper-button.ng-hide {
-  opacity: 0; 
+  opacity: 0;
 }

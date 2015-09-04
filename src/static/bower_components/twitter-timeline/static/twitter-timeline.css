@@ -97,6 +97,7 @@ p > a:link, p > a:visited{
   font-style: oblique;
   transition: background .2s linear, border-radius 1s ease-in 1s;
 }
+
 .button:hover {
   background: #55acee;
   color: #fff;

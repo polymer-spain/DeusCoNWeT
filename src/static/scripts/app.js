@@ -20,10 +20,12 @@
       templateUrl: "views/landingPage.html",
       controller: "LandingController"
     })
-      .when("/user/:userId", {
-      templateUrl: "views/userHome.html",
-      controller: "UserHomeController",
-      resolve: {
+      .when('/user/:userId', {
+      templateUrl: 'views/userHome.html',
+      controller: 'UserHomeController'
+      /*      Para ejecutar el localhost sin login:
+        resolve: {
+
         auth: ["$q", "$cookie", function($q, $cookie){
 
           var session = $cookie.get("session");
@@ -34,7 +36,7 @@
             return $q.reject({authenticated: false});
           }
         }]
-      }
+      }*/
     })
       .when("/about", {
       templateUrl: "views/about.html",

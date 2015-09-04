@@ -22,9 +22,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (dash.indexOf('-') < 0) {
         return Polymer.CaseMap._caseMap[dash] = dash;
       }
-      return Polymer.CaseMap._caseMap[dash] = dash.replace(/-([a-z])/g, 
+      return Polymer.CaseMap._caseMap[dash] = dash.replace(/-([a-z])/g,
         function(m) {
-          return m[1].toUpperCase(); 
+          return m[1].toUpperCase();
         }
       );
     },
@@ -34,9 +34,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (mapped) {
         return mapped;
       }
-      return Polymer.CaseMap._caseMap[camel] = camel.replace(/([a-z][A-Z])/g, 
-        function (g) { 
-          return g[0] + '-' + g[1].toLowerCase() 
+      return Polymer.CaseMap._caseMap[camel] = camel.replace(/([a-z][A-Z])/g,
+        function (g) {
+          return g[0] + '-' + g[1].toLowerCase()
         }
       );
     }

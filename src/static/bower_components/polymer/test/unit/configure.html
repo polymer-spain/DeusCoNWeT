@@ -22,9 +22,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <x-configure-value content="attr" object='{"foo": "obj-attr"}'></x-configure-value>
 
-  <x-configure-host></x-configure-host>  
+  <x-configure-host></x-configure-host>
 
-  <x-configure-host content="attr"></x-configure-host>  
+  <x-configure-host content="attr"></x-configure-host>
 
 <script>
 
@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     test('value set in properties initializes correctly', function() {
       var e = document.querySelector('x-configure-value');
-      testConfigure(e, 'default', 'obj-default');      
+      testConfigure(e, 'default', 'obj-default');
     });
 
     test('attribute overrides value set in properties', function() {

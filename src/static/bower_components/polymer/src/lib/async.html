@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script>
 
 Polymer.Async = (function() {
-  
+
   var currVal = 0;
   var lastVal = 0;
   var callbacks = [];
@@ -55,14 +55,14 @@ Polymer.Async = (function() {
   new (window.MutationObserver || JsMutationObserver)(atEndOfMicrotask)
     .observe(twiddle, {characterData: true})
     ;
-  
-  // exports 
+
+  // exports
 
   return {
     run: runAsync,
     cancel: cancelAsync
   };
-  
+
 })();
 
 </script>

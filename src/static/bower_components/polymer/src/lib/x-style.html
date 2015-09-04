@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="style-transformer.html">
 <link rel="import" href="style-defaults.html">
 
-<!-- 
+<!--
 
 The `x-style` extension of the native `<style>` element allows defining styles
 in the main document that can take advantage of several special features of
@@ -34,22 +34,22 @@ Example:
   <link rel="import" href="components/polymer/polymer.html">
 
   <style is="x-style">
-    
+
     /* Will be prevented from affecting local DOM of Polymer elements */
     * {
       box-sizing: border-box;
     }
-    
+
     /* Can use /deep/ and ::shadow combinators */
     body /deep/ .my-special-view::shadow #thing-inside {
       background: yellow;
     }
-    
+
     /* Custom properties that inherit down the document tree may be defined */
     body {
       --my-toolbar-title-color: green;
     }
-    
+
   </style>
 
 </head>
@@ -79,7 +79,7 @@ Note, all features of `x-style` are available when defining styles as part of Po
       // TODO(sorvell): since custom rules must match directly, they tend to be
       // made with selectors like `*`.
       // We *remove them here* so they don't apply too widely and nerf recalc.
-      // This means that normal properties mixe in rules with custom 
+      // This means that normal properties mixe in rules with custom
       // properties will *not* apply.
       var cssText = Polymer.StyleUtil.parser.stringify(rules);
       this.textContent = this.scopeCssText(cssText);

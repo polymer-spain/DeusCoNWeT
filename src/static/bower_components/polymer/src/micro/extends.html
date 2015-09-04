@@ -20,24 +20,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
    *       extends: 'input',
    *       ...
    *     });
-   * 
+   *
    * Type-extension objects are created using `is` notation in HTML, or via
    * the secondary argument to `document.createElement` (the type-extension
-   * rules are part of the Custom Elements specification, not something 
-   * created by Polymer). 
-   * 
+   * rules are part of the Custom Elements specification, not something
+   * created by Polymer).
+   *
    * Example:
-   * 
+   *
    *     <!-- right: creates a pro-input element -->
    *     <input is="pro-input">
-   *   
+   *
    *     <!-- wrong: creates an unknown element -->
-   *     <pro-input>  
-   * 
+   *     <pro-input>
+   *
    *     <script>
    *        // right: creates a pro-input element
    *        var elt = document.createElement('input', 'pro-input');
-   * 
+   *
    *        // wrong: creates an unknown element
    *        var elt = document.createElement('pro-input');
    *     <\script>

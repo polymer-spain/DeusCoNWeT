@@ -56,7 +56,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // any elements we stamp to easily set host to us).
     _pushHost: function(host) {
       // NOTE: The `dataHost` of an element never changes.
-      this.dataHost = host = host || 
+      this.dataHost = host = host ||
         Polymer.Base.hostStack[Polymer.Base.hostStack.length-1];
       // this.dataHost reflects the parent element who manages
       // any bindings for the element.  Only elements originally
