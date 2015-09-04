@@ -108,10 +108,14 @@ class UserHandler(SessionHandler):
     # If the request doesn't come along a cookie, we search for the user_id in the system
     # (We only return an object verifying that the user_id requested exists in the system)
     else:
-      
       self.response.content_type = "application/json"
-      self.response.write({"response": })
-      self.response.set_status(200)
+      user = ndb_pb.getUser(user_id)
+      if not user == None:
+        self.response.write({"user_id": user["user_id"]})
+        self.response.set_status(200)
+      else:
+        self.response.write({"error": "User not found in the system"})
+        self.response.set_status(404)
 
   def post(self, user_id):
     cookie_value = self.request.cookies.get("session")
