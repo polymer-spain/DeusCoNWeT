@@ -28,7 +28,6 @@
   padding: 3px 0px;
 }
 
-
 #end {
   background: #55acee;
   border-bottom-left-radius: 5px;
@@ -79,7 +78,6 @@
   text-decoration: underline;
 }
 
-
 .text {
   font-size: 14px;
   font-family: sans-serif;
@@ -88,7 +86,6 @@
 p > a:link, p > a:visited{
   color: #0084B4;
 }
-
 
 .button{
   background: #fff;
@@ -114,6 +111,9 @@ p > a:link, p > a:visited{
 ::-webkit-scrollbar-thumb {
   background: #55acee;
   -webkit-border-radius: 1ex;
+}
+.refresh {
+  text-align: right;
 }
 
 .refresh_button {

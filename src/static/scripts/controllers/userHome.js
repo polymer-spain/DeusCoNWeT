@@ -38,7 +38,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 			name: "instagram-timeline",
 			attributes: {
 				accessToken: $scope.instagramData.token,
-				endpoint: $scope.domain + "/api/oauth/instagram",
+				endpoint: $scope.domain + "/api/aux/instagramTimeline",
 				language: "{{idioma}}"
 			}
 		}
