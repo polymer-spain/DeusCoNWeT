@@ -19,9 +19,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <polymer-element name="twitter-timeline" attributes="endpoint accessToken secretToken consumerKey consumerSecret count since_id language">
 
   <template>
-    <!-- Importacion del CSS a usar -->
+    <!-- CSS File import -->
     <link rel="stylesheet" href="twitter-timeline.css">
-    <!-- Request a la api de twitter solicitando el timeline. Para ello son necesarios todos los tokens -->
+    <!-- Request to the API. Tokens are necessary -->
     <core-ajax 
                id="requestTimeline"
                url='{{ endpoint }}'
@@ -48,48 +48,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </core-ajax>
 
     <paper-shadow>
-      <!-- Cabecera -->
+      <!-- Header -->
       <paper-shadow>
-        <div id ="cabecera" horizontal center-justified layout>
+        <div id ="header" horizontal center-justified layout>
           <p flex style="text-align:center; padding-left:50px">{{data.title}}</p>
-          <core-icon-button class="boton_refrescar" title="{{data.refresh}}" icon="refresh" on-click={{refrescar}}></core-icon-button>
+          <core-icon-button class="refresh_button" title="{{data.refresh}}" icon="refresh" on-click={{refresh_func}}></core-icon-button>
         </div>
       </paper-shadow>
       <!-- Timeline box -->
       <div style="overflow-y: auto;max-height: 400px">
-        <template id="contenido" is="auto-binding" repeat="{{evento,index in events}}">
+        <template id="content" is="auto-binding" repeat="{{event,index in events}}">
           <ul class="box" >
-            <!-- Imagen de la persona que publica -->
-            <core-icon  src="{{evento.user.profile_image_url_https}}" class="imgEvent">
+            <!-- Profile picture -->
+            <core-icon src="{{event.user.profile_image_url_https}}" class="imgEvent">
             </core-icon>
-            <!-- Cabecera de la publicacion -->
+            <!-- Publication Header -->
             <div style="text-align: left">
-              <a class="nounderline" href="https://twitter.com/{{evento.user.screen_name}}" target='_blank'>
-                <span class="fullname">{{evento.user.name}}</span>
-                <span class="username">@{{evento.user.screen_name}}</span>
+              <a class="nounderline" href="https://twitter.com/{{event.user.screen_name}}" target='_blank'>
+                <span class="fullname">{{event.user.name}}</span>
+                <span class="username">@{{event.user.screen_name}}</span>
               </a>
-              <template if=!{{evento.retweeted_status}}>
-                <a class="nounderline time" href="https://twitter.com/{{evento.id}}/status/{{evento.id_str}}" target='_blank'>
-                  <span>{{evento.tiempo}}</span>
+              <template if=!{{event.retweeted_status}}>
+                <a class="nounderline time" href="https://twitter.com/{{event.id}}/status/{{event.id_str}}" target='_blank'>
+                  <span>{{event.time}}</span>
                 </a>
               </template>
-              <template else={{evento.retweeted_status}}>
+              <template else={{event.retweeted_status}}>
                 <a class="nounderline time"
-                   href="https://twitter.com/{{evento.retweeted_status.id}}/status/{{evento.retweeted_status.id_str}}" target='_blank'>
-                  <p>{{evento.tiempo}}</p>
+                   href="https://twitter.com/{{event.retweeted_status.id}}/status/{{event.retweeted_status.id_str}}" target='_blank'>
+                  <p>{{event.time}}</p>
                 </a>
               </template>
             </div>
-            <p class="texto" id="texto{{index}}" onload="{{cambiar(evento,index)}}"></p>
+            <p class="text" id="text{{index}}" onload="{{change(event,index)}}"></p>
           </ul>
         </template>
         <template if="{{ show}}">
-          <ul class="box boton"  on-click={{mostrar}}>
+          <ul class="box button"  on-click={{show}}>
             <span>{{data.load_more}}</span>
           </ul>
         </template>
       </div>
-      <div id="fin"></div>
+      <div id="end"></div>
     </paper-shadow>
   </template>
 
@@ -99,7 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       show: true,
       since_id: "",
       endpoint:'',
-      language: '{{idioma}}',
+      language: 'es',
       count: '200',
 
       ready: function(event, detail, sender) {
@@ -137,11 +137,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      /*Funcion que prepara los tweets antes de mostrarlos*/
+      /* This function prepares the tweets before displaying them */
       response: function(event, detail, sender) {
         this.events = this.changeTime(detail.response);
-        this.events = this.parsear(this.events)
-        this.mostrar()
+        this.events = this.parser(this.events)
+        this.show()
       },
       language_response: function(event, detail,sender){
         this.data = sender.response;
@@ -150,7 +150,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else{
           this.events = this.changeTime(this.events)
-          var t = this.$.contenido;
+
+          var t = this.$.content;
+
           var tweets = new Array();
           for(i = 0; i < t.events.length; i++){
             tweets[i]=this.events[i]
@@ -158,14 +160,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           t.events = tweets;
         }
       },
-      /*Funcion que inyecta el codigo html del tweet para que se pueda visualizar*/
-      cambiar: function(evento,index){
+      /* This function injects tweet HTML code in order to be represented. */
+      change: function(event,index){
         if(index!=undefined){
-          this.injectBoundHTML(evento.text, this.$.contenido.parentNode.children[1+index].children[2])
+          this.injectBoundHTML(event.text, this.$.content.parentNode.children[1+index].children[2])
         }
       },
-      /*Funcion que se encarga de la paginación de los tweets*/
-      mostrar: function(){
+      /* Function that handles paging tweets*/
+      show: function(){
         var tweets = new Array();
         if (this.events.length - this.index >= 20){
           for(i = 0; i<this.index+20;i++){
@@ -174,15 +176,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.index += 20;
           if (this.events.length - this.index < 20)
             this.show = false;
-          var t = this.$.contenido;                
+          var t = this.$.content;
           t.events = tweets;
         }
       },
-      /*Funcion que se encarga del refresco de los tweets cuando el usuario lo solicita*/
-      refrescar: function(){
+      /* Function that refresh the timeline */
+      refresh_func: function(){
         this.$.requestTimeline.go();
       },
-      /*Funcion que muestra el tiempo que hace desde que se publicó un tweet*/
+      /* Function that displays the date when the tweets was published */
       changeTime: function(list){
         for (i=0;i<list.length;i++){
           var date = new Date(list[i].created_at);
@@ -190,64 +192,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if((current_date.getDate() - date.getDate()) == 0 ){
             if((current_date.getHours() - date.getHours()) == 0 ){
               if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
-                list[i].tiempo = current_date.getSeconds() - date.getSeconds()+" "+this.data.seconds
+                list[i].time = current_date.getSeconds() - date.getSeconds()+" "+this.data.seconds
               }
               else{
-                list[i].tiempo = current_date.getMinutes() - date.getMinutes()+" "+this.data.minutes
+                list[i].time = current_date.getMinutes() - date.getMinutes()+" "+this.data.minutes
               }
             }
             else{
               if (current_date.getHours() - date.getHours() == 1)
-                list[i].tiempo = current_date.getHours() - date.getHours()+" "+this.data.hour;
+                list[i].time = current_date.getHours() - date.getHours()+" "+this.data.hour;
               else
-                list[i].tiempo = current_date.getHours() - date.getHours()+" "+this.data.hours;
+                list[i].time = current_date.getHours() - date.getHours()+" "+this.data.hours;
             }
           }
           else if( ((current_date.getDate() - date.getDate()) < 15) && ( (current_date.getDate() - date.getDate()) > 0)){
             if( (current_date.getDate() - date.getDate()) == 1){
-              list[i].tiempo = current_date.getDate() - date.getDate()+" "+this.data.day
+              list[i].time = current_date.getDate() - date.getDate()+" "+this.data.day
             }
             else{
-              list[i].tiempo = current_date.getDate() - date.getDate()+" "+this.data.days
+              list[i].time = current_date.getDate() - date.getDate()+" "+this.data.days
             }
           }
           else{
             var month = [this.data.january,this.data.february,this.data.march,this.data.april, this.data.may,this.data.june,this.data.july,this.data.august,this.data.september,this.data.october,this.data.november,this.data.december];
-            list[i].tiempo = date.getDate()+" "+this.data.of+" "+month[date.getMonth()]+" "+this.data.of+" "+date.getFullYear();
+            list[i].time = date.getDate()+" "+this.data.of+" "+month[date.getMonth()]+" "+this.data.of+" "+date.getFullYear();
           }
         }
         return list;
       },
-      /*Funcion padre que parsea el texto del tweet*/
-      parsear: function(lista){
-        for(i = 0; i < lista.length; i++){
-          if(lista[i].retweeted_status){
-            lista[i].text = this.parseURL(lista[i].retweeted_status.text);
-            lista[i].text = this.parseUsername(lista[i].text);
-            lista[i].text = this.parseHashtag(lista[i].text);
+      /* Function that parse the tweet's text */
+      parser: function(list){
+        for(i = 0; i < list.length; i++){
+          if(list[i].retweeted_status){
+            list[i].text = this.parseURL(list[i].retweeted_status.text);
+            list[i].text = this.parseUsername(list[i].text);
+            list[i].text = this.parseHashtag(list[i].text);
           }
           else{
-            lista[i].text = this.parseURL(lista[i].text);
-            lista[i].text = this.parseUsername(lista[i].text);
-            lista[i].text = this.parseHashtag(lista[i].text);
+            list[i].text = this.parseURL(list[i].text);
+            list[i].text = this.parseUsername(list[i].text);
+            list[i].text = this.parseHashtag(list[i].text);
           }
         }
-        return lista;
+        return list;
       },
-      /*Parseo de las urls de dentro de los tweets*/
+      /* URLs parser */
       parseURL: function(tweet) {
         return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
           return '<a href='+url+' target="_blank">'+url+'</a>'
         })
       },
-      /*Parseo de los nombres de usuario de dentro de los tweets*/
+      /* Usernames parser */
       parseUsername: function(tweet) {
         return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
           var username = u.replace("@","")
           return '<a href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
         })
       },
-      /*Parseo de los hastaghs de dentro de los tweets*/
+      /* Hashtags parser */
       parseHashtag: function(tweet) {
         return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")

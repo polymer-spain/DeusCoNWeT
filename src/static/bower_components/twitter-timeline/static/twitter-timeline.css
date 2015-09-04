@@ -1,5 +1,7 @@
 :host{
   display: inline-block;
+  color:black;
+	z-index: inherit;
 }
 
 .box {
@@ -15,7 +17,7 @@
 
 }
 
-#cabecera {
+#header {
   background: #55acee; /* Old browsers */
   color:#fff;
   border-top-left-radius: 5px;
@@ -26,7 +28,8 @@
   padding: 3px 0px;
 }
 
-#fin {
+
+#end {
   background: #55acee;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
@@ -76,7 +79,8 @@
   text-decoration: underline;
 }
 
-.texto {
+
+.text {
   font-size: 14px;
   font-family: sans-serif;
 }
@@ -85,7 +89,8 @@ p > a:link, p > a:visited{
   color: #0084B4;
 }
 
-.boton{
+
+.button{
   background: #fff;
   cursor: pointer;
   text-align: center;
@@ -95,7 +100,8 @@ p > a:link, p > a:visited{
   font-style: oblique;
   transition: background .2s linear, border-radius 1s ease-in 1s;
 }
-.boton:hover {
+
+.button:hover {
   background: #55acee;
   color: #fff;
 }
@@ -109,18 +115,8 @@ p > a:link, p > a:visited{
   background: #55acee;
   -webkit-border-radius: 1ex;
 }
-.refrescar {
-  text-align: right;
-}
 
-.refresco {
-  font-size: 10px;
-  text-align: right;
-}
-
-
-
-.boton_refrescar {
+.refresh_button {
   text-align: right;
   padding-bottom: 10px;
 }

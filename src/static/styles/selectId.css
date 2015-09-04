@@ -1,0 +1,51 @@
+#selectId {
+  margin-top:100px;
+}
+
+#selectId .container {
+  margin-top:150px;
+}
+
+#selectId  core-icon[icon="label"] {
+  color:burlywood;
+  margin-bottom: 9px;
+}
+
+#selectId #gif {
+  margin-left: 35px;
+  width: 75px;
+  height: 75px;
+}
+
+#selectId .title {
+  margin-left: 10px;
+  font-size: 25px;
+}
+
+#selectId paper-input-decorator {
+  margin-top: 20px;
+  margin-left: 35px;
+  font-size: 22px;
+  width: 500px;
+}
+#selectId paper-input-decorator /deep/ .unfocused-underline {
+  background-color: #c39457;
+}
+
+#selectId paper-input-decorator /deep/ .focused-underline {
+  background-color: #334c9b;
+}
+
+#selectId paper-button {
+  margin: 0 auto;
+  margin-top: 15px;
+  margin-right: 0;
+  background-color: #B72e2e;
+  font-size: 18px;
+  -webkit-transition:all linear 0.4s;
+  transition:all linear 0.4s;
+}
+
+paper-button.ng-hide {
+  opacity: 0;
+}

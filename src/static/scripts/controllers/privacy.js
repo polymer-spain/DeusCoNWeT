@@ -9,7 +9,7 @@
  */
 
 angular.module('picbit')
-  .controller('PrivacyController', function($scope, $routeParams,$timeout) {
+  .controller('PrivacyController', ["$scope", "$routeParams", "$timeout", function($scope, $routeParams,$timeout) {
   $scope.mailTo = function () {
 
     var link = "mailto:deus@conwet.com"
@@ -18,4 +18,4 @@ angular.module('picbit')
     + "&body=" +document.querySelector('#mensaje').value;
     window.location.href = link;
   }
-});
+}]);

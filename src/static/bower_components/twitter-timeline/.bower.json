@@ -1,14 +1,14 @@
 {
   "name": "twitter-timeline",
   "homepage": "https://github.com/JuanFryS/twitter-timeline",
-  "_release": "482e032f12",
+  "_release": "97ed1779c7",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "482e032f12b52eb2f4e34f2c174ae014e8602ec6"
+    "commit": "97ed1779c74169adb33c91cc53373c75f1b10544"
   },
   "_source": "git://github.com/JuanFryS/twitter-timeline.git",
   "_target": "*",
-  "_originalSource": "JuanFryS/twitter-timeline",
+  "_originalSource": "twitter-timeline",
   "_direct": true
 }

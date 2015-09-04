@@ -16,16 +16,16 @@
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^1.1.4"
   },
-  "version": "0.5.5",
+  "version": "0.5.6",
   "homepage": "https://github.com/Polymer/core-dropdown-menu",
-  "_release": "0.5.5",
+  "_release": "0.5.6",
   "_resolution": {
     "type": "version",
-    "tag": "0.5.5",
-    "commit": "44b95134f5e2fbb6e2fcc11ef2c6cb7cdab724a5"
+    "tag": "0.5.6",
+    "commit": "7fd49382029d47162a584e0744b89aa757156e1e"
   },
   "_source": "git://github.com/Polymer/core-dropdown-menu.git",
-  "_target": "~0.5.5",
+  "_target": "~0.5.6",
   "_originalSource": "Polymer/core-dropdown-menu",
   "_direct": true
 }

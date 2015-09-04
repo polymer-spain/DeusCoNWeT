@@ -3,5 +3,7 @@ static/views/backup-home.html
 *.pyc
 node_modules
 grunt*
-Gruntfile.js
 images/min
+build
+.brackets.json
+*.*~

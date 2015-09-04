@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                >
     </core-ajax>
 
-    <!--  <core-ajax
+    <!--<core-ajax
 id="me_gusta"
 url="{{endpoint}}"
 method="GET"
@@ -80,69 +80,67 @@ on-core-response="{{response_megusta}}"
 >
 </core-ajax>-->
 
-    <!--Cabecera-->
+    <!--Header-->
     <paper-shadow>
-      <div id ="cabecera" horizontal center-justified layout>
+      <div id ="header" horizontal center-justified layout>
         <p flex style="text-align:center">Instagram</p>
-        <core-icon-button id="boton_refrescar" icon="refresh" title="{{language_data.refresh}}" on-click={{refrescar}}></core-icon-button>
+        <core-icon-button id="refresh_button" icon="refresh" title="{{language_data.refresh}}" on-click={{refresh_func}}></core-icon-button>
       </div>
     </paper-shadow>
 
-    <!-- Cuerpo -->
-    <div id="contorno">
-      <template id="contenido" is="auto-binding" repeat="{{evento,index in events}}">
+    <!-- Body -->
+    <div id="outline">
+      <template id="content" is="auto-binding" repeat="{{event,index in events}}">
         <paper-shadow z=1 style="margin: 2%;border-radius: 5px">
           <ul id="box">
-            <img id="profile_picture" src="{{evento.user.profile_picture}}">
+            <img id="profile_picture" src="{{event.user.profile_picture}}">
             <a id="profile_name"
-               href="https://instagram.com/{{evento.user.username}}/" target='_blank'>
-              <p>{{evento.user.username}}</p>
+               href="https://instagram.com/{{event.user.username}}/" target='_blank'>
+              <p>{{event.user.username}}</p>
             </a>
-            <span id="hora">{{evento.tiempo}}</span>
-            <template if="{{evento.type == 'image'}}">
-              <a href="{{evento.link}}" target="_blank"><img id="imagen" src="{{evento.images.standard_resolution.url}}"></a>
+            <span id="hour">{{event.time}}</span>
+            <template if="{{event.type == 'image'}}">
+              <a href="{{event.link}}" target="_blank"><img id="imagen" src="{{event.images.standard_resolution.url}}"></a>
             </template>
-            <template if="{{evento.type == 'video'}}">
-              <a href="{{evento.link}}" target="_blank">
+            <template if="{{event.type == 'video'}}">
+              <a href="{{event.link}}" target="_blank">
                 <video id="video" controls muted>
-                  <source src="{{evento.videos.standard_resolution.url}}">
+                  <source src="{{event.videos.standard_resolution.url}}">
                   {{language_data.video}}
                 </video>
               </a>
             </template>
             <div style="margin-left: 6px; margin-right: 0px">
-              <core-icon-button id="liked" icon="favorite" style="{{evento.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
-              <span id="liked_count">{{evento.likes.count}}{{language_data.like}}</span>
+              <core-icon-button id="liked" icon="favorite" style="{{event.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
+              <span id="liked_count">{{event.likes.count}}{{language_data.like}}</span>
             </div>
-            <div id="descripcion" hidden?="{{evento.caption == null}}">
-              <span><a href="https://instagram.com/{{evento.user.username}}/" target='_blank'>{{evento.user.username}}</a></span>
-              <span id="texto{{index}}" onload="{{cambiar(evento,index)}}"></span>
+            <div id="description" hidden?="{{event.caption == null}}">
+              <span><a href="https://instagram.com/{{event.user.username}}/" target='_blank'>{{event.user.username}}</a></span>
+              <span id="texto{{index}}" onload="{{inject(event,index)}}"></span>
             </div>
           </ul>
         </paper-shadow>
       </template>
       <template if="{{events != null}}">
         <div on-click="{{load}}" style="text-align: center; margin-top: -12px">
-          <paper-button id="boton">
+          <paper-button id="button">
             {{language_data.load_more}}
           </paper-button>
         </div>
       </template>
     </div>
-    <div id="fin"></div>
+    <div id="end"></div>
 
 
 
   </template>
   <script>
     Polymer({
-      /*Count hace referencia al numero de elementos nuevos a cargar al darle a mostrar mas*/
+      /*"Count" is the number of elements to load*/
       count: 10,
-      peticion: "",
-      media_id: "",
-      language: "{{idioma}}",
+      language: 'es',
+      media_id: '',
 
-      /*Dos niveles de espera para el access token. Si no se encuentra disponible, no se realiza la peticion GET*/
       ready: function(event, detail, sender){
         if(this.accessToken && this.endpoint != ""){
           if(this.language == 'es'){
@@ -150,6 +148,9 @@ on-core-response="{{response_megusta}}"
           }else if(this.language == 'en'){
             this.idioma = 'en_en.json'
           }
+          console.log(this.accessToken)
+          console.log(this.language)
+          console.log(this.idioma)
           this.$.requestLanguage.go();
         }
       },
@@ -161,6 +162,9 @@ on-core-response="{{response_megusta}}"
           }else if(this.language == 'en'){
             this.idioma = 'en_en.json'
           }
+          console.log(this.accessToken)
+          console.log(this.language)
+          console.log(this.idioma)
           this.$.requestLanguage.go();
         }
       },
@@ -169,21 +173,21 @@ on-core-response="{{response_megusta}}"
         if(newVal === "en" && attrName == "language"){
           this.language = "en";
           this.idioma = "en_en.json"
-          this.$.requestLanguage.go();;
+          this.$.requestLanguage.go();
         }
         else if(newVal === "es" && attrName == "language"){
           this.language = "es";
           this.idioma = "es_es.json"
-          this.$.requestLanguage.go();;
+          this.$.requestLanguage.go();
         }
       },
 
       response: function(event, detail, sender) {
-        this.datos = (detail.response)
-        this.min_id = this.datos.data[0].id
+        this.dates = (detail.response)
+        this.min_id = this.dates.data[0].id
         this.events  = this.changeTime(detail.response.data)
-        this.events = this.parsear(this.events)
-        var t = this.$.contenido;
+        this.events = this.parser(this.events)
+        var t = this.$.content;
         t.events =  this.events
       },
 
@@ -201,7 +205,7 @@ on-core-response="{{response_megusta}}"
         /*console.log(this.language_data)*/
       },
 
-      refrescar: function(){
+      refresh_func: function(){
         this.$.refresco.go()
       },
 
@@ -217,8 +221,8 @@ on-core-response="{{response_megusta}}"
           }
         }
         this.events  = this.changeTime(this.events)
-        this.events = this.parsear(this.events)
-        var t = this.$.contenido
+        this.events = this.parser(this.events)
+        var t = this.$.content
         t.events = this.events
       },
 
@@ -233,38 +237,38 @@ on-core-response="{{response_megusta}}"
       },*/
 
       load: function(){
-        this.max_id = this.datos.pagination.next_max_id
+        this.max_id = this.dates.pagination.next_max_id
         this.$.load_more.go()
       },
 
       response_load: function(event, detail, sender){
-        this.datos = sender.response
+        this.dates = sender.response
         var tweets = new Array();
         for(i = 0; i<sender.response.data.length;i++){
           tweets[i] = sender.response.data[i];
         }
         tweets = this.changeTime(tweets)
-        tweets = this.parsear(tweets)
+        tweets = this.parser(tweets)
 
-        tam = this.events.length
+        size = this.events.length
         for(i = 0; i<tweets.length;i++){
-          this.events[tam+i] = tweets[i]
+          this.events[size+i] = tweets[i]
         }
-        var t = this.$.contenido
+        var t = this.$.content
         t.events = this.events
       },
 
-      cambiar: function(event,index){
+      inject: function(event,index){
         if(index!=undefined){
           if(event.caption)
-            this.injectBoundHTML(event.caption.text, this.$.contenido.parentNode.children[1+index].children[0].children[7].children[1])
+            this.injectBoundHTML(event.caption.text, this.$.content.parentNode.children[1+index].children[0].children[7].children[1])
             }
       },
 
       changeTime: function(list){
         for (i=0;i<list.length;i++){
-          list[i].tiempo = list[i].created_time*1000
-          var date = list[i].tiempo;
+          list[i].time = list[i].created_time*1000
+          var date = list[i].time;
           var current_date = new Date();
           current_date = current_date.getTime();
 
@@ -273,37 +277,37 @@ on-core-response="{{response_megusta}}"
           if( Math.floor(calculate_date/3600) == 0){
             if ( Math.floor(calculate_date/60) == 0){
               if (Math.floor(calculate_date) == 1){
-                list[i].tiempo = Math.floor(calculate_date)+" "+this.language_data.second
+                list[i].time = Math.floor(calculate_date)+" "+this.language_data.second
               }
               else{
-                list[i].tiempo = Math.floor(calculate_date)+" "+this.language_data.seconds
+                list[i].time = Math.floor(calculate_date)+" "+this.language_data.seconds
               }
             }
             else{
               if ( Math.floor(calculate_date/60) == 1 ){
-                list[i].tiempo = Math.floor(calculate_date/60)+" "+this.language_data.minute
+                list[i].time = Math.floor(calculate_date/60)+" "+this.language_data.minute
               }
               else{
-                list[i].tiempo = Math.floor(calculate_date/60)+" "+this.language_data.minutes
+                list[i].time = Math.floor(calculate_date/60)+" "+this.language_data.minutes
               }
             }
           }
           else{
             if( Math.floor(calculate_date/3600) == 1 ){
-              list[i].tiempo = Math.floor(calculate_date/3600)+" "+this.language_data.hour
+              list[i].time = Math.floor(calculate_date/3600)+" "+this.language_data.hour
             }
             else if(calculate_date/3600 < 24){
-              list[i].tiempo = Math.floor(calculate_date/3600)+" "+this.language_data.hours
+              list[i].time = Math.floor(calculate_date/3600)+" "+this.language_data.hours
             }
             else{
-              list[i].tiempo = Math.floor(calculate_date/86400)+" "+this.language_data.days
+              list[i].time = Math.floor(calculate_date/86400)+" "+this.language_data.days
             }
           }
         }
         return list;
       },
 
-      parsear: function(lista){
+      parser: function(lista){
         for(i = 0; i < lista.length; i++){
           if(lista[i].caption){
             lista[i].caption.text = this.parseURL(lista[i].caption.text);
@@ -314,14 +318,14 @@ on-core-response="{{response_megusta}}"
         return lista;
       },
 
-      /*Parseo de las urls de dentro de los tweets*/
+      /*URL parser*/
       parseURL: function(tweet) {
         return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
           return '<a href='+url+' target="_blank">'+url+'</a>'
         })
       },
 
-      /*Parseo de los nombres de usuario de dentro de los tweets*/
+      /*Usernames parser*/
       parseUsername: function(tweet) {
         return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
           var username = u.replace("@","")
@@ -329,7 +333,7 @@ on-core-response="{{response_megusta}}"
         })
       },
 
-      /*Parseo de los hastaghs de dentro de los tweets*/
+      /*Hashtag parser*/
       parseHashtag: function(tweet) {
         return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
@@ -339,5 +343,4 @@ on-core-response="{{response_megusta}}"
     });
 
   </script>
-
 </polymer-element>
