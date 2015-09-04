@@ -104,10 +104,18 @@ class UserHandler(SessionHandler):
         self.response.content_type = "application/json"
         self.response.write({"error": "The session cookie header does not belong to an active user in the system"})
         self.response.set_status(400)
+    
+    # If the request doesn't come along a cookie, we search for the user_id in the system
+    # (We only return an object verifying that the user_id requested exists in the system)
     else:
       self.response.content_type = "application/json"
-      self.response.write({"error": "The user is not authenticated"})
-      self.response.set_status(401)
+      user = ndb_pb.getUser(user_id)
+      if not user == None:
+        self.response.write({"user_id": user["user_id"]})
+        self.response.set_status(200)
+      else:
+        self.response.write({"error": "User not found in the system"})
+        self.response.set_status(404)
 
   def post(self, user_id):
     cookie_value = self.request.cookies.get("session")
