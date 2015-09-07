@@ -84,7 +84,7 @@ class UserHandler(SessionHandler):
           # Depending on the user making the request, the info returned will be one or another
           if user_id == user_logged_id:
             self.response.content_type = "application/json"
-            self.response.write(user_info)
+            self.response.write(json.dumps(user_info))
             self.response.set_status(200)
           else:
             user_dict = {"user_id": user_info["user_id"],

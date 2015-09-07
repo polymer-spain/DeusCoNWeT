@@ -199,6 +199,7 @@ def getUser(user_id): #FUNCIONA
       rates_list.append(tup)
     for net in nets:
       net_names.append(net.social_name)
+  
     user_info = {"user_id": user.user_id,
                 "description": user.description,
                 "image": user.image,
@@ -209,6 +210,8 @@ def getUser(user_id): #FUNCIONA
                 "phone": user.phone,
                 "nets": net_names,
                 "components": rates_list}
+  
+  
   return user_info
 
 def getUserId(entity_key):

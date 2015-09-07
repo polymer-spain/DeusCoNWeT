@@ -127,13 +127,6 @@ def main():
 				request_uri = basepath + "?social_network=twitter"
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
-				# # TEST 11
-				# print "TEST 11: Obtener la lista de componentes, proporcionando una cookie de sesion"
-				# print "(parámetro de filtrado por usuario)"
-				# print "Status esperado: 204"
-				# request_uri = basepath + "?filter=user"
-				# test_utils.make_request("GET", request_uri, params, 200, session1)
-
 				# TEST 12
 				print "TEST 12: Obtener la lista de componentes, proporcionando una cookie de sesion"
 				print "(formato de lista completo)"
@@ -141,20 +134,6 @@ def main():
 				request_uri = basepath + "?format=complete"
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 				
-				# # TEST 13
-				# print "TEST 13: Obtener la lista de componentes, proporcionando una cookie de sesion"
-				# print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista reducido)"
-				# print "Status esperado: 200"
-				# request_uri = basepath + "?social_network=twitter&filter=user&format=reduced"
-				# test_utils.make_request("GET", request_uri, params, 200, session1)
-
-				# # TEST 14
-				# print "TEST 14: Obtener la lista de componentes, proporcionando una cookie de sesion"
-				# print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista completo)"
-				# print "Status esperado: 200"
-				# request_uri = basepath + "?social_network=twitter&filter=user&format=complete"
-				# test_utils.make_request("GET", request_uri, params, 200, session1)
-
 				# TESTs relativos al metodo GET Componente (obtener info de un componente en particular)
 				# TEST 15
 				print "TEST 15: Obtener información sobre componente 1, sin proporcionar cookie de usuario"
