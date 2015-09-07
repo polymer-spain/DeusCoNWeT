@@ -84,7 +84,7 @@ class UserHandler(SessionHandler):
           # Depending on the user making the request, the info returned will be one or another
           if user_id == user_logged_id:
             self.response.content_type = "application/json"
-            self.response.write(user_info)
+            self.response.write(json.dumps(user_info))
             self.response.set_status(200)
           else:
             user_dict = {"user_id": user_info["user_id"],
@@ -102,7 +102,7 @@ class UserHandler(SessionHandler):
             self.response.set_status(200)
       else:
         self.response.content_type = "application/json"
-        self.response.write({"error": "The session cookie header does not belong to an active user in the system"})
+        self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
         self.response.set_status(400)
     
     # If the request doesn't come along a cookie, we search for the user_id in the system
@@ -111,10 +111,10 @@ class UserHandler(SessionHandler):
       self.response.content_type = "application/json"
       user = ndb_pb.getUser(user_id)
       if not user == None:
-        self.response.write({"user_id": user["user_id"]})
+        self.response.write(json.dumps({"user_id": user["user_id"]}))
         self.response.set_status(200)
       else:
-        self.response.write({"error": "User not found in the system"})
+        self.response.write(json.dumps({"error": "User not found in the system"}))
         self.response.set_status(404)
 
   def post(self, user_id):
@@ -127,7 +127,7 @@ class UserHandler(SessionHandler):
         # Checks if the user active is the owner of the resource (if exists)
         if user_info == None:
           self.response.content_type = "application/json"
-          self.response.write({"error": "The user requested does not exist"})
+          self.response.write(json.dumps({"error": "The user requested does not exist"}))
           self.response.set_status(404)
         elif not user_info == None and user_logged_id==user_id:
           user = json.dumps(user_info)  
