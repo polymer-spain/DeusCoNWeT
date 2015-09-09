@@ -6,7 +6,8 @@ import test_utils
 
 
 # Script para hacer pruebas a la API de Oauth de PicBit (api/oauth/{social_network})
-# Uso: ./api_oauth_tester social_network
+# Uso: api_oauth_tester {social_network} [borrado]
+# Ejemplo: python api_oauth_tester googleplus 
 
 # NOTA: El flujo por github se debe probar a traves del componente de login de github
 #       (http://github-login-lab.appspot.com/app/demo.html)
@@ -26,6 +27,8 @@ def main():
 		user_id1 = "user" + social_network + "1"
 		user_id2 = "user" + social_network + "2"
 		access_token2 = social_network + "2TEST"
+		# Si no se especifica una opción, se realizan las pruebas relativas al Login, 
+		# obtención de credenciales y logout
 		if option == None:
 			#Tests relativos a los casos de Login
 			# TEST 1
@@ -87,7 +90,7 @@ def main():
 			# Get (Sin cookie)
 			request_uri = basePath + "/credenciales/" + token_id2
 			print "TEST 8: Obtener credenciales sin cookie"
-			print " Status esperado: 200 (Retorna únicamente el id de usuario)"
+			print " Status esperado: 200 (con una respuesta informativa)"
 			params = urllib.urlencode({})
 			test_utils.make_request("GET", request_uri, params, 200, None)
 
@@ -105,9 +108,9 @@ def main():
 			# Obtener credenciales con cookie antigua
 			request_uri = basePath + "/credenciales/" + token_id1
 			print "TEST 10: Obtener credenciales con cookie de sesión antigua"
-			print "Status esperado: 200 (Retorna unicamente el id de usuario)"
+			print "Status esperado: 400"
 			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 200, session1)
+			test_utils.make_request("GET", request_uri, params, 400, session1)
 
 			# TEST 11 
 			# Logout con cookie antigua
@@ -199,6 +202,7 @@ def main():
 		token_id1 = "id" + social_network
 		access_token1 = social_network + "TEST"
 		token_id2 = "idERROR" + social_network + "2"
+		user_id1 = "user" + social_network + "1"
 
 		# Iniciamos dos sesiones distintas en googleplus para realizar las pruebas
 		request_uri = "/api/oauth/googleplus/login"
@@ -259,9 +263,9 @@ def main():
 			# Get (Sin cookie)
 			request_uri = "/api/oauth/" + social_network + "/credenciales/" + token_id1
 			print "TEST 6: Obtener credenciales sin cookie de sesión"
-			print "Status esperado: 401"
+			print "Status esperado: 200 (Con un mensaje informativo)"
 			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 401, None)
+			test_utils.make_request("GET", request_uri, params, 200, None)
 
 			# TEST 7
 			# TODO Get (Con Cookie)
