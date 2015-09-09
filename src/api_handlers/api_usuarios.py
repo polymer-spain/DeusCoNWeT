@@ -109,7 +109,6 @@ class UserHandler(SessionHandler):
       self.response.content_type = "application/json"
       user = ndb_pb.getUser(user_id)
       if not user == None:
-        self.response.write(json.dumps({"user_id": user["user_id"]}))
         self.response.set_status(200)
       else:
         self.response.write(json.dumps({"error": "User not found in the system"}))
