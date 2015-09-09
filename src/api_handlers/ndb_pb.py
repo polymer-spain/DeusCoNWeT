@@ -271,6 +271,7 @@ def updateUser(entity_key, data): #FUNCIONA
     # We add the component to the component_list of the user
     component = UserComponent(component_id=comp_name, x=0, y=0, height=0, width=0, listening=None)
     user.components.append(component)
+    user.put()
     # We add a Rating entity that represents the component rating
     if data.has_key("rate"):
       rate = data["rate"]

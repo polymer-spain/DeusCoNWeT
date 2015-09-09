@@ -189,11 +189,23 @@ class OauthCredentialsHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
+        
+        # If we don't provide a cookie in the request, we search for the token in the system
+        # and return a 200 o 404 status. It is a request included in the login flow of the system
         else:
-            response = {"error": "You must provide a session cookie"}
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps(response))
-            self.response.set_status(401)
+            user_credentials = ndb_pb.getToken(token_id, social_network)
+            if not user_credentials == None:
+                response = \
+                    {"response": "The token requested correspond to an active user in the system"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(200)
+            else:
+                response = \
+                    {"error": "The token requested was not found in the system"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(404)
 
     
     def delete_credentials(self, social_network, token_id):
@@ -357,7 +369,7 @@ class GitHubContainerHandler(OAuthCredentialsContainerHandler):
         # Gestion de la respuesta de webapp
         self.response.content_type = "application/json"
         response = {"token": "" + access_token + ""}
-        self.response.write(response)
+        self.response.write(json.dumps(response))
         connection.close()
         self.response.set_status(200)
 
