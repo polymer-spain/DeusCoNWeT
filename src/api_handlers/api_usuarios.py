@@ -177,7 +177,7 @@ class UserHandler(SessionHandler):
           else:
             self.response.content_type = "application/json"
             self.response.write({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"})
-            self.response.set_status(200) 
+            self.response.set_status(304) 
         else:
           self.response.content_type = "application/json"
           self.response.write({"error": "You don\"t have the proper rights to modify this resource" +

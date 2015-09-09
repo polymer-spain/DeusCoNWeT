@@ -45,10 +45,10 @@ def main():
 		# TESTs relativos a la modificación de info de usuario (añadir un componente al usuario)
 		# TEST 1
 		print "TEST 1: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (El componente no existe en el sistema)"
-		print "Status esperado: 200 (El recurso no se modifica)"
+		print "Status esperado: 304 (El recurso no se modifica)"
 		request_uri = users_basepath + "/" + user_id1
 		params = urllib.urlencode({'component': 'componenteError'})
-		test_utils.make_request("POST", request_uri, params, 200, session1)
+		test_utils.make_request("POST", request_uri, params, 304, session1)
 		
 		# TEST 2
 		print "TEST 2: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (Cookie de sesión correcta)"
