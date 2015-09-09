@@ -1,5 +1,5 @@
 /*global angular, document, window, console */
-angular.module("picbit").controller("MainController", ["$scope", "$location", "$timeout", "$backend", "$http", "$window", "$cookie", "$rootScope", function ($scope, $location, $timeout, $backend, $http, $window, $cookie, $rootScope) {
+angular.module("picbit").controller("MainController", ["$scope", "$location", "$timeout", "$backend", "$http", "$window", "$cookie", "$rootScope","RequestLanguage", function ($scope, $location, $timeout, $backend, $http, $window, $cookie, $rootScope, RequestLanguage) {
   "use strict";
 
   $scope.status = $cookie.get("session") !== undefined; // Registr el stado de logueado
@@ -9,42 +9,32 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   $scope.idioma = $cookie.get("language") || $window.navigator.language;
   $scope.user = {name: "Miguel", id: "2312"}; // Usuario logueado
 
+  $scope.languageRequest = function(file){
+    RequestLanguage.language(file).success(function (data){
+      $scope.language = data
+      $scope.languageSelected = data.lang[$scope.idioma];
+    });
+  };
+
   $scope.changelanguage = function (language) {
     var file;
-
     $scope.idioma = language;
     $cookie.put("language", language);
     file = $scope.idioma === "es" ? "es_es.json" : "en_en.json";
-
-    $http.get("../../language/" + file).success(function (data) {
-      $scope.language = data;
-      $scope.languageSelected = data.lang[$scope.idioma];
-      document.querySelector("#language").$.label.innerHTML = $scope.languageSelected;
-    }).error(function (data, status) {
-      console.error(data, status);
-    });
+    $scope.languageRequest(file);
+    document.querySelector("#language").$.label.innerHTML = $scope.languageSelected;
   };
 
   /* Monitorizamos el lenguage */
 
   if ($scope.idioma === "es") {
-    $http.get("../../language/es_es.json").success(function (data) {
-      $scope.language = data;
-      $scope.idioma = "es";
-      $cookie.put("language", "es");
-      $scope.languageSelected = data.lang[$scope.idioma];
-    }).error(function (data, status) {
-      console.error(data, status);
-    });
+    $scope.languageRequest("es_es.json");
+    $scope.idioma = "es";
+    $cookie.put("language", "es");
   } else {
-    $http.get("../../language/en_en.json").success(function (data) {
-      $scope.language = data;
-      $scope.idioma = "en";
-      $cookie.put("language", "en");
-      $scope.languageSelected = data.lang[$scope.idioma];
-    }).error(function (data, status) {
-      console.error(data, status);
-    });
+    $scope.languageRequest("en_en.json");
+    $scope.idioma = "en";
+    $cookie.put("language", "en");
   }
 
   $scope.logged = function (e) {
