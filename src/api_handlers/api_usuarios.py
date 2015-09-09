@@ -163,19 +163,20 @@ class UserHandler(SessionHandler):
               update_data["private_email"] = private_email
           if values.has_key("component"):
             component_id = values.get("component")      
-            component = ndb_pb.getComponent(user_info, component_id)
+            component = ndb_pb.getComponent(user_logged_key, component_id)
             if not component == None:
               update_data["component"] = component_id
+              print "DEBUG: Componente no encontrado en el sistema"
           
           # Updates the resource 
           if not len(update_data) == 0:
             user_info = ndb_pb.updateUser(user_logged_key, update_data)
             self.response.content_type = "application/json"
-            self.response.write({"success": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()})
+            self.response.write({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()})
             self.response.set_status(200)
           else:
             self.response.content_type = "application/json"
-            self.response.write({"success": "Resource not modified (check parameters and values provided)", "status": "Not Modified"})
+            self.response.write({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"})
             self.response.set_status(200) 
         else:
           self.response.content_type = "application/json"

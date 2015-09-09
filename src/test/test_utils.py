@@ -25,7 +25,7 @@ def openConnection(remote=True):
 	if remote:
 		connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
 	else:
-		connection = httplib.HTTPConnection("localhost:8080")
+		connection = httplib.HTTPSConnection("localhost:8080")
 
 def closeConnection():
 	global connection

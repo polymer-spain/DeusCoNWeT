@@ -7,27 +7,46 @@ import test_utils
 # Uso: python api_componentes_usuarios.py
 
 def main():
-	basepath_componentes = "api/componentes"
-	basepath_usuarios = ""
+	components_basepath = "/api/componentes"
+	users_basepath = "/api/usuarios"
 	session1 = None
 	session_error = "session=session_error"
+	user_id1 = "user_components_test"
+	# Sets the option param
+	option = None
+	if len(sys.argv) == 2:
+		option = sys.argv[1] 
 
-
+	# We open the connection with the server
+	test_utils.openConnection()
 	# PRE-TESTs. Login de usuario en el sistema, utilizando Google+
 	request_uri = "/api/oauth/googleplus/login"
 	print "PRETEST 1: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
-	token_id_login = "idgoogle"
+	token_id_login = "id_component_token"
 	access_token_login = "googleTEST"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
 	 'user_identifier': user_id1 })
 	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
 
-	if option = None:
+	# PRE-TEST 2. Añadimos el componente a utilizar en las pruebas
+	print "PRETEST 2: Subir un componente al sistema (componente 2)."
+	print "Status esperado: 201 "
+	params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
+            'component_id': 'instagram-timeline',
+            'description': 'Web component for obtain the timeline of the social network Instagram using Polymer',
+            'social_network': 'instagram',
+            'input_type': 'None',
+            'output_type': 'photo'
+	})
+	test_utils.make_request("PUT", components_basepath, params, 201, None)
 
-		TESTs relativos a la modificación de info de usuario (añadir un componente al usuario)
+
+	if option == None:
+		# TESTs relativos a la modificación de info de usuario (añadir un componente al usuario)
 		# TEST 1
 		print "TEST 1: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (El componente no existe en el sistema)"
 		print "Status esperado: 200 (El recurso no se modifica)"
+		request_uri = users_basepath + "/" + user_id1
 		params = urllib.urlencode({'component': 'componenteError'})
 		test_utils.make_request("POST", request_uri, params, 200, session1)
 		
@@ -42,27 +61,41 @@ def main():
 		print "TEST 3: Obtener la lista de componentes, proporcionando una cookie de sesion"
 		print "(parámetro de filtrado por usuario)"
 		print "Status esperado: 204"
-		request_uri = basepath + "?filter=user"
+		request_uri = components_basepath + "?filter=user"
+		params = urllib.urlencode({})
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
 		# TEST 4
 		print "TEST 4: Obtener la lista de componentes, proporcionando una cookie de sesion"
 		print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista reducido)"
 		print "Status esperado: 200"
-		request_uri = basepath + "?social_network=twitter&filter=user&format=reduced"
+		request_uri = components_basepath + "?social_network=twitter&filter=user&format=reduced"
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
 		# TEST 5
 		print "TEST 5: Obtener la lista de componentes, proporcionando una cookie de sesion"
+		print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista reducido)"
+		print "En este caso obtenemos los componentes de instagram del usuario"
+		print "Status esperado: 200"
+		request_uri = components_basepath + "?social_network=instagram&filter=user&format=reduced"
+		test_utils.make_request("GET", request_uri, params, 200, session1)
+
+		# TEST 6
+		print "TEST 6: Obtener la lista de componentes, proporcionando una cookie de sesion"
 		print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista completo)"
 		print "Status esperado: 200"
-		request_uri = basepath + "?social_network=twitter&filter=user&format=complete"
+		request_uri = components_basepath + "?social_network=instagram&filter=user&format=complete"
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 		
+		# TEST 7
+		print "TEST 7: obtener info de usuario"
+		print "Status esperado: 200"
+		request_uri = users_basepath + "/" + user_id1
+		test_utils.make_request("GET", request_uri, params, 200, session1)
 
-	elif option = 'borrado':
-		#TODO- TESTs relativos al borrado de componentes de usuario
-
+	elif option == 'borrado':
+		#TODO- TESTs relativos al borrado de componentes de usuario (iss101)
+		pass
 	
 	# POST-TESTs. Logout de usuario en el sistema
 	request_uri = '/api/oauth/googleplus/logout'
