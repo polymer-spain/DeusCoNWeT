@@ -266,10 +266,11 @@ def updateUser(entity_key, data): #FUNCIONA
     user.image = data["image"]
   if data.has_key("website"):
     user.image = data["website"]
-  if data.has_key("componente"):
+  if data.has_key("component"):
     comp_name = data["component"]
     # We add the component to the component_list of the user
-    component = UserComponent(component_id=comp_name, x=0, y=0, height=0, width=0, listening=None)
+    component = UserComponent(component_id=comp_name, x=0, y=0, height="0", width="0", listening=None)
+    component.put()
     user.components.append(component)
     user.put()
     # We add a Rating entity that represents the component rating

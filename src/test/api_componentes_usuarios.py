@@ -22,6 +22,7 @@ def main():
 	# PRE-TESTs. Login de usuario en el sistema, utilizando Google+
 	request_uri = "/api/oauth/googleplus/login"
 	print "PRETEST 1: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
+	print "Ignorar el status de salida de este TEST"
 	token_id_login = "id_component_token"
 	access_token_login = "googleTEST"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
@@ -29,7 +30,8 @@ def main():
 	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
 
 	# PRE-TEST 2. Añadimos el componente a utilizar en las pruebas
-	print "PRETEST 2: Subir un componente al sistema (componente 2)."
+	print "PRETEST 2: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
+	print "Ignorar el status de salida de este TEST"
 	print "Status esperado: 201 "
 	params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
             'component_id': 'instagram-timeline',
@@ -60,7 +62,7 @@ def main():
 		# TEST 3
 		print "TEST 3: Obtener la lista de componentes, proporcionando una cookie de sesion"
 		print "(parámetro de filtrado por usuario)"
-		print "Status esperado: 204"
+		print "Status esperado: 200"
 		request_uri = components_basepath + "?filter=user"
 		params = urllib.urlencode({})
 		test_utils.make_request("GET", request_uri, params, 200, session1)
@@ -68,9 +70,9 @@ def main():
 		# TEST 4
 		print "TEST 4: Obtener la lista de componentes, proporcionando una cookie de sesion"
 		print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista reducido)"
-		print "Status esperado: 200"
+		print "Status esperado: 204 (El usuario no tiene componentes de la red social Twitter)"
 		request_uri = components_basepath + "?social_network=twitter&filter=user&format=reduced"
-		test_utils.make_request("GET", request_uri, params, 200, session1)
+		test_utils.make_request("GET", request_uri, params, 204, session1)
 
 		# TEST 5
 		print "TEST 5: Obtener la lista de componentes, proporcionando una cookie de sesion"
@@ -95,6 +97,10 @@ def main():
 
 	elif option == 'borrado':
 		#TODO- TESTs relativos al borrado de componentes de usuario (iss101)
+		# Borrar el componente del usuario
+		# Obtener info de usuario (no debe aparecer el componente eliminado en la lista de componentes de usuario)
+		# Obtener lista filtrada de componentes (filter=user)
+		# Obtener info sobre el componente (para verificar que no se ha eliminado por error el componente general)
 		pass
 	
 	# POST-TESTs. Logout de usuario en el sistema
