@@ -67,7 +67,7 @@ class ComponentListHandler(SessionHandler):
                     component_list = ndb_pb.getComponents(user_id, social_network, format_flag, user_filter)
                     if not len(component_list) == 0:
                         self.response.content_type = "application/json"
-                        self.response.write(component_list)
+                        self.response.write(json.dumps(component_list))
                         self.response.set_status(200)
                     else:
                         self.response.set_status(204)
@@ -175,7 +175,7 @@ class ComponentHandler(SessionHandler):
                 component = ndb_pb.getComponent(user_id, component_id, format_flag)
                 if not component == None:
                     self.response.content_type = "application/json"
-                    self.response.write(component)
+                    self.response.write(json.dumps(component))
                     self.response.set_status(200)
                 else:
                     response = \
