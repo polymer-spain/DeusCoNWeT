@@ -31,6 +31,7 @@ from google.appengine.api import memcache
 import time
 import ndb_pb
 from ndb_pb import Token, User
+import datetime
 
 # Imports for TwitterHandler
 import oauth
@@ -138,8 +139,10 @@ class OauthLogoutHandler(SessionHandler):
         if not cookie_value == None:
             # Logout
             logout_status = self.logout(cookie_value)
-            # TODO: Invalidate the cookie!
-            self.response.delete_cookie("session")
+            # Invalidates the cookie
+            expire_date = datetime.datetime(1970,1,1,0,0,0)
+            self.response.set_cookie("session", cookie_value,
+                        path="/", domain=domain, secure=True, expires=expire_date)
             self.response.set_status(200)
         else:
             response = \
