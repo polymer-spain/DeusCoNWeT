@@ -504,22 +504,23 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = comp.component_id
-          general_comp["url"] = info_comp.url
-          general_comp["social_network"] = info_comp.rs
-          general_comp["description"] = info_comp.description
-          general_comp["x"] = comp.x
-          general_comp["y"] = comp.y
-          general_comp["input_type"] = info_comp.input_type
-          general_comp["output_type"] = info_comp.output_type
-          general_comp["listening"] = comp.listening
-          general_comp["height"] = comp.height
-          general_comp["width"] = comp.width
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
-          else:
-            general_comp["rate"] = 0
-          ans.append(json.dumps(general_comp))
+          if not info_comp == None:
+            general_comp["component_id"] = comp.component_id
+            general_comp["url"] = info_comp.url
+            general_comp["social_network"] = info_comp.rs
+            general_comp["description"] = info_comp.description
+            general_comp["x"] = comp.x
+            general_comp["y"] = comp.y
+            general_comp["input_type"] = info_comp.input_type
+            general_comp["output_type"] = info_comp.output_type
+            general_comp["listening"] = comp.listening
+            general_comp["height"] = comp.height
+            general_comp["width"] = comp.width
+            if not rate == None: 
+              general_comp["rate"] = rate.rating_value
+            else:
+              general_comp["rate"] = 0
+            ans.append(json.dumps(general_comp))
       else:
         user = entity_key.get()
         user_comps = user.components
@@ -527,15 +528,16 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = info_comp.component_id
-          general_comp["url"] = info_comp.url
-          general_comp["social_network"] = info_comp.rs
-          general_comp["description"] = info_comp.description
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
-          else:
-            general_comp["rate"] = 0
-          ans.append(json.dumps(general_comp))
+          if not info_comp == None:
+            general_comp["component_id"] = info_comp.component_id
+            general_comp["url"] = info_comp.url
+            general_comp["social_network"] = info_comp.rs
+            general_comp["description"] = info_comp.description
+            if not rate == None: 
+              general_comp["rate"] = rate.rating_value
+            else:
+              general_comp["rate"] = 0
+            ans.append(json.dumps(general_comp))
   else:
     # Not user id. In this case, the info returned will be always reduced
     if not all_info:

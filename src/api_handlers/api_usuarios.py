@@ -161,9 +161,9 @@ class UserHandler(SessionHandler):
           if values.has_key("component"):
             component_id = values.get("component")      
             component = ndb_pb.getComponent(user_logged_key, component_id)
-            if not component == None:
+            user_component = ndb_pb.getUserComponent(component_id)
+            if not component == None and user_component== None:
               update_data["component"] = component_id
-              print "DEBUG: Componente no encontrado en el sistema"
           
           # Updates the resource 
           if not len(update_data) == 0:
