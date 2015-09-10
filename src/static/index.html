@@ -26,9 +26,9 @@
   <body unresolved ng-app="picbit" ng-controller="MainController">
 
     <core-toolbar ng-class="{small: scrolled}">
-      <img class="logo" src="images/logo.png" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')">
+      <img class="logo" src="images/logo.png" ng-click="isLogged ? changeView('/user/{{user.id}}') :changeView('/')">
       <div horizontal layout flex>
-        <h2 id="name" ng-click="status ? changeView('/user/{{user.id}}') :changeView('/')">Picbit</h2>
+        <h2 id="name" ng-click="isLogged ? changeView('/user/{{user.id}}') :changeView('/')">Picbit</h2>
       </div>
 
       <!-- Languages --> 
@@ -42,14 +42,14 @@
       </core-dropdown-menu>
       <!-- End Languages -->
 
-      <core-icon-button ng-show="!status" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
+      <core-icon-button ng-show="!isLogged" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
         <span id="nameId">{{language.login}}</span>
       </core-icon-button>
 
-      <div ng-click="dropmenu()"  ng-show="status" relative>
+      <div ng-click="dropmenu()"  ng-show="isLogged" relative>
         <div horizontal layout id="user_options">
           <core-icon id="siginButton" icon="social:person"></core-icon>
-          <span flex>{{user.name}}</span>
+          <span flex>{{user.user_id}}</span>
         </div>
         <core-dropdown class="lang-menu dropdown" id="dropmenu" relatedTarget="{{document.querySelector('#user_options')}}">
           <core-menu vertical layout>
@@ -86,12 +86,12 @@
     </div>
 
     <!-- build:js scripts/min/dependencies.min.js -->
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <script src="bower_components/angular-touch/angular-touch.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
     <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
     <!-- endbuild -->
 

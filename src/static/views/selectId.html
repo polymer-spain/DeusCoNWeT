@@ -8,7 +8,7 @@
     <br>
     <core-icon id="gif" src="https://d4z6dx8qrln4r.cloudfront.net/image-54e5caa730e3a-default.gif"></core-icon>
     <br>
-    <paper-input-decorator label="{{language.select_id.input_title}}">
+    <paper-input-decorator label="{{language.select_id.input_title}}" isInvalid="{{userIdError}}" error="{{language.selectId.userIdError}}">
       <input ng-model="value" ng-keyup="sendUsername($event, value)"></input>
     </paper-input-decorator>
   <div horizontal layout reverse><paper-button ng-click="sendUsername($event, value)" ng-show="value">{{language.send}}</paper-button></div>

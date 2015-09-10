@@ -1,5 +1,5 @@
 /*global angular */
-angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope", function ($http, $location, $rootScope) {
+angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope", "$cookies", function ($http, $location, $rootScope, $cookies) {
 
   "use strict";
   this.endpoint = "https://" + $location.host();
@@ -9,12 +9,12 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
   this.sendData = function (token, tokenId, userId, redSocial, oauthVerifier) {
     var request, uri, params;
 
-    uri = this.endpoint + "/api/oauth/" + redSocial;
+    uri = this.endpoint + "/api/oauth/" + redSocial + "/login";
     /* Añadimos los parametros necesarios */
     params = "token_id=" + tokenId + "&access_token=" + token;
 
     /* Si se indica el userId, se incluye en la peticion */
-    params += userId ? "&user_id=" + userId : "";
+    params += userId ? "&user_identifier=" + userId : "";
 
     /* Si se trata de twitter añadimos el oauth_verifier*/
     params += oauthVerifier && redSocial === "twitter" ? "&oauth_verifier=" + oauthVerifier : "";
@@ -24,15 +24,15 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
       headers: {"Content-Type": "application/x-www-form-urlencoded"},
       data: params
     };
+    $cookies.put("user_id", userId);
     /* Devolvemos la promesa*/
     $rootScope.promise = $http(request);
     return $rootScope.promise;
   };
 
-  this.getUserId = function (tokenId, redSocial, oauthVerifier) {
+  this.getUserId = function (tokenId, redSocial) {
     var request, uri;
-
-    uri = this.endpoint + "/api/oauth/" + redSocial + "/" + tokenId;
+    uri = this.endpoint + "/api/oauth/" + redSocial + "/credenciales/" + tokenId;
     request = {
       methor: "get",
       url: uri,
@@ -94,21 +94,21 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
   };
 
   this.logout = function () {
-    var request, uri, params;
-
-    uri = this.endpoint + "/api/oauth/googleplus";
-    params = "action=logout";
+    var request, uri, socialnetwork;
+    socialnetwork = $cookies.get("socialnetwork") || "googleplus";
+    uri = this.endpoint + "/api/oauth/" + socialnetwork + "/logout";
 
     request = {
       method: "post",
       url: uri,
-      headers: {"Content-Type": "application/x-www-form-urlencoded"},
-      data: params
+      headers: {"Content-Type": "application/x-www-form-urlencoded"}
     };
 
+    $cookies.remove("user_id");
+    $cookies.remove("socialnetwork");
+    $rootScope.user = undefined;
+    $rootScope.isLogged = false;
     $rootScope.promise = $http(request);
     return $rootScope.promise;
   };
-
-
 }]);

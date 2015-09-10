@@ -129,7 +129,6 @@ limitations under the License.
 		 *
 		 */
       login: function() {
-        console.log(this.logged)
         var _url = this.OAUTHURL + 'scope=' + this.scope + '&client_id=' + this.clientID + '&redirect_uri=' + this.callback + '&response_type=code token id_token gsession';
         var win  = window.open(_url, "Google+ Login", 'width=800, height=600');
         var back = this;
@@ -148,14 +147,11 @@ limitations under the License.
           } catch(e) {
           }
         }, 100);
-        console.log(this.logged)
       },
 
       logout: function() {
-        console.log(this.logged)
         var back = this;
         back.logged=false;
-        console.log(this.logged)
       },
     });
   </script>

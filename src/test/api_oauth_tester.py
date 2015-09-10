@@ -1,6 +1,9 @@
-# -*- coding: utf8 -*-
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import sys
-import httplib, urllib
+import httplib
+import urllib
 import json
 import test_utils
 
@@ -13,6 +16,7 @@ import test_utils
 #       (http://github-login-lab.appspot.com/app/demo.html)
 
 def main():
+<<<<<<< HEAD
 	test_utils.openConnection()
 	social_network = sys.argv[1]
 	option = None
