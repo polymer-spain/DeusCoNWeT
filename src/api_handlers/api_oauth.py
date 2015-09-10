@@ -198,8 +198,7 @@ class OauthCredentialsHandler(SessionHandler):
         else:
             user_credentials = ndb_pb.getToken(token_id, social_network)
             if not user_credentials == None:
-                response = \
-                    {"response": "The token requested correspond to an active user in the system"}
+                response = {"user_id": user_credentials["user_id"]}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
