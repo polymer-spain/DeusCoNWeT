@@ -446,6 +446,15 @@ def getComponent(entity_key, name, all_info=False): # FUNCIONA
     ans = json.dumps(general_comp)
   return ans
 
+# Retorna los detalles sobre un componente del usuario en particular
+def getUserComponent(entity_key, component_id):
+  result = None
+  user = entity_key.get()
+  user_comps = user.components
+  for comp in user_comps:
+    if comp.component_id == component_id:
+      result = comp
+  return result
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
   ans = []
@@ -570,6 +579,8 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           ans.append(json.dumps(general_comp))
 
   return ans
+
+
 
 def searchToken(user_id, rs): #FUNCIONA
   tokens = Token.query()

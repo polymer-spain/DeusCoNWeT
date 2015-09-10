@@ -175,7 +175,7 @@ class ComponentHandler(SessionHandler):
                 component = ndb_pb.getComponent(user_id, component_id, format_flag)
                 if not component == None:
                     self.response.content_type = "application/json"
-                    self.response.write(json.dumps(component))
+                    self.response.write(component)
                     self.response.set_status(200)
                 else:
                     response = \

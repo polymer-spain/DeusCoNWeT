@@ -36,7 +36,7 @@ def main():
 				print "Status esperado: 404 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/badURI',
 			            'component_id': 'twitter-timeline',
-			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
+			            'description': 'Web component to obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter',
 			            'input_type': 'None',
 			            'output_type': 'tweet'
@@ -48,7 +48,7 @@ def main():
 				print "Status esperado: 400 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
 			            'component_id': 'twitter-timeline',
-			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
+			            'description': 'Web component to obtain the timeline of Twitter using Polymer',
 			            'social_network': 'RedError' ,
 			            'input_type': 'None',
 			            'output_type': 'tweet'
@@ -60,7 +60,7 @@ def main():
 				print "Status esperado: 400 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
 			            'component_id': 'twitter-timeline',
-			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
+			            'description': 'Web component to obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter' ,
 			            'input_type': 'None'
 				})
@@ -72,7 +72,7 @@ def main():
 				print "Status esperado: 201 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
 			            'component_id': 'twitter-timeline',
-			            'description': 'Web component for obtain the timeline of Twitter using Polymer',
+			            'description': 'Web component to obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter' ,
 			            'input_type': 'None',
 			            'output_type': 'tweet'
@@ -85,7 +85,7 @@ def main():
 				# request_uri = basepath
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
 			            'component_id': 'instagram-timeline',
-			            'description': 'Web component for obtain the timeline of the social network Instagram using Polymer',
+			            'description': 'Web component to obtain the timeline of the social network Instagram using Polymer',
 			            'social_network': 'instagram',
 			            'input_type': 'None',
 			            'output_type': 'photo'
@@ -97,7 +97,7 @@ def main():
 				print "Status esperado: 200 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
 			            'component_id': 'instagram-timeline',
-			            'description': 'New description for the web component (Description changed in TEST 7)',
+			            'description': 'New description to the web component (Description changed in TEST 7)',
 			            'social_network': 'instagram',
 			            'input_type': 'None',
 			            'output_type': 'photo'
