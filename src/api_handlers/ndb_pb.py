@@ -186,19 +186,29 @@ def getToken(id_rs, social_net):  # FUNCIONA
           "user_id": user.user_id}
   return ans
 
-def getUser(user_id): #FUNCIONA
+def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
+  
   if not user == None:
     rates = user.rates; nets = user.net_list
-    rates_list = []; net_names = []
-    for rate in rates:
-      comp = rate.component_id
-      value = rate.rating_value
-      tup = (comp, value)
-      rates_list.append(tup)
+    user_component_list = [];  net_names = []
+    # Componemos la lista de redes a la que está suscrito un usuario
     for net in nets:
       net_names.append(net.social_name)
+    
+    # Componemos la lista de componentes de usuario, detallada o reducida
+    if component_detailed_info:
+      # Caso lista de componentes completa
+      user_component_list = getUserComponentList(user_id)
+    else:
+      # Caso lista de componentes reducida
+      for rate in rates:
+        component_info = {"component_id": rate.component_id,
+                          "user_rate": rate.rating_value}
+        user_component_list.append(component_info)
+
+    # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
                 "description": user.description,
                 "image": user.image,
@@ -208,7 +218,8 @@ def getUser(user_id): #FUNCIONA
                 "email": user.email,
                 "phone": user.phone,
                 "nets": net_names,
-                "components": rates_list}
+                "components": user_component_list}
+
   return user_info
 
 def getUserId(entity_key):
@@ -263,11 +274,13 @@ def updateUser(entity_key, data): #FUNCIONA
     user.image = data["image"]
   if data.has_key("website"):
     user.image = data["website"]
-  if data.has_key("componente"):
+  if data.has_key("component"):
     comp_name = data["component"]
     # We add the component to the component_list of the user
-    component = UserComponent(component_id=comp_name, x=0, y=0, height=0, width=0, listening=None)
+    component = UserComponent(component_id=comp_name, x=0, y=0, height="0", width="0", listening=None)
+    component.put()
     user.components.append(component)
+    user.put()
     # We add a Rating entity that represents the component rating
     if data.has_key("rate"):
       rate = data["rate"]
@@ -441,6 +454,36 @@ def getComponent(entity_key, name, all_info=False): # FUNCIONA
     ans = json.dumps(general_comp)
   return ans
 
+# Retorna los detalles sobre un componente del usuario en particular
+def getUserComponent(entity_key, component_id):
+  result = None
+  user = entity_key.get()
+  user_comps = user.components
+  for comp in user_comps:
+    if comp.component_id == component_id:
+      result = comp
+  return result
+
+# Retorna una lista de Componentes pertenecientes al dashboard de usuario, incluyendo la valoración del usuario
+def getUserComponentList(user_id):
+  # Obtenemos la valoración del componente en particular
+  component_list = []
+  user = User.query(User.user_id == user_id).get()
+  user_comps = user.components
+  for comp in user_comps:
+    rating = UserRating.query(UserRating.component_id == comp.component_id).get()
+    component_rate = rating if not rating == None else 0.0
+    component_info = {"component_id": comp.component_id,
+                    "x": comp.x,
+                    "y": comp.y,
+                    "height": comp.height,
+                    "width": comp.width,
+                    "listening": comp.listening,
+                    "user_rate": component_rate}
+    component_list.append(component_info)
+  return component_list         
+
+
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
   ans = []
@@ -499,22 +542,23 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = comp.component_id
-          general_comp["url"] = info_comp.url
-          general_comp["social_network"] = info_comp.rs
-          general_comp["description"] = info_comp.description
-          general_comp["x"] = comp.x
-          general_comp["y"] = comp.y
-          general_comp["input_type"] = info_comp.input_type
-          general_comp["output_type"] = info_comp.output_type
-          general_comp["listening"] = comp.listening
-          general_comp["height"] = comp.height
-          general_comp["width"] = comp.width
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
-          else:
-            general_comp["rate"] = 0
-          ans.append(json.dumps(general_comp))
+          if not info_comp == None:
+            general_comp["component_id"] = comp.component_id
+            general_comp["url"] = info_comp.url
+            general_comp["social_network"] = info_comp.rs
+            general_comp["description"] = info_comp.description
+            general_comp["x"] = comp.x
+            general_comp["y"] = comp.y
+            general_comp["input_type"] = info_comp.input_type
+            general_comp["output_type"] = info_comp.output_type
+            general_comp["listening"] = comp.listening
+            general_comp["height"] = comp.height
+            general_comp["width"] = comp.width
+            if not rate == None: 
+              general_comp["rate"] = rate.rating_value
+            else:
+              general_comp["rate"] = 0
+            ans.append(json.dumps(general_comp))
       else:
         user = entity_key.get()
         user_comps = user.components
@@ -522,15 +566,16 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = info_comp.component_id
-          general_comp["url"] = info_comp.url
-          general_comp["social_network"] = info_comp.rs
-          general_comp["description"] = info_comp.description
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
-          else:
-            general_comp["rate"] = 0
-          ans.append(json.dumps(general_comp))
+          if not info_comp == None:
+            general_comp["component_id"] = info_comp.component_id
+            general_comp["url"] = info_comp.url
+            general_comp["social_network"] = info_comp.rs
+            general_comp["description"] = info_comp.description
+            if not rate == None: 
+              general_comp["rate"] = rate.rating_value
+            else:
+              general_comp["rate"] = 0
+            ans.append(json.dumps(general_comp))
   else:
     # Not user id. In this case, the info returned will be always reduced
     if not all_info:
@@ -563,6 +608,8 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           ans.append(json.dumps(general_comp))
 
   return ans
+
+
 
 def searchToken(user_id, rs): #FUNCIONA
   tokens = Token.query()
