@@ -186,20 +186,29 @@ def getToken(id_rs, social_net):  # FUNCIONA
           "user_id": user.user_id}
   return ans
 
-def getUser(user_id): #FUNCIONA
+def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
+  
   if not user == None:
     rates = user.rates; nets = user.net_list
-    rates_list = []; net_names = []
-    for rate in rates:
-      comp = rate.component_id
-      value = rate.rating_value
-      tup = (comp, value)
-      rates_list.append(tup)
+    user_component_list = [];  net_names = []
+    # Componemos la lista de redes a la que está suscrito un usuario
     for net in nets:
       net_names.append(net.social_name)
-  
+    
+    # Componemos la lista de componentes de usuario, detallada o reducida
+    if component_detailed_info:
+      # Caso lista de componentes completa
+      user_component_list = getUserComponentList(user_id)
+    else:
+      # Caso lista de componentes reducida
+      for rate in rates:
+        component_info = {"component_id": rate.component_id,
+                          "user_rate": rate.rating_value}
+        user_component_list.append(component_info)
+
+    # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
                 "description": user.description,
                 "image": user.image,
@@ -209,9 +218,8 @@ def getUser(user_id): #FUNCIONA
                 "email": user.email,
                 "phone": user.phone,
                 "nets": net_names,
-                "components": rates_list}
-  
-  
+                "components": user_component_list}
+
   return user_info
 
 def getUserId(entity_key):
@@ -455,6 +463,27 @@ def getUserComponent(entity_key, component_id):
     if comp.component_id == component_id:
       result = comp
   return result
+
+# Retorna una lista de Componentes pertenecientes al dashboard de usuario, incluyendo la valoración del usuario
+def getUserComponentList(user_id):
+  # Obtenemos la valoración del componente en particular
+  component_list = []
+  user = User.query(User.user_id == user_id).get()
+  user_comps = user.components
+  for comp in user_comps:
+    rating = UserRating.query(UserRating.component_id == comp.component_id).get()
+    component_rate = rating if not rating == None else 0.0
+    component_info = {"component_id": comp.component_id,
+                    "x": comp.x,
+                    "y": comp.y,
+                    "height": comp.height,
+                    "width": comp.width,
+                    "listening": comp.listening,
+                    "user_rate": component_rate}
+    component_list.append(component_info)
+  return component_list         
+
+
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
   ans = []

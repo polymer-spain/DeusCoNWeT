@@ -66,12 +66,14 @@ class UserHandler(SessionHandler):
   """
   def get(self, user_id):
     cookie_value = self.request.cookies.get("session")
+    component_info = self.request.get("component_info", default_value="reduced")
     if not cookie_value == None:
       # Obtains info related to the user authenticated in the system
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
         # Obtains the info related to the resource requested
-        user_info = ndb_pb.getUser(user_id)
+        component_detailed_info = True if component_info == "detailed" else False
+        user_info = ndb_pb.getUser(user_id, component_detailed_info)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
