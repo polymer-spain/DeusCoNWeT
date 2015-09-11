@@ -15,9 +15,8 @@ angular.module("picbit").service("$cookies", function () {
     if (expires) {
       cookie += "; expires=" + expires;
     }
-    if (path) {
-      cookie += "; path=" + path;
-    }
+    cookie += path ? "; Path=" + path : "; path=/";
+
     if (domain) {
       cookie += "; domain=" + domain;
     }

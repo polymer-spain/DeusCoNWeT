@@ -35,7 +35,9 @@
 #selectId paper-input-decorator /deep/ .focused-underline {
   background-color: #334c9b;
 }
-
+#selecId paper-input-decorator /deep/ error-text {
+   color:black; 
+}
 #selectId paper-button {
   margin: 0 auto;
   margin-top: 15px;
@@ -45,7 +47,6 @@
   -webkit-transition:all linear 0.4s;
   transition:all linear 0.4s;
 }
-
 paper-button.ng-hide {
   opacity: 0;
 }
