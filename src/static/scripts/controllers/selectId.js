@@ -3,7 +3,7 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
   "use strict";
   $scope.userIdError = false;
   $scope.sendUsername = function (event, userId) {
-    if ((event.type === "click" || (event.type === "keyup" && event.which === 13)) && userId) {
+    if ((event.type === "click" || (event.type === "keyup")) && userId) {
       $backend.getUser(userId).then(function(){
         $scope.userIdError = true;
       }, function() {

@@ -29,18 +29,20 @@
             $backend.getUser(userId)
               .then(function (response) {
               $rootScope.user = response.data;
-              $location.path("/user/" + userId);
-              return $q.when(cookieSession);
+              if (!$rootScope.unauthorized) {
+                $location.path("/user/" + userId); 
+                return $q.when();
+              }
             }, function (response) {
               console.error(response.data.error);
               $backend.logout();
-              return $q.reject();
+              return $q.when();
             });
           }
         }]
       }
     })
-      .when("/user/:userId", {
+      .when("/user/:user_id", {
       templateUrl: "views/userHome.html",
       controller: "UserHomeController",
       resolve: {
@@ -49,20 +51,20 @@
 
           var session = $cookies.get("session");
           var userId = $cookies.get("user_id");
-
-          if (session && userId && ($route.current.params.userId === userId)) {
+          if ($route.current.params.user_id !== userId) {
+            return $q.reject({authorized: false});
+          }
+          else if (session && userId) {
             $backend.getUser(userId).then(function (response) {
               $rootScope.user = response.data;
               return $q.when(session);
             }, function (response) {
               console.error("Error " + response.status + ": al intentar coger los datos del usuario " + userId);
+              return $q.reject();
             });
 
-            return $q.when(session);
           } else {
-            return $q.reject({
-              authenticated: false
-            });
+            return $q.reject({authenticated: false});
           }
         }]
       }
@@ -99,8 +101,8 @@
     })
       .when("/selectId", {
       templateUrl: "views/selectId.html",
-      controller: "SelectidController",
-      resolve: {
+      controller: "SelectidController"
+/*      resolve: {
         auth: ["$q", "$rootScope", function ($q, $rootScope) {
 
           if ($rootScope.register) {
@@ -111,7 +113,7 @@
             });
           }
         }]
-      }
+      }*/
     })
     /* Por defecto */
       .otherwise({
@@ -122,9 +124,12 @@
 
   app.run(["$rootScope", "$location", function ($rootScope, $location) {
     $rootScope.$on("$routeChangeError", function (event, current, previous, eventObj) {
-      if (!eventObj.authenticated || !eventObj.register) {
+      if (!eventObj.authorized) {
+        $rootScope.unauthorized = true;
         $location.path("/");
-      }
+      } else if (!eventObj.authenticated || !eventObj.register) {
+          $location.path("/");
+        }
     });
 
   }]);

@@ -48,6 +48,6 @@
   "select_id": {
     "title":"Selecciona tu nombre de usuario",
     "input_title": "Nombre de usuario",
-        "userIdError": "* Nombre de usuario ya existente"
+    "userIdError": "* Nombre de usuario ya existente"
   }
 }

@@ -63,10 +63,10 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
               $backend.getUser(responseUserId.data.user_id)
                 .then(function(response){
                 $rootScope.user = response.data;
-                $scope.logOutButton();
                 /* Le mandamos a su home tras iniciar sesion */
                 $backend.sendData(e.detail.token, tokenId, response.data.user_id, e.detail.redSocial)
                   .then(function(responseLogin) {
+                  $scope.logOutButton();
                   $scope.changeView("/user/" + response.data.user_id);
                 }, function(responseLogin) {
                   console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
@@ -89,15 +89,21 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
           var tokenId = e.detail.userId;
           /* Cogemos el identificador del usuario */
           $backend.getUserId(tokenId, e.detail.redSocial)
-            .then(function (userData) { /* Si devuelve un 200, ya existe el usuario*/
+            .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
             /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-            $backend.getUser(userData.user_id).then(function(response){
+            $backend.getUser(responseUserId.data.user_id).then(function(response){
               $rootScope.user = response.data;
+              /* Le mandamos a su home tras iniciar sesion */
+              $backend.sendData(e.detail.token, tokenId, response.data.user_id, e.detail.redSocial)
+                .then(function(responseLogin) {
+                $scope.logOutButton();
+                $scope.changeView("/user/" + response.data.user_id);
+              }, function(responseLogin) {
+                console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
+              });
+            }, function(responseLogin){
+              console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
             });
-            /* Le mandamos a su home*/
-            $scope.logOutButton();
-            $scope.changeView("/user/" + userData.user_id);
-            $backend.sendData(e.detail.token, tokenId, e.detail.redSocial);
           }, function () {
             /* Guardamos información para terminar su registro */
             $rootScope.register = {token: e.detail.token, redSocial: e.detail.redSocial, tokenId: tokenId};
