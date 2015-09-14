@@ -1,9 +1,9 @@
 /*global angular*/
-angular.module("picbit").controller("SelectidController", ["$scope", "$backend", "$rootScope", "$cookies", function ($scope, $backend, $rootScope, $cookies) {
+angular.module("picbit").controller("SelectidController", ["$scope", "$backend", "$rootScope", function ($scope, $backend, $rootScope) {
   "use strict";
   $scope.userIdError = false;
   $scope.sendUsername = function (event, userId) {
-    if ((event.type === "click" || (event.type === "keyup")) && userId) {
+    if ((event.type === "click" || (event.type === "keyup" && event.which === 13)) && userId) {
       $backend.getUser(userId).then(function(){
         $scope.userIdError = true;
       }, function() {
