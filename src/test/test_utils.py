@@ -30,7 +30,7 @@ def openConnection(remote=True):
     global connection
     if remote:
         connection = \
-            httplib.HTTPSConnection('test-frontend.example-project-13.appspot.com'
+            httplib.HTTPSConnection('test-backend.example-project-13.appspot.com'
                                     )
     else:
         connection = httplib.HTTPConnection('localhost:8080')

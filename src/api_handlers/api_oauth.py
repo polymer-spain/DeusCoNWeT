@@ -147,17 +147,27 @@ class OauthLogoutHandler(SessionHandler):
     def post_logout(self, social_network):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
-            # Logout
-            logout_status = self.logout(cookie_value)
-            # Invalidates the cookie
-            expire_date = datetime.datetime(1970,1,1,0,0,0)
-            self.response.set_cookie("session", cookie_value,
-                        path="/", domain=domain, secure=True, expires=expire_date)
-            self.response.set_cookie("social_network", social_network,
-                        path="/", domain=domain, secure=True, expires=expire_date)
-            self.response.set_cookie("user", user_id,
-                        path="/", domain=domain, secure=True, expires=expire_date)
-            self.response.set_status(200)
+            # We get the user_id to check if the user is logged in the system
+            user_id = self.getUserInfo(cookie_value)
+            print user_id
+            if not user_id == None:
+                # Logout
+                logout_status = self.logout(cookie_value)
+                # Invalidates the cookie
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                self.response.set_cookie("social_network", social_network,
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                self.response.set_cookie("user", user_id,
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                self.response.set_status(200)
+            else:
+                response = \
+                {"error": "The cookie session provided does not belongs to any active user. The logout action was not performed"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)    
         else:
             response = \
                 {"error": "This request requires a secure_cookie with the session identifier"}
@@ -175,6 +185,7 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
+                print "DEBUG: Usuario loggeado ", logged_user
                 logged_user_info = json.loads(ndb_pb.getUser(logged_user))
                 logged_user_id = logged_user_info["user_id"]
                 # Obtains user credentials

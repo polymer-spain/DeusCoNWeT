@@ -16,9 +16,11 @@ import test_utils
 #       (http://github-login-lab.appspot.com/app/demo.html)
 
 def main():
-<<<<<<< HEAD
 	test_utils.openConnection()
-	social_network = sys.argv[1]
+	if len(sys.argv) == 2:
+		social_network = sys.argv[1]
+	else:
+		social_network = ''
 	option = None
 	if len(sys.argv) == 3:
 		option = sys.argv[2]
@@ -123,6 +125,15 @@ def main():
 			print "Status esperado: 401"
 			params = urllib.urlencode({})
 			test_utils.make_request("POST", request_uri, params, 401, None)
+			
+			# TEST 12
+			# Logout con cookie antigua / incorrecta
+			request_uri = basePath + "/logout"
+			print "TEST 12: Logout con cookie de sesión antigua"
+			print "Status esperado: 400"
+			params = urllib.urlencode({})
+			test_utils.make_request("POST", request_uri, params, 400, session1)
+
 			print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 		
 		elif option == "borrado":
@@ -144,42 +155,42 @@ def main():
 				"user_identifier": user_id2})	
 			session2 = test_utils.make_request("POST", request_uri, params, 200, None)
 
-			# TEST 12
+			# TEST 13
 			# Borrar credenciales de usuarios de prueba2
 			request_uri = basePath + "/credenciales/" + token_id2
-			print "TEST 12: Borrar creedenciales sin cookie de sesión"
+			print "TEST 13: Borrar creedenciales sin cookie de sesión"
 			print "Status esperado: 401"
 			params = urllib.urlencode({})
 			test_utils.make_request("DELETE", request_uri, params, 401, None)			
 
-			# TEST 13
+			# TEST 14
 			# Borrar credenciales de usuario de prueba1 (Estando logeado)
 			request_uri = basePath + "/credenciales/" + token_id1
-			print "TEST 13: Borrado de credenciales estando logeado (usuario 1)"
+			print "TEST 14: Borrado de credenciales estando logeado (usuario 1)"
 			print "Status esperado: 204"
 			params = urllib.urlencode({})
 			test_utils.make_request("DELETE", request_uri, params, 204, session1)
 			
-			# TEST 14
+			# TEST 15
 			# Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
 			request_uri = basePath + "/" + token_id2
-			print "TEST 14: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
+			print "TEST 15: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
 			print "Status esperado: 401"
 			params = urllib.urlencode({})
 			test_utils.make_request("DELETE", request_uri, params, 401, session1)
 
-			# TEST 15
+			# TEST 16
 			# Borrar credenciales de usuario de prueba2 (Estando logeado)
 			request_uri = basePath + "/" + token_id2
-			print "TEST 15: Borrado de credenciales estando logeado"
+			print "TEST 16: Borrado de credenciales estando logeado"
 			print "Status esperado: 204"
 			params = urllib.urlencode({})
 			test_utils.make_request("DELETE", request_uri, params, 204, session2)
 
-			# TEST 16
+			# TEST 17
 			# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
 			request_uri = basePath + "/" + token_id2
-			print "TEST 16: Intento de borrado por segunda vez (credenciales de usuario 2)"
+			print "TEST 17: Intento de borrado por segunda vez (credenciales de usuario 2)"
 			print "Status esperado: 404"
 			params = urllib.urlencode({})
 			test_utils.make_request("DELETE", request_uri, params, 404, session2)
