@@ -103,8 +103,12 @@ class OauthLoginHandler(SessionHandler):
                         token_id, access_token, data)
                 session_id = self.login(user_key)
 
-                # Returns the session cookie
+                # Returns the session, user_id and social_network cookie
                 self.response.set_cookie("session", session_id,
+                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("social_network", social_network,
+                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("user", user_identifier,
                         path="/", domain=domain, secure=True)
 
                 self.response.set_status(201)
@@ -114,8 +118,14 @@ class OauthLoginHandler(SessionHandler):
                         access_token, social_network)
                 session_id = self.login(user_key)
 
+                # Gets the user_id to generate the user cookie
+                user_id = ndb_pb.getUserId(user_key)
                 # Returns the session cookie
                 self.response.set_cookie("session", session_id,
+                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("social_network", social_network,
+                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("user", user_id,
                         path="/", domain=domain, secure=True)
                 self.response.set_status(200)
         except KeyError:
