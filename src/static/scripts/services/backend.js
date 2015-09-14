@@ -24,7 +24,6 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
       headers: {"Content-Type": "application/x-www-form-urlencoded"},
       data: params
     };
-    $cookies.put("user_id", userId);
     /* Devolvemos la promesa*/
     $rootScope.promise = $http(request);
     return $rootScope.promise;
@@ -95,17 +94,13 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
 
   this.logout = function () {
     var request, uri, socialnetwork;
-    socialnetwork = $cookies.get("socialnetwork") || "googleplus";
+    socialnetwork = $cookies.get("social_network") || "googleplus";
     uri = this.endpoint + "/api/oauth/" + socialnetwork + "/logout";
-
     request = {
       method: "post",
       url: uri,
       headers: {"Content-Type": "application/x-www-form-urlencoded"}
     };
-
-    $cookies.remove("user_id");
-    $cookies.remove("socialnetwork");
     $rootScope.user = undefined;
     $rootScope.isLogged = false;
     $rootScope.promise = $http(request);

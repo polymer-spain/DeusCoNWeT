@@ -22,15 +22,15 @@
       resolve: {
         auth: ["$cookies", "$backend", "$rootScope", "$q", "$location", function ($cookies, $backend, $rootScope, $q, $location) {
           var cookieSession = $cookies.get("session");
-          var userId = $cookies.get("user_id");
-          var socialnetwork = $cookies.get("socialnetwork");
+          var userId = $cookies.get("user");
+          var socialnetwork = $cookies.get("social_network");
           /* Si tiene credenciales, pedimos los datos y le llamos a su pagina principal */
           if (cookieSession && userId && socialnetwork ) {
             $backend.getUser(userId)
               .then(function (response) {
               $rootScope.user = response.data;
               if (!$rootScope.unauthorized) {
-                $location.path("/user/" + userId); 
+                $location.path("/user/" + userId);
                 return $q.when();
               }
             }, function (response) {
@@ -50,7 +50,7 @@
         auth: ["$q", "$cookies", "$backend", "$rootScope", "$route", function ($q, $cookies, $backend, $rootScope, $route) {
 
           var session = $cookies.get("session");
-          var userId = $cookies.get("user_id");
+          var userId = $cookies.get("user");
           if ($route.current.params.user_id !== userId) {
             return $q.reject({authorized: false});
           }
@@ -81,16 +81,21 @@
       templateUrl: "views/profile.html",
       controller: "ProfileController",
       resolve: {
-        auth: ["$q", "$cookies", function ($q, $cookies) {
+        auth: ["$q", "$cookies", "$backend", "$rootScope", function ($q, $cookies, $backend, $rootScope) {
 
           var session = $cookies.get("session");
-
-          if (session) {
-            return $q.when(session);
-          } else {
-            return $q.reject({
-              authenticated: false
+          var userId = $cookies.get("user");
+          if (session && userId) {
+            $backend.getUser(userId).then(function (response) {
+              $rootScope.user = response.data;
+              return $q.when(session);
+            }, function (response) {
+              console.error("Error " + response.status + ": al intentar coger los datos del usuario " + userId);
+              return $q.reject();
             });
+
+          } else {
+            return $q.reject({authenticated: false});
           }
         }]
       }
@@ -101,8 +106,8 @@
     })
       .when("/selectId", {
       templateUrl: "views/selectId.html",
-      controller: "SelectidController"
-/*      resolve: {
+      controller: "SelectidController",
+      resolve: {
         auth: ["$q", "$rootScope", function ($q, $rootScope) {
 
           if ($rootScope.register) {
@@ -113,7 +118,7 @@
             });
           }
         }]
-      }*/
+      }
     })
     /* Por defecto */
       .otherwise({
@@ -128,8 +133,8 @@
         $rootScope.unauthorized = true;
         $location.path("/");
       } else if (!eventObj.authenticated || !eventObj.register) {
-          $location.path("/");
-        }
+        $location.path("/");
+      }
     });
 
   }]);

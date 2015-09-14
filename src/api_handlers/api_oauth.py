@@ -155,7 +155,7 @@ class OauthLogoutHandler(SessionHandler):
                         path="/", domain=domain, secure=True, expires=expire_date)
             self.response.set_cookie("social_network", social_network,
                         path="/", domain=domain, secure=True, expires=expire_date)
-            self.response.set_cookie("user", user_id,
+            self.response.set_cookie("user", "",
                         path="/", domain=domain, secure=True, expires=expire_date)
             self.response.set_status(200)
         else:

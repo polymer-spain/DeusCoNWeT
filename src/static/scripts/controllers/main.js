@@ -1,5 +1,5 @@
-/*global angular, document, window, console */
-angular.module("picbit").controller("MainController", ["$scope", "$location", "$timeout", "$backend", "$http", "$window", "$cookies", "$rootScope","RequestLanguage", function ($scope, $location, $timeout, $backend, $http, $window, $cookies, $rootScope, RequestLanguage) {
+/*global angular, document, window, console*/
+angular.module("picbit").controller("MainController", ["$scope", "$location", "$timeout", "$backend", "$http", "$window", "$cookies", "$rootScope", "RequestLanguage", function ($scope, $location, $timeout, $backend, $http, $window, $cookies, $rootScope, RequestLanguage) {
 
   "use strict";
 
@@ -11,7 +11,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
 
   $scope.languageRequest = function(file){
     RequestLanguage.language(file).success(function (data){
-      $scope.language = data
+      $scope.language = data;
       $scope.languageSelected = data.lang[$scope.idioma];
     });
   };
@@ -23,7 +23,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     file = $scope.idioma === "es" ? "es_es.json" : "en_en.json";
     $scope.languageRequest(file);
     document.querySelector("#language").$.label.innerHTML = $scope.languageSelected;
-  }
+  };
 
   /* Monitorizamos el lenguage */
 
@@ -40,7 +40,6 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
 
   $scope.logged = function (e) {
     $scope.$apply(function () {
-      $cookies.put("socialnetwork", e.detail.redSocial);
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
       if (e.detail.redSocial === "twitter") {
         /* FIXME comprobar si twitter funciona y por qué no sigue un flujo normal*/
@@ -65,11 +64,11 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
                 $rootScope.user = response.data;
                 /* Le mandamos a su home tras iniciar sesion */
                 $backend.sendData(e.detail.token, tokenId, response.data.user_id, e.detail.redSocial)
-                  .then(function(responseLogin) {
+                  .then(function() {
                   $scope.logOutButton();
                   $scope.changeView("/user/" + response.data.user_id);
                 }, function(responseLogin) {
-                  console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
+                  console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login");
                 });
               }, function(response){//error getUser
                 console.error("Error " + response.status + ": al realizar el login");
@@ -132,7 +131,9 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   $scope.logout = function () {
     $backend.logout().then(function() {
       $scope.changeView("/");
-    }, function(){});
+    }, function(response){
+      console.error("Error " + response.status + ": Fallo al intentar realizar un logout del usurio " + $rootScope.user.name);
+    });
   };
   $scope.showPopup = function () {
     if (!$rootScope.isLogged) {
