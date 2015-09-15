@@ -1,0 +1,82 @@
+:host{
+	display: inline-block;
+	font-family: 'Roboto';
+	font-size: 5px;
+  color: black;
+}
+.box {
+	border: 5px solid #AEAEAE;
+	border-top: none;
+	width: 400px;
+	padding:15px 5px;
+	margin:0;
+	font-size: 12.5px;
+	background: #f2f5f6; /* Old browsers */
+	background: -moz-linear-gradient(-45deg,  #f2f5f6 0%, #e3eaed 51%, #c8d7dc 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#f2f5f6), color-stop(51%,#e3eaed), color-stop(100%,#c8d7dc)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* IE10+ */
+	background: linear-gradient(135deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f6', endColorstr='#c8d7dc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+
+.box:last-child {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border: 5px solid #AEAEAE;
+	border-top: none;
+}
+#cabecera {
+	background: #dbdbdb; /* Old browsers */
+	background: -moz-radial-gradient(center, ellipse cover,  #dbdbdb 0%, #a8a8a8 100%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#dbdbdb), color-stop(100%,#a8a8a8)); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* Opera 12+ */
+	background: -ms-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* IE10+ */
+	background: radial-gradient(ellipse at center,  #dbdbdb 0%,#a8a8a8 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbdbdb', endColorstr='#a8a8a8',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	color:black;
+	font-family: 'Helvetica',sans-serif;
+	font-weight: 800;
+	font-size: 16px;
+	padding: 3px 0px;
+}
+paper-shadow {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+core-icon > div {
+	background-repeat: no-repeat;
+	border:none;
+}
+
+.imgEvent {
+	float: left;
+	width:40px;
+	height:40px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+.imgEvent > div {
+	border-radius: 100%;
+	box-shadow: 3px 3px 5px #888;
+	border: 1px inset rgba(24, 41, 49, 0.67);
+}
+.name {
+	font-size: 15px;
+	font-weight: bold;
+}
+a {
+	text-decoration: none;
+	color: #160789;
+}
+a:visited {
+}
+a:hover {
+	text-decoration: underline;
+}

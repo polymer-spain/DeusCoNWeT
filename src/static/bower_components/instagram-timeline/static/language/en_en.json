@@ -8,5 +8,6 @@
   "minutes" : "minutes",
   "hour" : "hour",
   "hours" : "hours",
-  "days" : "days"
+  "days" : "days",
+  "like" : " Likes"
 }

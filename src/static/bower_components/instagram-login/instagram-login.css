@@ -43,13 +43,13 @@ polyfill-next-selector { content: ':host > h2'; }
 	width: 82px;
 }
 
-.icono{
+.icon{
 	margin: 0px;
 	width: 30px;
 	height: 25px;
 }
 
-.desconectar{
+.logout{
 	background: grey;
 }
 

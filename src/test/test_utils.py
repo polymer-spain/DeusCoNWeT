@@ -20,10 +20,12 @@ class bcolors:
 
 
 # Módulo con operaciones para realizar pruebas a la API REST del sistema 
-def openConnection():
+def openConnection(remote=True):
 	global connection
-	connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
-	# connection = httplib.HTTPConnection("localhost:8080")
+	if remote:
+		connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
+	else:
+		connection = httplib.HTTPSConnection("localhost:8080")
 
 def closeConnection():
 	global connection
@@ -63,6 +65,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
   		nTestError += 1
   		print bcolors.FAIL + "\t!!! STATUS: ERROR (STATUS " + str(response.status) + ")"
   		print "\tDatos de la respuesta: " + responseData + bcolors.ENDC +"\n"
+  		
   	else:
   		nTestOK += 1
   		print bcolors.OKGREEN + "\t>>> STATUS: OK (STATUS " + str(response.status) + ")"

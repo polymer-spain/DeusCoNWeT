@@ -43,12 +43,30 @@ handlers:
   upload: index\.html
   secure: always
   
-- url: /
+- url: /selectId
+  static_files: static/index.html
+  upload: index\.html
+  secure: always
 
+- url: /
   static_dir: static 
   secure: always
   
-
+skip_files:
+  - (.*/)node_modules
+  - ^(.*/)min$
+  - ^(.*/)build$
+  - (.*/)grunt(.*)
+  - (.*/)?.*\.py[co]$
+  - ^test
+  - (.*/).*.md$
+  - (.*/).*.map$
+  - (.*/)?\..*$
+  - (.*/).*~$
+  - (.*/)LICENSE
+  - (.*/).*.log$
+  - (.*/).*.gzip$
+  - static/(.*/).*.yaml$
 
 libraries:
 - name: webapp2

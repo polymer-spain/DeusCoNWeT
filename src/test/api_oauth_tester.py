@@ -6,7 +6,8 @@ import test_utils
 
 
 # Script para hacer pruebas a la API de Oauth de PicBit (api/oauth/{social_network})
-# Uso: ./api_oauth_tester social_network
+# Uso: api_oauth_tester {social_network} [borrado]
+# Ejemplo: python api_oauth_tester googleplus 
 
 # NOTA: El flujo por github se debe probar a traves del componente de login de github
 #       (http://github-login-lab.appspot.com/app/demo.html)
@@ -26,6 +27,8 @@ def main():
 		user_id1 = "user" + social_network + "1"
 		user_id2 = "user" + social_network + "2"
 		access_token2 = social_network + "2TEST"
+		# Si no se especifica una opción, se realizan las pruebas relativas al Login, 
+		# obtención de credenciales y logout
 		if option == None:
 			#Tests relativos a los casos de Login
 			# TEST 1
@@ -92,6 +95,17 @@ def main():
 			print "Status esperado: 200"
 			test_utils.make_request("POST", request_uri, params, 200, session1)
 			
+<<<<<<< HEAD
+=======
+			# TEST 8
+			# Get (Sin cookie)
+			request_uri = basePath + "/credenciales/" + token_id2
+			print "TEST 8: Obtener credenciales sin cookie"
+			print " Status esperado: 200 (con una respuesta informativa)"
+			params = urllib.urlencode({})
+			test_utils.make_request("GET", request_uri, params, 200, None)
+
+>>>>>>> develop
 			# TEST 9
 			# Login (prueba de nueva sesión y actualizar credenciales)
 			request_uri = basePath + "/login"
@@ -106,7 +120,11 @@ def main():
 			# Obtener credenciales con cookie antigua
 			request_uri = basePath + "/credenciales/" + token_id1
 			print "TEST 10: Obtener credenciales con cookie de sesión antigua"
+<<<<<<< HEAD
 			print "Status esperado: 400 "
+=======
+			print "Status esperado: 400"
+>>>>>>> develop
 			params = urllib.urlencode({})
 			test_utils.make_request("GET", request_uri, params, 400, session1)
 
@@ -200,9 +218,13 @@ def main():
 		token_id1 = "TOKENid" + social_network
 		access_token1 = social_network + "TEST"
 		token_id2 = "idERROR" + social_network + "2"
+<<<<<<< HEAD
 		user_id1 = "usergoogleplus1"
 		user_id2 = "usergoogleplus2"
 		session_error = "session=sessionError"
+=======
+		user_id1 = "user" + social_network + "1"
+>>>>>>> develop
 
 		# Iniciamos dos sesiones distintas en googleplus para realizar las pruebas
 		request_uri = "/api/oauth/googleplus/login"
@@ -263,7 +285,11 @@ def main():
 			# Get (Sin cookie)
 			request_uri = "/api/oauth/" + social_network + "/credenciales/" + token_id1
 			print "TEST 6: Obtener credenciales sin cookie de sesión"
+<<<<<<< HEAD
 			print "Status esperado: 200 (Retorna el propietario de las credenciales)"
+=======
+			print "Status esperado: 200 (Con un mensaje informativo)"
+>>>>>>> develop
 			params = urllib.urlencode({})
 			test_utils.make_request("GET", request_uri, params, 200, None)
 
