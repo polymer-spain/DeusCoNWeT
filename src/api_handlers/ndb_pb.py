@@ -22,9 +22,11 @@
 from google.appengine.ext import ndb
 import json
 import webapp2
+from Crypto.Cipher import AES
+import base64
+import os
 
 # Definimos la lista de redes sociales con las que trabajamos
-
 social_list = [
     'twitter',
     'facebook',
@@ -35,6 +37,10 @@ social_list = [
     'github',
     ]
 
+
+#####################################################################################
+# Definicion de entidades de la base de datos
+#####################################################################################
 
 # class Tag(ndb.Model):
 #   name_tag = ndb.StringProperty()
@@ -173,6 +179,40 @@ class User(ndb.Model):
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
 
+
+#####################################################################################
+# Definicion de metodos y variables para el cifrado de claves
+#####################################################################################
+
+# Tamaño de bloque
+BLOCK_SIZE = 32
+
+# caracter para realizar un padding del mensaje a cifrar 
+# (para que sea multiplo del tamaño del bloque)
+PADDING = '{'
+#Funcion de padding del mensaje a cifrar
+pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+
+# Funciones de encode y decode utilizando AES, con codec base64
+# encodeAES: funcion anonima para cifrar las claves
+# Parámetros: c - cipher (objeto AES que contiene la clave de cifrado)
+#             s - mensaje a cifrar
+encodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
+
+# decodeAES: funcion anonima para cifrar las claves
+# Parámetros: c - cipher (objeto AES que contiene la sclave de cifrado)
+#             e - mensaje a descifrar
+decodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
+
+# Funcion para generar el objeto AES necesario para cifrar/descifrar
+# Parametros: token_entity_key: (long) clave de la entidad Token a cifrar
+def getCipher(token_entity_key):
+  # Obtiene la clave, para cifrar/descifrar
+  secret = str(token_entity_key).zfill(32)
+  # Crea un objeto cipher
+  cipher = AES.new(secret)
+  return cipher
+
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
 #####################################################################################
@@ -182,23 +222,34 @@ def getToken(id_rs, social_net):  # FUNCIONA
   token = Token.query(Token.identifier == id_rs).filter(Token.social_name == social_net).get()
   user = User.query(User.tokens == token).get()
   if not user == None:
-    ans = {"token": token.token,
+    cipher = getCipher(token.key.id())
+    ans = {"token": decodeAES(cipher, token.token),
           "user_id": user.user_id}
   return ans
 
-def getUser(user_id): #FUNCIONA
+def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
+  
   if not user == None:
     rates = user.rates; nets = user.net_list
-    rates_list = []; net_names = []
-    for rate in rates:
-      comp = rate.component_id
-      value = rate.rating_value
-      tup = (comp, value)
-      rates_list.append(tup)
+    user_component_list = [];  net_names = []
+    # Componemos la lista de redes a la que está suscrito un usuario
     for net in nets:
       net_names.append(net.social_name)
+    
+    # Componemos la lista de componentes de usuario, detallada o reducida
+    if component_detailed_info:
+      # Caso lista de componentes completa
+      user_component_list = getUserComponentList(user_id)
+    else:
+      # Caso lista de componentes reducida
+      for rate in rates:
+        component_info = {"component_id": rate.component_id,
+                          "user_rate": rate.rating_value}
+        user_component_list.append(component_info)
+
+    # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
                 "description": user.description,
                 "image": user.image,
@@ -208,7 +259,8 @@ def getUser(user_id): #FUNCIONA
                 "email": user.email,
                 "phone": user.phone,
                 "nets": net_names,
-                "components": rates_list}
+                "components": user_component_list}
+
   return user_info
 
 def getUserId(entity_key):
@@ -219,11 +271,8 @@ def getUserId(entity_key):
   return user_id
 
 @ndb.transactional(xg=True)
-def insertUser(rs, ide, token, data=None): #FUNCIONA
+def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   user = User()
-  token = Token(identifier=ide, token=token, social_name=rs)
-  token.put()
-  user.tokens.append(token)
   if not data == None:
     if data.has_key("user_id"):
       user.user_id = data["user_id"]
@@ -243,9 +292,18 @@ def insertUser(rs, ide, token, data=None): #FUNCIONA
       user.website = data["website"]
 
   user_key = user.put()
+  
+  token = Token(identifier=ide, token="", social_name=rs)
+  token_key = token.put()
+  # Ciphers the access token and stores in the datastore
+  cipher = getCipher(token_key.id())
+  token.token = encodeAES(cipher, access_token)
+  token.put()
+
+  user.tokens.append(token)
+  user.put()
 
   return user_key
-
 
 def updateUser(entity_key, data): #FUNCIONA
   user = entity_key.get()
@@ -263,11 +321,13 @@ def updateUser(entity_key, data): #FUNCIONA
     user.image = data["image"]
   if data.has_key("website"):
     user.image = data["website"]
-  if data.has_key("componente"):
+  if data.has_key("component"):
     comp_name = data["component"]
     # We add the component to the component_list of the user
-    component = UserComponent(component_id=comp_name, x=0, y=0, height=0, width=0, listening=None)
+    component = UserComponent(component_id=comp_name, x=0, y=0, height="0", width="0", listening=None)
+    component.put()
     user.components.append(component)
+    user.put()
     # We add a Rating entity that represents the component rating
     if data.has_key("rate"):
       rate = data["rate"]
@@ -278,9 +338,20 @@ def updateUser(entity_key, data): #FUNCIONA
   # Updates the data
   user.put()
 
-def insertToken(entity_key, social_name, token, user_id): #FUNCIONA
+def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
   user = entity_key.get()
-  tok_aux = Token(identifier=user_id, token=token, social_name=social_name)
+  
+  # We create a Token Entity in the datastore
+  tok_aux = Token(identifier=user_id, token="", social_name=social_name)
+  token_key = tok_aux.put()
+  
+  # Ciphers access token that will be stored in the datastore
+  cipher = getCipher(token_key.id())
+  access_token = encodeAES(cipher, access_token)
+  tok_aux.token = access_token
+  tok_aux.put()
+
+  # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
   user.put()
 
@@ -387,7 +458,6 @@ def insertUserComponent(entity_key, name, x=0, y=0, height="", width="", listeni
 def modifyComponent(entity_key, name, data): #FUNCIONA
   user = entity_key.get()
   comps = user.components
-  print "DEBUG: Lista de componentes del usuario: ", comps
   for comp in comps:
     if comp.name == name:
       if data.has_key("x"):
@@ -440,6 +510,36 @@ def getComponent(entity_key, name, all_info=False): # FUNCIONA
       general_comp["listening"] = user_comp.listening
     ans = json.dumps(general_comp)
   return ans
+
+# Retorna los detalles sobre un componente del usuario en particular
+def getUserComponent(entity_key, component_id):
+  result = None
+  user = entity_key.get()
+  user_comps = user.components
+  for comp in user_comps:
+    if comp.component_id == component_id:
+      result = comp
+  return result
+
+# Retorna una lista de Componentes pertenecientes al dashboard de usuario, incluyendo la valoración del usuario
+def getUserComponentList(user_id):
+  # Obtenemos la valoración del componente en particular
+  component_list = []
+  user = User.query(User.user_id == user_id).get()
+  user_comps = user.components
+  for comp in user_comps:
+    rating = UserRating.query(UserRating.component_id == comp.component_id).get()
+    component_rate = rating if not rating == None else 0.0
+    component_info = {"component_id": comp.component_id,
+                    "x": comp.x,
+                    "y": comp.y,
+                    "height": comp.height,
+                    "width": comp.width,
+                    "listening": comp.listening,
+                    "user_rate": component_rate}
+    component_list.append(component_info)
+  return component_list         
+
 
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
@@ -499,22 +599,23 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = comp.component_id
-          general_comp["url"] = info_comp.url
-          general_comp["social_network"] = info_comp.rs
-          general_comp["description"] = info_comp.description
-          general_comp["x"] = comp.x
-          general_comp["y"] = comp.y
-          general_comp["input_type"] = info_comp.input_type
-          general_comp["output_type"] = info_comp.output_type
-          general_comp["listening"] = comp.listening
-          general_comp["height"] = comp.height
-          general_comp["width"] = comp.width
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
-          else:
-            general_comp["rate"] = 0
-          ans.append(json.dumps(general_comp))
+          if not info_comp == None:
+            general_comp["component_id"] = comp.component_id
+            general_comp["url"] = info_comp.url
+            general_comp["social_network"] = info_comp.rs
+            general_comp["description"] = info_comp.description
+            general_comp["x"] = comp.x
+            general_comp["y"] = comp.y
+            general_comp["input_type"] = info_comp.input_type
+            general_comp["output_type"] = info_comp.output_type
+            general_comp["listening"] = comp.listening
+            general_comp["height"] = comp.height
+            general_comp["width"] = comp.width
+            if not rate == None: 
+              general_comp["rate"] = rate.rating_value
+            else:
+              general_comp["rate"] = 0
+            ans.append(json.dumps(general_comp))
       else:
         user = entity_key.get()
         user_comps = user.components
@@ -522,15 +623,16 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         for comp in user_comps:
           info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = info_comp.component_id
-          general_comp["url"] = info_comp.url
-          general_comp["social_network"] = info_comp.rs
-          general_comp["description"] = info_comp.description
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
-          else:
-            general_comp["rate"] = 0
-          ans.append(json.dumps(general_comp))
+          if not info_comp == None:
+            general_comp["component_id"] = info_comp.component_id
+            general_comp["url"] = info_comp.url
+            general_comp["social_network"] = info_comp.rs
+            general_comp["description"] = info_comp.description
+            if not rate == None: 
+              general_comp["rate"] = rate.rating_value
+            else:
+              general_comp["rate"] = 0
+            ans.append(json.dumps(general_comp))
   else:
     # Not user id. In this case, the info returned will be always reduced
     if not all_info:
@@ -549,7 +651,6 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           ans.append(json.dumps(general_comp))
       else:
         components = Component.query(Component.rs == rs).fetch(20)
-        print "DEBUG: tipo componentes ", type(components)
         for comp in components:
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
           general_comp["component_id"] = comp.component_id
@@ -564,18 +665,29 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
 
   return ans
 
+
+
 def searchToken(user_id, rs): #FUNCIONA
   tokens = Token.query()
   token = tokens.filter(Token.identifier==user_id).filter(Token.social_name==rs).get() 
   if token:
-    return token.token
+    cipher = getCipher(token.key.id())
+    return decodeAES(cipher, token.token)
   else:
     return None
 
 def modifyToken(user_id, new_token, rs): #FUNCIONA
   tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
+  
+  # Ciphers the token
+  cipher = getCipher(tok.key.id())
+  new_token = encodeAES(cipher, new_token)
+  
+  # Updates the token
   tok.token = new_token
-  tok.put()
+  token_key = tok.put()
+
+  # Updates the token in the user credential list
   token_aux = Token(identifier=user_id, social_name=rs)
   user = User.query(User.tokens==token_aux).get()
   tokens = user.tokens
@@ -646,12 +758,22 @@ def deleteComponent(component_name):
   return status
 
 def deleteCredentials(entity_key, rs, id_rs):
+  status = False
   tok = Token.query(Token.identifier == id_rs).filter(Token.social_name == rs).get()
-  token_aux = tok.token
-  del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
-  tok.key.delete()
-  user = entity_key.get()
-  user.tokens.remove(del_token)
+  if not tok == None:
+    user = entity_key.get()
+    # We delete the token if it is not the only token stored for the user and
+    # does not belong to a social network to perform login in our system
+    if not rs in ['google', 'facebook', 'twitter'] and not len(user.tokens) == 1:
+      token_aux = tok.token
+      del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
+      tok.key.delete()
+      # Deletes the token from the user
+      if not user == None:
+        user.tokens.remove(del_token)
+        user.put()
+        status = True
+  return status
 
 def getUsers():
   users = User.query().fetch(100)

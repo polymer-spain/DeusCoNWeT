@@ -123,20 +123,9 @@ def main():
 		params = urllib.urlencode({})
 		test_utils.make_request("POST", request_uri, params, 200, session1)
 
-		# # TEST 12
-		# print "TEST 12: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (El componente no existe en el sistema)"
-		# print "Status esperado: 200 (El recurso no se modifica)"
-		# params = urllib.urlencode({'component': 'componenteError'})
-		# test_utils.make_request("POST", request_uri, params, 200, session1)
-		
-		# # TEST 13
-		# print "TEST 13: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (Cookie de sesión correcta)"
-		# print "Status esperado: 200"
-		# params = urllib.urlencode({'component': 'instagram-timeline'})
-		# test_utils.make_request("POST", request_uri, params, 200, session1)
 
-		# TEST 14
-		print "TEST 14: Modificar info de usuario, caso modificar todos los campos del usuario 2, cambiando ámbito de email y teléfono a privado"
+		# TEST 13
+		print "TEST 13: Modificar info de usuario, caso modificar todos los campos del usuario 2, cambiando ámbito de email y teléfono a privado"
 		print "(cookie de sesión correcta)"
 		print "Status esperado: 200 (Se modifican todos los campos del usuario)"
 		request_uri = basepath + "/" + user_id2

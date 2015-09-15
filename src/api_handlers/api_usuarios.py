@@ -66,12 +66,14 @@ class UserHandler(SessionHandler):
   """
   def get(self, user_id):
     cookie_value = self.request.cookies.get("session")
+    component_info = self.request.get("component_info", default_value="reduced")
     if not cookie_value == None:
       # Obtains info related to the user authenticated in the system
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
         # Obtains the info related to the resource requested
-        user_info = ndb_pb.getUser(user_id)
+        component_detailed_info = True if component_info == "detailed" else False
+        user_info = ndb_pb.getUser(user_id, component_detailed_info)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
@@ -109,7 +111,6 @@ class UserHandler(SessionHandler):
       self.response.content_type = "application/json"
       user = ndb_pb.getUser(user_id)
       if not user == None:
-        self.response.write(json.dumps({"user_id": user["user_id"]}))
         self.response.set_status(200)
       else:
         self.response.write(json.dumps({"error": "User not found in the system"}))
@@ -161,20 +162,23 @@ class UserHandler(SessionHandler):
               update_data["private_email"] = private_email
           if values.has_key("component"):
             component_id = values.get("component")      
-            component = ndb_pb.getComponent(user_info, component_id)
-            if not component == None:
+            component = ndb_pb.getComponent(user_logged_key, component_id)
+            user_component = ndb_pb.getUserComponent(user_logged_key,component_id)
+            # If the component_id provided in the request exists in the system and the user has not added it previously,
+            # we add the component_id provided to the list of user's data to be updated
+            if not component == None and user_component == None:
               update_data["component"] = component_id
           
           # Updates the resource 
           if not len(update_data) == 0:
             user_info = ndb_pb.updateUser(user_logged_key, update_data)
             self.response.content_type = "application/json"
-            self.response.write(json.dumps({"success": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
+            self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
             self.response.set_status(200)
           else:
             self.response.content_type = "application/json"
-            self.response.write(json.dumps({"success": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
-            self.response.set_status(200) 
+            self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
+            self.response.set_status(304) 
         else:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "You don\"t have the proper rights to modify this resource" +

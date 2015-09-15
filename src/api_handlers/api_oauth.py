@@ -88,9 +88,13 @@ class OauthLoginHandler(SessionHandler):
     """
     def post_login(self, social_network):
         try:
+            # We get the params from the POST data
+            post_params = self.request.POST
             access_token = self.request.POST["access_token"]
             token_id = self.request.POST["token_id"]
-            user_identifier = self.request.POST["user_identifier"]
+            
+            if post_params.has_key("user_identifier"):
+                user_identifier = self.request.POST["user_identifier"]
 
             # Checks if the username was stored previously
             stored_credentials = ndb_pb.searchToken(token_id,
@@ -111,11 +115,17 @@ class OauthLoginHandler(SessionHandler):
                 self.response.set_cookie("user", user_identifier,
                         path="/", domain=domain, secure=True)
 
+                # Builds the response
+                response = {"status": "User logged successfully", "user_id": user_identifier}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+
                 self.response.set_status(201)
             else:
                 # We store the new set of credentials
                 user_key = ndb_pb.modifyToken(token_id,
                         access_token, social_network)
+                user_id = ndb_pb.getUserId(user_key)
                 session_id = self.login(user_key)
 
                 # Gets the user_id to generate the user cookie
@@ -127,7 +137,13 @@ class OauthLoginHandler(SessionHandler):
                         path="/", domain=domain, secure=True)
                 self.response.set_cookie("user", user_id,
                         path="/", domain=domain, secure=True)
+
+                # Builds the response
+                response = {"status": "User logged successfully", "user_id": user_id}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
                 self.response.set_status(200)
+
         except KeyError:
             response = \
                 {"error": "You must provide a valid pair of access_token and token_id in the request," +
@@ -141,7 +157,7 @@ class OauthLogoutHandler(SessionHandler):
         act as authentication services in PicBit, and have 
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
-            post_logout - Implements the logout action. Destroys the
+            post_logout - Implements the logout action. Invalidates the
             cookie for the session.
     """
     def post_logout(self, social_network):
@@ -167,7 +183,7 @@ class OauthLogoutHandler(SessionHandler):
                 {"error": "The cookie session provided does not belongs to any active user. The logout action was not performed"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)    
+                self.response.set_status(400)
         else:
             response = \
                 {"error": "This request requires a secure_cookie with the session identifier"}
@@ -179,8 +195,8 @@ class OauthLogoutHandler(SessionHandler):
 class OauthCredentialsHandler(SessionHandler):
     def get_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get("session")
+        # Obtains info related to the user authenticated in the system
         if not cookie_value == None:
-            # Obtains info related to the user authenticated in the system
             logged_user = self.getUserInfo(cookie_value)
             # Searchs for user"s credentials
             if not logged_user == None:
@@ -188,6 +204,8 @@ class OauthCredentialsHandler(SessionHandler):
                 print "DEBUG: Usuario loggeado ", logged_user
                 logged_user_info = json.loads(ndb_pb.getUser(logged_user))
                 logged_user_id = logged_user_info["user_id"]
+                # logged_user_id = ndb_pb.getUserId(logged_user)
+
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
                 if not user_credentials == None:
@@ -199,8 +217,7 @@ class OauthCredentialsHandler(SessionHandler):
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
                     else:
-                        response = \
-                            {"user_id": user_credentials["user_id"]}
+                        response = {"user_id": user_credentials["user_id"]}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
@@ -213,23 +230,21 @@ class OauthCredentialsHandler(SessionHandler):
                     self.response.set_status(404)
             else:
                 response = \
-                    {"error": "The cookie session provided does not belongs to any active user"}
+                {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        
+                self.response.set_status(400)       
         # If we don't provide a cookie in the request, we search for the token in the system
         # and return a 200 o 404 status. It is a request included in the login flow of the system
         else:
-            user_credentials = ndb_pb.getToken(token_id, social_network)
+            user_credentials = ndb_pb.getToken(token_id,social_network)
             if not user_credentials == None:
                 response = {"user_id": user_credentials["user_id"]}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(200)
+                self.response.set_status(200)   
             else:
-                response = \
-                    {"error": "The token requested was not found in the system"}
+                response =  {"error": "Token not found in the system"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(404)
@@ -239,18 +254,37 @@ class OauthCredentialsHandler(SessionHandler):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
             # Searchs for user"s credentials
-            user = self.getUserInfo(cookie_value)
-            if not user == None:
-                deleteStatus = ndb_pb.deleteCredentials(user, social_network, token_id)
-                if deleteStatus:
-                    response = \
-                        {"status": "Credentials deleted successfully"}
-                    self.response.content_type = "application/json"
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(204)
+            logged_user_key = self.getUserInfo(cookie_value)
+            if not logged_user_key == None:
+                logged_user_id = ndb_pb.getUserId(logged_user_key)
+                token = ndb_pb.getToken(token_id, social_network)
+                if not token == None:
+                    token_owner_id = token['user_id']
+                    if logged_user_id == token_owner_id:
+                        # Deletes the token from the user
+                        token_deleted = ndb_pb.deleteCredentials(logged_user_key, social_network, token_id)
+                        if token_deleted:
+                            response = \
+                                {"status": "Credentials deleted successfully"}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(204)
+                        else:
+                            response = \
+                                {"error": "This token cannot be deleted, because it is being used as the only token " + \
+                                 "to perform the login action in the system"}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(403)
+                    else:
+                        response = \
+                            {"error": "You do not have permissions to perform this request"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(401)
                 else:
                     response = \
-                        {"status": "Token not found in the system"}
+                            {"error": "Token not found in the system"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
@@ -279,20 +313,28 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     token_id = self.request.POST["token_id"]
 
                     # Checks if the username was stored previously
-                    stored_credentials = ndb_pb.searchToken(token_id,
+                    stored_credentials = ndb_pb.getToken(token_id,
                             social_network)
-                    print "Stored credentials ", stored_credentials
                     if stored_credentials == None:
-
-                      # Stores the credentials in a Token Entity
-                        ndb_pb.insertUser(social_network, token_id,
-                                access_token)
+                        # Adds the token to the user credentials list
+                        ndb_pb.insertToken(user, social_network, access_token, token_id)
+                        
+                        #Builds the response
+                        user_id = ndb_pb.getUserId(user)
+                        response = {"user_id": user_id}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))    
                         self.response.set_status(201)
                     else:
 
-                        # We store the new set of credentials
+                        # We update the user credentials
                         user_id = ndb_pb.modifyToken(token_id, access_token,
                                 social_network)
+
+                        # Builds the response
+                        response = {"user_id": stored_credentials["user_id"]}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))    
                         self.response.set_status(200)
                 except KeyError:
                     response = \
@@ -409,7 +451,6 @@ class GitHubContainerHandler(OAuthCredentialsContainerHandler):
         response = connectionAPI.getresponse()
         aux = response.read()
         user_details = json.loads(aux)
-        print aux
 
         # Buscamos el par id usuario/token autenticado en la base
         stored_credentials = ndb_pb.searchToken(str(user_details["id"
@@ -595,33 +636,16 @@ class TwitterAuthorizationHandler(webapp2.RequestHandler):
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
 
-        # Query for the stored user
-        stored_user = ndb_pb.searchToken(user_info["username"],
-                "twitter")
-        if stored_user == None:
-
-            # We store the user id and token into a Token Entity
-            user_id = ndb_pb.insertUser("twitter",
-                    user_info["username"], user_info["token"])
-            response_status = 201
-            self.response.set_status(response_status)
-        else:
-
-            # We store the new user"s access_token
-            user_id = ndb_pb.modifyToken(user_info["username"],
-                    user_info["token"], "twitter")
-            response_status = 200
-            self.response.set_status(response_status)
-
-        # Create Session
-        session_id = self.login(user_id)
-
-        # Stores in memcache the session id associated with the oauth_verifierj
+        # Stores in memcache the session id associated with the oauth_verifier 
+        #and data associated to the logged user
         key_verifier = "oauth_verifier_" + oauth_verifier
-        data = {"session_id": session_id,
-                "response_status": response_status
+        data = {"token_id": user_info["username"],
+                "access_token": user_info["token"]
                 }
         memcache.add(key_verifier, data)
+        
+        # Set the status for the response
+        self.response.set_status(200)
 
 
 class TwitterHandler(OauthCredentialsHandler):
@@ -647,21 +671,57 @@ class TwitterLoginHandler(SessionHandler):
     def post(self):
         oauth_verifier = self.request.get("oauth_verifier",
                 default_value="None")
+        user_identifier = self.request.get("user_identifier", default_value="")
+        
         if not oauth_verifier == "":
             key_verifier = "oauth_verifier_" + oauth_verifier
-            data = memcache.get(key_verifier)
-            print type(data)
-            if not data == None:
-                session_id = data["session_id"]
-                response_status = data["response_status"]
-                # Set the cookie session with the session id stored in the system
-                self.response.set_cookie("session",
-                        value=session_id, path="/", domain=domain,
-                        secure=True)
+            twitter_user_data = memcache.get(key_verifier)
+            if not twitter_user_data == None:
+                # Checks if the username was stored previously
+                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter") 
+                if stored_credentials == None:
+                    user_info = {}
+                    if not user_identifier == "":
+                        user_info["user_id"] = user_identifier
+                        user_key = ndb_pb.insertUser("twitter",
+                        twitter_user_data["token_id"], twitter_user_data["access_token"], user_info)
 
-                # Delete the key-value for the pair oauth_verifier-session_id stored in memcache
-                memcache.delete(key_verifier)
-                self.response.set_status(response_status)
+                        # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
+                        memcache.delete(key_verifier)
+                        # Sets the cookie session with the session id stored in the system
+                        session_id = self.login(user_key)
+                        self.response.set_cookie("session",
+                                value=session_id, path="/", domain=domain,
+                                secure=True)
+
+                        # Builds the response
+                        response = {"status": "User logged successfully", "user_id": user_identifier}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))                    
+                        self.response.set_status(201)
+                    else:
+                        response = {"error": "You must provide a valid user_identifier in the request"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)
+
+                else:
+                    # We store the new set of credentials
+                    user_key = ndb_pb.modifyToken(twitter_user_data["token_id"],
+                            twitter_user_data["access_token"], "twitter")
+                    user_id = ndb_pb.getUserId(user_key)
+                    session_id = self.login(user_key)
+
+                    # Returns the session cookie
+                    self.response.set_cookie("session", session_id,
+                            path="/", domain=domain, secure=True)
+
+                    # Builds the response
+                    response = {"status": "User logged successfully", "user_id": user_id}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+
             else:
                 response = \
                     {"error": "There isn\"t any session in the system for the oauth_verifier value specified"}
