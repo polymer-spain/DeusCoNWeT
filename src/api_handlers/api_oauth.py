@@ -45,6 +45,8 @@ with open(configFile, "r") as ymlfile:
 
 domain = cfg["domain"]
 
+client = None
+
 
 # Generic handlers for the session management, login, logout and actions 
 # related to user credentials 
@@ -488,7 +490,7 @@ class GooglePlusLoginHandler(OauthLoginHandler):
     action using the GooglePlus credentials to autenticate in PicBit 
     """
     def post(self):
-        self.post_login("google")
+        self.post_login("googleplus")
 
 
 class GooglePlusLogoutHandler(OauthLogoutHandler):
@@ -496,7 +498,7 @@ class GooglePlusLogoutHandler(OauthLogoutHandler):
     action using the GooglePlus credentials to autenticate in PicBit 
     """
     def post(self):
-        self.post_logout("google")
+        self.post_logout("googleplus")
 
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
@@ -590,6 +592,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         callback received from Twitter endpoint.
     """
     def get(self):
+        global client
         """ Handles the first step in the Twitter login flow
         Keyword arguments: 
         self -- info about the request build by webapp2
@@ -603,7 +606,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         base_authorization_url = \
             "https://api.twitter.com/oauth/authorize"
         callback_uri = "https://" + domain \
-            + "/api/oauth/twitter?action=authorization"
+            + "/api/oauth/twitter/authorization"
         # Request to Twitter the request_token and authorization URL
         client = oauth.TwitterClient(consumer_key, consumer_secret,
                 callback_uri)
@@ -614,7 +617,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
 
 
 # Handler that manages the callback from Twitter as a final step of the oauth flow
-class TwitterAuthorizationHandler(webapp2.RequestHandler):
+class TwitterAuthorizationHandler(SessionHandler):
     """ This class is a resource that represents the authorization
         step in the Twitter Login flow, in which the Twitter Endpoint returns
         asyncronously the credentials for the user authenticated in the flow.
@@ -629,7 +632,7 @@ class TwitterAuthorizationHandler(webapp2.RequestHandler):
         # Gets the params in the request
         auth_token = self.request.get("oauth_token")
         oauth_verifier = self.request.get("oauth_verifier")
-
+        print "OAUTH verifier de twiter ", oauth_verifier
         # Retrieves user info
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
@@ -719,7 +722,6 @@ class TwitterLoginHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(200)
-
             else:
                 response = \
                     {"error": "There isn\"t any session in the system for the oauth_verifier value specified"}

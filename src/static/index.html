@@ -53,8 +53,8 @@
         </div>
         <core-dropdown class="lang-menu dropdown" id="dropmenu" relatedTarget="{{document.querySelector('#user_options')}}">
           <core-menu vertical layout>
-            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="changeView('/user/{{user.id}}/')">{{language.profile}}</paper-button></core-item>
-            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="changeView('/user/{{user.id}}/profile')">{{language.settings}}</paper-button></core-item>
+            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="goto('home')">{{language.profile}}</paper-button></core-item>
+            <core-item ng-click="goto('profile')" class="core-item"><paper-button class="profile_button" flex >{{language.settings}}</paper-button></core-item>
             <core-item class="core-item"><paper-button class="profile_button" flex ng-click="logout()">{{language.logout}}</paper-button></core-item>
           </core-menu>
         </core-dropdown>
@@ -79,7 +79,7 @@
       <span>{{language.select_network}}</span>
       <div vertical center-justified layout class="button-login">
         <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-        <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/requestToken" static="true"></twitter-login>
+        <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static="true"></twitter-login>
         <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static="true"></login-facebook>
 
       </div>

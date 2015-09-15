@@ -30,20 +30,16 @@ Element providing solution to no problem in particular.
     <link rel="stylesheet" href="twitter-login.css">
     <core-ajax
                id="requestToken"
-               url="{{endpoint}}"
+               url="{{endpoint}}/requestToken"
                method="GET"
-               params='{
-                       "action": "request_token"
-                       }'
                handleAs="json"
                on-core-response="{{authentication}}"
                >
     </core-ajax>
     <core-ajax
-               id="requestCookie" url="{{endpoint}}"
-               method="GET"
+               id="requestCookie" url="{{endpoint}}/login"
+               method="POST"
                params='{
-                       "action": "login",
                        "oauth_verifier":"{{oauth_verifier}}"
                        }'
                handleAs="json"
@@ -138,7 +134,7 @@ Element providing solution to no problem in particular.
         var response, code;
         response = d.response;
         code = d.xhr.status;
-        this.fire('twitter-logged',{token:'',redSocial:'twitter',code:code});
+        this.fire('twitter-logged',{userId:d.response.,redSocial:'twitter',code:code});
       },
     });
   </script>
