@@ -146,7 +146,7 @@ class OauthLogoutHandler(SessionHandler):
         act as authentication services in PicBit, and have 
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
-            post_logout - Implements the logout action. Destroys the
+            post_logout - Implements the logout action. Invalidates the
             cookie for the session.
     """
     def post_logout(self, social_network):

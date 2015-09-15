@@ -179,11 +179,10 @@ class User(ndb.Model):
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
 
-class TokenKey(ndb.Model):
-  secret_key = ndb.BlobProperty()
 
-
+#####################################################################################
 # Definicion de metodos y variables para el cifrado de claves
+#####################################################################################
 
 # Tamaño de bloque
 BLOCK_SIZE = 32
@@ -195,15 +194,24 @@ PADDING = '{'
 pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
 
 # Funciones de encode y decode utilizando AES, con codec base64
+# encodeAES: funcion anonima para cifrar las claves
+# Parámetros: c - cipher (objeto AES que contiene la clave de cifrado)
+#             s - mensaje a cifrar
 encodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
+
+# decodeAES: funcion anonima para cifrar las claves
+# Parámetros: c - cipher (objeto AES que contiene la sclave de cifrado)
+#             e - mensaje a descifrar
 decodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
 
-# Obtiene la clave
-secret = TokenKey.query().get().secret_key
-
-
-# Crea un objeto cipher
-cipher = AES.new(secret)
+# Funcion para generar el objeto AES necesario para cifrar/descifrar
+# Parametros: token_entity_key: (long) clave de la entidad Token a cifrar
+def getCipher(token_entity_key):
+  # Obtiene la clave, para cifrar/descifrar
+  secret = str(token_entity_key).zfill(32)
+  # Crea un objeto cipher
+  cipher = AES.new(secret)
+  return cipher
 
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
@@ -214,6 +222,7 @@ def getToken(id_rs, social_net):  # FUNCIONA
   token = Token.query(Token.identifier == id_rs).filter(Token.social_name == social_net).get()
   user = User.query(User.tokens == token).get()
   if not user == None:
+    cipher = getCipher(token.key.id())
     ans = {"token": decodeAES(cipher, token.token),
           "user_id": user.user_id}
   return ans
@@ -253,12 +262,6 @@ def getUserId(entity_key):
 @ndb.transactional(xg=True)
 def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   user = User()
-  # Encodes access token tha will be stored in the database
-  access_token = encodeAES(cipher, access_token)
-  
-  token = Token(identifier=ide, token=access_token, social_name=rs)
-  token.put()
-  user.tokens.append(token)
   if not data == None:
     if data.has_key("user_id"):
       user.user_id = data["user_id"]
@@ -278,9 +281,18 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
       user.website = data["website"]
 
   user_key = user.put()
+  
+  token = Token(identifier=ide, token="", social_name=rs)
+  token_key = token.put()
+  # Ciphers the access token and stores in the datastore
+  cipher = getCipher(token_key.id())
+  token.token = encodeAES(cipher, access_token)
+  token.put()
+
+  user.tokens.append(token)
+  user.put()
 
   return user_key
-
 
 def updateUser(entity_key, data): #FUNCIONA
   user = entity_key.get()
@@ -315,11 +327,17 @@ def updateUser(entity_key, data): #FUNCIONA
 
 def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
   user = entity_key.get()
-  # Encodes access token tha will be stored in the database
-  access_token = encodeAES(cipher, access_token)
+  
   # We create a Token Entity in the datastore
-  tok_aux = Token(identifier=user_id, token=access_token, social_name=social_name)
+  tok_aux = Token(identifier=user_id, token="", social_name=social_name)
+  token_key = tok_aux.put()
+  
+  # Ciphers access token that will be stored in the datastore
+  cipher = getCipher(token_key.id())
+  access_token = encodeAES(cipher, access_token)
+  tok_aux.token = access_token
   tok_aux.put()
+
   # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
   user.put()
@@ -606,18 +624,22 @@ def searchToken(user_id, rs): #FUNCIONA
   tokens = Token.query()
   token = tokens.filter(Token.identifier==user_id).filter(Token.social_name==rs).get() 
   if token:
+    cipher = getCipher(token.key.id())
     return decodeAES(cipher, token.token)
   else:
     return None
 
 def modifyToken(user_id, new_token, rs): #FUNCIONA
-  # Encodes access token tha will be stored in the database
+  tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
+  
+  # Ciphers the token
+  cipher = getCipher(tok.key.id())
   new_token = encodeAES(cipher, new_token)
   
-  tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
   # Updates the token
   tok.token = new_token
-  tok.put()
+  token_key = tok.put()
+
   # Updates the token in the user credential list
   token_aux = Token(identifier=user_id, social_name=rs)
   user = User.query(User.tokens==token_aux).get()
