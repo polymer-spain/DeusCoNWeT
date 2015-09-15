@@ -438,7 +438,7 @@ class GooglePlusLoginHandler(OauthLoginHandler):
     action using the GooglePlus credentials to autenticate in PicBit 
     """
     def post(self):
-        self.post_login("google")
+        self.post_login("googleplus")
 
 
 class GooglePlusLogoutHandler(OauthLogoutHandler):
@@ -446,7 +446,7 @@ class GooglePlusLogoutHandler(OauthLogoutHandler):
     action using the GooglePlus credentials to autenticate in PicBit 
     """
     def post(self):
-        self.post_logout("google")
+        self.post_logout("googleplus")
 
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM

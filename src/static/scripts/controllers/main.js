@@ -3,6 +3,12 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
 
   "use strict";
 
+  if ($cookies.get("user")) {
+    $backend.getUser($cookies.get("user")).then(function(response) {
+      $rootScope.user = response.data;
+    });
+  }
+
   $rootScope.isLogged = $rootScope.user ? true : false; // Registr el stado de logueado
   $scope.domain = "https://" + $location.host(); // Dominio bajo el que ejecutamos
   $scope.shadow = false; // Sombra del popup
@@ -41,79 +47,41 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   $scope.logged = function (e) {
     $scope.$apply(function () {
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
-      if (e.detail.redSocial === "twitter") {
-        /* FIXME comprobar si twitter funciona y por qué no sigue un flujo normal*/
-        /* Provisional hasta que se implemente el nombre de usuario */
-        if ($location.$$path.indexOf("profile") === -1) {
-          $scope.changeView("/user/" + e.detail.redSocial + "_" + e.detail.userId);
-        }
-
-      }
-      else if (e.detail.redSocial === "googleplus") { // Comprobamos si es google para buscar el id
+      if (e.detail.redSocial === "googleplus") { // Comprobamos si es google para buscar el id
         var uri;
         uri = "https://www.googleapis.com/plus/v1/people/me?access_token=" + e.detail.token;
         $http.get(uri).success(function (responseData) {
-          if ($location.$$path.indexOf("profile") === -1) {
-            var tokenId = responseData.id;
-            /* Cogemos el identificador del usuario */
-            $backend.getUserId(tokenId, e.detail.redSocial)
-              .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
-              /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-              $backend.getUser(responseUserId.data.user_id)
-                .then(function(response){
-                $rootScope.user = response.data;
-                /* Le mandamos a su home tras iniciar sesion */
-                $backend.sendData(e.detail.token, tokenId, response.data.user_id, e.detail.redSocial)
-                  .then(function() {
-                  $scope.logOutButton();
-                  $scope.changeView("/user/" + response.data.user_id);
-                }, function(responseLogin) {
-                  console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login");
-                });
-              }, function(response){//error getUser
-                console.error("Error " + response.status + ": al realizar el login");
-              });
-            }, function () {//error getUserId
-              /* Guardamos información para terminar su registro */
-              $rootScope.register = {token: e.detail.token, redSocial: e.detail.redSocial, tokenId: tokenId};
-              $scope.changeView("/selectId");
-            });
-          } else {
-            $backend.sendData(e.detail.token, responseData.id, e.detail.redSocial);
-          }
+          e.detail.userId = responseData.id
         });
       }
-      else { /* Resto de redes sociales */
-        if ($location.$$path.indexOf("profile") === -1) {
-          var tokenId = e.detail.userId;
-          /* Cogemos el identificador del usuario */
-          $backend.getUserId(tokenId, e.detail.redSocial)
-            .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
-            /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-            $backend.getUser(responseUserId.data.user_id).then(function(response){
-              $rootScope.user = response.data;
-              /* Le mandamos a su home tras iniciar sesion */
-              $backend.sendData(e.detail.token, tokenId, response.data.user_id, e.detail.redSocial)
-                .then(function(responseLogin) {
-                $scope.logOutButton();
-                $scope.changeView("/user/" + response.data.user_id);
-              }, function(responseLogin) {
-                console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
-              });
-            }, function(responseLogin){
+      if ($location.$$path.indexOf("profile") === -1) {
+        var tokenId = e.detail.userId;
+        /* Cogemos el identificador del usuario */
+        $backend.getUserId(tokenId, e.detail.redSocial)
+          .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
+          /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
+          $backend.getUser(responseUserId.data.user_id).then(function(response){
+            $rootScope.user = response.data;
+            /* Le mandamos a su home tras iniciar sesion */
+            $backend.sendData(e.detail.token, tokenId, response.data.user_id, e.detail.redSocial)
+              .then(function() {
+              $scope.logOutButton();
+              $scope.changeView("/user/" + response.data.user_id);
+            }, function(responseLogin) {
               console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
             });
-          }, function () {
-            /* Guardamos información para terminar su registro */
-            $rootScope.register = {token: e.detail.token, redSocial: e.detail.redSocial, tokenId: tokenId};
-            $scope.changeView("/selectId");
+          }, function(responseLogin){
+            console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
           });
-        } else {
-          /*$backend.sendData(e.detail.token, data.id, e.detail.redSocial);*/
-        }
+        }, function () {
+          /* Guardamos información para terminar su registro */
+          $rootScope.register = {token: e.detail.token, redSocial: e.detail.redSocial, tokenId: tokenId};
+          $scope.changeView("/selectId");
+        });
+      } else {
+        $backend.sendData(e.detail.token, $rootScope.user.user_id, e.detail.redSocial);
       }
       // cambiamos el botton
-
     });
   };
   $scope.logOutButton = function () {
@@ -127,7 +95,16 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     $location.hash("");
     $location.path(view); // path not hash
   };
-
+  $scope.goto = function(addr) {
+    switch(addr) {
+      case "home":
+        $scope.changeView("user/" + $rootScope.user.user_id);
+        break;
+      case "profile":
+        $scope.changeView("user/" + $rootScope.user.user_id + "/profile");
+        break;
+    }
+  };
   $scope.logout = function () {
     $backend.logout().then(function() {
       $scope.changeView("/");

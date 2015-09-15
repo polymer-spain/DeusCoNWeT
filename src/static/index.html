@@ -53,8 +53,8 @@
         </div>
         <core-dropdown class="lang-menu dropdown" id="dropmenu" relatedTarget="{{document.querySelector('#user_options')}}">
           <core-menu vertical layout>
-            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="changeView('/user/{{user.id}}/')">{{language.profile}}</paper-button></core-item>
-            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="changeView('/user/{{user.id}}/profile')">{{language.settings}}</paper-button></core-item>
+            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="goto('home')">{{language.profile}}</paper-button></core-item>
+            <core-item ng-click="goto('profile')" class="core-item"><paper-button class="profile_button" flex >{{language.settings}}</paper-button></core-item>
             <core-item class="core-item"><paper-button class="profile_button" flex ng-click="logout()">{{language.logout}}</paper-button></core-item>
           </core-menu>
         </core-dropdown>
