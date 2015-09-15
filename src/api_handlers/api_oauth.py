@@ -175,7 +175,7 @@ class OauthLogoutHandler(SessionHandler):
                             path="/", domain=domain, secure=True, expires=expire_date)
                 self.response.set_cookie("social_network", social_network,
                             path="/", domain=domain, secure=True, expires=expire_date)
-                self.response.set_cookie("user", user_id,
+                self.response.set_cookie("user", "",
                             path="/", domain=domain, secure=True, expires=expire_date)
                 self.response.set_status(200)
             else:
@@ -201,10 +201,8 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
-                print "DEBUG: Usuario loggeado ", logged_user
-                logged_user_info = json.loads(ndb_pb.getUser(logged_user))
-                logged_user_id = logged_user_info["user_id"]
-                # logged_user_id = ndb_pb.getUserId(logged_user)
+                print "DEBUG: Tipo Usuario loggeado ", type(logged_user)
+                logged_user_id = ndb_pb.getUserId(logged_user)
 
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
