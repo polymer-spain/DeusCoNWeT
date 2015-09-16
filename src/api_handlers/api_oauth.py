@@ -636,7 +636,10 @@ class TwitterAuthorizationHandler(SessionHandler):
         # Retrieves user info
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
-
+        for key, value in user_info.iteritems():
+          print "CLAVE user_info: ", key
+          print "VALOR: ", value
+           
         # Stores in memcache the session id associated with the oauth_verifier 
         #and data associated to the logged user
         key_verifier = "oauth_verifier_" + oauth_verifier

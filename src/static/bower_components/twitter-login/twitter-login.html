@@ -40,7 +40,8 @@ Element providing solution to no problem in particular.
                id="requestCookie" url="{{endpoint}}/login"
                method="POST"
                params='{
-                       "oauth_verifier":"{{oauth_verifier}}"
+                       "oauth_verifier":"{{oauth_verifier}}",
+                       "user_identifier":"{{}}"
                        }'
                handleAs="json"
                on-core-response="{{cookie}}"
@@ -78,28 +79,28 @@ Element providing solution to no problem in particular.
     Polymer({
       endpoint:'',
       /* Hay que comprobar si hay datos del
-      usuario en la base de datos para saber
-      si esta logueado o no */
+        usuario en la base de datos para saber
+        si esta logueado o no */
       logged: false,
       sort: false,
       /**
-       * The `sayHello` method will return a greeting.
-       *
-       * @method sayHello
-       * @param {String} greeting Pass in a specific greeting.
-       * @return {String} Returns a string greeting.
-       */
+         * The `sayHello` method will return a greeting.
+         *
+         * @method sayHello
+         * @param {String} greeting Pass in a specific greeting.
+         * @return {String} Returns a string greeting.
+         */
       login: function(event, detail, sender) {
         this.$.requestToken.go();
       },
 
       /**
-       * The `sayHello` method will return a greeting.
-       *
-       * @method sayHello
-       * @param {String} greeting Pass in a specific greeting.
-       * @return {String} Returns a string greeting.
-       */
+         * The `sayHello` method will return a greeting.
+         *
+         * @method sayHello
+         * @param {String} greeting Pass in a specific greeting.
+         * @return {String} Returns a string greeting.
+         */
       authentication: function(event, detail, sender) {
         var oauth_url = detail.response.oauth_url;
         var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
@@ -107,16 +108,17 @@ Element providing solution to no problem in particular.
         var pollTimer  =  window.setInterval(function() {
           try {
             if(win.document.URL.indexOf('example-project-13') != -1){
-              var ulr, patron, exp;
+              var url, patron, exp;
               url =   win.document.URL;
               patron = "oauth_verifier"+"=([^&#]*)";
               exp = new RegExp(patron);
               // Ponemos en valor en una variable de la ventana principal
               back.oauth_verifier = exp.exec(url)[1];
               back.$.requestCookie.go();
+              back.fire('twitter-logged',{oauth_verifier:back.oauth_verifier, redSocial:'twitter',user_id:""});
               window.clearInterval(pollTimer);
-              win.close()
-              back.logged = true
+              back.logged = true;
+              win.close();
             }
           } catch(e) {
           }
@@ -134,7 +136,6 @@ Element providing solution to no problem in particular.
         var response, code;
         response = d.response;
         code = d.xhr.status;
-        this.fire('twitter-logged',{userId:d.response.,redSocial:'twitter',code:code});
       },
     });
   </script>

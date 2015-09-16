@@ -47,6 +47,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   $scope.logged = function (e) {
     $scope.$apply(function () {
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
+
       if (e.detail.redSocial === "googleplus") { // Comprobamos si es google para buscar el id
         var uri;
         uri = "https://www.googleapis.com/plus/v1/people/me?access_token=" + e.detail.token;
@@ -54,23 +55,21 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
           e.detail.userId = responseData.id
         });
       }
+      if (e.detail.redSocial === "twitter") {
+
+      }
       if ($location.$$path.indexOf("profile") === -1) {
         var tokenId = e.detail.userId;
         /* Cogemos el identificador del usuario */
         $backend.getUserId(tokenId, e.detail.redSocial)
           .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
           /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-          $backend.getUser(responseUserId.data.user_id).then(function(response){
-            $rootScope.user = response.data;
-            /* Le mandamos a su home tras iniciar sesion */
-            $backend.sendData(e.detail.token, tokenId, response.data.user_id, e.detail.redSocial)
-              .then(function() {
-              $scope.logOutButton();
-              $scope.changeView("/user/" + response.data.user_id);
-            }, function(responseLogin) {
-              console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
-            });
-          }, function(responseLogin){
+          $rootScope.user = responseUserId.data
+          $backend.sendData(e.detail.token, tokenId, responseUserId.data.user_id, e.detail.redSocial)
+            .then(function() {
+            $scope.logOutButton();
+            $scope.changeView("/user/" + $rootScope.user.user_id);
+          }, function(responseLogin) {
             console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
           });
         }, function () {
@@ -136,7 +135,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   });
 
   /* Gestiona la sesion, mantiene logueado */
-  if ($cookies.get("session")) {
+  if ($cookies.get("session") && $cookies.get("user") && $cookies.get("social_network")) {
     $scope.logOutButton();
     //$scope.changeView("/user/" + $backend.getUser());
   }
