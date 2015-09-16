@@ -1,5 +1,5 @@
 /*global angular, document*/
-angular.module("picbit").service("$cookie", function () {
+angular.module("picbit").service("$cookies", function () {
   "use strict";
   this.get = function (name) {
     var value = "; " + document.cookie;
@@ -15,9 +15,8 @@ angular.module("picbit").service("$cookie", function () {
     if (expires) {
       cookie += "; expires=" + expires;
     }
-    if (path) {
-      cookie += "; path=" + path;
-    }
+    cookie += path ? "; Path=" + path : "; path=/";
+
     if (domain) {
       cookie += "; domain=" + domain;
     }
@@ -27,8 +26,8 @@ angular.module("picbit").service("$cookie", function () {
     document.cookie = cookie;
   };
 
-  this.delete = function (name) {
-    document.cookie = name + "=; expires= Thu, 01 jan 1970 00:00:00 UTC";
+  this.remove = function (name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
   };
   this.set = function (key, value, expires, path, domain, secure) {
     this.put(key, value, expires, path, domain, secure);

@@ -31,6 +31,7 @@ from google.appengine.api import memcache
 import time
 import ndb_pb
 from ndb_pb import Token, User
+import datetime
 
 # Imports for TwitterHandler
 import oauth
@@ -43,6 +44,8 @@ with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
 domain = cfg["domain"]
+
+client = None
 
 
 # Generic handlers for the session management, login, logout and actions 
@@ -106,8 +109,12 @@ class OauthLoginHandler(SessionHandler):
                         token_id, access_token, data)
                 session_id = self.login(user_key)
 
-                # Returns the session cookie
+                # Returns the session, user_id and social_network cookie
                 self.response.set_cookie("session", session_id,
+                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("social_network", social_network,
+                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("user", user_identifier,
                         path="/", domain=domain, secure=True)
 
                 # Builds the response
@@ -123,8 +130,14 @@ class OauthLoginHandler(SessionHandler):
                 user_id = ndb_pb.getUserId(user_key)
                 session_id = self.login(user_key)
 
+                # Gets the user_id to generate the user cookie
+                user_id = ndb_pb.getUserId(user_key)
                 # Returns the session cookie
                 self.response.set_cookie("session", session_id,
+                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("social_network", social_network,
+                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("user", user_id,
                         path="/", domain=domain, secure=True)
 
                 # Builds the response
@@ -152,10 +165,27 @@ class OauthLogoutHandler(SessionHandler):
     def post_logout(self, social_network):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
-            # Logout
-            logout_status = self.logout(cookie_value)
-            self.response.delete_cookie("session")
-            self.response.set_status(200)
+            # We get the user_id to check if the user is logged in the system
+            user_id = self.getUserInfo(cookie_value)
+            print user_id
+            if not user_id == None:
+                # Logout
+                logout_status = self.logout(cookie_value)
+                # Invalidates the cookie
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                self.response.set_cookie("social_network", social_network,
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                self.response.set_cookie("user", "",
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                self.response.set_status(200)
+            else:
+                response = \
+                {"error": "The cookie session provided does not belongs to any active user. The logout action was not performed"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
         else:
             response = \
                 {"error": "This request requires a secure_cookie with the session identifier"}
@@ -173,7 +203,9 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
+                print "DEBUG: Tipo Usuario loggeado ", type(logged_user)
                 logged_user_id = ndb_pb.getUserId(logged_user)
+
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
                 if not user_credentials == None:
@@ -207,7 +239,7 @@ class OauthCredentialsHandler(SessionHandler):
         else:
             user_credentials = ndb_pb.getToken(token_id,social_network)
             if not user_credentials == None:
-                response =  {"user_id": user_credentials["user_id"]}
+                response = {"user_id": user_credentials["user_id"]}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)   
@@ -458,7 +490,7 @@ class GooglePlusLoginHandler(OauthLoginHandler):
     action using the GooglePlus credentials to autenticate in PicBit 
     """
     def post(self):
-        self.post_login("google")
+        self.post_login("googleplus")
 
 
 class GooglePlusLogoutHandler(OauthLogoutHandler):
@@ -466,7 +498,7 @@ class GooglePlusLogoutHandler(OauthLogoutHandler):
     action using the GooglePlus credentials to autenticate in PicBit 
     """
     def post(self):
-        self.post_logout("google")
+        self.post_logout("googleplus")
 
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
@@ -560,6 +592,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         callback received from Twitter endpoint.
     """
     def get(self):
+        global client
         """ Handles the first step in the Twitter login flow
         Keyword arguments: 
         self -- info about the request build by webapp2
@@ -573,7 +606,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         base_authorization_url = \
             "https://api.twitter.com/oauth/authorize"
         callback_uri = "https://" + domain \
-            + "/api/oauth/twitter?action=authorization"
+            + "/api/oauth/twitter/authorization"
         # Request to Twitter the request_token and authorization URL
         client = oauth.TwitterClient(consumer_key, consumer_secret,
                 callback_uri)
@@ -584,7 +617,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
 
 
 # Handler that manages the callback from Twitter as a final step of the oauth flow
-class TwitterAuthorizationHandler(webapp2.RequestHandler):
+class TwitterAuthorizationHandler(SessionHandler):
     """ This class is a resource that represents the authorization
         step in the Twitter Login flow, in which the Twitter Endpoint returns
         asyncronously the credentials for the user authenticated in the flow.
@@ -599,11 +632,14 @@ class TwitterAuthorizationHandler(webapp2.RequestHandler):
         # Gets the params in the request
         auth_token = self.request.get("oauth_token")
         oauth_verifier = self.request.get("oauth_verifier")
-
+        print "OAUTH verifier de twiter ", oauth_verifier
         # Retrieves user info
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
-
+        for key, value in user_info.iteritems():
+          print "CLAVE user_info: ", key
+          print "VALOR: ", value
+           
         # Stores in memcache the session id associated with the oauth_verifier 
         #and data associated to the logged user
         key_verifier = "oauth_verifier_" + oauth_verifier
@@ -689,7 +725,6 @@ class TwitterLoginHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(200)
-
             else:
                 response = \
                     {"error": "There isn\"t any session in the system for the oauth_verifier value specified"}

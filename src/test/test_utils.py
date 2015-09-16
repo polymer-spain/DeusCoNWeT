@@ -1,6 +1,9 @@
-# -*- coding: utf8 -*-
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import sys
-import httplib, urllib
+import httplib
+import urllib
 import json
 
 connection = None
@@ -8,7 +11,9 @@ nTest = 0
 nTestOK = 0
 nTestError = 0
 
+
 class bcolors:
+
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
@@ -19,7 +24,8 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-# Módulo con operaciones para realizar pruebas a la API REST del sistema 
+# Módulo con operaciones para realizar pruebas a la API REST del sistema
+
 def openConnection(remote=True):
 	global connection
 	if remote:
@@ -78,8 +84,10 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
   	return session_cookie
 
 def tests_status():
-	print "==============================="
-	print bcolors.BOLD + "Tests ejecutados: " + str(nTest)
-	print "Test Ok: ", nTestOK
-	print "Tests Erróneos: ", nTestError, bcolors.ENDC
-	print "==============================="
+    print '==============================='
+    print bcolors.BOLD + 'Tests ejecutados: ' + str(nTest)
+    print 'Test Ok: ', nTestOK
+    print "Tests Erróneos: ", nTestError, bcolors.ENDC
+    print '==============================='
+
+

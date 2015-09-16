@@ -40,21 +40,21 @@ limitations under the License.
     </core-ajax>
 
     <paper-button class="GoogleButton" title="Google+" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
-      <core-icon src="https://i.imgur.com/FM5Nzy7.png" class="icono"></core-icon>
+      <core-icon src="images/googleplusNew.png" class="icono"></core-icon>
       Log in with Google+
     </paper-button>
 
     <paper-button class="GoogleButton desconectar" title="Google+" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
-      <core-icon src="https://i.imgur.com/FM5Nzy7.png" class="icono"></core-icon>
+      <core-icon src="images/googleplusNew.png" class="icono"></core-icon>
       Log out from Google+
     </paper-button>
 
     <paper-button class="GoogleButton2" title="Google+" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
-      <core-icon src="https://i.imgur.com/FM5Nzy7.png" class="icono2"></core-icon>
+      <core-icon src="images/googleplusNew.png" class="icono2"></core-icon>
     </paper-button>
 
     <paper-button class="GoogleButton2 desconectar" title="Google+" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
-      <core-icon src="https://i.imgur.com/FM5Nzy7.png" class="icono2"></core-icon>
+      <core-icon src="images/googleplusNew.png" class="icono2"></core-icon>
     </paper-button>
 
   </template>
@@ -129,7 +129,6 @@ limitations under the License.
 		 *
 		 */
       login: function() {
-        console.log(this.logged)
         var _url = this.OAUTHURL + 'scope=' + this.scope + '&client_id=' + this.clientID + '&redirect_uri=' + this.callback + '&response_type=code token id_token gsession';
         var win  = window.open(_url, "Google+ Login", 'width=800, height=600');
         var back = this;
@@ -148,14 +147,11 @@ limitations under the License.
           } catch(e) {
           }
         }, 100);
-        console.log(this.logged)
       },
 
       logout: function() {
-        console.log(this.logged)
         var back = this;
         back.logged=false;
-        console.log(this.logged)
       },
     });
   </script>

@@ -8,8 +8,10 @@
     <br>
     <core-icon id="gif" src="https://d4z6dx8qrln4r.cloudfront.net/image-54e5caa730e3a-default.gif"></core-icon>
     <br>
-    <paper-input-decorator label="{{language.select_id.input_title}}">
-      <input ng-model="value" ng-keyup="sendUsername($event, value)"></input>
+    <paper-input-decorator label="{{language.select_id.input_title}}" isInvalid="{{userIdError}}" error="{{errorMessage}}">
+      <input ng-model="value" id="username_input"ng-keyup="sendUsername($event, value)" pattern="^[a-zA-Z0-9_-]*$" title="">
+        
+      </input>
     </paper-input-decorator>
   <div horizontal layout reverse><paper-button ng-click="sendUsername($event, value)" ng-show="value">{{language.send}}</paper-button></div>
   </div>

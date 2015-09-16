@@ -55,7 +55,9 @@
   "close": "Close",
   "select_id": {
     "title":"Select your username",
-    "input_title": "Username"
+    "input_title": "Username",
+    "userIdError": "* Username already used",
+    "invalid_username": "Only letters, numbers, '-', or '_'"
   }
 
 }

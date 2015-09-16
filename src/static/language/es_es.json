@@ -47,6 +47,8 @@
   "close": "Cerrar",
   "select_id": {
     "title":"Selecciona tu nombre de usuario",
-    "input_title": "Nombre de usuario"
+    "input_title": "Nombre de usuario",
+    "userIdError": "* Nombre de usuario ya existente",
+    "invalid_username": "Solo letras, numeros, '-', o '_'"
   }
 }
