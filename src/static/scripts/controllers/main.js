@@ -49,21 +49,23 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
       $rootScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId};
       $scope.changeView("/selectId"); 
     }
-    $backend.getUserId(userData.userId, userData.redSocial)
-      .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
-      /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-      if (userData.redSocial === "twitter" && !responseUserId.token_id) {
-        newUser(userData);
-      }
-      $rootScope.user = responseUserId.data;
-      $backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial)
-        .then(function() {
-        $scope.changeView("/user/" + $rootScope.user.user_id);
-      }, function(responseLogin) {
-        console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
-      });
-    }, newUser(userData));
+    if ($location.$$path.indexOf("profile") === -1) {
+      $backend.getUserId(userData.userId, userData.redSocial)
+        .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
+        /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
+        $rootScope.user = responseUserId.data;
+        $backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial)
+          .then(function() {
+          $scope.changeView("/user/" + $rootScope.user.user_id);
+        }, function(responseLogin) {
+          console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
+        });
+      }, newUser(userData));
+    } else {
+      $backend.sendData(e.detail.token, $rootScope.user.user_id, e.detail.redSocial);
+    }
   };
+
   $scope.logged = function (e) {
     $scope.$apply(function () {
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
@@ -75,13 +77,19 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
           e.detail.userId = responseData.id;
           $scope.loginProcess(e.detail);
         });
-      }
-      else if ($location.$$path.indexOf("profile") === -1) {
-        $scope.loginProcess(e.detail);
+      } else if (e.detail.redSocial === "twitter") {
+        var uri;
+        uri = this.endpoint + "/api/oauth/twitter/authorization/" + oauthVerifier;
+        $http.get(uri).success(function (responseData) {
+          e.detail.userId = responseData.token_id;
+          $scope.loginProcess(e.detail);
+        }).error(function() {
+          console.log("Problemas al intentar obtener el token_id de un usuario" );
+        };
+
       } else {
-        $backend.sendData(e.detail.token, $rootScope.user.user_id, e.detail.redSocial);
-      }
-      // cambiamos el botton
+        $scope.loginProcess(e.detail);
+      } 
     });
   };
 

@@ -31,15 +31,8 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
 
   this.getUserId = function (tokenId, redSocial, oauthVerifier) {
     var request, uri;
-    if (redSocial === "twitter" && oauthVerifier) {
-      uri = this.endpoint + "/api/oauth/twitter/authorization/" + oauthVerifier;
-    } else if (redSocial === "twitter") {
-      return $q(function(resolve, reject) {
-        reject({status: 404, data:"Petición no valida, se necesita un oauthVerifier"}) 
-      });
-    } else {
-      uri = this.endpoint + "/api/oauth/" + redSocial + "/credenciales/" + tokenId;
-    }
+    uri = this.endpoint + "/api/oauth/" + redSocial + "/credenciales/" + tokenId;
+
     request = {
       methor: "get",
       url: uri,

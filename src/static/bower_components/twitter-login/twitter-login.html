@@ -36,17 +36,6 @@ Element providing solution to no problem in particular.
                on-core-response="{{authentication}}"
                >
     </core-ajax>
-    <core-ajax
-               id="requestCookie" url="{{endpoint}}/login"
-               method="POST"
-               params='{
-                       "oauth_verifier":"{{oauth_verifier}}",
-                       "user_identifier":"{{}}"
-                       }'
-               handleAs="json"
-               on-core-response="{{cookie}}"
-               >
-    </core-ajax>
 
     <!--Large Buttons-->
 
@@ -114,7 +103,6 @@ Element providing solution to no problem in particular.
               exp = new RegExp(patron);
               // Ponemos en valor en una variable de la ventana principal
               back.oauth_verifier = exp.exec(url)[1];
-              back.$.requestCookie.go();
               back.fire('twitter-logged',{oauth_verifier:back.oauth_verifier, redSocial:'twitter',user_id:""});
               window.clearInterval(pollTimer);
               back.logged = true;
@@ -130,13 +118,7 @@ Element providing solution to no problem in particular.
         /* Borrar datos de la base de datos */
         var back = this;
         back.logged = false
-      },
-
-      cookie: function(e,d,s) {
-        var response, code;
-        response = d.response;
-        code = d.xhr.status;
-      },
+      }
     });
   </script>
 </polymer-element>
