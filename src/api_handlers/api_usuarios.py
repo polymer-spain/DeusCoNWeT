@@ -91,7 +91,7 @@ class UserHandler(SessionHandler):
                           "description": user_info["description"],
                           "image": user_info["image"],
                           "website": user_info["website"],
-                          "nets": user_info["nets"],
+                          "networks": user_info["nets"],
                           "components": user_info["components"]}
             if user_info["private_email"] == False:
               user_dict["email"] = user_info["email"]
