@@ -665,8 +665,6 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
 
   return ans
 
-
-
 def searchToken(user_id, rs): #FUNCIONA
   tokens = Token.query()
   token = tokens.filter(Token.identifier==user_id).filter(Token.social_name==rs).get() 

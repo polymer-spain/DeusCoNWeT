@@ -651,6 +651,31 @@ class TwitterAuthorizationHandler(SessionHandler):
         # Set the status for the response
         self.response.set_status(200)
 
+class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
+    def get(self, authorization_id):
+        """Manages the info returned by the callback from Twitter
+        Keyword arguments: 
+        self -- info about the request built by webapp2
+        authorization_id -- oauth_verifier that defines the authorization flow
+        """
+        twitter_user_data = memcache.get(key_verifier)
+        # Return the user's token id that authorized the application
+        if not twitter_user_data == None:
+            user_token = ndb_pb.getToken(token_id, "twitter")  
+            if not user_token == None:
+                response = {"token_id": user_token["user_id"]]
+                }
+            else:
+                response = {"token_id": ""
+                }
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(200)
+        else:
+            response = {"error": "The oauth_verifier provided does not correspond to an active authorization flow"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(404)
 
 class TwitterHandler(OauthCredentialsHandler):
     """
