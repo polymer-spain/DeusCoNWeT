@@ -13,7 +13,7 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
         $scope.userIdError = true;
         $scope.errorMessage = $scope.language.select_id.userIdError;
       }, function() {
-        $backend.sendData($rootScope.register.token, $rootScope.register.tokenId, userId, $rootScope.register.redSocial)
+        $backend.sendData($rootScope.register.token, $rootScope.register.tokenId, userId, $rootScope.register.redSocial, $rootScope.register.oauthVerifier)
           .then(function() {
           $scope.userIdError = false;
           $rootScope.register = undefined;

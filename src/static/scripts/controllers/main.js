@@ -46,24 +46,26 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   $scope.loginProcess = function(userData){
     /* Cogemos el identificador del usuario */
     function newUser(userData) {
-      $rootScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId};
-      $scope.changeView("/selectId"); 
+      $rootScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
+      $scope.changeView("/selectId");
     }
-    $backend.getUserId(userData.userId, userData.redSocial)
-      .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
-      /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-      if (userData.redSocial === "twitter" && !responseUserId.token_id) {
-        newUser(userData);
-      }
-      $rootScope.user = responseUserId.data;
-      $backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial)
-        .then(function() {
-        $scope.changeView("/user/" + $rootScope.user.user_id);
-      }, function(responseLogin) {
-        console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
-      });
-    }, newUser(userData));
+    if ($location.$$path.indexOf("profile") === -1) {
+      $backend.getUserId(userData.userId, userData.redSocial)
+        .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
+        /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
+        $rootScope.user = responseUserId.data;
+        $backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
+          .then(function() {
+          $scope.changeView("/user/" + $rootScope.user.user_id);
+        }, function(responseLogin) {
+          console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
+        });
+      }, newUser(userData));
+    } else {
+      $backend.sendData(userData.token, $rootScope.user.user_id, userData.redSocial);
+    }
   };
+
   $scope.logged = function (e) {
     $scope.$apply(function () {
       $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
@@ -75,13 +77,17 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
           e.detail.userId = responseData.id;
           $scope.loginProcess(e.detail);
         });
-      }
-      else if ($location.$$path.indexOf("profile") === -1) {
-        $scope.loginProcess(e.detail);
+      } else if (e.detail.redSocial === "twitter") {
+        var uri = $backend.endpoint + "/api/oauth/twitter/authorization/" + e.detail.oauth_verifier;
+        $http.get(uri).success(function (responseData) {
+          e.detail.userId = responseData.token_id;
+          $scope.loginProcess(e.detail);
+        }).error(function() {
+          console.log("Problemas al intentar obtener el token_id de un usuario" );
+        });
       } else {
-        $backend.sendData(e.detail.token, $rootScope.user.user_id, e.detail.redSocial);
+        $scope.loginProcess(e.detail);
       }
-      // cambiamos el botton
     });
   };
 
@@ -89,7 +95,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     $location.hash("");
     $location.path(view); // path not hash
   };
-  /* NOTE Necesario porque el dropmenu no hace correctamente el binding: 
+  /* NOTE Necesario porque el dropmenu no hace correctamente el binding:
    * Si sabe la direccion pero no manda a ella porque el binding se hace posterior
   */
   $scope.goto = function(addr) {

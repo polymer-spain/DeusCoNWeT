@@ -661,10 +661,10 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
         self -- info about the request built by webapp2
         authorization_id -- oauth_verifier that defines the authorization flow
         """
+        key_verifier = "oauth_verifier_" + authorization_id
         twitter_user_data = memcache.get(key_verifier)
         # Return the user's token id that authorized the application
         if not twitter_user_data == None:
-            user_token = ndb_pb.getToken(token_id, "twitter")  
             response = {"token_id": twitter_user_data["token_id"]}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
@@ -785,7 +785,7 @@ class TwitterLoginHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(400)
 
-class TwitterLogoutHandler(SessionHandler):
+class TwitterLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout 
     action using the Twitter credentials to autenticate in PicBit 
     """
