@@ -136,8 +136,8 @@ class UserHandler(SessionHandler):
           # We parse the data received in the request
           if values.has_key("description"):
             update_data["description"] = values.get("description")
-          if values.has_key("web_site"):
-            update_data["web_site"] = values.get("web_site")
+          if values.has_key("website"):
+            update_data["website"] = values.get("website")
           if values.has_key("image"):
             update_data["image"] = values.get("image")
           if values.has_key("phone"):

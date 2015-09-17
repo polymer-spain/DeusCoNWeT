@@ -618,7 +618,6 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         Keyword arguments: 
         self -- info about the request build by webapp2
         """
-
         # Return the authorization URL
         self.response.content_type = "application/json"
         response = {"oauth_url": client.get_authorization_url()}
