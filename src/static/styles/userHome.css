@@ -17,38 +17,25 @@ html {
   height: 100%;
 }
 .div_button{
-  padding-top:35px;
-  padding-bottom:35px;
-  padding-right: 5px;
+  padding: 35px 0px !important;
 }
 
 .dropdown{
-  padding-top: 37px;
+  margin: auto;
 }
-
-/*.sort{
-text-decoration: none;
--webkit-transition: all .25s ease;
--moz-transition: all .25s ease;
--ms-transition: all .25s ease;
--o-transition: all .25s ease;
-transition: all .25s ease;
-}*/
 
 #listOption {
   position:fixed;
   right: 0;
   vertical-align: middle;
   /*width: 250px;*/
-  width: 57px;
-  padding-left: 0px;
+  /*width: 57px;*/
+  /*padding-left: 0px;*/
 }
 
 #listOption.sort{
   height: 75px;
 }
-
-
 
 #listOption > div {
   border: 1px solid rgba(255,255,255,0.3);
@@ -63,13 +50,6 @@ transition: all .25s ease;
   background-color: whitesmoke;
   color:black;
 }
-
-/*.list div > p {
-height: 40px;
-margin:0;
-padding: 15px 10px 0px 10px;
-vertical-align: center;
-}*/
 
 .list div > core-icon {
   width: 15px;
@@ -90,11 +70,6 @@ vertical-align: center;
   background-color: rgba(0,0,0,0.4);
 }
 
-/*#listOption > div.dropdown {
-padding-top: 10px;
-padding-bottom: 0px;
-}*/
-
 .list {
   border-top-color: whitesmoke;
   background: grey;
@@ -114,11 +89,6 @@ padding-bottom: 0px;
 #add div.list {
   cursor:copy;
 }
-/*.list.ng-hide-add.ng-hide-add-active,
-.list.ng-hide-remove.ng-hide-remove-active {
--webkit-transition: all linear 0.2s;
-transition: all linear 0.2s;
-}*/
 
 .list::-webkit-scrollbar {
   width: 6px;
