@@ -62,7 +62,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
       }, function(responseLogin) {
         console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
       });
-    }, error(userData));
+    }, newUser(userData));
   };
   $scope.logged = function (e) {
     $scope.$apply(function () {

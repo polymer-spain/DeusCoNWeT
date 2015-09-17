@@ -47,7 +47,19 @@ domain = cfg["domain"]
 
 client = None
 
-
+# Configuration params in order to perform the request to Twitter
+consumer_key = "tuprQMrGCdGyz7QDVKdemEWXl"
+consumer_secret = \
+    "byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm"
+request_token_url = \
+    "https://api.twitter.com/oauth/request_token"
+base_authorization_url = \
+    "https://api.twitter.com/oauth/authorize"
+callback_uri = "https://" + domain \
+    + "/api/oauth/twitter/authorization"
+# Request to Twitter the request_token and authorization URL
+client = oauth.TwitterClient(consumer_key, consumer_secret,
+        callback_uri)
 # Generic handlers for the session management, login, logout and actions 
 # related to user credentials 
 class SessionHandler(webapp2.RequestHandler):
@@ -162,7 +174,7 @@ class OauthLoginHandler(SessionHandler):
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(400)
-            
+
 class OauthLogoutHandler(SessionHandler):
     """ Defines the logic for the logout action, in those social networks that
         act as authentication services in PicBit, and have 
@@ -606,19 +618,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         Keyword arguments: 
         self -- info about the request build by webapp2
         """
-        # Configuration params in order to perform the request to Twitter
-        consumer_key = "tuprQMrGCdGyz7QDVKdemEWXl"
-        consumer_secret = \
-            "byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm"
-        request_token_url = \
-            "https://api.twitter.com/oauth/request_token"
-        base_authorization_url = \
-            "https://api.twitter.com/oauth/authorize"
-        callback_uri = "https://" + domain \
-            + "/api/oauth/twitter/authorization"
-        # Request to Twitter the request_token and authorization URL
-        client = oauth.TwitterClient(consumer_key, consumer_secret,
-                callback_uri)
+
         # Return the authorization URL
         self.response.content_type = "application/json"
         response = {"oauth_url": client.get_authorization_url()}
@@ -668,10 +668,8 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
             user_token = ndb_pb.getToken(token_id, "twitter")  
             if not user_token == None:
                 response = {"token_id": user_token["user_id"]}
-                }
             else:
-                response = {"token_id": ""
-                }
+                response = {"token_id": ""}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(200)
