@@ -1,5 +1,5 @@
 /*global angular */
-angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope", "$cookies", function ($http, $location, $rootScope, $cookies) {
+angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope", "$cookies", "$q", function ($http, $location, $rootScope, $cookies, $q) {
 
   "use strict";
   this.endpoint = "https://" + $location.host();
@@ -29,9 +29,17 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
     return $rootScope.promise;
   };
 
-  this.getUserId = function (tokenId, redSocial) {
+  this.getUserId = function (tokenId, redSocial, oauthVerifier) {
     var request, uri;
-    uri = this.endpoint + "/api/oauth/" + redSocial + "/credenciales/" + tokenId;
+    if (redSocial === "twitter" && oauthVerifier) {
+      uri = this.endpoint + "/api/oauth/twitter/authorization/" + oauthVerifier;
+    } else if (redSocial === "twitter") {
+      return $q(function(resolve, reject) {
+        reject({status: 404, data:"Petición no valida, se necesita un oauthVerifier"}) 
+      });
+    } else {
+      uri = this.endpoint + "/api/oauth/" + redSocial + "/credenciales/" + tokenId;
+    }
     request = {
       methor: "get",
       url: uri,

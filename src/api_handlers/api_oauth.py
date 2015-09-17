@@ -126,11 +126,11 @@ class OauthLoginHandler(SessionHandler):
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(201)
-                else:
-                    response = {"error": "The user_identifier provided for the sign up has been already taken"}
-                    self.response.content_type = "application/json"
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(400)
+                    else:
+                        response = {"error": "The user_identifier provided for the sign up has been already taken"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)
                 else:
                     response = {"error": "You must provide a valid user_identifier in the request"}
                     self.response.content_type = "application/json"
@@ -146,12 +146,9 @@ class OauthLoginHandler(SessionHandler):
                 # Gets the user_id to generate the user cookie
                 user_id = ndb_pb.getUserId(user_key)
                 # Returns the session cookie
-                self.response.set_cookie("session", session_id,
-                        path="/", domain=domain, secure=True)
-                self.response.set_cookie("social_network", social_network,
-                        path="/", domain=domain, secure=True)
-                self.response.set_cookie("user", user_id,
-                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("session", session_id, path="/", domain=domain, secure=True)
+                self.response.set_cookie("social_network", social_network, path="/", domain=domain, secure=True)
+                self.response.set_cookie("user", user_id, path="/", domain=domain, secure=True)
 
                 # Builds the response
                 response = {"status": "User logged successfully", "user_id": user_id}
