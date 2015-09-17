@@ -33,7 +33,7 @@ social_list = [
     'stackoverflow',
     'instagram',
     'linkedin',
-    'google',
+    'googleplus',
     'github',
     ]
 
@@ -226,6 +226,37 @@ def getToken(id_rs, social_net):  # FUNCIONA
     ans = {"token": decodeAES(cipher, token.token),
           "user_id": user.user_id}
   return ans
+
+def searchToken(token_id, rs): #FUNCIONA
+  tokens = Token.query()
+  token = tokens.filter(Token.identifier==token_id).filter(Token.social_name==rs).get() 
+  if token:
+    cipher = getCipher(token.key.id())
+    return decodeAES(cipher, token.token)
+  else:
+    return None
+
+def modifyToken(user_id, new_token, rs): #FUNCIONA
+  tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
+  
+  # Ciphers the token
+  cipher = getCipher(tok.key.id())
+  new_token = encodeAES(cipher, new_token)
+  
+  # Updates the token
+  tok.token = new_token
+  token_key = tok.put()
+
+  # Updates the token in the user credential list
+  token_aux = Token(identifier=user_id, social_name=rs)
+  user = User.query(User.tokens==token_aux).get()
+  tokens = user.tokens
+  for token in tokens:
+    if token.identifier==user_id and token.social_name==rs:
+      token.token = new_token
+
+  user.put()
+  return user.key
 
 def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
@@ -665,37 +696,6 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
 
   return ans
 
-def searchToken(user_id, rs): #FUNCIONA
-  tokens = Token.query()
-  token = tokens.filter(Token.identifier==user_id).filter(Token.social_name==rs).get() 
-  if token:
-    cipher = getCipher(token.key.id())
-    return decodeAES(cipher, token.token)
-  else:
-    return None
-
-def modifyToken(user_id, new_token, rs): #FUNCIONA
-  tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
-  
-  # Ciphers the token
-  cipher = getCipher(tok.key.id())
-  new_token = encodeAES(cipher, new_token)
-  
-  # Updates the token
-  tok.token = new_token
-  token_key = tok.put()
-
-  # Updates the token in the user credential list
-  token_aux = Token(identifier=user_id, social_name=rs)
-  user = User.query(User.tokens==token_aux).get()
-  tokens = user.tokens
-  for token in tokens:
-    if token.identifier==user_id and token.social_name==rs:
-      token.token = new_token
-
-  user.put()
-  return user.key
-
 def newUserBeta(email, name, surname): #FUNCIONA
   beta_user = UserBeta(email=email, name=name, surname=surname)
   beta_user.put()
@@ -762,7 +762,7 @@ def deleteCredentials(entity_key, rs, id_rs):
     user = entity_key.get()
     # We delete the token if it is not the only token stored for the user and
     # does not belong to a social network to perform login in our system
-    if not rs in ['google', 'facebook', 'twitter'] and not len(user.tokens) == 1:
+    if not rs in ['googleplus', 'facebook', 'twitter'] and not len(user.tokens) == 1:
       token_aux = tok.token
       del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
       tok.key.delete()

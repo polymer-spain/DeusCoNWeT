@@ -224,12 +224,12 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
-                print "DEBUG: Tipo Usuario loggeado ", type(logged_user)
                 logged_user_id = ndb_pb.getUserId(logged_user)
 
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
                 if not user_credentials == None:
+                    print "DEBUG: user_credenttials: ", user_credentials
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],
@@ -501,10 +501,10 @@ class GooglePlusHandler(OauthCredentialsHandler):
                   in Instagram for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("google", token_id)
+        self.get_credentials("googleplus", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("google", token_id)
+        self.delete_credentials("googleplus", token_id)
 
 class GooglePlusLoginHandler(OauthLoginHandler):
     """ This class is a resource that represents the login 
