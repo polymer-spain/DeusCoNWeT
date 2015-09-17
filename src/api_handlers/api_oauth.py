@@ -666,10 +666,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
         # Return the user's token id that authorized the application
         if not twitter_user_data == None:
             user_token = ndb_pb.getToken(token_id, "twitter")  
-            if not user_token == None:
-                response = {"token_id": user_token["user_id"]}
-            else:
-                response = {"token_id": ""}
+            response = {"token_id": twitter_user_data["token_id"]}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(200)
