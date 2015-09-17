@@ -136,6 +136,7 @@ class OauthLoginHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
+            
             else:
                 # We store the new set of credentials
                 user_key = ndb_pb.modifyToken(token_id,
@@ -155,7 +156,13 @@ class OauthLoginHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
-
+        except KeyError:
+            response = \
+                {"error": "You must provide a valid pair of access_token and token_id in the request"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
+            
 class OauthLogoutHandler(SessionHandler):
     """ Defines the logic for the logout action, in those social networks that
         act as authentication services in PicBit, and have 
@@ -660,7 +667,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
         if not twitter_user_data == None:
             user_token = ndb_pb.getToken(token_id, "twitter")  
             if not user_token == None:
-                response = {"token_id": user_token["user_id"]]
+                response = {"token_id": user_token["user_id"]}
                 }
             else:
                 response = {"token_id": ""
