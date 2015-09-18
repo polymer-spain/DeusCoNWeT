@@ -783,14 +783,18 @@ def getUsers():
     group_names = []; net_names = []
     [group_names.append(group.group_name) for group in groups]
     [net_names.append(net.social_name) for net in networks]
+
     usuario = {"user_id": user.user_id,
-              "email": user.email,
-              "phone": user.phone,
               "description": user.description,
               "groups": group_names,
               "networks": net_names}
-    user_info = json.dumps(usuario)
-    users_list.append(user_info)
+    # Returns the user's phone an email if they haven't a private scope 
+    if not user.private_phone:
+      usuario["phone"] = user.phone
+    if not user.private_email:
+      usuario["email"] = user.email
+    # user_info = json.dumps(usuario)
+    users_list.append(usuario)
   return users_list
 
 def searchUserById(user_id):
