@@ -48,7 +48,7 @@ class UserListHandler(SessionHandler):
           self.response.set_status(200)
       else:
         self.response.content_type = "application/json"
-        self.response.write(json.dupms({"error": "The session cookie header does not belong to an active user in the system"}))
+        self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
         self.response.set_status(400)
     else:
       self.response.content_type = "application/json"
