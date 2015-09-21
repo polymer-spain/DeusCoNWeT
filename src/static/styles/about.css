@@ -1,6 +1,6 @@
 html {
   background-image: url('../images/beach.jpg');
-   background-size: 100% 100%;
+  background-size: 100% 100%;
   background-attachment: fixed;
   background-repeat: no-repeat;
 }
@@ -15,7 +15,7 @@ html {
 }
 
 .information > div {
-  margin: 70px 60px 20px 60px;;
+  margin: auto auto;
 }
 .information .right {
   min-width: 300px;
@@ -29,7 +29,7 @@ html {
   height: 400px;
 }
 #social {
-  margin-top:50px; 
+  margin-top:100px; 
 }
 #social  core-icon-button {
   border-radius:5px;

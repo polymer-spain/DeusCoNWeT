@@ -60,7 +60,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
         }, function(responseLogin) {
           console.error("Error " + responseLogin.status + ": al intentar mandar los datos de login"); 
         });
-      }, newUser(userData));
+      }, function(){newUser(userData)});
     } else {
       $backend.sendData(userData.token, $rootScope.user.user_id, userData.redSocial);
     }
@@ -95,6 +95,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     $location.hash("");
     $location.path(view); // path not hash
   };
+  
   /* NOTE Necesario porque el dropmenu no hace correctamente el binding:
    * Si sabe la direccion pero no manda a ella porque el binding se hace posterior
   */
@@ -108,6 +109,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
         break;
     }
   };
+
   $scope.logout = function () {
     $backend.logout().then(function() {
       $scope.changeView("/");
@@ -115,6 +117,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
       console.error("Error " + response.status + ": Fallo al intentar realizar un logout del usurio " + $rootScope.user.name);
     });
   };
+
   $scope.showPopup = function () {
     if (!$rootScope.isLogged) {
       $scope.popup = true;
@@ -124,6 +127,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
       $scope.changeView("user/213");
     }
   };
+
   $scope.hidePopup = function () {
     $scope.popup = false;
     $scope.shadow = false;
