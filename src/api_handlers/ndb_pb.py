@@ -200,7 +200,7 @@ pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
 encodeAES = lambda c, s: base64.b64encode(c.encrypt(pad(s)))
 
 # decodeAES: funcion anonima para cifrar las claves
-# Parámetros: c - cipher (objeto AES que contiene la sclave de cifrado)
+# Parámetros: c - cipher (objeto AES que contiene la clave de cifrado)
 #             e - mensaje a descifrar
 decodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
 
