@@ -138,7 +138,7 @@ class UserComponent(ndb.Model):
   height = ndb.StringProperty()
   width = ndb.StringProperty()
   listening = ndb.StringProperty()
-
+  version = ndb.StringProperty()
 
 class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
@@ -470,6 +470,8 @@ def modifyComponent(entity_key, name, data): #FUNCIONA
         comp.width = data["width"]
       if data.has_key("listening"):
         comp.listening += data["listening"]
+      if data.has_key("version"):
+        comp.listening = data["version"]
       
   user.put()
 
@@ -508,6 +510,7 @@ def getComponent(entity_key, name, all_info=False): # FUNCIONA
       general_comp["height"] = user_comp.height
       general_comp["width"] = user_comp.width
       general_comp["listening"] = user_comp.listening
+      general_comp["version"] = user_comp.version
     ans = json.dumps(general_comp)
   return ans
 
@@ -536,7 +539,8 @@ def getUserComponentList(user_id):
                     "height": comp.height,
                     "width": comp.width,
                     "listening": comp.listening,
-                    "user_rate": component_rate}
+                    "user_rate": component_rate,
+                    "version": comp.version}
     component_list.append(component_info)
   return component_list         
 
@@ -568,6 +572,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["listening"] = comp.listening
           general_comp["height"] = comp.height
           general_comp["width"] = comp.width
+          general_comp["version"] = comp.version
           if not rate == None: 
             general_comp["rate"] = rate.rating_value
           else:
@@ -611,6 +616,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["listening"] = comp.listening
             general_comp["height"] = comp.height
             general_comp["width"] = comp.width
+            general_comp["version"] = comp.version
             if not rate == None: 
               general_comp["rate"] = rate.rating_value
             else:

@@ -210,10 +210,11 @@ class ComponentHandler(SessionHandler):
         x_axis = self.request.get("x_axis", default_value="none")
         y_axis = self.request.get("y_axis", default_value="none")
         listening = self.request.get("listening", default_value="none")
+        version = self.request.get("version", default_value="none")
         if not cookie_value == None:
             # Checks whether the cookie belongs to an active user and the request has provided at least one param
             user_id = self.getUserInfo(cookie_value)
-            if not user_id == None and not rating == "none" or not x_axis == "none" or not y_axis == "none":
+            if not user_id == None and not rating == "none" or not x_axis == "none" or not y_axis == "none" or not version == "none":
                 data = {}
                 component_modified_success = False
                 rating_error = False
@@ -227,6 +228,8 @@ class ComponentHandler(SessionHandler):
                         data["y"] = float(y_axis)
                     if not listening == "none":
                         data["listening"] = listening
+                    if not version == "none":
+                        data["version"] = version
                 except ValueError:
                     response = \
                     {"error": "x_axis, y_axis and rating must have a numeric value"}

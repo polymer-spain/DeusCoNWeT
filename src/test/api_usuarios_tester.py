@@ -142,12 +142,13 @@ def main():
 		print "TEST 15: Obtener info de usuario 2, (cookie de sesión distinta al recurso solicitado)"
 		print "Status esperado: 200 (No deben aparecer los campos correspondientes al teléfono y email)"
 		request_uri = basepath + "/" + user_id2
+		params = urllib.urlencode({})
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
 		# TEST 16
 		print "TEST 16: Obtener info de usuario 2 (usuario activo solicita su propia información)"
 		print "Status esperado: 200"
-		params = urllib.urlencode({})
+		# params = urllib.urlencode({})
 		test_utils.make_request("GET", request_uri, params, 200, session2)
 
 		# Cambiamos el ámbito de campos de usuario a público
@@ -161,6 +162,7 @@ def main():
 		# TEST 18
 		print "TEST 18: Obtener lista de usuarios (proporcionando una cookie de sesion válida)"
 		print " Status esperado: 200 (el usuario 2 no debe mostrar los campos correspondientes al email y a teléfono)"
+		params = urllib.urlencode({})
 		test_utils.make_request("GET", basepath, params, 200, session1)
 
 		# POSTESTs: Cierre de sesión con Google+ en el sistema
