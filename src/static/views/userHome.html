@@ -71,8 +71,8 @@
           </div>
         </div>
         <div class="animate-show list" ng-show="!hidelist('modify')">
-          <div ng-repeat="element in listComponentAdded">
-            <span ng-click="setModifySelected(element)" class="deleteOption" ng-class="{modifySelected: isModifySelected(element)}" style="padding-left:10px">{{element}}</span>
+          <div horizontal layout center ng-repeat="element in listComponentAdded" class="deleteOption">
+            <span flex ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}" style="padding-left:10px">{{element}}</span>
           </div>
           <div ng-if="listComponentAdded.length == 0">
             <p style="padding-left:10px">No tiene componentes añadidos</p>

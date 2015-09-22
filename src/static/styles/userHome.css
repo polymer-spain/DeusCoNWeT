@@ -99,7 +99,7 @@ html {
 
 .deleteOption{
   height: 51px;
-  padding-left:10px;
+  /*padding-left:10px;*/
   padding-top:5px;
   padding-bottom:5px;
 }
@@ -119,7 +119,10 @@ html {
 }
 
 #modify .modifySelected {
-  background-color: green;
+  background-color: #1ac71a;
+  color: white;
+  padding-top: 10px;
+  height: 30px;
 }
 
 #delete .list > div > core-icon-button /deep/ core-icon {
