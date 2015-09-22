@@ -55,7 +55,6 @@ handlers:
   
 skip_files:
   - (.*/)node_modules
-  - ^(.*/)min$
   - ^(.*/)build$
   - (.*/)grunt(.*)
   - (.*/)?.*\.py[co]$
