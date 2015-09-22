@@ -188,7 +188,6 @@ class OauthLogoutHandler(SessionHandler):
         if not cookie_value == None:
             # We get the user_id to check if the user is logged in the system
             user_id = self.getUserInfo(cookie_value)
-            print user_id
             if not user_id == None:
                 # Logout
                 logout_status = self.logout(cookie_value)
@@ -229,7 +228,6 @@ class OauthCredentialsHandler(SessionHandler):
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
                 if not user_credentials == None:
-                    print "DEBUG: user_credenttials: ", user_credentials
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],

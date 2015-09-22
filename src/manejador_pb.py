@@ -70,5 +70,5 @@ app = webapp2.WSGIApplication([
 
     (r'/api/subscriptions', api_contacto.SubscriptionHandler),
 
-    ], debug=True)
+    ], debug=False)
 
