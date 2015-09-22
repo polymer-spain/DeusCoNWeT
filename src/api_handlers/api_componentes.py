@@ -28,7 +28,7 @@ from api_oauth import SessionHandler
 
 import cliente_gitHub
 
-social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "google", "github"]
+social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github"]
 
 class ComponentListHandler(SessionHandler):
 

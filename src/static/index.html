@@ -26,9 +26,9 @@
   <body unresolved ng-app="picbit" ng-controller="MainController">
 
     <core-toolbar ng-class="{small: scrolled}">
-      <img class="logo" src="images/logo.png" ng-click="isLogged ? changeView('/user/{{user.id}}') :changeView('/')">
+      <img class="logo" src="images/logo.png" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">
       <div horizontal layout flex>
-        <h2 id="name" ng-click="isLogged ? changeView('/user/{{user.id}}') :changeView('/')">Picbit</h2>
+        <h2 id="name" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">Picbit</h2>
       </div>
 
       <!-- Languages --> 
@@ -79,7 +79,7 @@
       <span>{{language.select_network}}</span>
       <div vertical center-justified layout class="button-login">
         <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-        <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static="true"></twitter-login>
+        <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static></twitter-login>
         <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static="true"></login-facebook>
 
       </div>
