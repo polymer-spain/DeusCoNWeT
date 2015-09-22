@@ -24,6 +24,11 @@ html {
   margin: auto;
 }
 
+.hidden{
+  background: yellow;
+
+}
+
 #listOption {
   position:fixed;
   right: 0;
@@ -33,26 +38,22 @@ html {
   /*padding-left: 0px;*/
 }
 
-#listOption.sort{
-  height: 75px;
+#listOption > div.hidden {
+  width: 25px;
+  padding: 0px 15px 0px;
+  background-color: rgba(0,0,0,0.4);
 }
 
 #listOption > div {
   border: 1px solid rgba(255,255,255,0.3);
   background-color:#444;
   color:white;
-  padding: 0px 15px;
   transition: 0.3s linear all;
   width: 200px;
 }
 
-.list > div :hover {
-  background-color: whitesmoke;
-  color:black;
-}
-
-.list div > core-icon {
-  width: 15px;
+.corto{
+  padding: 0px 15px 0px;
 }
 
 #listOption > div:hover {
@@ -61,29 +62,46 @@ html {
 
 #listOption > div#menuArrow {
   background-color: #B71C1C;
-  padding-top:15px;
-  padding-bottom:15px;
-}
-
-#listOption > div.hidden {
-  width: 25px;
-  background-color: rgba(0,0,0,0.4);
+  padding:15px;
+  max-height: 54px;
+  max-width: 170px;
 }
 
 .list {
   border-top-color: whitesmoke;
-  background: grey;
+  background: #d0d0d0;
   width:inherit;
+  color:black;
   padding: 0px;
-  margin-bottom: 15px;
+  /*margin-bottom: 15px;*/
   padding-left: 0px;
   max-height: 200px;
   overflow: auto;
   transition: all 0.3s ease-out;
 }
 
+.list :hover {
+  background-color: #8b8b8b;
+  color:white;
+}
+
+.list div > core-icon {
+  width: 15px;
+}
+
 .list.ng-hide {
   max-height:0;
+}
+
+.icon :hover{
+  color: white;
+}
+
+.deleteOption{
+  height: 51px;
+  padding-left:10px;
+  padding-top:5px;
+  padding-bottom:5px;
 }
 
 #add div.list {
@@ -168,4 +186,8 @@ html {
 }
 #help {
   padding: 35px 15px !important;
+}
+
+#help.hidden{
+  width: 400px;
 }
