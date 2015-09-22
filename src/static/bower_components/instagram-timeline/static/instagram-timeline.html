@@ -1,0 +1,346 @@
+<!--
+@license
+Copyright (c) 2015 Juan Francisco Salamanca Carmona
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../core-ajax/core-ajax.html">
+<link rel="import" href="../../core-icon/core-icon.html">
+<link rel="import" href="../../core-icons/core-icons.html">
+<link rel="import" href="../../core-icon-button/core-icon-button.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+<polymer-element name="instagram-timeline" attributes="endpoint accessToken language">
+  <template>
+    <link rel="stylesheet" href="instagram-timeline.css">
+    <core-ajax
+               id="request"
+               url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "access_token":"{{accessToken}}"
+                       }'
+               handleAs='json'
+               on-core-response="{{response}}"
+               >
+    </core-ajax>
+
+    <core-ajax
+               id="load_more"
+               url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "access_token":"{{accessToken}}",
+                       "count":"{{count}}",
+                       "max_id":"{{max_id}}"
+                       }'
+               handleAs='json'
+               on-core-response="{{response_load}}"
+               >
+    </core-ajax>
+
+    <core-ajax
+               id="refresco"
+               url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "access_token":"{{accessToken}}",
+                       "min_id":"{{min_id}}"
+                       }'
+               handleAs='json'
+               on-core-response="{{response_refresco}}"
+               >
+    </core-ajax>
+
+    <core-ajax
+               id="requestLanguage"
+               url='bower_components/instagram-timeline/static/language/{{idioma}}'
+               method="GET"
+               handleAs='json'
+               on-core-response="{{language_response}}"
+               >
+    </core-ajax>
+
+    <!--<core-ajax
+id="me_gusta"
+url="{{endpoint}}"
+method="GET"
+params='{
+"media_id":"{{media_id}}"
+}'
+handleAs='json'
+on-core-response="{{response_megusta}}"
+>
+</core-ajax>-->
+
+    <!--Header-->
+    <paper-shadow>
+      <div id ="header" horizontal center-justified layout>
+        <p flex style="text-align:center">Instagram</p>
+        <core-icon-button id="refresh_button" icon="refresh" title="{{language_data.refresh}}" on-click={{refresh_func}}></core-icon-button>
+      </div>
+    </paper-shadow>
+
+    <!-- Body -->
+    <div id="outline">
+      <template id="content" is="auto-binding" repeat="{{event,index in events}}">
+        <paper-shadow z=1 style="margin: 2%;border-radius: 5px">
+          <ul id="box">
+            <img id="profile_picture" src="{{event.user.profile_picture}}">
+            <a id="profile_name"
+               href="https://instagram.com/{{event.user.username}}/" target='_blank'>
+              <p>{{event.user.username}}</p>
+            </a>
+            <span id="hour">{{event.time}}</span>
+            <template if="{{event.type == 'image'}}">
+              <a href="{{event.link}}" target="_blank"><img id="imagen" src="{{event.images.standard_resolution.url}}"></a>
+            </template>
+            <template if="{{event.type == 'video'}}">
+              <a href="{{event.link}}" target="_blank">
+                <video id="video" controls muted>
+                  <source src="{{event.videos.standard_resolution.url}}">
+                  {{language_data.video}}
+                </video>
+              </a>
+            </template>
+            <div style="margin-left: 6px; margin-right: 0px">
+              <core-icon-button id="liked" icon="favorite" style="{{event.user_has_liked ? 'color:rgba(255,0,0,0.7)' : 'color:grey'}}"></core-icon-button>
+              <span id="liked_count">{{event.likes.count}}{{language_data.like}}</span>
+            </div>
+            <div id="description" hidden?="{{event.caption == null}}">
+              <span><a href="https://instagram.com/{{event.user.username}}/" target='_blank'>{{event.user.username}}</a></span>
+              <span id="texto{{index}}" onload="{{inject(event,index)}}"></span>
+            </div>
+          </ul>
+        </paper-shadow>
+      </template>
+      <template if="{{events != null}}">
+        <div on-click="{{load}}" style="text-align: center; margin-top: -12px">
+          <paper-button id="button">
+            {{language_data.load_more}}
+          </paper-button>
+        </div>
+      </template>
+    </div>
+    <div id="end"></div>
+
+
+
+  </template>
+  <script>
+    Polymer({
+      /*"Count" is the number of elements to load*/
+      count: 10,
+      media_id: '',
+      language: 'es',
+
+      ready: function(event, detail, sender){
+        if(this.accessToken && this.endpoint != ""){
+          if(this.language == 'es'){
+            this.idioma = 'es_es.json'
+          }else if(this.language == 'en'){
+            this.idioma = 'en_en.json'
+          }
+          console.log(this.accessToken)
+          console.log(this.language)
+          console.log(this.idioma)
+          this.$.requestLanguage.go();
+        }
+      },
+
+      domReady: function(event, detail,sender){
+        if(this.accessToken && this.events == null && this.endpoint != ""){
+          if(this.language == 'es'){
+            this.idioma = 'es_es.json'
+          }else if(this.language == 'en'){
+            this.idioma = 'en_en.json'
+          }
+          console.log(this.accessToken)
+          console.log(this.language)
+          console.log(this.idioma)
+          this.$.requestLanguage.go();
+        }
+      },
+
+      attributeChanged: function(attrName, oldVal, newVal) {
+        if(newVal === "en" && attrName == "language"){
+          this.language = "en";
+          this.idioma = "en_en.json"
+          this.$.requestLanguage.go();
+        }
+        else if(newVal === "es" && attrName == "language"){
+          this.language = "es";
+          this.idioma = "es_es.json"
+          this.$.requestLanguage.go();
+        }
+      },
+
+      response: function(event, detail, sender) {
+        this.dates = (detail.response)
+        this.min_id = this.dates.data[0].id
+        this.events  = this.changeTime(detail.response.data)
+        this.events = this.parser(this.events)
+        var t = this.$.content;
+        t.events =  this.events
+      },
+
+      language_response: function(event, detail,sender){
+        this.language_data = sender.response;
+        if(!this.events){
+          this.$.request.go()
+        }
+        else{
+          this.events  = this.changeTime(this.events)
+          this.events = this.parsear(this.events)
+          var t = this.$.contenido;
+          t.events =  this.events
+        }
+        /*console.log(this.language_data)*/
+      },
+
+      refresh_func: function(){
+        this.$.refresco.go()
+      },
+
+      response_refresco: function(event, detail, sender){
+        if(sender.response.data.length > 0){
+          this.min_id = sender.response.data[0].id
+          var tweets = new Array()
+          for(i = 0; i<sender.response.data.length;i++){
+            tweets[i] = sender.response.data[i];
+          }
+          for(i = sender.response.data.length-1; i>-1;i--){
+            this.events.unshift(tweets[i]);
+          }
+        }
+        this.events  = this.changeTime(this.events)
+        this.events = this.parser(this.events)
+        var t = this.$.content
+        t.events = this.events
+      },
+
+      /*      meGusta: function(event, detail, sender){
+        identificador = event.target.getAttribute("data-index")
+        media_id = this.events[identificador].id
+        this.$.me_gusta.go()
+      },
+
+      response_megusta: function(event, detail, sender){
+        console.log(sender.response)
+      },*/
+
+      load: function(){
+        this.max_id = this.dates.pagination.next_max_id
+        this.$.load_more.go()
+      },
+
+      response_load: function(event, detail, sender){
+        this.dates = sender.response
+        var tweets = new Array();
+        for(i = 0; i<sender.response.data.length;i++){
+          tweets[i] = sender.response.data[i];
+        }
+        tweets = this.changeTime(tweets)
+        tweets = this.parser(tweets)
+
+        size = this.events.length
+        for(i = 0; i<tweets.length;i++){
+          this.events[size+i] = tweets[i]
+        }
+        var t = this.$.content
+        t.events = this.events
+      },
+
+      inject: function(event,index){
+        if(index!=undefined){
+          if(event.caption)
+            this.injectBoundHTML(event.caption.text, this.$.content.parentNode.children[1+index].children[0].children[7].children[1])
+            }
+      },
+
+      changeTime: function(list){
+        for (i=0;i<list.length;i++){
+          list[i].time = list[i].created_time*1000
+          var date = list[i].time;
+          var current_date = new Date();
+          current_date = current_date.getTime();
+
+          calculate_date = (current_date-date)/(1000)
+
+          if( Math.floor(calculate_date/3600) == 0){
+            if ( Math.floor(calculate_date/60) == 0){
+              if (Math.floor(calculate_date) == 1){
+                list[i].time = Math.floor(calculate_date)+" "+this.language_data.second
+              }
+              else{
+                list[i].time = Math.floor(calculate_date)+" "+this.language_data.seconds
+              }
+            }
+            else{
+              if ( Math.floor(calculate_date/60) == 1 ){
+                list[i].time = Math.floor(calculate_date/60)+" "+this.language_data.minute
+              }
+              else{
+                list[i].time = Math.floor(calculate_date/60)+" "+this.language_data.minutes
+              }
+            }
+          }
+          else{
+            if( Math.floor(calculate_date/3600) == 1 ){
+              list[i].time = Math.floor(calculate_date/3600)+" "+this.language_data.hour
+            }
+            else if(calculate_date/3600 < 24){
+              list[i].time = Math.floor(calculate_date/3600)+" "+this.language_data.hours
+            }
+            else{
+              list[i].time = Math.floor(calculate_date/86400)+" "+this.language_data.days
+            }
+          }
+        }
+        return list;
+      },
+
+      parser: function(lista){
+        for(i = 0; i < lista.length; i++){
+          if(lista[i].caption){
+            lista[i].caption.text = this.parseURL(lista[i].caption.text);
+            lista[i].caption.text = this.parseUsername(lista[i].caption.text);
+            lista[i].caption.text = this.parseHashtag(lista[i].caption.text);
+          }
+        }
+        return lista;
+      },
+
+      /*URL parser*/
+      parseURL: function(tweet) {
+        return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+          return '<a href='+url+' target="_blank">'+url+'</a>'
+        })
+      },
+
+      /*Usernames parser*/
+      parseUsername: function(tweet) {
+        return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
+          var username = u.replace("@","")
+          return '<a href="https://instagram.com/'+username+' "target="_blank">@'+username+'</a>'
+        })
+      },
+
+      /*Hashtag parser*/
+      parseHashtag: function(tweet) {
+        return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
+          var tag = t.replace("#","")
+          return '<a href="https://instagram.com/explore/tags/'+tag+' "target="_blank">#'+tag+'</a>'
+        });
+      }
+    });
+
+  </script>
+</polymer-element>

@@ -1,0 +1,252 @@
+@font-face {
+   font-family: archistico;
+    src: url('../fonts/ArchisticoBold.ttf');
+}
+* {
+  font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
+
+}
+body,html {
+  margin:0;
+  color:rgba(255, 255, 255, 0.85);
+  font-family: "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
+  background-attachment: fixed;
+  min-width: 1024px;
+  height: 100%;
+}
+
+.view {
+  height: 85%;
+  margin: 0 150px;
+  padding-top: 100px;
+}
+
+core-toolbar {
+  position: fixed;
+  width: 100%;
+  top:0;
+  background-color: rgba(0,0,0,0.5);
+  padding: 15px 150px;
+  height: 100px;
+  min-width: 600px;
+  color:whitesmoke;
+  z-index: 10;
+}
+
+@media (max-width: 1200px) {
+
+  core-toolbar {
+    padding: 15px 30px;
+  }
+}
+
+.signin:hover {
+  background-color: #B71C1C;
+  border-radius: 8px;
+}
+.logo {
+  height: 50px;
+  cursor: pointer;
+}
+h2 {
+  font-size: 120%;
+}
+paper-button {
+  font-size: 70%;
+}
+.search{
+  border-radius: 100%;
+  width:38px;
+  height:38px;
+  background-color: #B71C1C;
+}
+.popup {
+  position:fixed;
+  top:0;
+  left:0;
+  border-radius: 3px;
+  right:0;
+  bottom:0;
+  padding:30px;
+  padding-top:0;
+  margin: auto;
+  color:brown;
+  background-color:whitesmoke;
+  height: 250px;
+  width: 300px;
+  z-index: 200;
+  text-align: center;
+}
+#popup > core-icon-button {
+  position:absolute;
+  right:0;
+}
+
+#popup > span {
+  margin: 7% 10% 10% 10%;
+  font-size:1.4em;
+}
+.shadow {
+  position:fixed;
+  top:0;
+  right:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+}
+.button-login twitter-login,
+.button-login login-facebook {
+  margin-top: 10px;
+}
+#name {
+  font-size: 60px;
+  font-family: archistico;
+  color:#cbc7c7;
+}
+#name:hover{
+  cursor: pointer;
+}
+
+core-dropdown {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  border-radius: 5px 5px 5px 5px;
+  background: blue;
+  background-color: #eee;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 8px;
+}
+paper-button > a {
+  text-decoration: inherit;
+  color: inherit
+}
+paper-button > a:visited {
+  color:inherit;
+
+}
+.with-margin {
+  margin: 12px;
+}
+
+.open-below {
+  top: 38px;
+  color: black;
+  margin:0 20px;
+}
+
+.profile_button{
+  text-transform: capitalize;
+  font-size: 75%;
+  margin: 0px;
+  padding: 0px;
+  width: 130px;
+}
+
+.lenguage-button{
+  padding-left: 25px;
+  padding-right: 20px;
+}
+
+.core-item{
+  margin:0px;
+  padding:0px;
+}
+
+footer {
+  position:fixed;
+  bottom:0;
+  padding:7px;
+  width:100%;
+  background-color:rgba(0,0,0,0.5);
+
+  z-index: 10;
+}
+
+core-dropdown-menu {
+  background-color: inherit;
+  font-size: 16px;
+  min-width: 100px;
+  cursor: pointer;
+  outline:none;
+  margin-right:40px;
+}
+
+core-dropdown core-menu {
+  margin:0;
+}
+core-dropdown core-menu core-item {
+  padding: 3px 5px;
+}
+core-dropdown-menu /deep/ core-dropdown /deep/ core-item:hover {
+  background-color: #bbb;
+}
+core-dropdown.lang-menu {
+  top: 29px;
+  padding: 0;
+  box-sizing: border-box;
+  background: rgb(255,255,255); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(219,219,219,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(219,219,219,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(219,219,219,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(219,219,219,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(219,219,219,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(219,219,219,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dbdbdb',GradientType=0 ); /* IE6-9 */
+  color: #000;
+  border-radius: 3px;
+  min-width: 95px;
+}
+
+/*core-dropdown-menu /deep/ core-item {
+padding:10px 4px;
+}*/
+select.language:after {
+  fill:none;
+  border: none;
+
+}
+select.language {
+  font-size: 16px;
+  font-family: inherit;
+  border: none;
+  background-color:transparent;
+  color:inherit;
+  outline: none;
+  cursor: pointer;
+}
+select.language > option {
+  color:black;
+  font-weight: bold;
+  background-color:transparent;
+}
+
+#user_options {
+  text-align: center;
+  padding: 3px 8px;
+  border-radius: 15px;
+  min-width: 125px;
+  padding-left: 25px;
+  padding-right: 12px;
+  vertical-align:"middle";
+}
+#user_options:hover {
+  background-color: #B71C1C;
+  cursor: pointer;
+}
+#dropmenu {
+  margin-left:10px;
+  width: 143px;
+}
+#dropmenu /deep/ core-dropdown /deep/ core-item {
+  background-color: #eee;
+}
+#dropmenu core-item[active] {
+  font-weight: normal;
+}
+
+#siginButton > span {
+  padding-left: 3px;vertical-align:middle
+}

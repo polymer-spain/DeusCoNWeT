@@ -1,0 +1,39 @@
+{
+  "name": "ng-polymer-elements",
+  "version": "0.3.0",
+  "authors": [
+    "Gabriel Axel <guznik@gmail.com>"
+  ],
+  "description": "Extendible AngularJS two-way binding support for Polymer core and paper elements",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "polymer",
+    "paper",
+    "web components"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.4.0",
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {},
+  "homepage": "https://github.com/GabiAxel/ng-polymer-elements",
+  "_release": "0.3.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.0",
+    "commit": "dad9eac6d4d9d6ae75087c32913bfe690f3213b1"
+  },
+  "_source": "git://github.com/GabiAxel/ng-polymer-elements.git",
+  "_target": "~0.3.0",
+  "_originalSource": "ng-polymer-elements",
+  "_direct": true
+}

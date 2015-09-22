@@ -1,0 +1,127 @@
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+<linkedin-login></linkedin-login>
+
+@element linkedin-login
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://polymerlabs.github.io/linkedin-login
+-->
+<polymer-element name="linkedin-login" attributes="apiKey sort">
+  <template>
+    <link rel="stylesheet" href="linkedin-login.css">
+
+    <paper-button class="LinkedinButton" title="Linkedin" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
+      <core-icon src='linkedin_white_silhouet.png' class="icono"></core-icon>
+      Log in with Linkedin
+    </paper-button>
+
+    <paper-button class="LinkedinButton desconectar" title="Linkedin" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+      <core-icon src='linkedin_white_silhouet.png' class="icono"></core-icon>
+      Log out from Linkedin
+    </paper-button>
+
+    <paper-button class="LinkedinButton2" title="Linkedin" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
+      <core-icon src='linkedin_white_silhouet.png' class="icono2"></core-icon>
+    </paper-button>
+
+    <paper-button class="LinkedinButton2 desconectar" title="Linkedin" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
+      <core-icon src='linkedin_white_silhouet.png' class="icono2"></core-icon>
+    </paper-button>
+
+    <content></content>
+  </template>
+
+  <script type="text/javascript">
+    // Setup an event listener to make an API call once auth is complete
+    function onLinkedInLoad(){
+      IN.Event.on(IN, "customLogin", getProfileData);
+
+      //            var estado=IN.User.isAuthorized();
+      //            var scope=document.querySelector("linkedin-login");
+      //                if(estado){
+      //                   scope.logged=true;
+      //                  console.log(IN.User.isAuthorized());
+      //
+      //                }else{
+      //                  scope.logged=false;
+      //
+      //                }
+
+    }
+
+    // Handle the successful return from the API call
+    function onSuccess(data){
+      var url = data.siteStandardProfileRequest.url;
+      var patron = "authToken"+"=([^&#]*)";
+      var exp = new RegExp(patron);
+      var acToken = exp.exec(url)[1];
+      document.querySelector('linkedin-login').fire('linkedin-logged',{token:acToken,redSocial:'linkedin',userId:data.id});
+
+    }
+
+    //Handle an error response from the API call
+    function onError(error){
+      IN.User.authorize(getProfileData);
+    }
+
+    // Use the API call wrapper to request the member's basic profile data
+    function getProfileData(){
+      IN.API.Raw("/people/~").result(onSuccess).error(onError);
+    }
+  </script>
+
+  <script>
+    Polymer({
+
+      apiKey: '',
+      logged:false,
+      sort: false,
+
+      estado:'',//Se obtiene de la Base de Datos
+      ready: function() {
+        // Ready is a lifecycle callback.
+        // You can do setup work in here.
+        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
+        var script = document.createElement('script');
+        var back = this;
+        script.type ='text/javascript';
+        script.src = 'https://platform.linkedin.com/in.js'
+        script.text = ' api_key:' + this.apiKey + '\nonLoad:    onLinkedInLoad\n   authorize: true\n  lang:      es_ES'
+        script.id = "scriptlinkedin"
+        document.body.appendChild(script);
+        document.addEventListener("customLogin", function(){
+          IN.API.Raw("/people/~").result(onSuccess).error(onError);
+        })
+      },
+
+      login: function(){
+        var back = this;
+        var authevent = new CustomEvent("customLogin", {});
+        document.dispatchEvent(authevent);
+        back.logged=true;
+      },
+
+      logout: function(){
+        var back = this;
+        back.logged=false;
+      },
+    });
+
+  </script>
+</polymer-element>

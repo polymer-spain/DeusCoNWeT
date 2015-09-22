@@ -1,0 +1,127 @@
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../core-icon/core-icon.html">
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+<twitter-login></twitter-login>
+
+@element twitter-login
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://polymerlabs.github.io/twitter-login
+-->
+<polymer-element name="twitter-login" attributes="endpoint logged sort static">
+
+  <template>
+
+    <link rel="stylesheet" href="twitter-login.css">
+    <core-ajax
+               id="requestToken"
+               url="{{endpoint}}/request_token"
+               method="GET"
+               handleAs="json"
+               on-core-response="{{authentication}}"
+               >
+    </core-ajax>
+
+    <!--Large Buttons-->
+
+    <paper-button class="TwitterButton" title="Twitter" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
+      <core-icon src='twitter_logo.png' class="icono" ></core-icon>
+      Log in with Twitter
+    </paper-button>
+    <content></content>
+
+    <paper-button class="TwitterButton desconectar" title="Twitter" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+      <core-icon src='twitter_logo.png' class="icono"  ></core-icon>
+      Log out from Twitter
+    </paper-button>
+    <content></content>
+
+    <!--Small Buttons-->
+
+    <paper-button class="TwitterButton2" title="Twitter" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
+      <core-icon src='twitter_logo.png' class="icono2" ></core-icon>
+    </paper-button>
+    <content></content>
+
+    <paper-button class="TwitterButton2 desconectar" title="Twitter" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
+      <core-icon src='twitter_logo.png' class="icono2"></core-icon>
+    </paper-button>
+    <content></content>
+  </template>
+
+  <script>
+    Polymer({
+      endpoint:'',
+      /* Hay que comprobar si hay datos del
+        usuario en la base de datos para saber
+        si esta logueado o no */
+      logged: false,
+      sort: false,
+      static: false,
+      /**
+         * The `sayHello` method will return a greeting.
+         *
+         * @method sayHello
+         * @param {String} greeting Pass in a specific greeting.
+         * @return {String} Returns a string greeting.
+         */
+      login: function(event, detail, sender) {
+        this.$.requestToken.go();
+      },
+
+      /**
+         * The `sayHello` method will return a greeting.
+         *
+         * @method sayHello
+         * @param {String} greeting Pass in a specific greeting.
+         * @return {String} Returns a string greeting.
+         */
+      authentication: function(event, detail, sender) {
+        var oauth_url = detail.response.oauth_url;
+        var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
+        var back = this;
+        var pollTimer  =  window.setInterval(function() {
+          try {
+            if(win.document.URL.indexOf('example-project-13') != -1){
+              var url, verifier_patron, exp, token_patron;
+              url =   win.document.URL;
+              verifier_patron = "oauth_verifier"+"=([^&#]*)";
+              token_patron = "oauth_token" + "=([^&#]*)";
+              exp = new RegExp(verifier_patron);
+              back.oauth_verifier = exp.exec(url)[1];
+              exp = new RegExp(token_patron);
+              back.oauth_token = exp.exec(url)[1];
+              back.fire('twitter-logged',{oauth_verifier:back.oauth_verifier, redSocial:'twitter',token:back.oauth_token});
+              window.clearInterval(pollTimer);
+              if (!back.static){back.logged = true};
+              win.close();
+            }
+          } catch(e) {
+          }
+        }, 100);
+      },
+
+      /* Borrar todo relacionado en base de datos */
+      logout: function(event, detail, sender){
+        /* Borrar datos de la base de datos */
+        var back = this;
+        back.logged = false
+      }
+    });
+  </script>
+</polymer-element>

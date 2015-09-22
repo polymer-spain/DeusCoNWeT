@@ -1,0 +1,64 @@
+/*
+* @license
+* Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+* This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+* The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+* The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+* Code distributed by Google as part of the polymer project is also
+* subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+*/
+
+:host {
+  display: block;
+}
+
+/* To ensure your styling works under the Shadow DOM polyfill, see
+www.polymer-project.org/docs/polymer/styling.html#directives */
+polyfill-next-selector { content: ':host > h2'; }
+::content h2 {
+  color: blue;
+}
+
+.LinkedinButton{
+  background: #007bb6;
+  color: #fff;
+  border-radius: 3px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-transform: none;
+  width: 205px;
+  height: 50px;
+  font-size: 16px;
+}
+
+.LinkedinButton2{
+  background: #007bb6;
+  border-radius: 3px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-transform: none;
+  height: 46px;
+  width: 82px;
+}
+
+.desconectar{
+  background: grey;
+}
+
+.icono{
+  margin-top: 2px;
+}
+
+.icono /deep/ div {
+  margin-left: -6px;
+  margin-top: -3px;
+  width: 24px;
+  height: 24px;
+  background-repeat:no-repeat;
+}
+
+.icono2 /deep/ div {
+  background-repeat:no-repeat;
+}
