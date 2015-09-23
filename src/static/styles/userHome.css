@@ -17,52 +17,43 @@ html {
   height: 100%;
 }
 .div_button{
-  padding-top:35px;
-  padding-bottom:35px;
-  padding-right: 5px;
+  padding: 35px 0px !important;
 }
 
 .dropdown{
-  padding-top: 37px;
+  margin: auto;
 }
 
-.sort{
-  transition: all 0.4s ease;
-  padding-bottom: 0px;
+.hidden{
+  background: yellow;
+
 }
 
 #listOption {
   position:fixed;
-  top:100px;
   right: 0;
   vertical-align: middle;
   /*width: 250px;*/
-  width: 57px;
+  /*width: 57px;*/
+  /*padding-left: 0px;*/
+}
+
+#listOption > div.hidden {
+  width: 25px;
+  padding: 0px 15px 0px;
+  background-color: rgba(0,0,0,0.4);
 }
 
 #listOption > div {
   border: 1px solid rgba(255,255,255,0.3);
   background-color:#444;
   color:white;
-  padding: 0px 15px;
   transition: 0.3s linear all;
   width: 200px;
 }
 
-.list > div :hover {
-  background-color: whitesmoke;
-  color:black;
-}
-
-.list div > p {
-  height: 40px;
-  margin:0;
-  padding: 15px 10px 0px 10px;
-  vertical-align: center;
-}
-
-.list div > core-icon {
-  width: 15px;
+.corto{
+  padding: 0px 15px 0px;
 }
 
 #listOption > div:hover {
@@ -71,37 +62,59 @@ html {
 
 #listOption > div#menuArrow {
   background-color: #B71C1C;
-  padding-top:15px;
-  padding-bottom:15px;
+  padding:15px;
+  max-height: 54px;
+  max-width: 170px;
 }
 
-#listOption > div.hidden {
-  width: 25px;
-  background-color: rgba(0,0,0,0.4);
-}
-
-#listOption > div.dropdown {
-  padding-top: 10px;
-  padding-bottom: 0px;
-}
 .list {
   border-top-color: whitesmoke;
+  background: #d0d0d0;
+  width:inherit;
+  color:black;
+  padding: 0px;
+  /*margin-bottom: 15px;*/
+  padding-left: 0px;
   max-height: 200px;
   overflow: auto;
   transition: all 0.3s ease-out;
+}
+
+.list :hover {
+  background-color: #8b8b8b;
+  color:white;
+}
+
+.list .modifySelected{
+  background-color:#00a000;
+  color: white;
+}
+
+.list .modifySelected :hover{
+  background-color: #00a000;
+}
+
+.list div > core-icon {
+  width: 15px;
 }
 
 .list.ng-hide {
   max-height:0;
 }
 
+.icon :hover{
+  color: white;
+}
+
+.deleteOption{
+  height: 51px;
+  /*padding-left:10px;*/
+  padding-top:5px;
+  padding-bottom:5px;
+}
+
 #add div.list {
   cursor:copy;
-}
-.list.ng-hide-add.ng-hide-add-active,
-.list.ng-hide-remove.ng-hide-remove-active {
-  -webkit-transition: all linear 0.2s;
-  transition: all linear 0.2s;
 }
 
 .list::-webkit-scrollbar {
@@ -114,9 +127,12 @@ html {
   -webkit-border-radius: 2px;
 }
 
-#modify .modifySelected {
-  background-color: green;
-}
+/*#modify .modifySelected {
+background-color: rgb(8, 95, 8);
+color: white;
+padding-top: 10px;
+height: 30px;
+}*/
 
 #delete .list > div > core-icon-button /deep/ core-icon {
   width: 20px;
@@ -182,4 +198,8 @@ html {
 }
 #help {
   padding: 35px 15px !important;
+}
+
+#help.hidden{
+  width: 400px;
 }

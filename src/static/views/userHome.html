@@ -5,25 +5,27 @@
   <div horizontal around-justified layout>
 
     <div vertical layout end id="listOption">
-      <div id="menuArrow" ng-click="showMenu(); sort=false" ng-class="{hidden: isMenuHidden()}">
+      <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
         <core-icon id="menu-icon" icon="arrow-back"></core-icon>
       </div>
 
       <!-- Añadir un elemento -->
       <div id="add" ng-class="{hidden: isMenuHidden('add')}">
-        <div horizontal layout>
+        <div horizontal layout ng-class="{corto: !isMenuHidden('add')}">
           <div class="div_button" ng-click="ocultar('add'); setSelected('add'); sort=[false, false, false]" ng-class="{sort: sort[0]}">
             <core-icon icon="add-box"></core-icon>
           </div>
-          <div flex horizontal layout ng-click="setList('add'); setSort('add')" class="dropdown" ng-class="{sort: sort[0]}">
-            <span  flex ng-show="showElement?true:showSingle=='add'">{{language.user_action.add}}</span>
-            <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" icon="arrow-drop-down">
+          <div flex horizontal layout ng-click="setList('add'); setSort('add')" ng-class="{sort: sort[0]}">
+            <p flex ng-show="showElement?true:showSingle=='add'" class="dropdown" style="padding-left:10px"> {{language.user_action.add}}</p>
+            <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" class="dropdown" icon="arrow-drop-down">
             </core-icon>
           </div>
         </div>
         <div class="animate-show list" ng-show="!hidelist('add')">
-          <div ng-repeat="element in listComponents | arrayFilter:listComponentAdded">
-            <p ng-create-element id-element="{{element.name}}" list-attributes="{{element.attributes}}">{{element.name}}</p>
+          <div sale ng-repeat="element in listComponents | arrayFilter:listComponentAdded">
+            <ul style="padding-left:10px;padding-top:5px;padding-bottom:5px;margin-top:0px;margin-bottom:0px;">
+              <p ng-create-element id-element="{{element.name}}" list-attributes="{{element.attributes}}">{{element.name}}</p>
+            </ul>
           </div>
           <div ng-if="listComponents.length == 0">
             <p>No tenemos más componentes</p>
@@ -33,53 +35,53 @@
 
       <!-- Borrar un elemento -->
       <div id="delete" ng-class="{hidden: isMenuHidden('delete')}">
-        <div horizontal layout>
+        <div horizontal layout ng-class="{corto: !isMenuHidden('delete')}">
           <div class="div_button" ng-click="ocultar('delete'); setSelected('delete'); sort=[false, false, false]" ng-class="{sort: sort[1]}">
             <core-icon icon="delete"></core-icon>
           </div>
           <div flex horizontal layout ng-click="setList('delete'); setSort('delete')" class="dropdown" ng-class="{sort: sort[1]}">
-            <span flex ng-show="showElement?true:showSingle=='delete'"> {{language.user_action.delete}}</span>
-            <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" icon="arrow-drop-down">
+            <p flex ng-show="showElement?true:showSingle=='delete'" class="dropdown" style="padding-left:10px"> {{language.user_action.delete}}</p>
+            <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" class="dropdown" icon="arrow-drop-down">
             </core-icon>
           </div>
         </div>
         <div class="animate-show list" ng-show="!hidelist('delete')">
-          <div horizontal layout center draggable="true" ng-repeat="element in listComponentAdded" ng-mouseover="deleteTimelineHovered($index)" ng-mouseleave="deleteTimelineLeaveHover()">
-            <p flex >{{element}}</p>
-            <core-icon-button ng-click="deleteTimeline(element)" ng-show="hovered===$index" icon="cancel" ></core-icon-button>
+          <div horizontal layout center draggable="true" ng-repeat="element in listComponentAdded" ng-mouseover="deleteTimelineHovered($index)" ng-mouseleave="deleteTimelineLeaveHover()" class="deleteOption">
+            <span flex style="padding-left: 10px" >{{element}}</span>
+            <core-icon-button class="icon" ng-click="deleteTimeline(element)" ng-show="hovered===$index" icon="cancel"></core-icon-button>
           </div>
           <div ng-if="listComponentAdded.length == 0">
-            <p>No tiene componentes añadidos</p>
+            <p style="padding-left:10px">No tiene componentes añadidos</p>
           </div>
         </div>
       </div>
 
       <!-- modifica un elemento -->
       <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
-        <div horizontal layout>
+        <div horizontal layout ng-class="{corto: !isMenuHidden('modify')}">
           <div class="div_button" ng-click="ocultar('modify'); setSelected('modify'); sort=[false, false, false]" ng-class="{sort: sort[2]}">
             <core-icon  icon="create"></core-icon>
           </div>
           <div flex horizontal layout ng-click="setList('modify'); setSort('modify')" class="dropdown" ng-class="{sort: sort[2]}">
-            <span flex ng-show="showElement?true:showSingle=='modify'"> {{language.user_action.modify}}</span>
-            <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" icon="arrow-drop-down">
+            <p flex ng-show="showElement?true:showSingle=='modify'" class="dropdown" style="padding-left:10px">  {{language.user_action.modify}}</p>
+            <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" class="dropdown" icon="arrow-drop-down">
             </core-icon>
           </div>
         </div>
-        <div class="animate-show list" ng-show="!hidelist('modify')">
-          <div ng-repeat="element in listComponentAdded">
-            <p  ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">{{element}}</p>
+        <div class="animate-show list" ng-show="!hidelist('modify')" >
+          <div horizontal layout center ng-repeat="element in listComponentAdded" class="deleteOption" ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">
+            <span flex style="padding-left:10px">{{element}}</span>
           </div>
           <div ng-if="listComponentAdded.length == 0">
-            <p>No tiene componentes añadidos</p>
+            <p style="padding-left:10px">No tiene componentes añadidos</p>
           </div>
         </div>
       </div>
 
       <!-- Opcion de ayuda -->
-      <div id="help" ng-class="{hidden: isMenuHidden('help')}" ng-click="showToggleHelp($event)">
+      <div id="help" ng-class="{hidden: isMenuHidden('help')}" ng-click="showToggleHelp($event)" style="max-width:170px">
         <core-icon icon="help"></core-icon>
-        <span ng-show="showElement">{{language.user_action.help}}</span>
+        <span ng-show="showElement" style="padding-left: 10px;">{{language.user_action.help}}</span>
       </div>
     </div>
   </div>
@@ -88,16 +90,18 @@
 <div ng-show="toggleHelp" class="shadow">
   <div ng-show="toggleHelp" class="helpModal">
     <div class="titleHelp" horizontal layout>
-     <p flex>Ayuda</p>
+      <p flex>Ayuda</p>
       <paper-icon-button center ng-click="hideToggleHelp($event)" icon="close"></paper-icon-button>
     </div>
     <div class="help-text" vertical center-justified layout>
       <p>
         <strong>{{language.user_action.add}}</strong><span>: {{language.help.add}}</span>
       </p>
-      <p><strong>{{language.user_action.delete}}</strong>: <span>{{language.help.delete}}</span>
+      <p>
+        <strong>{{language.user_action.delete}}</strong>: <span>{{language.help.delete}}</span>
       </p>
-      <p><strong>{{language.user_action.modify}}</strong>: <span>{{language.help.modify}}</span>
+      <p>
+        <strong>{{language.user_action.modify}}</strong>: <span>{{language.help.modify}}</span>
       </p>
     </div>
     <!--<paper-button ng-click="hideToggleHelp($event)">{{language.close}}</paper-button>-->
