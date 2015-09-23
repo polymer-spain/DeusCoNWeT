@@ -85,6 +85,15 @@ html {
   color:white;
 }
 
+.list .modifySelected{
+  background-color:#00a000;
+  color: white;
+}
+
+.list .modifySelected :hover{
+  background-color: #00a000;
+}
+
 .list div > core-icon {
   width: 15px;
 }
@@ -118,12 +127,12 @@ html {
   -webkit-border-radius: 2px;
 }
 
-#modify .modifySelected {
-  background-color: #1ac71a;
-  color: white;
-  padding-top: 10px;
-  height: 30px;
-}
+/*#modify .modifySelected {
+background-color: rgb(8, 95, 8);
+color: white;
+padding-top: 10px;
+height: 30px;
+}*/
 
 #delete .list > div > core-icon-button /deep/ core-icon {
   width: 20px;

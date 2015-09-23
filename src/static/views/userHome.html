@@ -49,7 +49,7 @@
         </div>
         <div class="animate-show list" ng-show="!hidelist('delete')">
           <div horizontal layout center draggable="true" ng-repeat="element in listComponentAdded" ng-mouseover="deleteTimelineHovered($index)" ng-mouseleave="deleteTimelineLeaveHover()" class="deleteOption">
-            <span flex >{{element}}</span>
+            <span flex style="padding-left: 10px" >{{element}}</span>
             <core-icon-button class="icon" ng-click="deleteTimeline(element)" ng-show="hovered===$index" icon="cancel"></core-icon-button>
           </div>
           <div ng-if="listComponentAdded.length == 0">
@@ -70,9 +70,9 @@
             </core-icon>
           </div>
         </div>
-        <div class="animate-show list" ng-show="!hidelist('modify')">
-          <div horizontal layout center ng-repeat="element in listComponentAdded" class="deleteOption">
-            <span flex ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}" style="padding-left:10px">{{element}}</span>
+        <div class="animate-show list" ng-show="!hidelist('modify')" >
+          <div horizontal layout center ng-repeat="element in listComponentAdded" class="deleteOption" ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">
+            <span flex style="padding-left:10px">{{element}}</span>
           </div>
           <div ng-if="listComponentAdded.length == 0">
             <p style="padding-left:10px">No tiene componentes añadidos</p>
