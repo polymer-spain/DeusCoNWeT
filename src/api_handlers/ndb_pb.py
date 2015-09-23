@@ -130,6 +130,7 @@ class Component(ndb.Model):
   output_type = ndb.StringProperty()
   rs = ndb.StringProperty()
   description = ndb.StringProperty()
+  version = ndb.StructuredProperty(ndb.StringProperty, repeated=False)
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
