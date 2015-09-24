@@ -98,25 +98,16 @@ class ComponentListHandler(SessionHandler):
         """
         try:
             # Get the request POST params 
+            # Url to the component stable repo
             url = self.request.POST["url"]
             component_id = self.request.POST["component_id"]
             description = self.request.POST["description"]
             social_network = self.request.POST["social_network"]
-            input_type = self.request.POST["input_type"]
-            output_type = self.request.POST["output_type"]
-
-            # Auxiliar params
-            path = url.split("/")
-            basePath = "/repos/" + path[len(path) - 2] + "/" \
-            + path[len(path) - 1]
-
-            # Open connection to the API endpoint
-            cliente_gitHub.openConnection(basePath)
-
-            # Get repo info
-            repoDetails = cliente_gitHub.getRepoInfo()
-            cliente_gitHub.closeConnection()
-            if not repoDetails == None:
+            input_type = self.request.POST.getall("input_type")
+            output_type = self.request.POST.getall("output_type")
+            version_list = self.request.POST.getall("version")
+            print "DEBUG lista de versiones proporcionada", version_list 
+            # TODO: Comprobar si se ha proporcionado una lista de versiones, inputs u outputs vacía
                 if social_network in social_list:
                     created = ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
                     if created:
@@ -131,20 +122,13 @@ class ComponentListHandler(SessionHandler):
                     response = {"error": "Bad value for the social_network param"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
-                    self.response.set_status(400)        
-            else:
-                response = {"error": "The url supplied in the request does not correspond to a github repo"}
-                self.response.content_type = "application/json"
-                self.response.write(json.dumps(response))
-                self.response.set_status(404)        
+                    self.response.set_status(400)                
 
         except KeyError:
             response = {"error": "Missing params in the request body"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(400)
-
-
 
 class ComponentHandler(SessionHandler):
     """

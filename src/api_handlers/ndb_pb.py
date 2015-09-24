@@ -25,6 +25,7 @@ import webapp2
 from Crypto.Cipher import AES
 import base64
 import os
+import random
 
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
@@ -126,11 +127,14 @@ class BetaUser(ndb.Model):
 class Component(ndb.Model):
   component_id = ndb.StringProperty()
   url = ndb.StringProperty()
-  input_type = ndb.StringProperty()
-  output_type = ndb.StringProperty()
+  input_type = ndb.StructuredProperty(ndb.StringProperty, repeated=False)
+  output_type = ndb.StructuredProperty(ndb.StringProperty, repeated=False)
   rs = ndb.StringProperty()
   description = ndb.StringProperty()
-  version = ndb.StructuredProperty(ndb.StringProperty, repeated=False)
+  # List of versions available for a component
+  version_list = ndb.StructuredProperty(ndb.StringProperty, repeated=False)
+  # Index to control the version that will be served to the next user that adds it to his dashboard 
+  version_index = ndb.IntegerProperty()
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
@@ -139,10 +143,20 @@ class UserComponent(ndb.Model):
   height = ndb.StringProperty()
   width = ndb.StringProperty()
   listening = ndb.StringProperty()
+  # Version of the component
   version = ndb.StringProperty()
+
+# Entity that represents a version for a given component
+class VersionedComponent(ndb.Model):
+  component_id = ndb.StringProperty(required=True)
+  version = ndb.StringProperty()
+  # Determines the number of dashboards in which the component is included
+  test_count = ndb.IntegerProperty(default=0)
+  version_rating = ndb.FloatProperty(default=0) 
 
 class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
+  version = ndb.StringProperty() # Version of the component rated
   rating_value = ndb.FloatProperty()
 
 class Group(ndb.Model):
@@ -179,7 +193,6 @@ class User(ndb.Model):
 
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
-
 
 #####################################################################################
 # Definicion de metodos y variables para el cifrado de claves
@@ -428,26 +441,43 @@ def searchNetwork(entity_key): # FUNCIONA
 
   return json.dumps(ans)
 
-def insertComponent(name, url="", description="", rs="", input_t="", output=""):
+# Creates or modifies a component (Component Entity)
+def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None):
   component = Component.query(Component.component_id == name).get()
-  res = False
-  if component == None:
-    component = Component(component_id=name, url=url, input_type=input_t, output_type=output, rs=rs, description=description)
-    res = True
-  else:
+  created = False
+  if component == None: # Creates the component
+    # Generates a random initial value that represents the version of the component that will be 
+    # served to the next user who adds it to his dashboard
+    initial_index = random.randint(0, len(version_list)-1)
+    component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
+     rs=rs, description=description, version_list=version_list, version_index=initial_index)
+    # We create a new VersionedComponent Entity for each version_added to the version_list
+      for version in version_list:
+        versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
+        versionedComponent.put()
+    created = True
+  else: # Updates the component
     if not url == "":
       component.url = url
     if not description == "":
       component.description = description
     if not rs == "":
       component.rs = rs
-    if not input_t == "":
-      component.input_type = input_t
-    if not output == "":
-      component.output_type = output
-  component.put()
+    if not input_t == None:
+      component.input_type = component.input_type + input_t
+    if not output == None:
+      component.output_type = component.output_type + output
+    if not version_list == None:
+      component.version_list = component.version_list + version_list
+      # We create a new VersionedComponent Entity for each version_added to the version_list
+      for version in version_list:
+        versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
+        versionedComponent.put()
 
-  return res
+  # Saves the changes to the entity
+  component.put()
+  # Return wether the component was created or not
+  return created
 
 def insertUserComponent(entity_key, name, x=0, y=0, height="", width="", listening=""): # FUNCIONA
   user = entity_key.get()
