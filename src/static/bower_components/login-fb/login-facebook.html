@@ -20,10 +20,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 			Log in with Facebook
 		</paper-button>
 
-		<paper-button class="FacebookButton desconectar" title="Facebook" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+<!--		<paper-button class="FacebookButton desconectar" title="Facebook" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
 			<core-icon src="images/login-facebook.png" class="icono"></core-icon>
 			Log out from Facebook
-		</paper-button>
+		</paper-button>-->
 
 		<paper-button class="FacebookButton2" title="Facebook" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
 			<core-icon src="images/login-facebook.png" class="icono"></core-icon>
@@ -39,7 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		Polymer('login-facebook',{
 			logged: false, // Parametro que se recibe de la base de datos
 			sort: false,
-      static: false,
+/*      static: false,*/
 			key_app:'',
 			textlogin:'LogIn in with Facebook',
 			scope:'',
@@ -87,7 +87,7 @@ fjs.parentNode.insertBefore(js, fjs);\
 				FB.login(function(response) {
 					back.acToken=response.authResponse.accessToken;
 					back.userId = response.authResponse.userID;
-					back.logged= back.static?false:true;
+					back.logged= /*back.static?false:*/true;
 					this.acToken=response.authResponse.accessToken;
 					this.userId = response.authResponse.userID;
 					document.querySelector('login-facebook').fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});}, {scope: this.scope});
