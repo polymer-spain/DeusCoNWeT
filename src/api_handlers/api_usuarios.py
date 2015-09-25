@@ -55,6 +55,7 @@ class UserListHandler(SessionHandler):
       self.response.write(json.dumps({"error": "The user is not authenticated"}))
       self.response.set_status(401)
 
+
 class UserHandler(SessionHandler):
 
   """

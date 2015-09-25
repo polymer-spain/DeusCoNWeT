@@ -127,12 +127,12 @@ class BetaUser(ndb.Model):
 class Component(ndb.Model):
   component_id = ndb.StringProperty()
   url = ndb.StringProperty()
-  input_type = ndb.StructuredProperty(ndb.StringProperty, repeated=False)
-  output_type = ndb.StructuredProperty(ndb.StringProperty, repeated=False)
+  input_type = ndb.StringProperty(repeated=True)
+  output_type = ndb.StringProperty(repeated=True)
   rs = ndb.StringProperty()
   description = ndb.StringProperty()
   # List of versions available for a component
-  version_list = ndb.StructuredProperty(ndb.StringProperty, repeated=False)
+  version_list = ndb.StringProperty(repeated=True)
   # Index to control the version that will be served to the next user that adds it to his dashboard 
   version_index = ndb.IntegerProperty()
 
@@ -143,8 +143,12 @@ class UserComponent(ndb.Model):
   height = ndb.StringProperty()
   width = ndb.StringProperty()
   listening = ndb.StringProperty()
-  # Version of the component
+  # Actual cersion of the component that is being tested
   version = ndb.StringProperty()
+  # List of versions tested by the user
+  versions_tested = ndb.StringProperty(repeated=True)
+  # Represents if the component is placed in the dashboard
+  active = ndb.BooleanProperty(default=True)
 
 # Entity that represents a version for a given component
 class VersionedComponent(ndb.Model):
@@ -226,6 +230,23 @@ def getCipher(token_entity_key):
   # Crea un objeto cipher
   cipher = AES.new(secret)
   return cipher
+
+#####################################################################################
+# Definicion de metodos para el control de versionado de componentes
+#####################################################################################
+
+# Defines the version of a given component that will be served to a user that adds it
+# to his dashboard
+def setComponentVersion(component_id):
+  version = ""
+  general_component = Component.query(Component.component_id == component_id).get()
+  # We set the version that will be served to the user
+  version = general_component.version_list[general_component.version_index]
+  # We change the version_index field, that represents the version that will be served to the next user
+  general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
+  # Update the info about the component changed
+  general_component.put()
+  return version
 
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
@@ -337,16 +358,25 @@ def updateUser(entity_key, data): #FUNCIONA
     user.image = data["website"]
   if data.has_key("component"):
     comp_name = data["component"]
-    # We add the component to the component_list of the user
-    component = UserComponent(component_id=comp_name, x=0, y=0, height="0", width="0", listening=None)
-    component.put()
-    user.components.append(component)
-    user.put()
-    # We add a Rating entity that represents the component rating
-    if data.has_key("rate"):
-      rate = data["rate"]
+    #We check if the component provided is in the user component list
+    user_component = User.query(User.components == data["component"]).get()
+    # TODO: Tener en cuenta la versión que va a tener el usuario cuando vuelve a añadir un mismo componente a su dashbboard
+    # Si no, creamos un nuevo user component, seteando la versión que va a ejecutar en su dashboard
+    if not user_component == None:
+      # We set the field to active
+      # The user's preferences (heigh, width) does not change
+      user_component.active = True
+      user_component.put()
     else:
-      rate = 0  
+      # We set the version of the component
+      version = setComponentVersion(component_id)
+      component = UserComponent(component_id=comp_name, x=0, y=0, height="0", width="0", listening=None)
+      component.put()
+      # We add the component to the component_list of the user
+      user.components.append(component)
+  # We add a Rating entity that represents the component rating
+  if data.has_key("rate"):
+    rate = data["rate"]
     rating = UserRating(component_id=comp_name, rating_value=rate)
     user.rates.append(rating)
   # Updates the data
