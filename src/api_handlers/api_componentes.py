@@ -278,16 +278,41 @@ class ComponentHandler(SessionHandler):
         self -- info about the request build by webapp2
         component_id -- path url directory corresponding to the component id
         """
-        # Deletes the component in the datastore
-        status = ndb_pb.deleteComponent(component_id)
-        if status:
-            response = {"status": "Component deleted succesfully"}
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps(response))
-            self.response.set_status(204)
+        scope = self.request.get("scope", default_value="user")
+        cookie_value = self.request.cookies.get("session")
+        if scope=="user":
+            if not cookie_value == None:
+                user_logged_key = self.getUserInfo(cookie_value)
+                if not user_logged_key == None:
+                    deleted = ndb_pb.deleteUserComponent(user_logged_key, component_id)
+                if deleted:
+                    response = {"status": "Component deleted succesfully"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(204)
+                else:
+                    response = {"error": "The component does not correspond to the user's dashboard"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(404)
+            else:
+                # TODO. 400s errors
+        elif scope=="global":
+            # Deletes the component in the datastore
+            deleted = ndb_pb.deleteComponent(component_id)
+            if deleted:
+                response = {"status": "Component deleted succesfully"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(204)
+            else:
+                response = {"error": "Component not found in the system"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(404)
         else:
-            response = {"error": "Component not found in the system"}
+            response = {"error": "Bad value for the scope params"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
-            self.response.set_status(404)
+            self.response.set_status(400)
 

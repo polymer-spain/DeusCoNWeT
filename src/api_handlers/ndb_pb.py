@@ -595,19 +595,25 @@ def getUserComponentList(user_id):
   user = User.query(User.user_id == user_id).get()
   user_comps = user.components
   for comp in user_comps:
-    rating = UserRating.query(UserRating.component_id == comp.component_id).get()
-    component_rate = rating if not rating == None else 0.0
-    component_info = {"component_id": comp.component_id,
-                    "x": comp.x,
-                    "y": comp.y,
-                    "height": comp.height,
-                    "width": comp.width,
-                    "listening": comp.listening,
-                    "user_rate": component_rate,
-                    "version": comp.version}
-    component_list.append(component_info)
-  return component_list         
+    # Returns only the components active in the user's dashboard
+    if comp.active:
+      rating = UserRating.query(UserRating.component_id == comp.component_id).get()
+      component_rate = rating if not rating == None else 0.0
+      component_info = {"component_id": comp.component_id, 
+                      "x": comp.x,
+                      "y": comp.y,
+                      "height": comp.height,
+                      "width": comp.width,
+                      "listening": comp.listening,
+                      "user_rate": component_rate,
+                      "version": comp.version}
+      component_list.append(component_info)
+  return component_list
 
+# Removes the component from the user's dashboard
+# It turns the field active to False, thus the component will not be listed as a 
+# component included in the user's dashboard
+def deleteUserComponent(entity_key, component_id):
 
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
