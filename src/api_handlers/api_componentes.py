@@ -107,17 +107,23 @@ class ComponentListHandler(SessionHandler):
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("version")
             print "DEBUG lista de versiones proporcionada", version_list 
-            # TODO: Comprobar si se ha proporcionado una lista de versiones, inputs u outputs vacía
                 if social_network in social_list:
-                    created = ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
-                    if created:
-                        response = {"status": "Component uploaded succesfully"}
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(201)
+                    # We check if the request has provided at least the version "stable" for the version_list param
+                    if "stable" in version_list:
+                        # Adds the component to datastore
+                        created = ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
+                        if created:
+                            response = {"status": "Component uploaded succesfully"}
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(201)
+                        else:
+                            response = {"status": "Component updated"}
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(200)
                     else:
-                        response = {"status": "Component updated"}
+                        response = {"error": "The version_list must contains stable as one of values for this param"}
                         self.response.write(json.dumps(response))
-                        self.response.set_status(200)
+                        self.response.set_status(400)
                 else:
                     response = {"error": "Bad value for the social_network param"}
                     self.response.content_type = "application/json"

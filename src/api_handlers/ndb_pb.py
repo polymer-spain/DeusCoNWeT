@@ -238,15 +238,18 @@ def getCipher(token_entity_key):
 # Defines the version of a given component that will be served to a user that adds it
 # to his dashboard
 def setComponentVersion(component_id):
-  version = ""
-  general_component = Component.query(Component.component_id == component_id).get()
-  # We set the version that will be served to the user
-  version = general_component.version_list[general_component.version_index]
-  # We change the version_index field, that represents the version that will be served to the next user
-  general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
-  # Update the info about the component changed
-  general_component.put()
-  return version
+  # version = ""
+  # general_component = Component.query(Component.component_id == component_id).get()
+  # # We set the version that will be served to the user
+  # version = general_component.version_list[general_component.version_index]
+  # # We change the version_index field, that represents the version that will be served to the next user
+  # general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
+  # # Update the info about the component changed
+  # general_component.put()
+  # return version
+
+  # De momento se sirve la version estable del componente
+  return "stable"
 
 #####################################################################################
 # Definicion de metodos para insertar, obtener o actualizar datos de la base de datos
