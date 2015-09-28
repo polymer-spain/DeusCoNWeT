@@ -284,19 +284,25 @@ class ComponentHandler(SessionHandler):
             if not cookie_value == None:
                 user_logged_key = self.getUserInfo(cookie_value)
                 if not user_logged_key == None:
-                    deleted = ndb_pb.deleteUserComponent(user_logged_key, component_id)
-                if deleted:
-                    response = {"status": "Component deleted succesfully"}
-                    self.response.content_type = "application/json"
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(204)
+                    deleted = ndb_pb.deactivateUserComponent(user_logged_key, component_id)
+                    if deleted:
+                        response = {"status": "Component deleted succesfully"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(204)
+                    else:
+                        response = {"error": "The component does not correspond to the user's dashboard"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(404)
                 else:
-                    response = {"error": "The component does not correspond to the user's dashboard"}
                     self.response.content_type = "application/json"
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(404)
+                    self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
+                    self.response.set_status(400)    
             else:
-                # TODO. 400s errors
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps({"error": "To perform this action, you must be authenticated"}))
+                self.response.set_status(401)
         elif scope=="global":
             # Deletes the component in the datastore
             deleted = ndb_pb.deleteComponent(component_id)

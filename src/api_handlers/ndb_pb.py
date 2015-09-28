@@ -613,8 +613,12 @@ def getUserComponentList(user_id):
 # Removes the component from the user's dashboard
 # It turns the field active to False, thus the component will not be listed as a 
 # component included in the user's dashboard
-def deleteUserComponent(entity_key, component_id):
-
+def deactivateUserComponent(, component_id):
+  status = False
+  user = entity_key.get()
+  # TODO: "Remove" the proper component from the users_components list
+  
+  return status
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
   ans = []
