@@ -362,7 +362,8 @@ def updateUser(entity_key, data): #FUNCIONA
   if data.has_key("component"):
     comp_name = data["component"]
     #We check if the component provided is in the user component list
-    user_component = User.query(User.components == data["component"]).get()
+    user_id = ndb_pb.getUserId(entity_key)
+    user_component = User.query(User.components == data["component"], User.user_id = user_id).get()
     # TODO: Tener en cuenta la versión que va a tener el usuario cuando vuelve a añadir un mismo componente a su dashbboard
     # Si no, creamos un nuevo user component, seteando la versión que va a ejecutar en su dashboard
     if not user_component == None:
@@ -373,7 +374,7 @@ def updateUser(entity_key, data): #FUNCIONA
     else:
       # We set the version of the component
       version = setComponentVersion(component_id)
-      component = UserComponent(component_id=comp_name, x=0, y=0, height="0", width="0", listening=None)
+      component = UserComponent(component_id=comp_name, x=0, y=0, height="0", width="0", listening=None, version=version)
       component.put()
       # We add the component to the component_list of the user
       user.components.append(component)
@@ -613,11 +614,14 @@ def getUserComponentList(user_id):
 # Removes the component from the user's dashboard
 # It turns the field active to False, thus the component will not be listed as a 
 # component included in the user's dashboard
-def deactivateUserComponent(, component_id):
+def deactivateUserComponent(entity_key, component_id):
   status = False
-  user = entity_key.get()
-  # TODO: "Remove" the proper component from the users_components list
-  
+  user_id = ndb_pb.getUserId(entity_key)
+  user_component = User.query(User.components == data["component"], User.user_id = user_id).get()
+  if not user_component == None:
+    user_component.active = False
+    user_component.put()
+    status = True
   return status
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
