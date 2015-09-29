@@ -289,7 +289,7 @@ class ComponentHandler(SessionHandler):
                         response = {"status": "Component deleted succesfully"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
-                        self.response.set_status(204)
+                        self.response.set_status(200)
                     else:
                         response = {"error": "The component does not correspond to the user's dashboard"}
                         self.response.content_type = "application/json"
