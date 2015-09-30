@@ -145,10 +145,16 @@ class UserComponent(ndb.Model):
   listening = ndb.StringProperty()
   # Actual cersion of the component that is being tested
   version = ndb.StringProperty()
-  # List of versions tested by the user
-  versions_tested = ndb.StringProperty(repeated=True)
   # Represents if the component is placed in the dashboard
   active = ndb.BooleanProperty(default=True)
+
+# Representa que versiones de un componente en particular han sido testeadas por un usuario
+class ComponentTested(ndb.Model):
+  # User that tested the component
+  user_id = ndb_pb.StringProperty(required = True)
+  component_id = ndb.StringProperty(required=True)
+  # List of versions tested by the user
+  versions_tested = ndb.StringProperty(repeated=True)
 
 # Entity that represents a version for a given component
 class VersionedComponent(ndb.Model):
@@ -343,8 +349,47 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
 
   return user_key
 
+# Adds a given component to the user,
+# creating or updating the corresponding entities that store properties about this action
+def activateComponentToUser(component_id, entity_key):
+  user = entity_key.get()
+  user_id = ndb_pb.getUserId(entity_key)
+  #We check if the component provided is in the user component list
+  # TODO: Use the proper query!!
+  user_component = User.query(User.components.component_id == component_id).get()
+  # user_component = User.query(ndb.AND(User.components.component_id == comp_name, User.user_id = user_id)).get()
+  
+  # TODO: Tener en cuenta la versión que va a tener el usuario cuando vuelve a añadir un mismo componente a su dashbboard
+  # Si no, creamos un nuevo user component, seteando la versión que va a ejecutar en su dashboard
+  if not user_component == None:
+    # We set the field to active
+    # The user's preferences (heigh, width) does not change
+    user_component.active = True
+    user_component.put()
+  else:
+    # We set the version of the component
+    version = setComponentVersion(component_id)
+    component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
+    component.put()
+    # We add the component to the component_list of the user
+    user.components.append(component)
+    user.put()
+  # We store in a ComponentTested entity the new version tested by the user
+  user_component_tested = ComponentTested(ndb.AND(ComponentTested.component_id = component_id, ComponentTested.user_id == user_id)).get()
+  if not user_component_tested == None:
+    # We add the version to the versions tested list, if is not was added
+    if not version in user_component_tested.versions_tested:
+      user_component_tested.versions_tested.append(version)
+      user_component_tested.put()  
+  else:
+    # We create a new ComponentTested entity to store the versions of a component tested by the user
+    component_tested = ComponentTested(component_id=comp_name, user_id=user_id, versions_tested=version)
+    component_tested.put()
+
+
 def updateUser(entity_key, data): #FUNCIONA
   user = entity_key.get()
+  
   if data.has_key("email"):
     user.email = data["email"]
   if data.has_key("private_email"):
@@ -361,29 +406,14 @@ def updateUser(entity_key, data): #FUNCIONA
     user.image = data["website"]
   if data.has_key("component"):
     comp_name = data["component"]
-    #We check if the component provided is in the user component list
-    user_id = ndb_pb.getUserId(entity_key)
-    user_component = User.query(User.components == data["component"], User.user_id = user_id).get()
-    # TODO: Tener en cuenta la versión que va a tener el usuario cuando vuelve a añadir un mismo componente a su dashbboard
-    # Si no, creamos un nuevo user component, seteando la versión que va a ejecutar en su dashboard
-    if not user_component == None:
-      # We set the field to active
-      # The user's preferences (heigh, width) does not change
-      user_component.active = True
-      user_component.put()
-    else:
-      # We set the version of the component
-      version = setComponentVersion(component_id)
-      component = UserComponent(component_id=comp_name, x=0, y=0, height="0", width="0", listening=None, version=version)
-      component.put()
-      # We add the component to the component_list of the user
-      user.components.append(component)
-  # We add a Rating entity that represents the component rating
+    # Adds the component to the user
+    activeComponentToUser(comp_name, entity_key)
   if data.has_key("rate"):
     rate = data["rate"]
+    # We add a Rating entity that represents the component rating
     rating = UserRating(component_id=comp_name, rating_value=rate)
     user.rates.append(rating)
-  # Updates the data
+  # Updates the user data
   user.put()
 
 def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
@@ -486,9 +516,9 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
     component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
      rs=rs, description=description, version_list=version_list, version_index=initial_index)
     # We create a new VersionedComponent Entity for each version_added to the version_list
-      for version in version_list:
-        versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
-        versionedComponent.put()
+    for version in version_list:
+      versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
+      versionedComponent.put()
     created = True
   else: # Updates the component
     if not url == "":
@@ -617,7 +647,8 @@ def getUserComponentList(user_id):
 def deactivateUserComponent(entity_key, component_id):
   status = False
   user_id = ndb_pb.getUserId(entity_key)
-  user_component = User.query(User.components == data["component"], User.user_id = user_id).get()
+  # TODO: Add the proper query!!
+  # user_component = User.query(User.components.component_id == data["component"], User.user_id = user_id).get()
   if not user_component == None:
     user_component.active = False
     user_component.put()
