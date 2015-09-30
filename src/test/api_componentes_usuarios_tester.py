@@ -102,11 +102,6 @@ def main():
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
 	elif option == 'borrado':
-		components_basepath = "/api/componentes"
-	users_basepath = "/api/usuarios"
-	session1 = None
-	session_error = "session=session_error"
-	user_id1 = "user_components_test"
 
 		# TESTs relativos al borrado de componentes de usuario
 		# Pruebas de casos de error
