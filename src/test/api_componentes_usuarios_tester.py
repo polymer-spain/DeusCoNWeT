@@ -38,7 +38,8 @@ def main():
             'description': 'Web component to obtain the timeline of the social network Instagram using Polymer',
             'social_network': 'instagram',
             'input_type': 'None',
-            'output_type': 'photo'
+            'output_type': 'photo',
+            'version_list': 'stable'
 	})
 	test_utils.make_request("PUT", components_basepath, params, 201, None)
 

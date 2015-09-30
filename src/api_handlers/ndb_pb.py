@@ -151,7 +151,7 @@ class UserComponent(ndb.Model):
 # Representa que versiones de un componente en particular han sido testeadas por un usuario
 class ComponentTested(ndb.Model):
   # User that tested the component
-  user_id = ndb_pb.StringProperty(required = True)
+  user_id = ndb.StringProperty(required = True)
   component_id = ndb.StringProperty(required=True)
   # List of versions tested by the user
   versions_tested = ndb.StringProperty(repeated=True)
@@ -375,7 +375,7 @@ def activateComponentToUser(component_id, entity_key):
     user.components.append(component)
     user.put()
   # We store in a ComponentTested entity the new version tested by the user
-  user_component_tested = ComponentTested(ndb.AND(ComponentTested.component_id = component_id, ComponentTested.user_id == user_id)).get()
+  user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user_id)).get()
   if not user_component_tested == None:
     # We add the version to the versions tested list, if is not was added
     if not version in user_component_tested.versions_tested:
@@ -407,7 +407,7 @@ def updateUser(entity_key, data): #FUNCIONA
   if data.has_key("component"):
     comp_name = data["component"]
     # Adds the component to the user
-    activeComponentToUser(comp_name, entity_key)
+    activateComponentToUser(comp_name, entity_key)
   if data.has_key("rate"):
     rate = data["rate"]
     # We add a Rating entity that represents the component rating
