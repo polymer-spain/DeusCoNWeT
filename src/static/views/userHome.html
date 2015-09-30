@@ -6,19 +6,19 @@
 
     <div vertical layout end id="listOption" style="z-index:1">
       <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
-        <core-icon id="menu-icon" icon="arrow-back"></core-icon>
+        <iron-icon id="menu-icon" icon="arrow-back"></iron-icon>
       </div>
 
       <!-- Añadir un elemento -->
       <div id="add" ng-class="{hidden: isMenuHidden('add')}">
         <div horizontal layout ng-class="{corto: !isMenuHidden('add')}">
           <div class="div_button" ng-click="ocultar('add'); setSelected('add'); sort=[false, false, false]" ng-class="{sort: sort[0]}">
-            <core-icon icon="add-box"></core-icon>
+            <iron-icon icon="add-box"></iron-icon>
           </div>
           <div flex horizontal layout ng-click="setList('add'); setSort('add')" ng-class="{sort: sort[0]}">
             <p flex ng-show="showElement?true:showSingle=='add'" class="dropdown" style="padding-left:10px"> {{language.user_action.add}}</p>
-            <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" class="dropdown" icon="arrow-drop-down">
-            </core-icon>
+            <iron-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" class="dropdown" icon="arrow-drop-down">
+            </iron-icon>
           </div>
         </div>
         <div class="animate-show list" ng-show="!hidelist('add')">
@@ -37,18 +37,18 @@
       <div id="delete" ng-class="{hidden: isMenuHidden('delete')}">
         <div horizontal layout ng-class="{corto: !isMenuHidden('delete')}">
           <div class="div_button" ng-click="ocultar('delete'); setSelected('delete'); sort=[false, false, false]" ng-class="{sort: sort[1]}">
-            <core-icon icon="delete"></core-icon>
+            <iron-icon icon="delete"></iron-icon>
           </div>
           <div flex horizontal layout ng-click="setList('delete'); setSort('delete')" class="dropdown" ng-class="{sort: sort[1]}">
             <p flex ng-show="showElement?true:showSingle=='delete'" class="dropdown" style="padding-left:10px"> {{language.user_action.delete}}</p>
-            <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" class="dropdown" icon="arrow-drop-down">
-            </core-icon>
+            <iron-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" class="dropdown" icon="arrow-drop-down">
+            </iron-icon>
           </div>
         </div>
         <div class="animate-show list" ng-show="!hidelist('delete')">
           <div horizontal layout center draggable="true" ng-repeat="element in listComponentAdded" ng-mouseover="deleteTimelineHovered($index)" ng-mouseleave="deleteTimelineLeaveHover()" class="deleteOption">
             <span flex style="padding-left: 10px" >{{element}}</span>
-            <core-icon-button class="icon" ng-click="deleteTimeline(element)" ng-show="hovered===$index" icon="cancel"></core-icon-button>
+            <paper-icon-button class="icon" ng-click="deleteTimeline(element)" ng-show="hovered===$index" icon="cancel"></paper-icon-button>
           </div>
           <div ng-if="listComponentAdded.length == 0">
             <p style="padding-left:10px">No tiene componentes añadidos</p>
@@ -60,12 +60,12 @@
       <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
         <div horizontal layout ng-class="{corto: !isMenuHidden('modify')}">
           <div class="div_button" ng-click="ocultar('modify'); setSelected('modify'); sort=[false, false, false]" ng-class="{sort: sort[2]}">
-            <core-icon  icon="create"></core-icon>
+            <iron-icon  icon="create"></iron-icon>
           </div>
           <div flex horizontal layout ng-click="setList('modify'); setSort('modify')" class="dropdown" ng-class="{sort: sort[2]}">
             <p flex ng-show="showElement?true:showSingle=='modify'" class="dropdown" style="padding-left:10px">  {{language.user_action.modify}}</p>
-            <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" class="dropdown" icon="arrow-drop-down">
-            </core-icon>
+            <iron-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" class="dropdown" icon="arrow-drop-down">
+            </iron-icon>
           </div>
         </div>
         <div class="animate-show list" ng-show="!hidelist('modify')" >
@@ -80,7 +80,7 @@
 
       <!-- Opcion de ayuda -->
       <div id="help" ng-class="{hidden: isMenuHidden('help')}" ng-click="showToggleHelp($event)" style="max-width:170px">
-        <core-icon icon="help"></core-icon>
+        <iron-icon icon="help"></iron-icon>
         <span ng-show="showElement" style="padding-left: 10px;">{{language.user_action.help}}</span>
       </div>
     </div>

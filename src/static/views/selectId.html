@@ -3,10 +3,10 @@
 <section vertical center layout id="selectId">
   <div class="container">
     <div>
-      <core-icon icon="label"></core-icon><span class="title">{{language.select_id.title}}</span>
+      <iron-icon icon="label"></iron-icon><span class="title">{{language.select_id.title}}</span>
     </div>
     <br>
-    <core-icon id="gif" src="https://d4z6dx8qrln4r.cloudfront.net/image-54e5caa730e3a-default.gif"></core-icon>
+    <iron-icon id="gif" src="https://d4z6dx8qrln4r.cloudfront.net/image-54e5caa730e3a-default.gif"></iron-icon>
     <br>
     <paper-input-decorator label="{{language.select_id.input_title}}" isInvalid="{{userIdError}}" error="{{errorMessage}}">
       <input ng-model="value" id="username_input"ng-keyup="sendUsername($event, value)" pattern="^[a-zA-Z0-9_-]*$" title="">

@@ -1,5 +1,3 @@
-/*global angular, document, window */
-
 angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout", function ($scope, $timeout) {
 	"use strict";
 

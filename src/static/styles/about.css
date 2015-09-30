@@ -31,11 +31,11 @@ html {
 #social {
   margin-top:100px; 
 }
-#social  core-icon-button {
+#social  paper-icon-button {
   border-radius:5px;
   margin:5px 10px;
 }
-core-icon-button /deep/ core-icon div {
+paper-icon-button /deep/ iron-icon div {
   background-repeat: no-repeat;
 }
 #social .facebook {

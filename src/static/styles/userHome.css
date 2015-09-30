@@ -94,7 +94,7 @@ html {
   background-color: #00a000;
 }
 
-.list div > core-icon {
+.list div > iron-icon {
   width: 15px;
 }
 
@@ -134,7 +134,7 @@ padding-top: 10px;
 height: 30px;
 }*/
 
-#delete .list > div > core-icon-button /deep/ core-icon {
+#delete .list > div > paper-icon-button /deep/ iron-icon {
   width: 20px;
   height: 20px;
   transition: all ease 1s;
@@ -147,7 +147,7 @@ height: 30px;
 .helpModal.ng-hide-remove.ng-hide-remove-active {
   transition: all linear 0.25s;
 }
-.helpModal > core-icon-button {
+.helpModal > paper-icon-button {
   position:absolute;
   right:0;
 }

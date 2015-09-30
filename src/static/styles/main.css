@@ -21,7 +21,7 @@ body,html {
   padding-top: 100px;
 }
 
-core-toolbar {
+paper-toolbar {
   position: fixed;
   width: 100%;
   top:0;
@@ -35,7 +35,7 @@ core-toolbar {
 
 @media (max-width: 1200px) {
 
-  core-toolbar {
+  paper-toolbar {
     padding: 15px 30px;
   }
 }
@@ -77,7 +77,7 @@ paper-button {
   z-index: 200;
   text-align: center;
 }
-#popup > core-icon-button {
+#popup > paper-icon-button {
   position:absolute;
   right:0;
 }
@@ -107,7 +107,7 @@ paper-button {
   cursor: pointer;
 }
 
-core-dropdown {
+iron-dropdown {
   position: absolute;
   top: 38px;
   left: 0;
@@ -150,7 +150,7 @@ paper-button > a:visited {
   padding-right: 20px;
 }
 
-.core-item{
+.paper-item{
   margin:0px;
   padding:0px;
 }
@@ -165,7 +165,7 @@ footer {
   z-index: 10;
 }
 
-core-dropdown-menu {
+paper-dropdown-menu {
   background-color: inherit;
   font-size: 16px;
   min-width: 100px;
@@ -174,16 +174,16 @@ core-dropdown-menu {
   margin-right:40px;
 }
 
-core-dropdown core-menu {
+iron-dropdown core-menu {
   margin:0;
 }
-core-dropdown core-menu core-item {
+iron-dropdown core-menu paper-item {
   padding: 3px 5px;
 }
-core-dropdown-menu /deep/ core-dropdown /deep/ core-item:hover {
+paper-dropdown-menu /deep/ iron-dropdown /deep/ paper-item:hover {
   background-color: #bbb;
 }
-core-dropdown.lang-menu {
+iron-dropdown.lang-menu {
   top: 29px;
   padding: 0;
   box-sizing: border-box;
@@ -200,7 +200,7 @@ core-dropdown.lang-menu {
   min-width: 95px;
 }
 
-/*core-dropdown-menu /deep/ core-item {
+/*paper-dropdown-menu /deep/ paper-item {
 padding:10px 4px;
 }*/
 select.language:after {
@@ -240,10 +240,10 @@ select.language > option {
   margin-left:10px;
   width: 143px;
 }
-#dropmenu /deep/ core-dropdown /deep/ core-item {
+#dropmenu /deep/ iron-dropdown /deep/ paper-item {
   background-color: #eee;
 }
-#dropmenu core-item[active] {
+#dropmenu paper-item[active] {
   font-weight: normal;
 }
 

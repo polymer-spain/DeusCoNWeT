@@ -6,7 +6,7 @@
   margin-top:150px;
 }
 
-#selectId  core-icon[icon="label"] {
+#selectId  iron-icon[icon="label"] {
   color:burlywood;
   margin-bottom: 9px;
 }
