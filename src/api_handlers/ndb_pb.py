@@ -181,10 +181,10 @@ class Token(ndb.Model):
 
 class SocialUser(ndb.Model):
   social_name = ndb.StringProperty(required=True)
-  following = ndb.IntegerProperty()
-  followers = ndb.IntegerProperty()
-  following_url = ndb.StringProperty()
-  followers_url = ndb.StringProperty()
+  # following = ndb.IntegerProperty()
+  # followers = ndb.IntegerProperty()
+  # following_url = ndb.StringProperty()
+  # followers_url = ndb.StringProperty()
 
 class User(ndb.Model):
   user_id = ndb.StringProperty()
@@ -285,15 +285,7 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
       net_names.append(net.social_name)
     
     # Componemos la lista de componentes de usuario, detallada o reducida
-    if component_detailed_info:
-      # Caso lista de componentes completa
-      user_component_list = getUserComponentList(user_id)
-    else:
-      # Caso lista de componentes reducida
-      for rate in rates:
-        component_info = {"component_id": rate.component_id,
-                          "user_rate": rate.rating_value}
-        user_component_list.append(component_info)
+    user_component_list = getUserComponentList(user_id, component_detailed_info)
 
     # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
@@ -359,12 +351,13 @@ def activateComponentToUser(component_id, entity_key):
   user_id = getUserId(entity_key)
   #We check if the component provided is in the user component list
   # If not, we create a new UserComponent Entity, setting the component version that will use the user
-  user_component = User.query(ndb.AND(User.components.component_id == comp_name, User.user_id == user_id)).get()
-  print ">>> DEBUG: UserComponent: ", user_component + "\n"
-  # TODO: Tener en cuenta la versión que va a tener el usuario cuando vuelve a añadir un mismo componente a su dashbboard
+  user_component = UserComponent.query(ndb.AND(User.components.component_id == component_id, User.user_id == user_id)).get()
   if not user_component == None:
     # We set the field to active
     # The user's preferences (heigh, width) does not change
+    # We get the version of the component that will be served to the user 
+    # (the same version than the setted when the user activated the component for the first time)
+    version = user_component.version
     user_component.active = True
     user_component.put()
   else:
@@ -386,7 +379,7 @@ def activateComponentToUser(component_id, entity_key):
       user_component_tested.put()  
   else:
     # We create a new ComponentTested entity to store the versions of a component tested by the user
-    component_tested = ComponentTested(component_id=comp_name, user_id=user_id, versions_tested=version)
+    component_tested = ComponentTested(component_id=component_id, user_id=user_id, versions_tested=[version])
     component_tested.put()
 
 
@@ -396,7 +389,7 @@ def activateComponentToUser(component_id, entity_key):
 def deactivateUserComponent(entity_key, component_id):
   status = False
   user_id = ndb_pb.getUserId(entity_key)
-  user_component = User.query(ndb.AND(User.components.component_id == comp_name, User.user_id == user_id)).get()
+  user_component = UserComponent.query(ndb.AND(User.components.component_id == component_id, User.user_id == user_id)).get()
   if not user_component == None:
     user_component.active = False
     user_component.put()
@@ -644,7 +637,7 @@ def getUserComponent(entity_key, component_id):
   return result
 
 # Retorna una lista de Componentes pertenecientes al dashboard de usuario, incluyendo la valoración del usuario
-def getUserComponentList(user_id):
+def getUserComponentList(user_id, component_detailed_info=False):
   # Obtenemos la valoración del componente en particular
   component_list = []
   user = User.query(User.user_id == user_id).get()
@@ -652,16 +645,22 @@ def getUserComponentList(user_id):
   for comp in user_comps:
     # Returns only the components active in the user's dashboard
     if comp.active:
+      # Obtains the user's rating relative to the component
       rating = UserRating.query(UserRating.component_id == comp.component_id).get()
       component_rate = rating if not rating == None else 0.0
-      component_info = {"component_id": comp.component_id, 
-                      "x": comp.x,
-                      "y": comp.y,
-                      "height": comp.height,
-                      "width": comp.width,
-                      "listening": comp.listening,
-                      "user_rate": component_rate,
-                      "version": comp.version}
+      if component_detailed_info:
+        component_info = {"component_id": comp.component_id, 
+                        "x": comp.x,
+                        "y": comp.y,
+                        "height": comp.height,
+                        "width": comp.width,
+                        "listening": comp.listening,
+                        "user_rate": component_rate,
+                        "version": comp.version}
+      else:
+          component_info = {"component_id": comp.component_id, 
+                        "user_rate": component_rate}
+      # Adds the component to the component list
       component_list.append(component_info)
   return component_list
 
