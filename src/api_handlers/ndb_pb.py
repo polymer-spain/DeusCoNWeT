@@ -242,7 +242,9 @@ def getCipher(token_entity_key):
 #####################################################################################
 
 # Defines the version of a given component that will be served to a user that adds it
-# to his dashboard
+# to his dashboard (transactional operation)
+
+# @ndb.transactional()
 def setComponentVersion(component_id):
   # version = ""
   # general_component = Component.query(Component.component_id == component_id).get()
@@ -349,18 +351,17 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
 
   return user_key
 
+
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
 def activateComponentToUser(component_id, entity_key):
   user = entity_key.get()
-  user_id = ndb_pb.getUserId(entity_key)
+  user_id = getUserId(entity_key)
   #We check if the component provided is in the user component list
-  # TODO: Use the proper query!!
-  user_component = User.query(User.components.component_id == component_id).get()
-  # user_component = User.query(ndb.AND(User.components.component_id == comp_name, User.user_id = user_id)).get()
-  
+  # If not, we create a new UserComponent Entity, setting the component version that will use the user
+  user_component = User.query(ndb.AND(User.components.component_id == comp_name, User.user_id == user_id)).get()
+  print ">>> DEBUG: UserComponent: ", user_component + "\n"
   # TODO: Tener en cuenta la versión que va a tener el usuario cuando vuelve a añadir un mismo componente a su dashbboard
-  # Si no, creamos un nuevo user component, seteando la versión que va a ejecutar en su dashboard
   if not user_component == None:
     # We set the field to active
     # The user's preferences (heigh, width) does not change
@@ -369,15 +370,17 @@ def activateComponentToUser(component_id, entity_key):
   else:
     # We set the version of the component
     version = setComponentVersion(component_id)
+    # We create a new UserComponent entity
     component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
     component.put()
     # We add the component to the component_list of the user
     user.components.append(component)
     user.put()
+
   # We store in a ComponentTested entity the new version tested by the user
   user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user_id)).get()
   if not user_component_tested == None:
-    # We add the version to the versions tested list, if is not was added
+    # We add the version to the versions tested list, if is not was added previously
     if not version in user_component_tested.versions_tested:
       user_component_tested.versions_tested.append(version)
       user_component_tested.put()  
@@ -387,9 +390,22 @@ def activateComponentToUser(component_id, entity_key):
     component_tested.put()
 
 
+# Removes the component from the user's dashboard
+# It turns the field active to False, thus the component will not be listed as a 
+# component included in the user's dashboard
+def deactivateUserComponent(entity_key, component_id):
+  status = False
+  user_id = ndb_pb.getUserId(entity_key)
+  user_component = User.query(ndb.AND(User.components.component_id == comp_name, User.user_id == user_id)).get()
+  if not user_component == None:
+    user_component.active = False
+    user_component.put()
+    status = True
+  return status
+
+
 def updateUser(entity_key, data): #FUNCIONA
   user = entity_key.get()
-  
   if data.has_key("email"):
     user.email = data["email"]
   if data.has_key("private_email"):
@@ -505,7 +521,7 @@ def searchNetwork(entity_key): # FUNCIONA
 
   return json.dumps(ans)
 
-# Creates or modifies a component (Component Entity)
+# Creates a component (Component Entity)
 def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None):
   component = Component.query(Component.component_id == name).get()
   created = False
@@ -520,7 +536,16 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
       versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
       versionedComponent.put()
     created = True
-  else: # Updates the component
+  # Saves the changes to the entity
+  component.put()
+  # Return wether the component was created or not
+  return created
+
+
+# Modifies the related info about a General component in the system (ComponentEntity)
+def updateComponent(component_id, url="", description="", rs="", input_t=None, output_t=None, version_list=None):
+  component = Component.query(Component.component_id == component_id).get()
+  if not component == None:
     if not url == "":
       component.url = url
     if not description == "":
@@ -529,8 +554,8 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
       component.rs = rs
     if not input_t == None:
       component.input_type = component.input_type + input_t
-    if not output == None:
-      component.output_type = component.output_type + output
+    if not output_t == None:
+      component.output_type = component.output_type + output_t
     if not version_list == None:
       component.version_list = component.version_list + version_list
       # We create a new VersionedComponent Entity for each version_added to the version_list
@@ -538,10 +563,9 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
         versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
         versionedComponent.put()
 
-  # Saves the changes to the entity
-  component.put()
-  # Return wether the component was created or not
-  return created
+    # Saves the changes to the entity
+    component.put()
+
 
 def insertUserComponent(entity_key, name, x=0, y=0, height="", width="", listening=""): # FUNCIONA
   user = entity_key.get()
@@ -550,7 +574,9 @@ def insertUserComponent(entity_key, name, x=0, y=0, height="", width="", listeni
 
   user.put()
 
-def modifyComponent(entity_key, name, data): #FUNCIONA
+
+# Modifies the user's preferences stored related to a component
+def modifyUserComponent(entity_key, name, data): #FUNCIONA
   user = entity_key.get()
   comps = user.components
   for comp in comps:
@@ -565,9 +591,6 @@ def modifyComponent(entity_key, name, data): #FUNCIONA
         comp.width = data["width"]
       if data.has_key("listening"):
         comp.listening += data["listening"]
-      if data.has_key("version"):
-        comp.listening = data["version"]
-      
   user.put()
 
 def addListening(entity_key, name, events):
@@ -583,6 +606,7 @@ def addListening(entity_key, name, events):
 
 def getComponent(entity_key, name, all_info=False): # FUNCIONA
   comp = Component.query(Component.component_id == name).get()
+  print ">>> getComponent comp: ", comp
   if comp == None:
     ans = None
   else:
@@ -640,20 +664,6 @@ def getUserComponentList(user_id):
                       "version": comp.version}
       component_list.append(component_info)
   return component_list
-
-# Removes the component from the user's dashboard
-# It turns the field active to False, thus the component will not be listed as a 
-# component included in the user's dashboard
-def deactivateUserComponent(entity_key, component_id):
-  status = False
-  user_id = ndb_pb.getUserId(entity_key)
-  # TODO: Add the proper query!!
-  # user_component = User.query(User.components.component_id == data["component"], User.user_id = user_id).get()
-  if not user_component == None:
-    user_component.active = False
-    user_component.put()
-    status = True
-  return status
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
   ans = []

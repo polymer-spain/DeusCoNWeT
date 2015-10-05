@@ -1,3 +1,4 @@
+
 # -*- coding: utf8 -*-
 import sys, urllib
 import test_utils
@@ -11,14 +12,15 @@ def main():
 	users_basepath = "/api/usuarios"
 	session1 = None
 	session_error = "session=session_error"
-	user_id1 = "user_components_test"
+	user_id1 = "id_usuario1"
 	# Sets the option param
 	option = None
 	if len(sys.argv) == 2:
 		option = sys.argv[1] 
 
 	# We open the connection with the server
-	test_utils.openConnection()
+	test_utils.openConnection(False) # Realizamos pruebas en local
+
 	# PRE-TESTs. Login de usuario en el sistema, utilizando Google+
 	request_uri = "/api/oauth/googleplus/login"
 	print "PRETEST 1: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
@@ -39,7 +41,7 @@ def main():
             'social_network': 'instagram',
             'input_type': 'None',
             'output_type': 'photo',
-            'version_list': 'stable'
+            'versions': 'stable'
 	})
 	test_utils.make_request("PUT", components_basepath, params, 201, None)
 

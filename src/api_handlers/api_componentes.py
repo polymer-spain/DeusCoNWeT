@@ -105,13 +105,12 @@ class ComponentListHandler(SessionHandler):
             social_network = self.request.POST["social_network"]
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
-            version_list = self.request.POST.getall("version")
-            print "DEBUG lista de versiones proporcionada", version_list 
+            version_list = self.request.POST.getall("versions")
             if social_network in social_list:
                 # We check if the request has provided at least the version "stable" for the version_list param
                 if "stable" in version_list:
                     # Adds the component to datastore
-                    created = ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
+                    created = ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type, version_list)
                     if created:
                         response = {"status": "Component uploaded succesfully"}
                         self.response.write(json.dumps(response))
@@ -121,7 +120,7 @@ class ComponentListHandler(SessionHandler):
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
                 else:
-                    response = {"error": "The version_list must contains stable as one of values for this param"}
+                    response = {"error": "The versions param must contains stable as one of its values"}
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
             else:
@@ -200,11 +199,10 @@ class ComponentHandler(SessionHandler):
         x_axis = self.request.get("x_axis", default_value="none")
         y_axis = self.request.get("y_axis", default_value="none")
         listening = self.request.get("listening", default_value="none")
-        version = self.request.get("version", default_value="none")
         if not cookie_value == None:
             # Checks whether the cookie belongs to an active user and the request has provided at least one param
             user_id = self.getUserInfo(cookie_value)
-            if not user_id == None and not rating == "none" or not x_axis == "none" or not y_axis == "none" or not version == "none":
+            if not user_id == None and not rating == "none" or not x_axis == "none" or not y_axis == "none" :
                 data = {}
                 component_modified_success = False
                 rating_error = False
@@ -218,8 +216,7 @@ class ComponentHandler(SessionHandler):
                         data["y"] = float(y_axis)
                     if not listening == "none":
                         data["listening"] = listening
-                    if not version == "none":
-                        data["version"] = version
+                    
                 except ValueError:
                     response = \
                     {"error": "x_axis, y_axis and rating must have a numeric value"}
@@ -249,7 +246,7 @@ class ComponentHandler(SessionHandler):
 
                 # Updates the info about the component
                 if not len(data) == 0 and not rating_error:
-                    ndb_pb.modifyComponent(user_id, component_id, data)
+                    ndb_pb.modifyUserComponent(user_id, component_id, data)
                     component_modified_success = True
 
                 # Compounds the success response if the component has ben updated successfully
