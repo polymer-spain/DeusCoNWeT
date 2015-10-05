@@ -135,6 +135,8 @@ class Component(ndb.Model):
   version_list = ndb.StringProperty(repeated=True)
   # Index to control the version that will be served to the next user that adds it to his dashboard 
   version_index = ndb.IntegerProperty()
+  # Determines the times that the general component has been tested
+  test_count = ndb.IntegerProperty(default=0)
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
@@ -156,11 +158,12 @@ class ComponentTested(ndb.Model):
   # List of versions tested by the user
   versions_tested = ndb.StringProperty(repeated=True)
 
+
 # Entity that represents a version for a given component
 class VersionedComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
   version = ndb.StringProperty()
-  # Determines the number of dashboards in which the component is included
+  # Determines the times that the versioned component has been tested
   test_count = ndb.IntegerProperty(default=0)
   version_rating = ndb.FloatProperty(default=0) 
 
@@ -311,6 +314,11 @@ def getUserId(entity_key):
 @ndb.transactional(xg=True)
 def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   user = User()
+  # We add to the user's net list the social network used to sign up to the system
+  user_net = SocialUser(social_name=rs)
+  user.net_list.append(user_net)
+
+  # We store the user info passed in the data argument
   if not data == None:
     if data.has_key("user_id"):
       user.user_id = data["user_id"]
@@ -329,6 +337,7 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
     if data.has_key("website"):
       user.website = data["website"]
 
+  # Inserts the user entity
   user_key = user.put()
   
   token = Token(identifier=ide, token="", social_name=rs)
@@ -339,6 +348,8 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   token.put()
 
   user.tokens.append(token)
+  
+  # Updates the user entity
   user.put()
 
   return user_key
@@ -364,11 +375,20 @@ def activateComponentToUser(component_id, entity_key):
     # We set the version of the component
     version = setComponentVersion(component_id)
     # We create a new UserComponent entity
-    component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
-    component.put()
+    user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
+    user_component.put()
     # We add the component to the component_list of the user
-    user.components.append(component)
+    user.components.append(user_component)
     user.put()
+    
+    # We increase the counters that represents the times that a given component has been tested (general and versioned)
+    general_component = Component.query(Component.component_id == component_id).get()
+    general_component.test_count = general_component.test_count + 1
+    general_component.put()
+    versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
+     VersionedComponent.version == version)).get()
+    versioned_component.test_count = versioned_component.test_count + 1
+    versioned_component.put() 
 
   # We store in a ComponentTested entity the new version tested by the user
   user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user_id)).get()
@@ -426,21 +446,24 @@ def updateUser(entity_key, data): #FUNCIONA
   user.put()
 
 def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
-  user = entity_key.get()
-  
+  user = entity_key.get()  
   # We create a Token Entity in the datastore
   tok_aux = Token(identifier=user_id, token="", social_name=social_name)
   token_key = tok_aux.put()
-  
   # Ciphers access token that will be stored in the datastore
   cipher = getCipher(token_key.id())
   access_token = encodeAES(cipher, access_token)
   tok_aux.token = access_token
   tok_aux.put()
-
   # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
+  # We add the social network to the user's nets list
+  if not social_name in user.net_list:
+    social_network = SocialUser(social_name=social_name)
+    user.net_list.append(social_network)
+  # Updates the user
   user.put()
+
 
 def insertGroup(entity_key, name, data=None): #FUNCIONA
   user = entity_key.get()
@@ -456,6 +479,7 @@ def insertGroup(entity_key, name, data=None): #FUNCIONA
   group.user_list = users
   user.group_list.append(group)
   user.put()
+
 
 def addUserToGroup(entity_key, group_name, username): #FUNCIONA
   user = entity_key.get()
@@ -515,6 +539,7 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
+# @ndb.transactional()
 def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None):
   component = Component.query(Component.component_id == name).get()
   created = False
@@ -598,6 +623,7 @@ def addListening(entity_key, name, events):
   
 
 def getComponent(entity_key, name, all_info=False): # FUNCIONA
+  print ">>> DEBUG: name of the component: ", name
   comp = Component.query(Component.component_id == name).get()
   print ">>> getComponent comp: ", comp
   if comp == None:
