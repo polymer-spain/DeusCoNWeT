@@ -1,6 +1,12 @@
 <link rel="stylesheet" href="styles/selectId.css">
+<style is="custom-style">
 
-<section vertical center layout id="selectId">
+  paper-input {
+    --paper-input-container-color: #3c3c3c;
+    --paper-input-container-focus-color: #334c9b;
+  }
+</style>
+<div class="vertical center layout" id="selectId">
   <div class="container">
     <div>
       <iron-icon icon="label"></iron-icon><span class="title">{{language.select_id.title}}</span>
@@ -8,12 +14,13 @@
     <br>
     <iron-icon id="gif" src="https://d4z6dx8qrln4r.cloudfront.net/image-54e5caa730e3a-default.gif"></iron-icon>
     <br>
-    <paper-input-decorator label="{{language.select_id.input_title}}" isInvalid="{{userIdError}}" error="{{errorMessage}}">
-      <input ng-model="value" id="username_input"ng-keyup="sendUsername($event, value)" pattern="^[a-zA-Z0-9_-]*$" title="">
-        
-      </input>
-    </paper-input-decorator>
-  <div horizontal layout reverse><paper-button ng-click="sendUsername($event, value)" ng-show="value">{{language.send}}</paper-button></div>
-  </div>
-</section>
+    <paper-input autofocus pattern="^[a-zA-Z0-9_-]*$" id="username_input" label="{{language.select_id.input_title}}" error-message="{{errorMessage}}">
+      <paper-icon-button suffix icon="clear"></paper-icon-button>
+    </paper-input>
 
+    <div ng-show="showSendButton" id="sendUsernameButton" class="horizontal layout reverse">
+      <paper-button ng-click="sendUsername($event, value)">{{language.send}}
+      </paper-button>
+    </div>
+  </div>
+</div>

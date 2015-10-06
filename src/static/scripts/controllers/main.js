@@ -22,13 +22,16 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     });
   };
 
-  $scope.changelanguage = function (language) {
+  $scope.changelanguage = function (language, closeMenu) {
     var file;
     $scope.idioma = language;
     $cookies.put("language", language);
     file = $scope.idioma === "es" ? "es_es.json" : "en_en.json";
     $scope.languageRequest(file);
-    document.querySelector("#language").$.label.innerHTML = $scope.languageSelected;
+
+    if(closeMenu) {
+      document.querySelector('#language').close();
+    }
   };
 
   /* Monitorizamos el lenguage */
@@ -95,7 +98,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     $location.hash("");
     $location.path(view); // path not hash
   };
-  
+
   /* NOTE Necesario porque el dropmenu no hace correctamente el binding:
    * Si sabe la direccion pero no manda a ella porque el binding se hace posterior
   */
@@ -151,6 +154,10 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
         $scope.hidePopup();
       }
     });
+  };
+
+  $scope.calculateWidthUserDropdown = function() {
+    return "200px";
   };
 
   /* Escuhas de los botones*/

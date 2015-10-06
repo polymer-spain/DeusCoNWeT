@@ -12,7 +12,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Exo:400,300' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Exo:400,300" rel="stylesheet" type="text/css">
 
     <!-- Polymer -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
@@ -25,44 +25,50 @@
 
   <body unresolved ng-app="picbit" ng-controller="MainController">
 
-    <paper-toolbar ng-class="{small: scrolled}">
-      <img class="logo" src="images/logo.png" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">
-      <div horizontal layout flex>
-        <h2 id="name" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">Picbit</h2>
-      </div>
+    <paper-toolbar id="header">
+      <img class="logoPicbit" src="images/logo.png" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">
+      <h2 class="flex" id="name" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">Picbit</h2>
 
       <!-- Languages --> 
-      <paper-dropdown-menu id="language" label="{{languageSelected}}">
-        <iron-dropdown class="lang-menu dropdown" >
-          <core-menu vertical layout>
-            <paper-item class="lenguage-button" ng-click="changelanguage('es')">{{language.lang.es}}</paper-item>
-            <paper-item class="lenguage-button" ng-click="changelanguage('en')">{{language.lang.en}}</paper-item>
-          </core-menu>
-        </iron-dropdown>
-      </paper-dropdown-menu>
+      <paper-menu-button id="language" >
+        <paper-button class="dropdown-trigger">
+          <iron-icon icon="icons:language" class="searchIcon"></iron-icon>
+          <span style="text-transform: none">{{languageSelected}}</span>
+        </paper-button>
+        <paper-menu class="dropdown-content" ignoreSelect style="color:black">
+          <paper-item ng-click="changelanguage('es', true)">{{language.lang.es}}</paper-item>
+          <paper-item ng-click="changelanguage('en', true)">{{language.lang.en}}</paper-item>
+        </paper-menu>
+      </paper-menu-button>
+
+
       <!-- End Languages -->
 
-      <paper-icon-button ng-show="!isLogged" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
-        <span id="nameId">{{language.login}}</span>
-      </paper-icon-button>
-
-      <div ng-click="dropmenu()"  ng-show="isLogged" relative>
-        <div horizontal layout id="user_options">
-          <iron-icon id="siginButton" icon="social:person"></iron-icon>
-          <span flex>{{user.user_id}}</span>
-        </div>
-        <iron-dropdown class="lang-menu dropdown" id="dropmenu" relatedTarget="{{document.querySelector('#user_options')}}">
-          <core-menu vertical layout>
-            <paper-item class="paper-item"><paper-button class="profile_button" flex ng-click="goto('home')">{{language.profile}}</paper-button></paper-item>
-            <paper-item ng-click="goto('profile')" class="paper-item"><paper-button class="profile_button" flex >{{language.settings}}</paper-button></paper-item>
-            <paper-item class="paper-item"><paper-button class="profile_button" flex ng-click="logout()">{{language.logout}}</paper-button></paper-item>
-          </core-menu>
-        </iron-dropdown>
+      <!-- TODO cambiar ng-show a negado y el de abajo a true -->
+      <div ng-show="!isLogged" ng-click="showPopup()" class="loginButton">
+        <paper-icon-button  id="siginButton"  icon="social:person">
+        </paper-icon-button>
+        <span id="nameId" style="text-transform: none">{{language.login}}</span>
       </div>
 
+      <div ng-show="isLogged" class="loginButton">
+        <paper-menu-button id="userButton" >
+          <paper-button class="dropdown-trigger">
+            <iron-icon icon="social:person" class="searchIcon"></iron-icon>
+            <span style="text-transform: none">{{user.user_id}}</span>
+          </paper-button>
+          <paper-menu class="dropdown-content" style="text-align: center">
+            <paper-item class="paper-item" ng-click="goto('home')">{{language.profile}}</paper-item>
+            <paper-item ng-click="goto('profile')" class="paper-item">{{language.settings}}</paper-item>
+            <paper-item class="paper-item" ng-click="logout()">{{language.logout}}</paper-item>
+          </paper-menu>
+        </paper-menu-button>
+
+      </div>
+      
     </paper-toolbar>
 
-    <footer horizontal center-justified layout>
+    <footer class="horizontal center-justified layout">
       <paper-button ng-click="changeView('/about')">{{language.about}}</paper-button>
       <paper-button><a href="https://deusconwet.typeform.com/to/opLyCo">{{language.contact}}</a></paper-button>
       <paper-button ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
@@ -74,13 +80,13 @@
 
     <!-- pop up social networks -->
     <div ng-show="shadow" class="shadow"></div>
-    <div ng-show="popup" vertical center layout class="popup" id="popup">
+    <div ng-show="popup" class="vertical center layout popup" id="popup">
       <paper-icon-button  ng-click="hidePopup()" icon="close"></paper-icon-button>
       <span>{{language.select_network}}</span>
-      <div vertical center-justified layout class="button-login">
+      <div class="vertical center-justified layout button-login">
         <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
         <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static></twitter-login>
-        <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static="true"></login-facebook>
+        <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static></login-facebook>
 
       </div>
     </div>
@@ -106,6 +112,7 @@
     <script src="scripts/controllers/privacy.js"></script>
     <script src="scripts/controllers/selectId.js"></script>
     <script src="scripts/directives/dragdrop.js"></script>
+    <script src="scripts/directives/bindPolymer.js"></script>
     <script src="scripts/services/anchosmooth.js"></script>
     <script src="scripts/services/backend.js"></script>
     <script src="scripts/services/cookies.js"></script>

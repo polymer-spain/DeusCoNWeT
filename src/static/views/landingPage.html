@@ -4,98 +4,15 @@
   }
 </style>
 <div id="landing">
-
-  <!--  <ul style="position:fixed;right:10px;top:45%;">
-<li id="disc1" ng-click="setSelected('1')" ng-class="{selected: isSelected(1)}"></li>
-<li id="disc2" ng-click="setSelected('2')" ng-class="{selected: isSelected(2)}"></li>
-<li id="disc3" ng-click="setSelected('3')" ng-class="{selected: isSelected(3)}"></li>
-<li id="disc4" ng-click="setSelected('4')" ng-class="{selected: isSelected(4)}"></li>
-</ul>-->
   <section id="section1">
-    <div class="content" oscuro=true>
+    <div class="content">
       <h1>{{language.title}}</h1>
-      <div style="padding-top: 30px"horizontal center-justified layout>
+      <div style="padding-top: 30px" class="horizontal center-justified layout">
         <div class="slogan">
           <p>{{language.slogan}}</p>
-          <!--          <p>¡Proximamente!</p>
-<paper-button  ng-click="goto(4)" id="beta">Suscribirse a la beta</paper-button>-->
-          <paper-button ng-click="showPopup()" style="background-color: #B71C1C">{{language.login}}</paper-button>
+          <paper-button ng-click="showPopup()">{{language.login}}</paper-button>
         </div>
       </div>
     </div>
   </section>
-  <!--
-<section id="section2">
-<div class="content" oscuro=true>
-<h1 style="text-align:center">Bienvenido 2</h1>
-<div style="padding-top: 30px"horizontal layout>
-<div style="width:400px;display:inline-block;min-width:300px">
-Estamos trabajando en un proyecto que te permita unificar todas tus cuentas en una sola página. Tras unos sencillos pasos, serás capaz de controlar y visualizar el contenido de las distintas redes sociales a las que perteneces. También podrás ver en una sola página las publicaciones de tus amigos.
-<br>
-<br>
-Próximamente lanzaremos nuestra primera Beta, ¡No nos pierdas de vista!
 </div>
-<div style="display:inline-block;margin-left:40%;text-align:center">
-<h3>Accede con tu red social</h3>
-<paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
-</div>
-</div>
-</div>
-</section>
-
-<section id="section3">
-<div class="content" oscuro=true>
-<h1 style="text-align:center">Bienvenido 3</h1>
-<div style="padding-top: 30px"horizontal layout>
-<div style="width:400px;display:inline-block;min-width:300px">
-Estamos trabajando en un proyecto que te permita unificar todas tus cuentas en una sola página. Tras unos sencillos pasos, serás capaz de controlar y visualizar el contenido de las distintas redes sociales a las que perteneces. También podrás ver en una sola página las publicaciones de tus amigos.
-<br>
-<br>
-Próximamente lanzaremos nuestra primera Beta, ¡No nos pierdas de vista!
-</div>
-<div style="display:inline-block;margin-left:40%;text-align:center">
-<h3>Accede con tu red social</h3>
-<paper-button ng-click="showPopup()" style="background-color: #B71C1C">Entrar</paper-button>
-<br>
-</div>
-</div>
-</div>
-</section>
-<section id="section4">
-<div class="content" oscuro=true>
-<div style="" horizontal center-justified layout>
-<div class='contacto'>
-<h2 style="text-decoration:underline">Suscríbete a la beta</h2>
-<div><paper-input-decorator autovalidate floatingLabel label="Nombre" error="Introduce un nombre">
-<input id="namesus" type="name" aria-label="required">
-</paper-input-decoratos></div>
-<div><paper-input-decorator autovalidate floatingLabel label="Apellido" error="Introduce un apellido">
-<input id="surnamesus" type="name" aria-label="required">
-</paper-input-decoratos></div>
-<div><paper-input-decorator autovalidate floatingLabel label="Email" error="Debe ser un correo real">
-<input id="sendersus" type="email" aria-label="required">
-</paper-input-decoratos></div>
-<div style="margin-top:30px">
-<span class="invalid" id="invalid"></span><paper-button ng-click="sub()" id="send">
-Enviar
-</paper-button>
-</div>
-</div>
-</div>
-</div>
-</section>-->
-</div>
-<!--
-<div ng-show="sended" class="popup">
-
-<div>
-<paper-icon-button fill  raised style="position:absolute;right:0;top:0" ng-click="closeSended()" icon="close"></paper-icon-button>
-<p style="margin:8px auto;font-size:1.4em">Se ha suscrito correctamente</p>
-</div>
-<div style="margin-top: 40px;">
-Se ha suscrito a la versión beta de PicBit.<br>Le iremos informando de las actualizaciones que se vayan introducciendo.
-</div>
-<paper-button class="accept" ng-click="closeSended()">Aceptar</paper-button>
-
-</div>
--->

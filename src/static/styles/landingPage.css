@@ -1,153 +1,60 @@
-html {
-  background-image: url('../images/beach.jpg');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+html
+{
+    background-image: url('../images/beach.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
 }
-#landing {
+#landing  #section1
+{
+    z-index: 0;
 
+    height: 100%;
 }
-#landing  #section1 {
-  height: 100%;
-  z-index:0;
+#landing > .content
+{
+    padding: 10px 50px 20px 50px;
 }
-#landing > .content {
-  font-size:16px;
-  padding: 10px 50px 20px 50px;
-}
-#landing  .slogan {
-  width:400px;
-  display:inline-block;
-  min-width:300px;
-  font-size: 20px;
-  text-align: center;
-}
-#landing .content h1 {
-  font-size: 45px;
-  text-align: center;
-}
-@media (min-width: 1400px) {
-  #landing  .content {
+#landing  .slogan
+{
     font-size: 22px;
-  }
-  #landing  .slogan {
-    font-size: 22px; 
-  }
+
+    display: inline-block;
+
+    width: 400px;
+    min-width: 300px;
+
+    text-align: center;
+}
+#landing .content h1
+{
+    font-size: 45px;
+
+    text-align: center;
 }
 
-#landing #section2{
-  padding-top: 100px;
-  margin-top:50%;
-  z-index:0;
-}
-#landing #section3{
-  z-index:0;
-  margin-top:50%;
-  padding-top: 150px;
-}
+#landing .content paper-button
+{
+    font-size: 16px;
 
-#landing #section4 {
-  margin-top:50%;
-  margin-bottom: 50%; 
+    background-color: #b71c1c;
+}
+.contacto
+{
+    padding: 15px 45px 10px;
 
-}
-#landing ul {
-  list-style: circle;
-  font-size: 26px;
-}
-#landing ul li.selected {
-  list-style:disc;
-}
+    resize: both;
 
-#landing a {
-  color:white; 
+    color: black;
+    background-color: #eee;
 }
-#landing a:visited {
-  color:white;
-}
+a
+{
+    text-decoration: none;
 
-#landing section {
-  padding-top: 200px; 
+    color: inherit;
 }
-
-#landing #beta {
-  background-color:#B71C1C;
-}
-
-
-
-.contacto{
-  color: black;
-  padding: 15px 45px 10px;
-  background-color: #eee;
-  resize: both;
-}
-paper-input-decorator[focused] /deep/ .focused-underline {
-  background-color: #B71C1C; 
-}
-paper-input-decorator[focused] /deep/ .label-text{
-  color: black; 
-}
-paper-input-decorator /deep/ .label-text{
-  color: black; 
-}
-.contacto paper-input-decorator,
-.contacto paper-input {
-  width: 294px; 
-}
-
-
-#send {
-  float: right;
-  font-family: inherit;
-  border:2px solid #B71C1C;
-
-}
-#landing .contacto > h2 {
-  color: #B71C1C;
-}
-#send:hover {
-  background-color: #B71C1C; 
-  color:whitesmoke;
-}
-#landing .contacto > div > paper-input-decorator {
-  font-size: 16px;
-  padding: 2px;
-}
-#landing .contacto > div {
-  margin-top:20px;
-}
-#landing .contacto textarea {
-  width: 294px;
-  height: 150px;
-  max-width: 100%;
-  padding: 7px 6px;
-  border: none;
-  box-shadow:0 0 0 1.5px #ea5050;
-  margin: 5px 0;
-}
-
-span.invalid {
-  color: #B71C1C;
-  font-size: 12px;
-  font-family: 'Roboto';
-}
-paper-button.accept {
-  border:3px solid #b71c1c;
-  border-radius: 10px;
-  position:absolute;
-  bottom:30px;
-  left: 150px;
-}
-
-paper-button.accept:hover {
-  background-color: #b71c1c;
-  color:whitesmoke;
-}
-a {
-  color: inherit;
-  text-decoration: none;
-}
-a:visited {
-  color: inherit;
+a:visited
+{
+    color: inherit;
 }

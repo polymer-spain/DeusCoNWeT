@@ -47,7 +47,8 @@
     "tag": "v1.0.3",
     "commit": "24abacffd443f967125f5eae580eadc7b90f41c7"
   },
-  "_source": "git://github.com/polymerelements/paper-menu-button.git",
-  "_target": "^1.0.0",
-  "_originalSource": "polymerelements/paper-menu-button"
+  "_source": "git://github.com/PolymerElements/paper-menu-button.git",
+  "_target": "~1.0.3",
+  "_originalSource": "PolymerElements/paper-menu-button",
+  "_direct": true
 }

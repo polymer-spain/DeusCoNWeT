@@ -1,0 +1,181 @@
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+
+
+
+<dom-module id="twitter-login">
+  <style is="custom-style">
+    .large{
+      background: #00B0ED;
+      color: #fff;
+      border-radius: 3px;
+      cursor: pointer;
+      text-transform: none;
+      vertical-align: center;
+      width: 205px;
+      height: 50px;
+      font-size: 16px;
+    }
+
+    .sort{
+      background: #00B0ED;
+      border-radius: 3px;
+      cursor: pointer;
+      vertical-align: center;
+      height: 46px;
+      width: 82px;
+    }
+
+    .icon{
+      --iron-icon-width: 24px;
+      --iron-icon-height: 24px;
+      margin-right: 5px;
+    }
+
+    .disconnect{
+      background: grey;
+    }
+  </style>
+  <template>
+    <iron-ajax
+               id="requestToken"
+               url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "action": "request_token"
+                       }'
+               handleAs="json"
+               on-response="_authentication"
+               >
+    </iron-ajax>
+    
+    <iron-ajax
+               id="requestCookie" url="{{endpoint}}"
+               method="GET"
+               params='{
+                       "action": "login",
+                       "oauth_verifier":"{{oauth_verifier}}"
+                       }'
+               handleAs="json"
+               on-response="_cookie"
+               >
+    </iron-ajax>
+    <!-- Large and disconnected -->
+    <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
+      <paper-button class="large" tittle="Twitter" on-click="_login">
+        <iron-icon src="twitter_logo.png" class="icon"></iron-icon> 
+        <span>Login with Twitter</span>
+      </paper-button>
+    </template>
+
+    <!-- large and connected-->
+    <template is="dom-if" if="[[_largeAndConnected(logged, sort)]]">
+      <paper-button class="large disconnect" tittle="Twitter" on-click="_logout">
+        <iron-icon src="twitter_logo.png" class="icon"></iron-icon> 
+        <span>Logout with Twitter</span>
+      </paper-button>
+    </template>
+
+    <!-- sort and disconnected -->
+    <template is="dom-if" if="[[_sortAndDisconnected(logged, sort)]]">
+      <paper-button class="sort" tittle="Twitter" on-click="_login">
+        <iron-icon src="twitter_logo.png" class="icon"></iron-icon> 
+      </paper-button>
+    </template>
+
+    <!-- sort and connected-->
+    <template is="dom-if" if="[[_sortAndConnected(logged, sort)]]">
+      <paper-button class="sort disconnect" tittle="Twitter" on-click="_logout">
+        <iron-icon src="twitter_logo.png" class="icon"></iron-icon> 
+      </paper-button>
+    </template>
+
+  </template>
+  <script>
+    Polymer({
+      is:"twitter-login",
+      properties:{
+        endpoint: {
+          type: String,
+          value: "",
+          reflectToAttribute: true
+        },
+        logged: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        sort: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        }
+      },
+      _largeAndDisconnected: function (logged,sort) {
+        return !logged && !sort;
+      },
+      _largeAndConnected: function(logged, sort) {
+        return logged && !sort;
+      },
+      _sortAndDisconnected: function(logged, sort) {
+        return !logged && sort; 
+      },
+      _sortAndConnected: function(logged, sort) {
+        return logged && sort; 
+      },
+      _login: function() {
+        this.$.requestToken.generateRequest();
+      },
+
+      _authentication: function(event, detail, sender) {
+        var oauth_url = detail.response.oauth_url;
+        var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
+        var back = this;
+        var pollTimer  =  window.setInterval(function() {
+          try {
+            if(win.document.URL.indexOf('example-project-13') != -1){
+              var ulr, patron, exp;
+              url =   win.document.URL;
+              patron = "oauth_verifier"+"=([^&#]*)";
+              exp = new RegExp(patron);
+              // Ponemos en valor en una variable de la ventana principal
+              back.oauth_verifier = exp.exec(url)[1];
+              back.$.requestCookie.go();
+              window.clearInterval(pollTimer);
+              win.close()
+              back.logged = true
+            }
+          } catch(e) {
+          }
+        }, 100);
+      },
+
+      /* Borrar todo relacionado en base de datos */
+      _logout: function(event, detail, sender){
+        /* Borrar datos de la base de datos */
+        var back = this;
+        back.logged = false
+      },
+
+      _cookie: function(e,d,s) {
+        var response, code;
+        response = d.response;
+        code = d.xhr.status;
+        this.fire('twitter-logged',{token:'',redSocial:'twitter',code:code});
+      },
+    });
+
+  </script>
+</dom-module>

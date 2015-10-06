@@ -33,14 +33,14 @@ will close automatically.
 
 Example:
 
-    <paper-menu-button>
-      <paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
-      <paper-menu class="dropdown-content">
-        <paper-item>Share</paper-item>
-        <paper-item>Settings</paper-item>
-        <paper-item>Help</paper-item>
-      </paper-menu>
-    </paper-menu-button>
+<paper-menu-button>
+<paper-icon-button icon="menu" class="dropdown-trigger"></paper-icon-button>
+<paper-menu class="dropdown-content">
+<paper-item>Share</paper-item>
+<paper-item>Settings</paper-item>
+<paper-item>Help</paper-item>
+</paper-menu>
+</paper-menu-button>
 
 ### Styling
 
@@ -94,22 +94,25 @@ Custom property | Description | Default
 
       @apply(--paper-menu-button-dropdown);
     }
+    iron-dropdown {
+       width: var(--iron-dropdown-width); 
+    }
   </style>
   <template>
     <div id="trigger" on-tap="open">
       <content select=".dropdown-trigger"></content>
     </div>
     <iron-dropdown
-      id="dropdown"
-      opened="{{opened}}"
-      horizontal-align="[[horizontalAlign]]"
-      vertical-align="[[verticalAlign]]"
-      horizontal-offset="[[horizontalOffset]]"
-      vertical-offset="[[verticalOffset]]"
-      open-animation-config="[[openAnimationConfig]]"
-      close-animation-config="[[closeAnimationConfig]]"
-      no-animations="[[noAnimations]]"
-      focus-target="[[_dropdownContent]]">
+                   id="dropdown"
+                   opened="{{opened}}"
+                   horizontal-align="[[horizontalAlign]]"
+                   vertical-align="[[verticalAlign]]"
+                   horizontal-offset="[[horizontalOffset]]"
+                   vertical-offset="[[verticalOffset]]"
+                   open-animation-config="[[openAnimationConfig]]"
+                   close-animation-config="[[closeAnimationConfig]]"
+                   no-animations="[[noAnimations]]"
+                   focus-target="[[_dropdownContent]]">
       <paper-material class="dropdown-content">
         <content id="content" select=".dropdown-content"></content>
       </paper-material>
@@ -361,6 +364,10 @@ Custom property | Description | Default
         if (disabled && this.opened) {
           this.close();
         }
+      },
+      attached: function() {
+        this.customStyle["--iron-dropdown-width"] =  this.$.trigger.offsetWidth + "px";
+        this.updateStyles(); 
       }
     });
 

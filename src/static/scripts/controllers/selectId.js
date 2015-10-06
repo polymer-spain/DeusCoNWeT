@@ -2,8 +2,7 @@
 angular.module("picbit").controller("SelectidController", ["$scope", "$backend", "$rootScope", function ($scope, $backend, $rootScope) {
   "use strict";
   $scope.userIdError = false;
-
-  $scope.errorMessage = "";
+  $scope.showSendButton = false;
   $scope.sendUsername = function (event, userId) {
     if (!document.querySelector("#username_input").validity.valid) {
       $scope.errorMessage = $scope.language.select_id.invalid_username;
@@ -26,4 +25,11 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
       $scope.userIdError = false;
     }
   };
+  $scope.$watch("$scope.showSendButton", function(newValue, oldValue) {
+  });
+  document.querySelector("paper-input").addEventListener("bind-value-changed", function(event) {
+    $scope.$apply(function() {
+      $scope.showSendButton = event.detail.value !== "" ? true : false;
+    });
+  });
 }]);

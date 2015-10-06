@@ -1,0 +1,28 @@
+{
+  "name": "twitter-login",
+  "version": "1.0.0",
+  "authors": [
+    "Ana Isabel Lopera <lopera.martinez.ana.isabel@gmail.com>"
+  ],
+  "description": "Web component for login twitter button",
+  "keywords": [
+    "web-compoments",
+    "twitter",
+    "polymer"
+  ],
+  "main": "twitter-login.html",
+  "license": "MIT",
+  "homepage": "https://github.com/ailopera/twitter-login/",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.4",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.4",
+    "paper-button": "PolymerElements/paper-button#~1.0.7"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.5"
+  }
+}
