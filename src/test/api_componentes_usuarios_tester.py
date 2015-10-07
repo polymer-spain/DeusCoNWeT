@@ -19,7 +19,7 @@ def main():
 		option = sys.argv[1] 
 
 	# We open the connection with the server
-	test_utils.openConnection(False) # Realizamos pruebas en local (remote=False)
+	test_utils.openConnection(True) # Realizamos pruebas en local (remote=False)
 
 	# PRE-TESTs. Login de usuario en el sistema, utilizando Google+
 	request_uri = "/api/oauth/googleplus/login"
@@ -31,22 +31,22 @@ def main():
 	 'user_identifier': user_id1 })
 	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
 
-	# PRE-TEST 2. Añadimos el componente a utilizar en las pruebas
-	print "PRETEST 2: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
-	print "Ignorar el status de salida de este TEST"
-	print "Status esperado: 201 "
-	params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
-            'component_id': 'instagram-timeline',
-            'description': 'Web component to obtain the timeline of the social network Instagram using Polymer',
-            'social_network': 'instagram',
-            'input_type': 'None',
-            'output_type': 'photo',
-            'versions': 'stable'
-	})
-	test_utils.make_request("PUT", components_basepath, params, 201, None)
-
 
 	if option == None:
+		# PRE-TEST 2. Añadimos el componente a utilizar en las pruebas
+		print "PRETEST 2: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
+		print "Ignorar el status de salida de este TEST"
+		print "Status esperado: 201 "
+		params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
+	            'component_id': 'instagram-timeline',
+	            'description': 'Web component to obtain the timeline of the social network Instagram using Polymer',
+	            'social_network': 'instagram',
+	            'input_type': 'None',
+	            'output_type': 'photo',
+	            'versions': 'stable'
+		})
+		test_utils.make_request("PUT", components_basepath, params, 201, None)
+
 		# TESTs relativos a la modificación de info de usuario (añadir un componente al usuario)
 		# TEST 1
 		print "TEST 1: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (El componente no existe en el sistema)"
@@ -106,13 +106,26 @@ def main():
 
 	elif option == 'borrado':
 
+		# PRETEST 2
+		print "PRETEST 2: Añadimos el componente al dashboard de usuario, si no está añadido ya"
+		print "Status esperado: 200 (Ignorar status de este caso)"
+		request_uri = users_basepath + "/" + user_id1
+		params = urllib.urlencode({'component': 'instagram-timeline'})
+		test_utils.make_request("POST", request_uri, params, 200, session1)
+
+		# PRETEST 3
+		print "PRETEST 3: Obtenemos la info de usuario, con objeto de ver los componentes que tiene incluidos en su dashboard"
+		print "Status esperado: 200"
+		request_uri = users_basepath + "/" + user_id1 + "?component_info=detailed"
+		params = urllib.urlencode({})
+		test_utils.make_request("GET", request_uri, params, 200, session1)
+
 		# TESTs relativos al borrado de componentes de usuario
 		# Pruebas de casos de error
 		# TEST 9 
 		print "TEST 9: Borrar el componente del usuario, sin cookie"
 		print "Status esperado: 401"
 		request_uri = components_basepath + "/instagram-timeline"
-		params = urllib.urlencode({})
 		test_utils.make_request("DELETE", request_uri, params, 401, None)
 		
 		# TEST 10 
@@ -151,22 +164,23 @@ def main():
 		# TEST 15 
 		print "TEST 15: Eliminar el componente del dashboard"
 		print "Status esperado: 200"
-		request_uri = components_basepath + "/instagram-timeline"
+		params = urllib.urlencode({})
+		request_uri = components_basepath + "/instagram-timeline?scope=user"
 		test_utils.make_request("DELETE", request_uri, params, 200, session1)		
-		
+				
 		# TEST 16 
-		print "TEST 16: Intentar eliminar el componente del dashboard, estando eliminado ya"
-		print "Status esperado: 404"
-		request_uri = components_basepath + "/instagram-timeline"
-		test_utils.make_request("DELETE", request_uri, params, 404, session1)		
-		
-		# TEST 17 
-		print "TEST 17: Obtener lista filtrada de componentes (filter=user)"
+		print "TEST 16: Obtener lista filtrada de componentes (filter=user)"
 		print "No debe aparecer el componente eliminado"
 		print "Status esperado: 200"
 		request_uri = components_basepath + "?filter=user&list_format=complete"
 		test_utils.make_request("GET", request_uri, params, 200, session1)		
 		
+		# TEST 17
+		print "TEST 17: Intentar eliminar el componente del dashboard, estando eliminado ya"
+		print "Status esperado: 404"
+		request_uri = components_basepath + "/instagram-timeline?scope=user"
+		test_utils.make_request("DELETE", request_uri, params, 404, session1)		
+
 		# TEST 18 
 		print "TEST 18: Obtener info sobre el componente"
 		print "(para verificar que no se ha eliminado por error el componente general)"

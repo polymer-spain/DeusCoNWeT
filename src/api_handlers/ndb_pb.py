@@ -359,10 +359,13 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
 # creating or updating the corresponding entities that store properties about this action
 def activateComponentToUser(component_id, entity_key):
   user = entity_key.get()
-  user_id = getUserId(entity_key)
+  user_component = None
   #We check if the component provided is in the user component list
   # If not, we create a new UserComponent Entity, setting the component version that will use the user
-  user_component = UserComponent.query(ndb.AND(User.components.component_id == component_id, User.user_id == user_id)).get()
+  for comp in user.components:
+    if comp.component_id == component_id:
+      user_component = comp
+
   if not user_component == None:
     # We set the field to active
     # The user's preferences (heigh, width) does not change
@@ -370,7 +373,7 @@ def activateComponentToUser(component_id, entity_key):
     # (the same version than the setted when the user activated the component for the first time)
     version = user_component.version
     user_component.active = True
-    user_component.put()
+    user.put()
   else:
     # We set the version of the component
     version = setComponentVersion(component_id)
@@ -391,7 +394,7 @@ def activateComponentToUser(component_id, entity_key):
     versioned_component.put() 
 
   # We store in a ComponentTested entity the new version tested by the user
-  user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user_id)).get()
+  user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
   if not user_component_tested == None:
     # We add the version to the versions tested list, if is not was added previously
     if not version in user_component_tested.versions_tested:
@@ -407,13 +410,18 @@ def activateComponentToUser(component_id, entity_key):
 # It turns the field active to False, thus the component will not be listed as a 
 # component included in the user's dashboard
 def deactivateUserComponent(entity_key, component_id):
+  user = entity_key.get()
   status = False
-  user_id = ndb_pb.getUserId(entity_key)
-  user_component = UserComponent.query(ndb.AND(User.components.component_id == component_id, User.user_id == user_id)).get()
-  if not user_component == None:
-    user_component.active = False
-    user_component.put()
-    status = True
+  #We check if the component provided is in the user component list
+  for comp in user.components:
+    if comp.component_id == component_id and comp.active:
+      # Deactivates the component
+      print "Cambio a desactivado el campo, Valor antiguo:", comp.active
+      comp.active = False
+      user.put()
+      status = True
+      user_c = UserComponent.query(UserComponent.component_id == comp.component_id)
+  
   return status
 
 
@@ -539,25 +547,19 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-# @ndb.transactional()
 def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None):
-  component = Component.query(Component.component_id == name).get()
-  created = False
-  if component == None: # Creates the component
-    # Generates a random initial value that represents the version of the component that will be 
-    # served to the next user who adds it to his dashboard
-    initial_index = random.randint(0, len(version_list)-1)
-    component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
-     rs=rs, description=description, version_list=version_list, version_index=initial_index)
-    # We create a new VersionedComponent Entity for each version_added to the version_list
-    for version in version_list:
-      versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
-      versionedComponent.put()
-    created = True
+  # Generates a random initial value that represents the version of the component that will be 
+  # served to the next user who adds it to his dashboard
+  initial_index = random.randint(0, len(version_list)-1)
+  component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
+   rs=rs, description=description, version_list=version_list, version_index=initial_index)
+  # We create a new VersionedComponent Entity for each version_added to the version_list
+  for version in version_list:
+    versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
+    versionedComponent.put()
+  created = True
   # Saves the changes to the entity
   component.put()
-  # Return wether the component was created or not
-  return created
 
 
 # Modifies the related info about a General component in the system (ComponentEntity)
@@ -622,10 +624,11 @@ def addListening(entity_key, name, events):
   user.put()
   
 
+def searchComponent(component_id):
+  return Component.query(Component.component_id == component_id).get()
+  
 def getComponent(entity_key, name, all_info=False): # FUNCIONA
-  print ">>> DEBUG: name of the component: ", name
   comp = Component.query(Component.component_id == name).get()
-  print ">>> getComponent comp: ", comp
   if comp == None:
     ans = None
   else:

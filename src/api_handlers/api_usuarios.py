@@ -164,8 +164,6 @@ class UserHandler(SessionHandler):
           if values.has_key("component"):
             component_id = values.get("component")      
             component = ndb_pb.getComponent(user_logged_key, component_id)
-            print ">>> Valor del parametro component: ", component_id
-            print ">>> Entidad componente: ", component
             # If the component_id provided in the request exists in the system and the user has not added it previously,
             # we add the component_id provided to the list of user's data to be updated
             if not component == None:

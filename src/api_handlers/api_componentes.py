@@ -109,16 +109,16 @@ class ComponentListHandler(SessionHandler):
             if social_network in social_list:
                 # We check if the request has provided at least the version "stable" for the version_list param
                 if "stable" in version_list:
-                    # Adds the component to datastore
-                    created = ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type, version_list)
-                    if created:
+                    # We check if the component exists in our system
+                    component_stored = ndb_pb.searchComponent(component_id)
+                    if component_stored == None:
+                        # Adds the component to datastore
+                        ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type, version_list)
                         response = {"status": "Component uploaded succesfully"}
                         self.response.write(json.dumps(response))
                         self.response.set_status(201)
                     else:
-                        response = {"status": "Component updated"}
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(200)
+                        self.response.set_status(200)    
                 else:
                     response = {"error": "The versions param must contains stable as one of its values"}
                     self.response.write(json.dumps(response))
@@ -277,12 +277,13 @@ class ComponentHandler(SessionHandler):
         """
         scope = self.request.get("scope", default_value="user")
         cookie_value = self.request.cookies.get("session")
+        
         if scope=="user":
             if not cookie_value == None:
                 user_logged_key = self.getUserInfo(cookie_value)
                 if not user_logged_key == None:
-                    deleted = ndb_pb.deactivateUserComponent(user_logged_key, component_id)
-                    if deleted:
+                    deactivated = ndb_pb.deactivateUserComponent(user_logged_key, component_id)
+                    if deactivated:
                         response = {"status": "Component deleted succesfully"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
