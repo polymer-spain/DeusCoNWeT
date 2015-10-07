@@ -412,15 +412,19 @@ def activateComponentToUser(component_id, entity_key):
 def deactivateUserComponent(entity_key, component_id):
   user = entity_key.get()
   status = False
-  #We check if the component provided is in the user component list
+  # We check if the component provided is in the user component list
   for comp in user.components:
     if comp.component_id == component_id and comp.active:
       # Deactivates the component
       print "Cambio a desactivado el campo, Valor antiguo:", comp.active
       comp.active = False
       user.put()
+      user_c_key = comp.key
       status = True
-      user_c = UserComponent.query(UserComponent.component_id == comp.component_id)
+      user_c = user_c_key.get()
+      user_c.active = False
+      user_c.put()
+      # user_c = UserComponent.query(UserComponent.component_id == comp.component_id)
   
   return status
 
