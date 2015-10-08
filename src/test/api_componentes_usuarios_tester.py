@@ -31,7 +31,7 @@ def main():
 	access_token_login = "googleTEST"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
 	 'user_identifier': user_id1 })
-	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
+	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
 
 
 	request_uri = "/api/oauth/googleplus/login"
@@ -41,12 +41,12 @@ def main():
 	access_token_login = "googleTEST2"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
 	 'user_identifier': user_id2 })
-	session2 = test_utils.make_request("POST", request_uri, params, 200, None, True)
+	session2 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
 
 
 	if option == None:
 		# PRE-TEST 2. Añadimos el componente a utilizar en las pruebas
-		print "PRETEST 2: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
+		print "PRETEST 3: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
 		print "Ignorar el status de salida de este TEST"
 		print "Status esperado: 201 "
 		params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
@@ -57,7 +57,7 @@ def main():
 	            'output_type': 'photo',
 	            'versions': 'stable'
 		})
-		test_utils.make_request("PUT", components_basepath, params, 201, None)
+		test_utils.make_request("PUT", components_basepath, params, 201, None, preTest=True)
 
 		# TESTs relativos a la modificación de info de usuario (añadir un componente al usuario)
 		# TEST 1
@@ -130,14 +130,14 @@ def main():
 		print "Status esperado: 200 (Ignorar status de este caso)"
 		request_uri = users_basepath + "/" + user_id1
 		params = urllib.urlencode({'component': 'instagram-timeline'})
-		test_utils.make_request("POST", request_uri, params, 200, session1)
+		test_utils.make_request("POST", request_uri, params, 200, session1, preTest=True)
 
 		# PRETEST 3
 		print "PRETEST 3: Obtenemos la info de usuario, con objeto de ver los componentes que tiene incluidos en su dashboard"
 		print "Status esperado: 200"
 		request_uri = users_basepath + "/" + user_id1 + "?component_info=detailed"
 		params = urllib.urlencode({})
-		test_utils.make_request("GET", request_uri, params, 200, session1)
+		test_utils.make_request("GET", request_uri, params, 200, session1, preTest=True)
 
 		# TESTs relativos al borrado de componentes de usuario
 		# Pruebas de casos de error
