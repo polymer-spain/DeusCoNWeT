@@ -379,7 +379,6 @@ def activateComponentToUser(component_id, entity_key):
     version = setComponentVersion(component_id)
     # We create a new UserComponent entity
     user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
-    user_component.put()
     # We add the component to the component_list of the user
     user.components.append(user_component)
     user.put()
@@ -402,7 +401,7 @@ def activateComponentToUser(component_id, entity_key):
       user_component_tested.put()  
   else:
     # We create a new ComponentTested entity to store the versions of a component tested by the user
-    component_tested = ComponentTested(component_id=component_id, user_id=user_id, versions_tested=[version])
+    component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version])
     component_tested.put()
 
 
@@ -413,17 +412,13 @@ def deactivateUserComponent(entity_key, component_id):
   user = entity_key.get()
   status = False
   # We check if the component provided is in the user component list
+  print "DEBUG: Lista de componentes de usuario: ", user.components 
   for comp in user.components:
     if comp.component_id == component_id and comp.active:
       # Deactivates the component
-      print "Cambio a desactivado el campo, Valor antiguo:", comp.active
       comp.active = False
       user.put()
-      user_c_key = comp.key
       status = True
-      user_c = user_c_key.get()
-      user_c.active = False
-      user_c.put()
       # user_c = UserComponent.query(UserComponent.component_id == comp.component_id)
   
   return status
@@ -710,52 +705,10 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         # Info for the components used by the specified user
         user_comps = user.components
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.component_id).get()
-          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = comp.component_id
-          general_comp["url"] = info_comp.url
-          general_comp["social_network"] = info_comp.rs
-          general_comp["description"] = info_comp.description
-          general_comp["x"] = comp.x
-          general_comp["y"] = comp.y
-          general_comp["input_type"] = info_comp.input_type
-          general_comp["output_type"] = info_comp.output_type
-          general_comp["listening"] = comp.listening
-          general_comp["height"] = comp.height
-          general_comp["width"] = comp.width
-          general_comp["version"] = comp.version
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
-          else:
-            general_comp["rate"] = 0
-          # ans = general_comp
-          ans.append(json.dumps(general_comp))
-
-      else:
-        user = entity_key.get()
-        user_comps = user.components
-        # Now we get the general info about the components used by the user
-        for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.component_id).get()
-          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = info_comp.component_id
-          general_comp["url"] = info_comp.url
-          general_comp["social_network"] = info_comp.rs
-          general_comp["description"] = info_comp.description
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
-          else:
-            general_comp["rate"] = 0
-          ans.append(json.dumps(general_comp))
-
-    else:
-      if all_info:
-        user = entity_key.get()
-        user_comps = user.components
-        for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
-          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          if not info_comp == None:
+          # Returns the info about the active components in the user dashboard
+          if comp.active:
+            info_comp = Component.query(Component.component_id == comp.component_id).get()
+            rate = UserRating.query(UserRating.component_id == comp.component_id).get()
             general_comp["component_id"] = comp.component_id
             general_comp["url"] = info_comp.url
             general_comp["social_network"] = info_comp.rs
@@ -772,15 +725,17 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["rate"] = rate.rating_value
             else:
               general_comp["rate"] = 0
+            # ans = general_comp
             ans.append(json.dumps(general_comp))
+
       else:
         user = entity_key.get()
         user_comps = user.components
         # Now we get the general info about the components used by the user
         for comp in user_comps:
-          info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
-          rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          if not info_comp == None:
+          if comp.active:
+            info_comp = Component.query(Component.component_id == comp.component_id).get()
+            rate = UserRating.query(UserRating.component_id == comp.component_id).get()
             general_comp["component_id"] = info_comp.component_id
             general_comp["url"] = info_comp.url
             general_comp["social_network"] = info_comp.rs
@@ -790,6 +745,51 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             else:
               general_comp["rate"] = 0
             ans.append(json.dumps(general_comp))
+
+    else:
+      if all_info:
+        user = entity_key.get()
+        user_comps = user.components
+        for comp in user_comps:
+          if comp.active:
+            info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
+            rate = UserRating.query(UserRating.component_id == comp.component_id).get()
+            if not info_comp == None:
+              general_comp["component_id"] = comp.component_id
+              general_comp["url"] = info_comp.url
+              general_comp["social_network"] = info_comp.rs
+              general_comp["description"] = info_comp.description
+              general_comp["x"] = comp.x
+              general_comp["y"] = comp.y
+              general_comp["input_type"] = info_comp.input_type
+              general_comp["output_type"] = info_comp.output_type
+              general_comp["listening"] = comp.listening
+              general_comp["height"] = comp.height
+              general_comp["width"] = comp.width
+              general_comp["version"] = comp.version
+              if not rate == None: 
+                general_comp["rate"] = rate.rating_value
+              else:
+                general_comp["rate"] = 0
+              ans.append(json.dumps(general_comp))
+      else:
+        user = entity_key.get()
+        user_comps = user.components
+        # Now we get the general info about the components used by the user
+        for comp in user_comps:
+          if comp.active:
+            info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
+            rate = UserRating.query(UserRating.component_id == comp.component_id).get()
+            if not info_comp == None:
+              general_comp["component_id"] = info_comp.component_id
+              general_comp["url"] = info_comp.url
+              general_comp["social_network"] = info_comp.rs
+              general_comp["description"] = info_comp.description
+              if not rate == None: 
+                general_comp["rate"] = rate.rating_value
+              else:
+                general_comp["rate"] = 0
+              ans.append(json.dumps(general_comp))
   else:
     # Not user id. In this case, the info returned will be always reduced
     if not all_info:

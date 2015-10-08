@@ -5,8 +5,11 @@ import sys
 import httplib
 import urllib
 import json
+import time
 
+# Global vars
 connection = None
+remoteConnection = True
 nTest = 0
 nTestOK = 0
 nTestError = 0
@@ -27,11 +30,12 @@ class bcolors:
 # Módulo con operaciones para realizar pruebas a la API REST del sistema
 
 def openConnection(remote=True):
-	global connection
+	global connection,remoteConnection
 	if remote:
 		connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
 	else:
 		connection = httplib.HTTPConnection("localhost:8080")
+		remoteConnection = False
 
 def closeConnection():
 	global connection
@@ -49,7 +53,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
 		session: cookie de sesion para adjuntar en la peticion
 		printHeaders: Si es True, se imprimirán los Headers de peticion y respuesta
 	"""
-	global connection, nTest, nTestOK, nTestError
+	global connection, nTest, nTestOK, nTestError, remoteConnection
 	nTest += 1
 	print "Realizando petición ", method, " ", request_uri
 	headers = {"User-Agent": "PicBit-App"}
@@ -77,10 +81,15 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
   		print bcolors.OKGREEN + "\t>>> STATUS: OK (STATUS " + str(response.status) + ")"
   		print "\tRESPUESTA: ", responseData + bcolors.ENDC + "\n"
   	
-  	# Print the response session cookie, if proceed
+  	# Prints the response session cookie, if proceed
 	if not session_cookie == None and printHeaders:
   			print "\tCookie de la respuesta: " + session_cookie + "\n"
-  	
+
+  	# We introduce a sligth latency (0.5 seconds) in order to emulate a "remote" behavior of the tests against the dev_server
+  	if not remoteConnection:
+  		time.sleep(0.5)
+  		
+  	# We return the session cookie of the request, useful for the subsequent calls to the PicBit REST API
   	return session_cookie
 
 def tests_status():
