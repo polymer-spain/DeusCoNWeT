@@ -412,7 +412,6 @@ def deactivateUserComponent(entity_key, component_id):
   user = entity_key.get()
   status = False
   # We check if the component provided is in the user component list
-  print "DEBUG: Lista de componentes de usuario: ", user.components 
   for comp in user.components:
     if comp.component_id == component_id and comp.active:
       # Deactivates the component

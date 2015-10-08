@@ -102,7 +102,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
 
   	# We introduce a sligth latency (0.5 seconds) in order to emulate a "remote" behavior of the tests against the dev_server
   	if not remoteConnection:
-  		time.sleep(0.5)
+  		time.sleep(1)
 
   	# We return the session cookie of the request, useful for the subsequent calls to the PicBit REST API
   	return session_cookie
