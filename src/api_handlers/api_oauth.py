@@ -47,7 +47,19 @@ domain = cfg["domain"]
 
 client = None
 
-
+# Configuration params in order to perform the request to Twitter
+consumer_key = "tuprQMrGCdGyz7QDVKdemEWXl"
+consumer_secret = \
+    "byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm"
+request_token_url = \
+    "https://api.twitter.com/oauth/request_token"
+base_authorization_url = \
+    "https://api.twitter.com/oauth/authorize"
+callback_uri = "https://" + domain \
+    + "/api/oauth/twitter/authorization"
+# Request to Twitter the request_token and authorization URL
+client = oauth.TwitterClient(consumer_key, consumer_secret,
+        callback_uri)
 # Generic handlers for the session management, login, logout and actions 
 # related to user credentials 
 class SessionHandler(webapp2.RequestHandler):
@@ -79,6 +91,7 @@ class SessionHandler(webapp2.RequestHandler):
             logout_status = True
         return logout_status
 
+
 class OauthLoginHandler(SessionHandler):
     """ Defines the logic for the login action, in those social networks that
         act as authentication services in PicBit, and have 
@@ -103,26 +116,39 @@ class OauthLoginHandler(SessionHandler):
                     social_network)
             if stored_credentials == None:
                 data = {}
-                data["user_id"] = user_identifier
-                # Generate a valid username for a new user
-                user_key = ndb_pb.insertUser(social_network,
-                        token_id, access_token, data)
-                session_id = self.login(user_key)
+                if not user_identifier == "":
+                    user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
+                    if not user_id_repeated:
+                        data["user_id"] = user_identifier
+                        # Generate a valid username for a new user
+                        user_key = ndb_pb.insertUser(social_network,
+                                token_id, access_token, data)
+                        session_id = self.login(user_key)
 
-                # Returns the session, user_id and social_network cookie
-                self.response.set_cookie("session", session_id,
-                        path="/", domain=domain, secure=True)
-                self.response.set_cookie("social_network", social_network,
-                        path="/", domain=domain, secure=True)
-                self.response.set_cookie("user", user_identifier,
-                        path="/", domain=domain, secure=True)
+                        # Returns the session, user_id and social_network cookie
+                        self.response.set_cookie("session", session_id,
+                                path="/", domain=domain, secure=True)
+                        self.response.set_cookie("social_network", social_network,
+                                path="/", domain=domain, secure=True)
+                        self.response.set_cookie("user", user_identifier,
+                                path="/", domain=domain, secure=True)
 
-                # Builds the response
-                response = {"status": "User logged successfully", "user_id": user_identifier}
-                self.response.content_type = "application/json"
-                self.response.write(json.dumps(response))
-
-                self.response.set_status(201)
+                        # Builds the response
+                        response = {"status": "User logged successfully", "user_id": user_identifier}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(201)
+                    else:
+                        response = {"error": "The user_identifier provided for the sign up has been already taken"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)
+                else:
+                    response = {"error": "You must provide a valid user_identifier in the request"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
+            
             else:
                 # We store the new set of credentials
                 user_key = ndb_pb.modifyToken(token_id,
@@ -133,23 +159,18 @@ class OauthLoginHandler(SessionHandler):
                 # Gets the user_id to generate the user cookie
                 user_id = ndb_pb.getUserId(user_key)
                 # Returns the session cookie
-                self.response.set_cookie("session", session_id,
-                        path="/", domain=domain, secure=True)
-                self.response.set_cookie("social_network", social_network,
-                        path="/", domain=domain, secure=True)
-                self.response.set_cookie("user", user_id,
-                        path="/", domain=domain, secure=True)
+                self.response.set_cookie("session", session_id, path="/", domain=domain, secure=True)
+                self.response.set_cookie("social_network", social_network, path="/", domain=domain, secure=True)
+                self.response.set_cookie("user", user_id, path="/", domain=domain, secure=True)
 
                 # Builds the response
                 response = {"status": "User logged successfully", "user_id": user_id}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
-
         except KeyError:
             response = \
-                {"error": "You must provide a valid pair of access_token and token_id in the request," +
-                " along with the user_identifier owner of the credentials"}
+                {"error": "You must provide a valid pair of access_token and token_id in the request"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(400)
@@ -207,6 +228,7 @@ class OauthCredentialsHandler(SessionHandler):
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
                 if not user_credentials == None:
+                    print "DEBUG: user_credenttials: ", user_credentials
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],
@@ -478,10 +500,10 @@ class GooglePlusHandler(OauthCredentialsHandler):
                   in Instagram for the user authenticated
     """
     def get(self, token_id):
-        self.get_credentials("google", token_id)
+        self.get_credentials("googleplus", token_id)
 
     def delete(self, token_id):
-        self.delete_credentials("google", token_id)
+        self.delete_credentials("googleplus", token_id)
 
 class GooglePlusLoginHandler(OauthLoginHandler):
     """ This class is a resource that represents the login 
@@ -595,19 +617,6 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         Keyword arguments: 
         self -- info about the request build by webapp2
         """
-        # Configuration params in order to perform the request to Twitter
-        consumer_key = "tuprQMrGCdGyz7QDVKdemEWXl"
-        consumer_secret = \
-            "byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm"
-        request_token_url = \
-            "https://api.twitter.com/oauth/request_token"
-        base_authorization_url = \
-            "https://api.twitter.com/oauth/authorize"
-        callback_uri = "https://" + domain \
-            + "/api/oauth/twitter/authorization"
-        # Request to Twitter the request_token and authorization URL
-        client = oauth.TwitterClient(consumer_key, consumer_secret,
-                callback_uri)
         # Return the authorization URL
         self.response.content_type = "application/json"
         response = {"oauth_url": client.get_authorization_url()}
@@ -633,7 +642,10 @@ class TwitterAuthorizationHandler(SessionHandler):
         # Retrieves user info
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
+<<<<<<< HEAD
            
+=======
+>>>>>>> develop
         # Stores in memcache the session id associated with the oauth_verifier 
         #and data associated to the logged user
         key_verifier = "oauth_verifier_" + oauth_verifier
@@ -645,6 +657,26 @@ class TwitterAuthorizationHandler(SessionHandler):
         # Set the status for the response
         self.response.set_status(200)
 
+class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
+    def get(self, authorization_id):
+        """Manages the info returned by the callback from Twitter
+        Keyword arguments: 
+        self -- info about the request built by webapp2
+        authorization_id -- oauth_verifier that defines the authorization flow
+        """
+        key_verifier = "oauth_verifier_" + authorization_id
+        twitter_user_data = memcache.get(key_verifier)
+        # Return the user's token id that authorized the application
+        if not twitter_user_data == None:
+            response = {"token_id": twitter_user_data["token_id"]}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(200)
+        else:
+            response = {"error": "The oauth_verifier provided does not correspond to an active authorization flow"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(404)
 
 class TwitterHandler(OauthCredentialsHandler):
     """
@@ -680,23 +712,38 @@ class TwitterLoginHandler(SessionHandler):
                 if stored_credentials == None:
                     user_info = {}
                     if not user_identifier == "":
-                        user_info["user_id"] = user_identifier
-                        user_key = ndb_pb.insertUser("twitter",
-                        twitter_user_data["token_id"], twitter_user_data["access_token"], user_info)
+                        # Checks if the user_id taken exists in the system
+                        user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
+                        if not user_id_repeated:
+                            user_info["user_id"] = user_identifier
+                            user_key = ndb_pb.insertUser("twitter",
+                            twitter_user_data["token_id"], twitter_user_data["access_token"], user_info)
 
-                        # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
-                        memcache.delete(key_verifier)
-                        # Sets the cookie session with the session id stored in the system
-                        session_id = self.login(user_key)
-                        self.response.set_cookie("session",
-                                value=session_id, path="/", domain=domain,
-                                secure=True)
-
-                        # Builds the response
-                        response = {"status": "User logged successfully", "user_id": user_identifier}
-                        self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))                    
-                        self.response.set_status(201)
+                            # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
+                            memcache.delete(key_verifier)
+                            
+                            # Returns the session, user_id and social_network cookie
+                            session_id = self.login(user_key)
+                            self.response.set_cookie("session",
+                                    value=session_id, path="/", domain=domain,
+                                    secure=True)
+                            self.response.set_cookie("social_network",
+                                    value="twitter", path="/", domain=domain,
+                                    secure=True)
+                            self.response.set_cookie("user",
+                                    value=user_identifier, path="/", domain=domain,
+                                    secure=True)
+                            
+                            # Builds the response
+                            response = {"status": "User logged successfully", "user_id": user_identifier}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))                    
+                            self.response.set_status(201)
+                        else:
+                            response = {"error": "The user_identifier provided for the sign up has been already taken"}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(400)    
                     else:
                         response = {"error": "You must provide a valid user_identifier in the request"}
                         self.response.content_type = "application/json"
@@ -710,9 +757,18 @@ class TwitterLoginHandler(SessionHandler):
                     user_id = ndb_pb.getUserId(user_key)
                     session_id = self.login(user_key)
 
-                    # Returns the session cookie
+                    # Gets the user_id to generate the user cookie
+                    user_id = ndb_pb.getUserId(user_key)
+                    
+                    # Returns the session, social_network and user cookie
                     self.response.set_cookie("session", session_id,
                             path="/", domain=domain, secure=True)
+                    self.response.set_cookie("social_network",
+                            value="twitter", path="/", domain=domain,
+                            secure=True)
+                    self.response.set_cookie("user",
+                            value=user_id, path="/", domain=domain,
+                            secure=True)
 
                     # Builds the response
                     response = {"status": "User logged successfully", "user_id": user_id}
@@ -732,7 +788,7 @@ class TwitterLoginHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(400)
 
-class TwitterLogoutHandler(SessionHandler):
+class TwitterLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout 
     action using the Twitter credentials to autenticate in PicBit 
     """

@@ -1,5 +1,5 @@
 /*global angular */
-angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope", "$cookies", function ($http, $location, $rootScope, $cookies) {
+angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope", "$cookies", "$q", function ($http, $location, $rootScope, $cookies, $q) {
 
   "use strict";
   this.endpoint = "https://" + $location.host();
@@ -32,6 +32,7 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
   this.getUserId = function (tokenId, redSocial) {
     var request, uri;
     uri = this.endpoint + "/api/oauth/" + redSocial + "/credenciales/" + tokenId;
+
     request = {
       methor: "get",
       url: uri,

@@ -92,7 +92,7 @@ class UserHandler(SessionHandler):
                           "description": user_info["description"],
                           "image": user_info["image"],
                           "website": user_info["website"],
-                          "nets": user_info["nets"],
+                          "networks": user_info["nets"],
                           "components": user_info["components"]}
             if user_info["private_email"] == False:
               user_dict["email"] = user_info["email"]
@@ -137,8 +137,8 @@ class UserHandler(SessionHandler):
           # We parse the data received in the request
           if values.has_key("description"):
             update_data["description"] = values.get("description")
-          if values.has_key("web_site"):
-            update_data["web_site"] = values.get("web_site")
+          if values.has_key("website"):
+            update_data["website"] = values.get("website")
           if values.has_key("image"):
             update_data["image"] = values.get("image")
           if values.has_key("phone"):

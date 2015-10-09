@@ -44,10 +44,10 @@ limitations under the License.
       Log in with Google+
     </paper-button>
 
-    <paper-button class="GoogleButton desconectar" title="Google+" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
-      <core-icon src="images/googleplusNew.png" class="icono"></core-icon>
-      Log out from Google+
-    </paper-button>
+    <!--   <paper-button class="GoogleButton desconectar" title="Google+" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
+<core-icon src="images/googleplusNew.png" class="icono"></core-icon>
+Log out from Google+
+</paper-button>-->
 
     <paper-button class="GoogleButton2" title="Google+" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
       <core-icon src="images/googleplusNew.png" class="icono2"></core-icon>
@@ -101,7 +101,7 @@ limitations under the License.
      */
       logged:false, // Parametro que se recibe de la base de datos
       sort: false,
-      static: true,
+      /*static: true,*/
       acToken:'',
       tokenType:'',
       expiresToken:'',
@@ -141,7 +141,7 @@ limitations under the License.
               var exp = new RegExp(patron);
               back.acToken = exp.exec(url)[1];0
               back.fire('google-logged',{token: back.acToken,redSocial:'googleplus'});
-              back.logged= back.static?false:true;
+              back.logged= /*back.static?false:*/true;
               win.close();
             }
           } catch(e) {

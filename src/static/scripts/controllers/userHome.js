@@ -9,7 +9,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 	$scope.githubData = {};
 	$scope.instagramData = {};
 	$scope.instagramData.token = "2062815740.34af286.169a9c42e1404ae58591d066c00cb979";
-	$scope.twitterData.token = "3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x";
+	$scope.twitterData.token = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
 	$scope.githubData.username = "mortega5";
 
 	$scope.listComponents = [
@@ -17,7 +17,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 			name: "twitter-timeline",
 			attributes: {
 				accessToken: $scope.twitterData.token,
-				secretToken: "VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY",
+				secretToken: "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
 				consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
 				consumerSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
 				endpoint: $scope.domain + "/api/aux/twitterTimeline",
