@@ -157,15 +157,16 @@ class ComponentTested(ndb.Model):
   component_id = ndb.StringProperty(required=True)
   # List of versions tested by the user
   versions_tested = ndb.StringProperty(repeated=True)
-
+  # Actual version tested by the user
+  actual_version = ndb.StringProperty()
 
 # Entity that represents a version for a given component
-class VersionedComponent(ndb.Model):
-  component_id = ndb.StringProperty(required=True)
-  version = ndb.StringProperty()
-  # Determines the times that the versioned component has been tested
-  test_count = ndb.IntegerProperty(default=0)
-  version_rating = ndb.FloatProperty(default=0) 
+# class VersionedComponent(ndb.Model):
+#   component_id = ndb.StringProperty(required=True)
+#   version = ndb.StringProperty()
+#   # Determines the times that the versioned component has been tested
+#   test_count = ndb.IntegerProperty(default=0)
+#   version_rating = ndb.FloatProperty(default=0) 
 
 class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
@@ -387,21 +388,23 @@ def activateComponentToUser(component_id, entity_key):
     general_component = Component.query(Component.component_id == component_id).get()
     general_component.test_count = general_component.test_count + 1
     general_component.put()
-    versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
-     VersionedComponent.version == version)).get()
-    versioned_component.test_count = versioned_component.test_count + 1
-    versioned_component.put() 
+    # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
+    #  VersionedComponent.version == version)).get()
+    # versioned_component.test_count = versioned_component.test_count + 1
+    # versioned_component.put() 
 
   # We store in a ComponentTested entity the new version tested by the user
   user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
   if not user_component_tested == None:
+    # We update the field that represents the actual version that is being tested
+    user_component_tested.actual_version = version
     # We add the version to the versions tested list, if is not was added previously
     if not version in user_component_tested.versions_tested:
       user_component_tested.versions_tested.append(version)
       user_component_tested.put()  
   else:
     # We create a new ComponentTested entity to store the versions of a component tested by the user
-    component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version])
+    component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
     component_tested.put()
 
 
@@ -552,9 +555,9 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
    rs=rs, description=description, version_list=version_list, version_index=initial_index)
   # We create a new VersionedComponent Entity for each version_added to the version_list
-  for version in version_list:
-    versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
-    versionedComponent.put()
+  # for version in version_list:
+  #   versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
+  #   versionedComponent.put()
   created = True
   # Saves the changes to the entity
   component.put()

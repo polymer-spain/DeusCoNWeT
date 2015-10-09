@@ -167,7 +167,6 @@ class OauthLogoutHandler(SessionHandler):
         if not cookie_value == None:
             # We get the user_id to check if the user is logged in the system
             user_id = self.getUserInfo(cookie_value)
-            print user_id
             if not user_id == None:
                 # Logout
                 logout_status = self.logout(cookie_value)
@@ -203,7 +202,6 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
-                print "DEBUG: Tipo Usuario loggeado ", type(logged_user)
                 logged_user_id = ndb_pb.getUserId(logged_user)
 
                 # Obtains user credentials
@@ -632,13 +630,9 @@ class TwitterAuthorizationHandler(SessionHandler):
         # Gets the params in the request
         auth_token = self.request.get("oauth_token")
         oauth_verifier = self.request.get("oauth_verifier")
-        print "OAUTH verifier de twiter ", oauth_verifier
         # Retrieves user info
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
-        for key, value in user_info.iteritems():
-          print "CLAVE user_info: ", key
-          print "VALOR: ", value
            
         # Stores in memcache the session id associated with the oauth_verifier 
         #and data associated to the logged user

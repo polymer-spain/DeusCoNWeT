@@ -27,6 +27,7 @@ def main():
 	request_uri = "/api/oauth/googleplus/login"
 	print "PRETEST 1: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
 	print "Ignorar el status de salida de este TEST"
+	print "Status esperado: 200 "
 	token_id_login = "id_component_test_token"
 	access_token_login = "googleTEST"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
@@ -37,6 +38,7 @@ def main():
 	request_uri = "/api/oauth/googleplus/login"
 	print "PRETEST 2: Login de usuario 2 en el sistema\n Ignorar el status de este caso"
 	print "Ignorar el status de salida de este TEST"
+	print "Status esperado: 200 "
 	token_id_login = "id_component_test_token2"
 	access_token_login = "googleTEST2"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
