@@ -10,16 +10,21 @@ def main():
 		option = sys.argv[1]
 		basepath = "/api/componentes"
 		option_list = ['subida', 'obtención', 'modificación', 'borrado']
-		user_id1 = "idUsuario1"
+		user_id1 = "id_usuario_componentes_1"
 		if option in option_list:
-			test_utils.openConnection()
-			# PRE-TEST 1: Hacer login en el sistema mediante googleplus
+			test_utils.openConnection(False) # Pruebas en local (Remote = False)
+			
+			# PRE-TESTs. Login de usuario en el sistema, utilizando Google+
 			request_uri = "/api/oauth/googleplus/login"
-			print "\nPRETEST 1: Haciendo petición POST a " + request_uri + " (login)\n Ignorar el status de este caso"
-			token_id_login = "idgoogle"
+			print "PRETEST 1: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
+			print "Ignorar el status de salida de este TEST"
+			print "Status esperado: 200 "
+			token_id_login = "id_component_test_token"
 			access_token_login = "googleTEST"
-			params = urllib.urlencode({'token_id': token_id_login, 'access_token':access_token_login, 'user_identifier': user_id1})
-			session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
+			params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
+			 'user_identifier': user_id1 })
+			session1 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
+
 
 			if option == "subida":
 				request_uri = basepath
@@ -31,17 +36,19 @@ def main():
 				test_utils.make_request("GET", request_uri, params, 204, session1, True)	
 				
 				# TESTs relativos a la operación PUT lista de componentes (Subir un componente al sistema) 
+				# (TEST comentado: actualmente no se realiza la comprobación de URI correcta)
 				# TEST 2
-				print "TEST 2: Subir un componente al sistema, proporcionando una URI incorrecta."
-				print "Status esperado: 404 "
-				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/badURI',
-			            'component_id': 'twitter-timeline',
-			            'description': 'Web component to obtain the timeline of Twitter using Polymer',
-			            'social_network': 'twitter',
-			            'input_type': 'None',
-			            'output_type': 'tweet'
-				})
-				test_utils.make_request("PUT", request_uri, params, 404, session1)
+				# print "TEST 2: Subir un componente al sistema, proporcionando una URI incorrecta."
+				# print "Status esperado: 404 "
+				# params = urllib.urlencode({'url': 'https://github.com/JuanFryS/badURI',
+			 #            'component_id': 'twitter-timeline',
+			 #            'description': 'Web component to obtain the timeline of Twitter using Polymer',
+			 #            'social_network': 'twitter',
+			 #            'input_type': 'None',
+			 #            'output_type': 'tweet',
+			 #            'versions': 'stable'
+				# })
+				# test_utils.make_request("PUT", request_uri, params, 404, session1)
 
 				# TEST 3
 				print "TEST 3: Subir un componente al sistema, proporcionando un parametro erróneo (red social)."
@@ -51,7 +58,8 @@ def main():
 			            'description': 'Web component to obtain the timeline of Twitter using Polymer',
 			            'social_network': 'RedError' ,
 			            'input_type': 'None',
-			            'output_type': 'tweet'
+			            'output_type': 'tweet',
+			            'versions': 'stable'
 				})
 				test_utils.make_request("PUT", request_uri, params, 400, None)
 
@@ -66,62 +74,79 @@ def main():
 				})
 				test_utils.make_request("PUT", request_uri, params, 400, None)
 
-				# Subimos dos componentes al sistema
 				# TEST 5
-				print "TEST 5: Subir un componente al sistema (componente 1)."
+				print "TEST 5: Subir un componente al sistema, proporcionando una lista de versiones que no contiene la version 'stable'"
+				print "Status esperado: 400 "
+				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
+			            'component_id': 'twitter-timeline',
+			            'description': 'Web component to obtain the timeline of Twitter using Polymer',
+			            'social_network': 'twitter' ,
+			            'input_type': 'None',
+			            'versions': "badVersion1",
+			            'versions': "badVersion2"
+				}, doseq=True)
+				test_utils.make_request("PUT", request_uri, params, 400, None)
+
+				# Subimos dos componentes al sistema
+				# TEST 6
+				print "TEST 6: Subir un componente al sistema (componente 1). Este componente tiene una sola version"
 				print "Status esperado: 201 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
 			            'component_id': 'twitter-timeline',
 			            'description': 'Web component to obtain the timeline of Twitter using Polymer',
 			            'social_network': 'twitter' ,
 			            'input_type': 'None',
-			            'output_type': 'tweet'
+			            'output_type': 'tweet',
+			            'versions': 'stable'
 				})
 				test_utils.make_request("PUT", request_uri, params, 201, None)
 				
-				# TEST 6: Subir un componente al sistema (componente 2).
-				print "TEST 6: Subir un componente al sistema (componente 2)."
+				# TEST 7: Subir un componente al sistema (componente 2).
+				print "TEST 7: Subir un componente al sistema (componente 2). Este componente tiene dos versiones"
 				print "Status esperado: 201 "
 				# request_uri = basepath
+				versions_list = ["stable", "usability_defects"]
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
 			            'component_id': 'instagram-timeline',
 			            'description': 'Web component to obtain the timeline of the social network Instagram using Polymer',
 			            'social_network': 'instagram',
 			            'input_type': 'None',
-			            'output_type': 'photo'
-				})
+			            'output_type': 'photo',
+			            'versions': versions_list
+				}, doseq=True)
 				test_utils.make_request("PUT", request_uri, params, 201, None)
 
-				# TEST 7
-				print "TEST 7: Subida de un componente repetido al sistema (componente 2)."
-				print "Status esperado: 200 "
+				# TEST 8
+				print "TEST 8: Subida de un componente repetido al sistema (componente 2)."
+				print "Status esperado: 403 "
 				params = urllib.urlencode({'url': 'https://github.com/JuanFryS/instagram-timeline',
 			            'component_id': 'instagram-timeline',
 			            'description': 'New description to the web component (Description changed in TEST 7)',
 			            'social_network': 'instagram',
 			            'input_type': 'None',
-			            'output_type': 'photo'
-				})
-				test_utils.make_request("PUT", request_uri, params, 200, None)
+			            'output_type': 'photo',
+			            'versions': versions_list
+				}, doseq=True)
+				test_utils.make_request("PUT", request_uri, params, 403, None)
 
 			elif option == "obtención":
 				# TESTs relativos al método GET Lista de componentes 
 				request_uri = basepath
 				params = urllib.urlencode({})
 				
-				# TEST 8
-				print "TEST 8: Obtener la lista de componentes, sin proporcionar una cookie de sesion"
+				# TEST 9
+				print "TEST 9: Obtener la lista de componentes, sin proporcionar una cookie de sesion"
 				print "Status esperado: 401 "
 				test_utils.make_request("GET", request_uri, params, 401, None)	
 
-				# TEST 9
-				print "TEST 9: Obtener la lista de componentes, proporcionando una cookie de sesion (Sin parámetros)"
+				# TEST 10
+				print "TEST 10: Obtener la lista de componentes, proporcionando una cookie de sesion (Sin parámetros)"
 				print "Status esperado: 200"
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 				# Casos de obtención de lista de componentes, aplicando criterios de filtrado
-				# TEST 10
-				print "TEST 10: Obtener la lista de componentes, proporcionando una cookie de sesion"
+				# TEST 11
+				print "TEST 11: Obtener la lista de componentes, proporcionando una cookie de sesion"
 				print "(parámetro de filtrado por red social)"
 				print "Status esperado: 200"
 				request_uri = basepath + "?social_network=twitter"
@@ -135,26 +160,26 @@ def main():
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 				
 				# TESTs relativos al metodo GET Componente (obtener info de un componente en particular)
-				# TEST 15
-				print "TEST 15: Obtener información sobre componente 1, sin proporcionar cookie de usuario"
+				# TEST 13
+				print "TEST 13: Obtener información sobre componente 1, sin proporcionar cookie de usuario"
 				print "Status esperado: 401"
 				request_uri = basepath + '/twitter-timeline'
 				test_utils.make_request("GET", request_uri, params, 401, None)	
 				
-				# TEST 16
-				print "TEST 16: Obtener información sobre un componente no existente en el sistema"
+				# TEST 14
+				print "TEST 14: Obtener información sobre un componente no existente en el sistema"
 				print "Status esperado: 404"
 				request_uri = basepath + '/componenteERROR'
 				test_utils.make_request("GET", request_uri, params, 404, session1)	
 
-				# TEST 17
-				print "TEST 17: Obtener información sobre el componente 1"
+				# TEST 15
+				print "TEST 15: Obtener información sobre el componente 1"
 				print "Status esperado: 200"
 				request_uri = basepath + '/twitter-timeline'
 				test_utils.make_request("GET", request_uri, params, 200, session1)	
 				
-				# TEST 18
-				print "TEST 18: Obtener información sobre el componente 2."
+				# TEST 16
+				print "TEST 16: Obtener información sobre el componente 2."
 				print "Se especifica formato completo, pero se retornará el formato reducido,"
 				print " ya que el componente está incluido en el conjunto de componentes del usuario"
 				print "Status esperado: 200"
@@ -224,25 +249,25 @@ def main():
 				# TEST 26
 				print "TEST 26: Borrar componente no existente en el sistema "
 				print "Status esperado: 404 "
-				request_uri = basepath + '/componenteERROR'
+				request_uri = basepath + '/componenteERROR?scope=global'
 				test_utils.make_request("DELETE", request_uri, params, 404, None)	
 
 				# TEST 27
 				print "TEST 27: Borrar componente 1 del sistema"
 				print "Status esperado: 204 "
-				request_uri = basepath + '/twitter-timeline'
+				request_uri = basepath + '/twitter-timeline?scope=global'
 				test_utils.make_request("DELETE", request_uri, params, 204, None)
 				
 				# TEST 28
 				print "TEST 28: Borrar componente 1 del sistema (el componente se había borrado previamente) "
 				print "Status esperado: 404 "
-				# request_uri = basepath + '/twitter-timeline'
+				# request_uri = basepath + '/twitter-timeline?scope=global'
 				test_utils.make_request("DELETE", request_uri, params, 404, None)	
 
 				# TEST 29
 				print "TEST 29: Borrar componente 2 del sistema"
 				print "Status esperado: 204 "
-				request_uri = basepath + '/instagram-timeline'
+				request_uri = basepath + '/instagram-timeline?scope=global'
 				test_utils.make_request("DELETE", request_uri, params, 204, None)
 			
 			# Realizamos logout en el sistema, tras llevar a cabo las pruebas
@@ -250,7 +275,7 @@ def main():
 			request_uri = "/api/oauth/googleplus/logout"
 			print "POST-TEST 1: Haciendo petición POST a " + request_uri + " (logout)\n Ignorar el status de este caso"
 			params = urllib.urlencode({})
-			test_utils.make_request("POST", request_uri, params, 200, session1)
+			test_utils.make_request("POST", request_uri, params, 200, session1, preTest=True)
 			test_utils.tests_status()
 			test_utils.closeConnection()
 		else:

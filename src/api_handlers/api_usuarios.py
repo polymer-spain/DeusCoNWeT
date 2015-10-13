@@ -55,6 +55,7 @@ class UserListHandler(SessionHandler):
       self.response.write(json.dumps({"error": "The user is not authenticated"}))
       self.response.set_status(401)
 
+
 class UserHandler(SessionHandler):
 
   """
@@ -163,18 +164,23 @@ class UserHandler(SessionHandler):
           if values.has_key("component"):
             component_id = values.get("component")      
             component = ndb_pb.getComponent(user_logged_key, component_id)
-            user_component = ndb_pb.getUserComponent(user_logged_key,component_id)
             # If the component_id provided in the request exists in the system and the user has not added it previously,
             # we add the component_id provided to the list of user's data to be updated
-            if not component == None and user_component == None:
+            if not component == None:
               update_data["component"] = component_id
           
           # Updates the resource 
           if not len(update_data) == 0:
-            user_info = ndb_pb.updateUser(user_logged_key, update_data)
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
-            self.response.set_status(200)
+            updated_info = ndb_pb.updateUser(user_logged_key, update_data)
+            print "DEBUG Updated_info ", updated_info
+            if not updated_info == None:
+              self.response.content_type = "application/json"
+              self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
+              self.response.set_status(200)
+            else:
+              self.response.content_type = "application/json"
+              self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
+              self.response.set_status(304)   
           else:
             self.response.content_type = "application/json"
             self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
