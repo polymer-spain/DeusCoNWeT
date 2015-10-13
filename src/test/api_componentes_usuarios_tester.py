@@ -5,7 +5,7 @@ import test_utils
 
 # Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto 
 # (api/componentes y api/usuarios)
-# Uso: python api_componentes_usuarios.py
+# Uso: python api_componentes_usuarios.py [borrado]
 
 def main():
 	components_basepath = "/api/componentes"
@@ -28,7 +28,7 @@ def main():
 	print "PRETEST 1: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
 	print "Ignorar el status de salida de este TEST"
 	print "Status esperado: 200 "
-	token_id_login = "id_component_test_token"
+	token_id_login = "id_component_users_test_token"
 	access_token_login = "googleTEST"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
 	 'user_identifier': user_id1 })
@@ -39,7 +39,7 @@ def main():
 	print "PRETEST 2: Login de usuario 2 en el sistema\n Ignorar el status de este caso"
 	print "Ignorar el status de salida de este TEST"
 	print "Status esperado: 200 "
-	token_id_login = "id_component_test_token2"
+	token_id_login = "id_component_users_test_token2"
 	access_token_login = "googleTEST2"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
 	 'user_identifier': user_id2 })
@@ -114,13 +114,13 @@ def main():
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 		
 		# TEST 8
-		print "TEST 8: obtener info de usuario"
+		print "TEST 8: Obtener info de usuario"
 		print "Status esperado: 200"
 		request_uri = users_basepath + "/" + user_id1
 		test_utils.make_request("GET", request_uri, params, 200, session1)
 
 		# TEST 9
-		print "TEST 9: obtener info de usuario, con formato de lista de componentes detallado"
+		print "TEST 9: Obtener info de usuario, con formato de lista de componentes detallado"
 		print "Status esperado: 200"
 		request_uri = users_basepath + "/" + user_id1 + "?component_info=detailed"
 		test_utils.make_request("GET", request_uri, params, 200, session1)

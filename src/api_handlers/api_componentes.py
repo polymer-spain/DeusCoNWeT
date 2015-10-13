@@ -118,7 +118,7 @@ class ComponentListHandler(SessionHandler):
                         self.response.write(json.dumps(response))
                         self.response.set_status(201)
                     else:
-                        self.response.set_status(200)    
+                        self.response.set_status(403)    
                 else:
                     response = {"error": "The versions param must contains stable as one of its values"}
                     self.response.write(json.dumps(response))

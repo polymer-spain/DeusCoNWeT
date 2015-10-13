@@ -171,10 +171,16 @@ class UserHandler(SessionHandler):
           
           # Updates the resource 
           if not len(update_data) == 0:
-            user_info = ndb_pb.updateUser(user_logged_key, update_data)
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
-            self.response.set_status(200)
+            updated_info = ndb_pb.updateUser(user_logged_key, update_data)
+            print "DEBUG Updated_info ", updated_info
+            if not updated_info == None:
+              self.response.content_type = "application/json"
+              self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
+              self.response.set_status(200)
+            else:
+              self.response.content_type = "application/json"
+              self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
+              self.response.set_status(304)   
           else:
             self.response.content_type = "application/json"
             self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))

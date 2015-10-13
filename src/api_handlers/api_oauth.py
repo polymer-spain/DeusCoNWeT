@@ -228,7 +228,6 @@ class OauthCredentialsHandler(SessionHandler):
                 # Obtains user credentials
                 user_credentials = ndb_pb.getToken(token_id, social_network)
                 if not user_credentials == None:
-                    print "DEBUG: user_credenttials: ", user_credentials
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],
@@ -642,10 +641,6 @@ class TwitterAuthorizationHandler(SessionHandler):
         # Retrieves user info
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
-<<<<<<< HEAD
-           
-=======
->>>>>>> develop
         # Stores in memcache the session id associated with the oauth_verifier 
         #and data associated to the logged user
         key_verifier = "oauth_verifier_" + oauth_verifier

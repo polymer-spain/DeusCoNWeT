@@ -392,6 +392,7 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
 def activateComponentToUser(component_id, entity_key):
   user = entity_key.get()
   user_component = None
+  status = False
   #We check if the component provided is in the user component list
   # If not, we create a new UserComponent Entity, setting the component version that will use the user
   for comp in user.components:
@@ -404,8 +405,10 @@ def activateComponentToUser(component_id, entity_key):
     # We get the version of the component that will be served to the user 
     # (the same version than the setted when the user activated the component for the first time)
     version = user_component.version
-    user_component.active = True
-    user.put()
+    if not user_component.active:
+      user_component.active = True
+      user.put()
+      status = True
   else:
     # We set the version of the component
     version = setComponentVersion(component_id)
@@ -423,6 +426,7 @@ def activateComponentToUser(component_id, entity_key):
     #  VersionedComponent.version == version)).get()
     # versioned_component.test_count = versioned_component.test_count + 1
     # versioned_component.put() 
+    status = True
 
   # We store in a ComponentTested entity the new version tested by the user
   user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
@@ -437,7 +441,7 @@ def activateComponentToUser(component_id, entity_key):
     # We create a new ComponentTested entity to store the versions of a component tested by the user
     component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
     component_tested.put()
-
+  return status
 
 # Removes the component from the user's dashboard
 # It turns the field active to False, thus the component will not be listed as a 
@@ -452,38 +456,60 @@ def deactivateUserComponent(entity_key, component_id):
       comp.active = False
       user.put()
       status = True
-      # user_c = UserComponent.query(UserComponent.component_id == comp.component_id)
   
   return status
 
-
+# Actualiza la info de usuario proporcionada y retorna una lista de los elementos actualizados
 def updateUser(entity_key, data): #FUNCIONA
   user = entity_key.get()
+  updated_data = []
   if data.has_key("email"):
     user.email = data["email"]
+    updated_data += ["email"]
+
   if data.has_key("private_email"):
     user.private_email = data["private_email"]
+    updated_data += ["private_email"]
+
   if data.has_key("phone"):
     user.phone = data["phone"]
+    updated_data += ["phone"]
+
   if data.has_key("private_phone"):
     user.private_phone = data["private_phone"]
+    updated_data += ["private_phone"]
+
   if data.has_key("description"):
     user.description = data["description"]
+    updated_data += ["description"]
+  
   if data.has_key("image"):
     user.image = data["image"]
+    updated_data += ["image"]
+
   if data.has_key("website"):
     user.image = data["website"]
+    updated_data += ["website"]
+
   if data.has_key("component"):
     comp_name = data["component"]
     # Adds the component to the user
-    activateComponentToUser(comp_name, entity_key)
+    activated = activateComponentToUser(comp_name, entity_key)
+    if activated:
+      updated_data += ["component"]
+
   if data.has_key("rate"):
     rate = data["rate"]
     # We add a Rating entity that represents the component rating
     rating = UserRating(component_id=comp_name, rating_value=rate)
     user.rates.append(rating)
+    updated_data += ["rate"]    
+
   # Updates the user data
   user.put()
+  # Returns the list that represents the data that was updated
+  return updated_data
+
 
 def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
   user = entity_key.get()  
@@ -907,10 +933,13 @@ def deleteComponent(component_name):
 
     # Now, it's necessary to delete this component from all the users
     comp = UserComponent(component_id=component_name)
-    users = User.query(User.components==comp).fetch(100)
+    users = User.query(User.components.component_id==component_name).fetch(100)
     for user in users:
-      user.components.remove(comp)
-      user.put()
+      for comp in user.components:
+        # We delete the component from the user's component list
+        if comp.component_id == component_name:
+          user.components.remove(comp)
+          user.put()
 
   return status
 

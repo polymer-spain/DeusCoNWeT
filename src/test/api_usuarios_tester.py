@@ -7,7 +7,7 @@ import test_utils
 
 
 def main():
-	test_utils.openConnection()
+	test_utils.openConnection(False) # Pruebas en local (remote = False)
 	option = None
 	session1 = None
 	session2 = None
@@ -27,7 +27,7 @@ def main():
 	access_token_login = "googleTEST"
 	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
 	 'user_identifier': user_id1 })
-	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
+	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True,True)
 	
 	print "PRETEST 2: Login de usuario 2 en el sistema"
 	print "Ignorar el status de este caso"
@@ -35,7 +35,7 @@ def main():
 	access_token_login2 = "googleTEST2"
 	params = urllib.urlencode({'token_id': token_id_login2, 'access_token': access_token_login2,
 	 'user_identifier': user_id2 })
-	session2 = test_utils.make_request("POST", request_uri, params, 200, None, True)
+	session2 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
 	
 	if option == None:
 		params = urllib.urlencode({})
@@ -80,8 +80,7 @@ def main():
 		# Tests de obtención de info de usuario sin cookie de sesión
 		# TEST 7
 		print "TEST 7: Obtener info de usuario, sin proporcionar cookie de sesión"
-		print "(debe retornar un objeto json mostrando únicamente el id de usuario solicitado)"
-		print "Status esperado: 200"
+		print "Status esperado: 200 (Respuesta vacía)"
 		request_uri = basepath + "/" + user_id1
 		test_utils.make_request("GET", request_uri, params, 200, None)
 
@@ -184,49 +183,49 @@ def main():
 		print "Status esperado: 400"
 		request_uri = basepath + "/" + user_id1
 		params = urllib.urlencode({})
-		test_utils.make_request("DELETE", request_uri, params, 400, session_error, True)				
+		test_utils.make_request("DELETE", request_uri, params, 400, session_error)				
 
 		# TEST 20
 		print "TEST 20: Borrar usuario el sistema (usuario no existente en el sistema)"
 		print "Status esperado: 404"
 		request_uri = basepath + "/" + user_id_error
 		params = urllib.urlencode({})
-		test_utils.make_request("DELETE", request_uri, params, 404, session1, True)				
+		test_utils.make_request("DELETE", request_uri, params, 404, session1)				
 
 		# TEST 21
 		print "TEST 21: Borrar usuario 1 del sistema (cookie de sesión incorrecta)"
 		print "Status esperado: 401"
 		request_uri = basepath + "/" + user_id1
 		params = urllib.urlencode({})
-		test_utils.make_request("DELETE", request_uri, params, 401, session2, True)
+		test_utils.make_request("DELETE", request_uri, params, 401, session2)
 	
 		# TEST 22
 		print "TEST 22: Borrar usuario 1 del sistema (cookie de sesión correcta)"
 		print "Status esperado: 204. La cookie de sesión se invalida y se realiza logout del usuario en el sistema"
 		request_uri = basepath + "/" + user_id1
 		params = urllib.urlencode({})
-		test_utils.make_request("DELETE", request_uri, params, 204, session1, True)
+		test_utils.make_request("DELETE", request_uri, params, 204, session1)
 
 		# TEST 23
 		print "TEST 23: Borrar usuario 1 del sistema (usuario ya borrado del sistema)"
 		print "Status esperado: 400 (La cookie proporcionada no corresponde con ningún usuario del sistema)"
 		request_uri = basepath + "/" + user_id1
 		params = urllib.urlencode({})
-		test_utils.make_request("DELETE", request_uri, params, 400, session1, True)	
+		test_utils.make_request("DELETE", request_uri, params, 400, session1)	
 
 		# TEST 24
 		print "TEST 24: Obtener la lista de usuarios del sistema, para verificar que se ha eliminado el usuario"
 		print "Status esperado: 200"
 		request_uri = basepath
 		params = urllib.urlencode({})
-		test_utils.make_request("GET", request_uri, params, 200, session2, True)
+		test_utils.make_request("GET", request_uri, params, 200, session2)
 
 		# TEST 25
 		print "TEST 25: Borrar usuario 2 del sistema"
 		print "Status esperado: 204"
 		request_uri = basepath + "/" + user_id2
 		params = urllib.urlencode({})
-		test_utils.make_request("DELETE", request_uri, params, 204, session2, True)
+		test_utils.make_request("DELETE", request_uri, params, 204, session2)
 
 		# TEST 26
 		print "TEST 26: Obtener la lista de usuarios del sistema, " + \
@@ -234,7 +233,7 @@ def main():
 		print "Status esperado: 400"
 		request_uri = basepath
 		params = urllib.urlencode({})
-		test_utils.make_request("GET", request_uri, params, 400, session2, True)
+		test_utils.make_request("GET", request_uri, params, 400, session2)
 
 	
 	# Cerramos conexión e imprimimos el ratio de test ok vs erróneos
