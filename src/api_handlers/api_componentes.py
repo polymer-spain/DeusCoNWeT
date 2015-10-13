@@ -106,6 +106,7 @@ class ComponentListHandler(SessionHandler):
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("versions")
+            predetermined = self.request.POST["predetermined"]
             if social_network in social_list:
                 # We check if the request has provided at least the version "stable" for the version_list param
                 if "stable" in version_list:
@@ -113,7 +114,8 @@ class ComponentListHandler(SessionHandler):
                     component_stored = ndb_pb.searchComponent(component_id)
                     if component_stored == None:
                         # Adds the component to datastore
-                        ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type, version_list)
+                        # TODO: Check if predetermined is TRUE/FALSE
+                        ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type, version_list, predetermined)
                         response = {"status": "Component uploaded succesfully"}
                         self.response.write(json.dumps(response))
                         self.response.set_status(201)
