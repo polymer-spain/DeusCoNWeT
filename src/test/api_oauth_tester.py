@@ -16,8 +16,8 @@ import test_utils
 #       (http://github-login-lab.appspot.com/app/demo.html)
 
 def main():
-	test_utils.openConnection()
-	if len(sys.argv) == 2:
+	test_utils.openConnection(False) # Pruebas en local(remote=False)
+	if len(sys.argv) >= 2:
 		social_network = sys.argv[1]
 	else:
 		social_network = ''
@@ -25,6 +25,7 @@ def main():
 	basePath = "/api/oauth/" + social_network
 	if len(sys.argv) == 3:
 		option = sys.argv[2]
+
 	if social_network == "googleplus" or social_network=="facebook":
 		session1 = None
 		session2 = None
@@ -347,7 +348,7 @@ def main():
 		request_uri = "/api/oauth/googleplus/logout"
 		print "POST-TEST 1: Logout de usuario 1 con cookie de sesión"
 		print "Status esperado: 200"
-		test_utils.make_request("POST", request_uri, params,200, session1)
+		test_utils.make_request("POST", request_uri, params,200, session1, preTest=True)
 
 
 	

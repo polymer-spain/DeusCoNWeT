@@ -954,9 +954,12 @@ def deleteCredentials(entity_key, rs, id_rs):
       token_aux = tok.token
       del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
       tok.key.delete()
-      # Deletes the token from the user
       if not user == None:
+        # Deletes the token from the user
         user.tokens.remove(del_token)
+        # Deletes the social network from the user's net_list
+        social_user = SocialUser(social_name=rs)
+        user.net_list.remove(social_user)
         user.put()
         status = True
   return status
