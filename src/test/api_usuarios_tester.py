@@ -3,6 +3,7 @@ import sys, urllib
 import test_utils
 
 # Script para hacer pruebas a la API de Usuarios de PicBit (api/usuarios)
+# Si no se especifica ninguna opción, se ejecutan test relativos obtención y modificación de recursos
 # Uso: python api_usuarios_tester [borrado]
 
 
