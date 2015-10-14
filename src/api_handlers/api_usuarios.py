@@ -172,8 +172,7 @@ class UserHandler(SessionHandler):
           # Updates the resource 
           if not len(update_data) == 0:
             updated_info = ndb_pb.updateUser(user_logged_key, update_data)
-            print "DEBUG Updated_info ", updated_info
-            if not updated_info == None:
+            if not len(updated_info) == 0:
               self.response.content_type = "application/json"
               self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
               self.response.set_status(200)
