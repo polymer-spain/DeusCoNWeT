@@ -273,7 +273,8 @@ def setComponentVersion(component_id):
 # Adds to the user dashboard those component defined as predetermined in the system
 def assignPredeterminedComponentsToUser(entity_key):
   # Obtains the predetermined components of the system and adds it to the User
-  predetermined_comps = Component.query(Component.predetermined = True).fetch(10)
+  # We consider that we will have at most 10 predetermined components in our system
+  predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
   for comp in predetermined_comps:
     activateComponentToUser(comp.component_id, entity_key)
 
@@ -470,9 +471,7 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   token.token = encodeAES(cipher, access_token)
   token.put()
   user.tokens.append(token)
-  
-  # Assigns to the user a predetermined set of components
-  assignPredeterminedComponentsToUser(entity_key)
+
   # Updates the user entity
   user.put()
 
@@ -625,7 +624,7 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None):
+def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False):
   # Generates a random initial value that represents the version of the component that will be 
   # served to the next user who adds it to his dashboard
   initial_index = random.randint(0, len(version_list)-1)

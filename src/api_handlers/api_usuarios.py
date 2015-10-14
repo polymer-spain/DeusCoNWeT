@@ -147,18 +147,18 @@ class UserHandler(SessionHandler):
             update_data["email"] = values.get("email")
           if values.has_key("private_phone"):
             # Checks if private_phone has a proper value
-            if values.get("private_phone") == "True":
+            if values.get("private_phone") in ["True", "true"]:
               private_phone = True
               update_data["private_phone"] = private_phone
-            elif values.get("private_phone") == "False":
+            elif values.get("private_phone") in ["False", "false"]:
               private_phone = False
               update_data["private_phone"] = private_phone
           if values.has_key("private_email"):
              # Checks if private_email has a proper value
-            if values.get("private_email") == "True":
+            if values.get("private_email") in ["True", "true"]:
               private_email = True
               update_data["private_email"] = private_email
-            elif values.get("private_email") == "False":
+            elif values.get("private_email")in ["False", "false"]:
               private_email = False
               update_data["private_email"] = private_email
           if values.has_key("component"):
