@@ -220,7 +220,7 @@ def main():
 		access_token1 = social_network + "TEST"
 		token_id2 = "idERROR" + social_network + "2"
 		user_id1 = "userTESTING1"
-		user_id2 = "userTESTING2"
+		user_id2 = "userTESTING2" 
 		session_error = "session=sessionError"
 
 		# Iniciamos dos sesiones distintas en googleplus para realizar las pruebas

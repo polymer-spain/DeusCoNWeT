@@ -4,6 +4,8 @@ import test_utils
 
 # Script para hacer pruebas a la API de Componentes de PicBit (api/componentes)
 # Uso: python api_componentes_tester {subida|obtención|modificación|borrado}
+# Para testear toda la API, es necesario ejecutar el script con los parametros ordenados
+# tal como aparezca ahora
 
 def main():
 	if len(sys.argv) == 2:
