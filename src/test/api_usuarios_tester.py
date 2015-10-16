@@ -13,8 +13,8 @@ def main():
 	session1 = None
 	session2 = None
 	session_error = "session=session_error"
-	user_id1 = "idUsuario1"
-	user_id2 = "idUsuario2"
+	user_id1 = "id_test_usuario1"
+	user_id2 = "id_test_usuario2"
 	user_id_error = "idERROR"
 	basepath = "/api/usuarios"
 	

@@ -12,7 +12,7 @@ def main():
 		option = sys.argv[1]
 		basepath = "/api/componentes"
 		option_list = ['subida', 'obtención', 'modificación', 'borrado']
-		user_id1 = "id_usuario_componentes_1"
+		user_id1 = "id_usuario_test_componentes_1"
 		if option in option_list:
 			test_utils.openConnection(False) # Pruebas en local (Remote = False)
 			
