@@ -4,13 +4,15 @@ import test_utils
 
 # Script para hacer pruebas a la API de Componentes de PicBit (api/componentes)
 # Uso: python api_componentes_tester {subida|obtención|modificación|borrado}
+# Para testear toda la API, es necesario ejecutar el script con los parametros ordenados
+# tal como aparezca ahora
 
 def main():
 	if len(sys.argv) == 2:
 		option = sys.argv[1]
 		basepath = "/api/componentes"
 		option_list = ['subida', 'obtención', 'modificación', 'borrado']
-		user_id1 = "id_usuario_componentes_1"
+		user_id1 = "id_usuario_test_componentes_1"
 		if option in option_list:
 			test_utils.openConnection(False) # Pruebas en local (Remote = False)
 			
