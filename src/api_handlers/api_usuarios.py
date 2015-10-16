@@ -147,18 +147,18 @@ class UserHandler(SessionHandler):
             update_data["email"] = values.get("email")
           if values.has_key("private_phone"):
             # Checks if private_phone has a proper value
-            if values.get("private_phone") == "True":
+            if values.get("private_phone") in ["True", "true"]:
               private_phone = True
               update_data["private_phone"] = private_phone
-            elif values.get("private_phone") == "False":
+            elif values.get("private_phone") in ["False", "false"]:
               private_phone = False
               update_data["private_phone"] = private_phone
           if values.has_key("private_email"):
              # Checks if private_email has a proper value
-            if values.get("private_email") == "True":
+            if values.get("private_email") in ["True", "true"]:
               private_email = True
               update_data["private_email"] = private_email
-            elif values.get("private_email") == "False":
+            elif values.get("private_email")in ["False", "false"]:
               private_email = False
               update_data["private_email"] = private_email
           if values.has_key("component"):
@@ -172,8 +172,7 @@ class UserHandler(SessionHandler):
           # Updates the resource 
           if not len(update_data) == 0:
             updated_info = ndb_pb.updateUser(user_logged_key, update_data)
-            print "DEBUG Updated_info ", updated_info
-            if not updated_info == None:
+            if not len(updated_info) == 0:
               self.response.content_type = "application/json"
               self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
               self.response.set_status(200)

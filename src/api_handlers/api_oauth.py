@@ -123,6 +123,9 @@ class OauthLoginHandler(SessionHandler):
                         # Generate a valid username for a new user
                         user_key = ndb_pb.insertUser(social_network,
                                 token_id, access_token, data)
+                        # Assigns to the user a predetermined set of components
+                        ndb_pb.assignPredeterminedComponentsToUser(user_key)
+                        # Creates the session
                         session_id = self.login(user_key)
 
                         # Returns the session, user_id and social_network cookie

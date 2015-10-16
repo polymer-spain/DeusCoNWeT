@@ -5,7 +5,7 @@ import test_utils
 
 # Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto 
 # (api/componentes y api/usuarios)
-# Uso: python api_componentes_usuarios.py [borrado]
+# Uso: python api_componentes_usuarios.py [borrado | predeterminados]
 
 def main():
 	components_basepath = "/api/componentes"
@@ -15,6 +15,7 @@ def main():
 	session_error = "session=session_error"
 	user_id1 = "id_usuario1"
 	user_id2 = "id_usuario2"
+
 	# Sets the option param
 	option = None
 	if len(sys.argv) == 2:
@@ -45,7 +46,7 @@ def main():
 	 'user_identifier': user_id2 })
 	session2 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
 
-	# PRE-TEST 2. Añadimos el componente a utilizar en las pruebas
+	# PRE-TESTs. Añadimos dos componentes a utilizar en las pruebas
 	print "PRETEST 3: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
 	print "Ignorar el status de salida de este TEST"
 	print "Status esperado: 201 "
@@ -55,9 +56,11 @@ def main():
             'social_network': 'instagram',
             'input_type': 'None',
             'output_type': 'photo',
-            'versions': 'stable'
+            'versions': 'stable',
+            'predetermined': 'True'
 	})
 	test_utils.make_request("PUT", components_basepath, params, 201, None, preTest=True)
+
 
 	if option == None:
 
@@ -209,6 +212,74 @@ def main():
 		request_uri = components_basepath + "/instagram-timeline"
 		test_utils.make_request("GET", request_uri, params, 200, session1)		
 	
+	
+	elif option == 'predeterminados':
+		user_id3 = "id_usuario3"
+		session3 = None
+
+		# PRETESTs 4 y 5: Añadimos los componentes que se van a añadir de forma predeterminada al dashboard de usuario (Si no están añadidos ya)
+		print "PRETEST 4: Subir un componente predeterminado al sistema (twitter-timeline)."
+		print "Status esperado: 201 "
+		request_uri = "/api/componentes"
+		params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
+	            'component_id': 'twitter-timeline',
+	            'description': 'Web component to obtain the timeline of Twitter using Polymer',
+	            'social_network': 'twitter' ,
+	            'input_type': 'None',
+	            'output_type': 'tweet',
+	            'versions': 'stable',
+	            'predetermined': "True"
+		})
+		test_utils.make_request("PUT", request_uri, params, 201, None, preTest=True)
+		
+		# PRETEST 6
+		print "PRETEST 6: Añadimos un componente cualquiera al sistema (No predeterminado)"
+		print "Status esperado: 201 "
+		versions_list = ["stable", "usability_defects"]
+		params = urllib.urlencode({'url': 'https://github.com/JuanFryS/google-inbox',
+	            'component_id': 'google-inbox',
+	            'description': 'Web component to obtain mails from your gmail account',
+	            'social_network': 'googleplus',
+	            'input_type': 'None',
+	            'output_type': 'text',
+	            'versions': versions_list,
+	            'predetermined': "False"
+		}, doseq=True)
+		test_utils.make_request("PUT", request_uri, params, 201, None, preTest=True)
+		
+		# TEST 20: Creamos un nuevo usuario en el sistema (Realizando login mediante googleplus)
+		request_uri = "/api/oauth/googleplus/login"
+		print "TEST 20: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
+		print "Ignorar el status de salida de este TEST"
+		print "Status esperado: 200 "
+		token_id_login = "id_user3_test_token"
+		access_token_login = "googleTEST"
+		params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
+		 'user_identifier': user_id3 })
+		session3 = test_utils.make_request("POST", request_uri, params, 201, None, True)
+
+		# TEST 21
+		print "TEST 21: Intentamos añadir un componente predeterminado al usuario"
+		print "Status esperado: 304 (Ya estaba añadido anteriormente)"
+		request_uri = users_basepath + "/" + user_id3
+		params = urllib.urlencode({'component': 'twitter-timeline'})
+		test_utils.make_request("POST", request_uri, params, 304, session3)		
+		
+		# TEST 22: Añadimos un componente cualquiera al usuario
+		print "TEST 22: Añadimos un componente cualquiera al usuario"
+		print "Status esperado: 200"
+		request_uri = users_basepath + "/" + user_id3
+		params = urllib.urlencode({'component': 'google-inbox'})
+		test_utils.make_request("POST", request_uri, params, 200, session3, preTest=True)
+		
+		# TEST 23
+		print "TEST 23: Listamos los detalles sobre los componentes de usuario."
+		print "(Deben aparecer los componentes predeterminados y el añadido)"
+		print "Status esperado: 200"
+		params = urllib.urlencode({})
+		request_uri = components_basepath + "?filter=user&list_format=complete"
+		test_utils.make_request("GET", request_uri, params, 200, session3)		
+
 	# POST-TESTs. Logout de usuario en el sistema
 	request_uri = '/api/oauth/googleplus/logout'
 	params = urllib.urlencode({})
