@@ -139,6 +139,12 @@ class OauthSignUpHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
+            else:
+                response = \
+                {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
         except KeyError:
             response = \
                 {"error": "You must provide access_token, token_id and user_identifier params in the request"}
@@ -186,7 +192,7 @@ class OauthLoginHandler(SessionHandler):
                 self.response.set_status(200)
             else:
                 response = \
-                {"error": "The token_id provided does not belong to any user in the system. Consider perform a signup request"}
+                {"error": "The token_id provided does not belong to any user in the system. Consider perform a signup request instead"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
@@ -730,13 +736,15 @@ class TwitterHandler(OauthCredentialsHandler):
         self.delete_credentials("twitter", token_id)
 
 
-class TwitterLoginHandler(SessionHandler):
-    """ This class is a resource that represents the login 
-    action using the Twitter credentials to autenticate in PicBit 
+class TwitterSignUpHandler(SessionHandler):
+    """ This class is a resource that represents the sign-up
+    action using the Twitter credentials to autenticate and 
+    create a new user into PicBit
+    Methods:
+        post -- Signs ups a user in the system
     """
     def post(self):
-        oauth_verifier = self.request.get("oauth_verifier",
-                default_value="None")
+        oauth_verifier = self.request.get("oauth_verifier", default_value="None")
         user_identifier = self.request.get("user_identifier", default_value="")
         
         if not oauth_verifier == "":
@@ -785,8 +793,42 @@ class TwitterLoginHandler(SessionHandler):
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(400)
-
                 else:
+                    response = \
+                    {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)   
+            else:
+                response = \
+                    {"error": "There isn\"t any Twitter OAuth flow initiated in the system for the oauth_verifier value specified"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(404)
+        else:
+            response = \
+                {"error": "You must specify a value for the oauth_verifier param in the request"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
+
+
+class TwitterLoginHandler(SessionHandler):
+    """ This class is a resource that represents the login 
+    action using the Twitter credentials to autenticate in PicBit 
+    """
+    def post(self):
+        oauth_verifier = self.request.get("oauth_verifier",
+                default_value="None")
+        user_identifier = self.request.get("user_identifier", default_value="")
+        
+        if not oauth_verifier == "":
+            key_verifier = "oauth_verifier_" + oauth_verifier
+            twitter_user_data = memcache.get(key_verifier)
+            if not twitter_user_data == None:
+                # Checks if the username was stored previously
+                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter") 
+                if not stored_credentials == None:
                     # We store the new set of credentials
                     user_key = ndb_pb.modifyToken(twitter_user_data["token_id"],
                             twitter_user_data["access_token"], "twitter")
@@ -811,6 +853,12 @@ class TwitterLoginHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(200)
+                else:
+                     response = \
+                    {"error": "The token_id provided does not belong to a registered user in the system. Consider perform a signup request instead"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400) 
             else:
                 response = \
                     {"error": "There isn\"t any session in the system for the oauth_verifier value specified"}
