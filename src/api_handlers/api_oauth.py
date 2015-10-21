@@ -366,7 +366,6 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     if stored_credentials == None:
                         # Adds the token to the user credentials list
                         ndb_pb.insertToken(user, social_network, access_token, token_id)
-                        
                         #Builds the response
                         user_id = ndb_pb.getUserId(user)
                         response = {"user_id": user_id}
@@ -374,11 +373,9 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                         self.response.write(json.dumps(response))    
                         self.response.set_status(201)
                     else:
-
                         # We update the user credentials
                         user_id = ndb_pb.modifyToken(token_id, access_token,
                                 social_network)
-
                         # Builds the response
                         response = {"user_id": stored_credentials["user_id"]}
                         self.response.content_type = "application/json"
@@ -405,7 +402,7 @@ class OAuthCredentialsContainerHandler(SessionHandler):
 
 
 ##################################################################################
-# HANDLERS MAPPERS FOR EACH SOCIAL NETWORK SUPPORTED IN PICBIT
+# HANDLERS MAPPERS / IMPLEMENTATIONS FOR EACH SOCIAL NETWORK SUPPORTED IN PICBIT
 ##################################################################################
 
 # HANDLERS FOR RESOURCES RELATED TO FACEBOOK
@@ -854,7 +851,7 @@ class TwitterLoginHandler(SessionHandler):
                     self.response.write(json.dumps(response))
                     self.response.set_status(200)
                 else:
-                     response = \
+                    response = \
                     {"error": "The token_id provided does not belong to a registered user in the system. Consider perform a signup request instead"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
