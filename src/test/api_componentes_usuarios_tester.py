@@ -25,28 +25,14 @@ def main():
 		# We open the connection with the server
 		test_utils.openConnection(False) # Realizamos pruebas en local (remote=False)
 
-		# PRE-TESTs. Login de usuario en el sistema, utilizando Google+
-		request_uri = "/api/oauth/googleplus/login"
-		print "PRETEST 1: Login de usuario 1 ( " + user_id1 + " ) en el sistema"
-		print "Ignorar el status de salida de este TEST"
-		print "Status esperado: 200 "
+		# Iniciamos sesión con dos usuarios en el sistema
 		token_id_login = "id_component_users_test_token"
 		access_token_login = "googleTEST"
-		params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
-		 'user_identifier': user_id1 })
-		session1 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
-
-
-		request_uri = "/api/oauth/googleplus/login"
-		print "PRETEST 2: Login de usuario ( " + user_id2 + " )en el sistema"
-		print "Ignorar el status de salida de este TEST"
-		print "Status esperado: 200 "
-		token_id_login = "id_component_users_test_token2"
-		access_token_login = "googleTEST2"
-		params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
-		 'user_identifier': user_id2 })
-		session2 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
-
+		token_id_login2 = "id_component_users_test_token2"
+		access_token_login2 = "googleTEST2"
+		session1 = test_utils.do_login_or_signup("googleplus", token_id_login, access_token_login, user_id1)
+		session2 = test_utils.do_login_or_signup("googleplus", token_id_login2, access_token_login2, user_id2)
+		
 		# PRE-TESTs. Añadimos dos componentes a utilizar en las pruebas
 		print "PRETEST 3: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
 		print "Componente no predeterminado. Id: linkedin-timeline"
@@ -251,10 +237,10 @@ def main():
 			test_utils.make_request("PUT", request_uri, params, 201, None, preTest=True)
 			
 			# TEST 20: Creamos un nuevo usuario en el sistema (Realizando login mediante googleplus)
-			request_uri = "/api/oauth/googleplus/login"
+			request_uri = "/api/oauth/googleplus/signup"
 			print "TEST 20: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
 			print "Ignorar el status de salida de este TEST"
-			print "Status esperado: 200 "
+			print "Status esperado: 201 "
 			token_id_login = "id_user3_test_token"
 			access_token_login = "googleTEST"
 			params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
@@ -301,3 +287,4 @@ def main():
 
 if __name__ == "__main__":
 	main()
+**

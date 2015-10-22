@@ -15,18 +15,10 @@ def main():
 		user_id1 = "id_usuario_test_componentes_1"
 		if option in option_list:
 			test_utils.openConnection(False) # Pruebas en local (Remote = False)
-			
 			# PRE-TESTs. Login de usuario en el sistema, utilizando Google+
-			request_uri = "/api/oauth/googleplus/login"
-			print "PRETEST 1: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
-			print "Ignorar el status de salida de este TEST"
-			print "Status esperado: 200 "
 			token_id_login = "id_component_test_token"
 			access_token_login = "googleTEST"
-			params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
-			 'user_identifier': user_id1 })
-			session1 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
-
+			session1 = test_utils.do_login_or_signup("googleplus", token_id_login, access_token_login, user_id1)
 
 			if option == "subida":
 				request_uri = basepath
