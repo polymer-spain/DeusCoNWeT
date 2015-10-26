@@ -34,6 +34,7 @@ def main():
 		if social_network == "googleplus" or social_network=="facebook":
 			session1 = None
 			session2 = None
+			old_session = None
 			token_id1 = "id" + social_network
 			token_id2 = "id" + social_network + "2"
 			user_id1 = "user" + social_network + "1"
@@ -110,7 +111,7 @@ def main():
 				print "TEST 9: Login de sesión correcto (usuario 1)"
 				print "Status esperado: 200"
 				access_token = social_network + "TEST"
-				params = urllib.urlencode({'token_id': token_id1, 'access_token': "TEST 1"})
+				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
 				session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
 
 				# TEST 10
@@ -118,77 +119,85 @@ def main():
 				print "Con esta prueba pretendemos ver si la cookie que devuelve en un login repetido es la misma que en el login inicial"
 				print "Status esperado: 200"
 				access_token = social_network + "ModifyTEST"
-				params = urllib.urlencode({'token_id': token_id1, 'access_token': "TEST 2",})
-				test_utils.make_request("POST", request_uri, params, 200, None, True)	
+				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
+				old_session = session1
+				session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)	
+
+				# TEST 11
+				request_uri = basePath + "/credenciales/" + token_id1
+				print "TEST 11: Obtenemos credenciales con una sesion invalidada"
+				print "Status esperado: 400 (la cookie proporcionada no es correcta)"
+				params = urllib.urlencode({})
+				test_utils.make_request("GET", request_uri, params, 400, old_session)
 
 				# Tests relativos al método GET de credenciales
 				# Obtener credenciales sin cookie
-				# TEST 11
+				# TEST 12
 				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 11: Obtener credenciales sin cookie de sesion"
+				print "TEST 12: Obtener credenciales sin cookie de sesion"
 				print "Status esperado: 200 (Retorna únicamente el id de usuario propietario de las credenciales)"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, None)
 
-				# TEST 12
+				# TEST 13
 				# Obtener credenciales con cookie	
 				request_uri = basePath + "/credenciales/" + token_id2
-				print "TEST 12: Obtener credenciales con cookie de sesion, a una credencial que no es propiedad del usuario"
+				print "TEST 13: Obtener credenciales con cookie de sesion, a una credencial que no es propiedad del usuario"
 				print "Status esperado: 200 (Solo retorna el id de usuario propietario del token)"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 				# Obtener credenciales con cookie
-				# TEST 13
+				# TEST 14
 				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 13: Obtener credenciales con cookie de sesion, a una credencial propiedad del usuario"
+				print "TEST 14: Obtener credenciales con cookie de sesion, a una credencial propiedad del usuario"
 				print "Status esperado: 200"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 				#Logouts
-				# TEST 14
+				# TEST 15
 				request_uri = basePath + "/logout"
-				print "TEST 14: Logout sin cookie de sesion"
+				print "TEST 15: Logout sin cookie de sesion"
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
 				test_utils.make_request("POST", request_uri, params, 401, None)
 
-				# TEST 15
+				# TEST 16
 				# Se desloguea el usuario logueado (usuario1)
-				print "TEST 15: Logout con cookie de sesion (usuario1)"
+				print "TEST 16: Logout con cookie de sesion (usuario1)"
 				print "Status esperado: 200"
 				test_utils.make_request("POST", request_uri, params, 200, session1)
 				
-				# TEST 16
+				# TEST 17
 				# Login (prueba de nueva sesión y actualizar credenciales)
 				request_uri = basePath + "/login"
-				print "TEST 16: Prueba de nueva sesión y actualizar credenciales (usuario 1)"
+				print "TEST 17: Prueba de nueva sesión y actualizar credenciales (usuario 1)"
 				print "Status esperado: 200"
 				access_token = social_network + "Modify2TEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})	
 				test_utils.make_request("POST", request_uri, params, 200, None)
 
-				# TEST 17
+				# TEST 18
 				# Obtener credenciales con cookie antigua
 				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 17: Obtener credenciales con cookie de sesión antigua"
+				print "TEST 18: Obtener credenciales con cookie de sesión antigua"
 				print "Status esperado: 400"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 400, session1)
 
-				# TEST 18
+				# TEST 19
 				# Logout con cookie antigua
 				request_uri = basePath + "/logout"
-				print "TEST 18: Logout sin cookie de sesion"
+				print "TEST 19: Logout sin cookie de sesion"
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
 				test_utils.make_request("POST", request_uri, params, 401, None)
 				
-				# TEST 19
+				# TEST 20
 				# Logout con cookie antigua / incorrecta
 				request_uri = basePath + "/logout"
-				print "TEST 19: Logout con cookie de sesión antigua"
+				print "TEST 20: Logout con cookie de sesión antigua"
 				print "Status esperado: 400"
 				params = urllib.urlencode({})
 				test_utils.make_request("POST", request_uri, params, 400, session1)
@@ -214,42 +223,42 @@ def main():
 				params = urllib.urlencode({'token_id': token_id2, 'access_token': access_token})	
 				session2 = test_utils.make_request("POST", request_uri, params, 200, None)
 
-				# TEST 20
+				# TEST 21
 				# Borrar credenciales de usuarios de prueba2
 				request_uri = basePath + "/credenciales/" + token_id2
-				print "TEST 20: Borrar creedenciales sin cookie de sesión"
+				print "TEST 21: Borrar creedenciales sin cookie de sesión"
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 401, None)			
 
-				# TEST 21
+				# TEST 22
 				# Borrar credenciales de usuario de prueba1 (Estando logeado)
 				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 21: Borrado de credenciales estando logeado (usuario 1)"
+				print "TEST 22: Borrado de credenciales estando logeado (usuario 1)"
 				print "Status esperado: 403 (Es el único token de login en el sistema)"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 403, session1)
 				
-				# TEST 22
+				# TEST 23
 				# Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
 				request_uri = basePath + "/credenciales/" + token_id2
-				print "TEST 22: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
+				print "TEST 23: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
 				print "Status esperado: 401 (Es el único token de login en el sistema)"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 401, session1)
 
-				# TEST 23
+				# TEST 24
 				# Borrar credenciales de usuario de prueba2 (Estando logeado)
 				request_uri = basePath + "/credenciales/" + token_id2
-				print "TEST 23: Borrado de credenciales estando logeado"
+				print "TEST 24: Borrado de credenciales estando logeado"
 				print "Status esperado: 403"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 403, session2)
 
-				# TEST 24
+				# TEST 25
 				# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
 				request_uri = basePath + "/" + token_id2
-				print "TEST 24: Intento de borrado por segunda vez (credenciales de usuario 2)"
+				print "TEST 25: Intento de borrado por segunda vez (credenciales de usuario 2)"
 				print "Status esperado: 404"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 404, session2)

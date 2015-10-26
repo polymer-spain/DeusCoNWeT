@@ -210,6 +210,11 @@ class User(ndb.Model):
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
 
+# Represents the session value for a given user in the system
+class Session(ndb.Model):
+  user_key = ndb.KeyProperty()
+  hashed_id = ndb.StringProperty()
+
 #####################################################################################
 # Definicion de metodos y variables para el cifrado de claves
 #####################################################################################
@@ -1016,6 +1021,32 @@ def getGitHubAPIKey():
   githubKey = GitHubAPIKey.query().get()
   return githubKey.token
 
+# METHODS FOR SESSION SUPPORT
+# Creates a sesion for the given user in the system
+# If the user has an active session in the system, we delete the previous session
+# and we create a new one (we only support single login per user)
+def createSession(user_key, hashed_id):
+  stored_session = Session.query(Session.user_key == user_key).get()
+  if not stored_session == None:
+    stored_session.key.delete()
+  # We create a new session assigned to the user
+  session = Session(user_key=user_key, hashed_id=hashed_id)
+  session.put()
+
+def getSessionOwner(hashed_id):
+  user_key = None
+  session = Session.query(Session.hashed_id == hashed_id).get()
+  if not session == None:
+    user_key = session.user_key
+  return user_key
+
+def deleteSession(hashed_id):
+  deleted = False
+  session = Session.query(Session.hashed_id == hashed_id).get()
+  if not session == None:
+    session.key.delete()
+    deleted = True
+  return deleted
 
 # class MainPage(webapp2.RequestHandler):
 #   def get(self):

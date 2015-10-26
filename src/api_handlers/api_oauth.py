@@ -27,7 +27,7 @@ import httplib
 import hashlib
 import urllib
 from google.appengine.ext import ndb
-from google.appengine.api import memcache
+# from google.appengine.api import memcache
 import time
 import ndb_pb
 from ndb_pb import Token, User
@@ -60,32 +60,39 @@ callback_uri = "https://" + domain \
 # Request to Twitter the request_token and authorization URL
 client = oauth.TwitterClient(consumer_key, consumer_secret,
         callback_uri)
+
 # Generic handlers for the session management, login, logout and actions 
 # related to user credentials 
 class SessionHandler(webapp2.RequestHandler):
     """
     Class that handles the session of the application
     Methods:
-        login - Generates a valid hash for a given user_id
+        login - Generates a valid hash for a given user_key
         getUserInfo - Gets the info related to a logged user_id
         logout - Deletes the session for a given user
     """
 
-    def login(self, user_id):
-        message = str(user_id.id()) + str(time.time())
+    def login(self, user_key):
+        message = str(user_key.id()) + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest() 
         # Store in memcache hash-user_id pair
-        memcache.add(hash_id, user_id)
+        # memcache.add(hash_id, user_key)
+
+        # user_id = ndb_pb.getUserId(user_key)
+        # print "TIPO: ", type(user_id)
+        ndb_pb.createSession(user_key, hash_id)
         return hash_id
 
     def getUserInfo(self, hashed_id):
-        user = memcache.get(hashed_id)
-        return user
+        # user = memcache.get(hashed_id)
+        user_key = ndb_pb.getSessionOwner(hashed_id)
+        return user_key
 
     def logout(self, hashed_id):
         logout_status = False
-        status = memcache.delete(hashed_id)
+        # status = memcache.delete(hashed_id)
+        status = ndb_pb.deleteSession(hashed_id)
         if status == 2:
             logout_status = True
         return logout_status
