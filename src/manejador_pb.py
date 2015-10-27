@@ -40,18 +40,23 @@ app = webapp2.WSGIApplication([
     (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
     (r'/api/aux/instagramTimeline', api_auxiliar.instagramRequest),
     
+    (r'/api/oauth/twitter/signup',api_oauth.TwitterSignUpHandler),
     (r'/api/oauth/twitter/login', api_oauth.TwitterLoginHandler),
     (r'/api/oauth/twitter/logout', api_oauth.TwitterLogoutHandler),
+    (r'/api/oauth/twitter/credenciales/(.*)', api_oauth.TwitterHandler),
+    
+    # Special URIs to perform the Server-side Twitter login flow
     (r'/api/oauth/twitter/authorization', api_oauth.TwitterAuthorizationHandler),
     (r'/api/oauth/twitter/authorization/(.*)', api_oauth.TwitterAuthorizationDetailsHandler),
-    
     (r'/api/oauth/twitter/request_token', api_oauth.TwitterRequestLoginHandler),
-    (r'/api/oauth/twitter/credenciales/(.*)', api_oauth.TwitterHandler),
 
+    
+    (r'/api/oauth/facebook/signup',api_oauth.FacebookSignUpHandler),
     (r'/api/oauth/facebook/login', api_oauth.FacebookLoginHandler),
     (r'/api/oauth/facebook/logout', api_oauth.FacebookLogoutHandler),
     (r'/api/oauth/facebook/credenciales/(.*)', api_oauth.FacebookHandler),
     
+    (r'/api/oauth/googleplus/signup',api_oauth.GooglePlusSignUpHandler),
     (r'/api/oauth/googleplus/login', api_oauth.GooglePlusLoginHandler),
     (r'/api/oauth/googleplus/logout', api_oauth.GooglePlusLogoutHandler),
     (r'/api/oauth/googleplus/credenciales/(.*)', api_oauth.GooglePlusHandler),
