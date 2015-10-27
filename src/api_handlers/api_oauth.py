@@ -78,9 +78,7 @@ class SessionHandler(webapp2.RequestHandler):
         hash_id = cypher.hexdigest() 
         # Store in memcache hash-user_id pair
         # memcache.add(hash_id, user_key)
-
-        # user_id = ndb_pb.getUserId(user_key)
-        # print "TIPO: ", type(user_id)
+        # Create a new session in the system
         ndb_pb.createSession(user_key, hash_id)
         return hash_id
 
