@@ -27,7 +27,7 @@ import httplib
 import hashlib
 import urllib
 from google.appengine.ext import ndb
-# from google.appengine.api import memcache
+from google.appengine.api import memcache
 import time
 import ndb_pb
 from ndb_pb import Token, User
@@ -75,7 +75,7 @@ class SessionHandler(webapp2.RequestHandler):
     def login(self, user_key):
         message = str(user_key.id()) + str(time.time())
         cypher = hashlib.sha256(message)
-        hash_id = cypher.hexdigest() 
+        hash_id = cypher.hexdigest()
         # Store in memcache hash-user_id pair
         # memcache.add(hash_id, user_key)
         # Create a new session in the system
@@ -101,7 +101,7 @@ class OauthSignUpHandler(SessionHandler):
         act as authentication services in PicBit, and have 
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
-            post_signup - Implements the signup action. Stores the pair of 
+            post_signup - Implements the signup action. Stores the pair of
             token_in and access_token in the system, and generates the
             cookie for the session.
     """
@@ -160,10 +160,10 @@ class OauthSignUpHandler(SessionHandler):
 
 class OauthLoginHandler(SessionHandler):
     """ Defines the logic for the login action, in those social networks that
-        act as authentication services in PicBit, and have 
+        act as authentication services in PicBit, and have
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
-            post_login - Implements the login action. Updates the 
+            post_login - Implements the login action. Updates the
             access_token for a given user in the system, and generates the
             cookie for the session.
     """
@@ -434,8 +434,8 @@ class FacebookLoginHandler(OauthLoginHandler):
         self.post_login("facebook")
 
 class FacebookSignUpHandler(OauthSignUpHandler):
-    """ This class is a resource that represents the sign-up 
-    action using the Facebook credentials to autenticate in PicBit 
+    """ This class is a resource that represents the sign-up
+    action using the Facebook credentials to autenticate in PicBit
     """
     def post(self):
         self.post_signup("facebook")
@@ -555,8 +555,8 @@ class GooglePlusLoginHandler(OauthLoginHandler):
         self.post_login("googleplus")
 
 class GooglePlusSignUpHandler(OauthSignUpHandler):
-    """ This class is a resource that represents the sign-up 
-    action using the GooglePlus credentials to autenticate in PicBit 
+    """ This class is a resource that represents the sign-up
+    action using the GooglePlus credentials to autenticate in PicBit
     """
     def post(self):
         self.post_signup("googleplus")
@@ -740,7 +740,7 @@ class TwitterHandler(OauthCredentialsHandler):
 
 class TwitterSignUpHandler(SessionHandler):
     """ This class is a resource that represents the sign-up
-    action using the Twitter credentials to autenticate and 
+    action using the Twitter credentials to autenticate and
     create a new user into PicBit
     Methods:
         post -- Signs ups a user in the system
@@ -800,7 +800,7 @@ class TwitterSignUpHandler(SessionHandler):
                     {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
-                    self.response.set_status(400)   
+                    self.response.set_status(400)
             else:
                 response = \
                     {"error": "There isn\"t any Twitter OAuth flow initiated in the system for the oauth_verifier value specified"}
@@ -816,20 +816,20 @@ class TwitterSignUpHandler(SessionHandler):
 
 
 class TwitterLoginHandler(SessionHandler):
-    """ This class is a resource that represents the login 
-    action using the Twitter credentials to autenticate in PicBit 
+    """ This class is a resource that represents the login
+    action using the Twitter credentials to autenticate in PicBit
     """
     def post(self):
         oauth_verifier = self.request.get("oauth_verifier",
                 default_value="None")
         user_identifier = self.request.get("user_identifier", default_value="")
-        
+
         if not oauth_verifier == "":
             key_verifier = "oauth_verifier_" + oauth_verifier
             twitter_user_data = memcache.get(key_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter") 
+                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter")
                 if not stored_credentials == None:
                     # We store the new set of credentials
                     user_key = ndb_pb.modifyToken(twitter_user_data["token_id"],
@@ -860,7 +860,7 @@ class TwitterLoginHandler(SessionHandler):
                     {"error": "The token_id provided does not belong to a registered user in the system. Consider perform a signup request instead"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
-                    self.response.set_status(400) 
+                    self.response.set_status(400)
             else:
                 response = \
                     {"error": "There isn\"t any session in the system for the oauth_verifier value specified"}

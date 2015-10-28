@@ -299,7 +299,7 @@ def activateComponentToUser(component_id, entity_key):
   if not user_component == None:
     # We set the field to active
     # The user's preferences (heigh, width) does not change
-    # We get the version of the component that will be served to the user 
+    # We get the version of the component that will be served to the user
     # (the same version than the setted when the user activated the component for the first time)
     version = user_component.version
     if not user_component.active:
@@ -314,7 +314,7 @@ def activateComponentToUser(component_id, entity_key):
     # We add the component to the component_list of the user
     user.components.append(user_component)
     user.put()
-    
+
     # We increase the counters that represents the times that a given component has been tested (general and versioned)
     general_component = Component.query(Component.component_id == component_id).get()
     general_component.test_count = general_component.test_count + 1
@@ -322,7 +322,7 @@ def activateComponentToUser(component_id, entity_key):
     # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
     #  VersionedComponent.version == version)).get()
     # versioned_component.test_count = versioned_component.test_count + 1
-    # versioned_component.put() 
+    # versioned_component.put()
     status = True
 
   # We store in a ComponentTested entity the new version tested by the user
@@ -333,7 +333,7 @@ def activateComponentToUser(component_id, entity_key):
     # We add the version to the versions tested list, if is not was added previously
     if not version in user_component_tested.versions_tested:
       user_component_tested.versions_tested.append(version)
-      user_component_tested.put()  
+      user_component_tested.put()
   else:
     # We create a new ComponentTested entity to store the versions of a component tested by the user
     component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
@@ -342,7 +342,7 @@ def activateComponentToUser(component_id, entity_key):
 
 
 # Removes the component from the user's dashboard
-# It turns the field active to False, thus the component will not be listed as a 
+# It turns the field active to False, thus the component will not be listed as a
 # component included in the user's dashboard
 def deactivateUserComponent(entity_key, component_id):
   user = entity_key.get()
@@ -354,7 +354,7 @@ def deactivateUserComponent(entity_key, component_id):
       comp.active = False
       user.put()
       status = True
-  
+
   return status
 
 

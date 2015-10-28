@@ -44,13 +44,13 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/twitter/login', api_oauth.TwitterLoginHandler),
     (r'/api/oauth/twitter/logout', api_oauth.TwitterLogoutHandler),
     (r'/api/oauth/twitter/credenciales/(.*)', api_oauth.TwitterHandler),
-    
+
     # Special URIs to perform the Server-side Twitter login flow
     (r'/api/oauth/twitter/authorization', api_oauth.TwitterAuthorizationHandler),
     (r'/api/oauth/twitter/authorization/(.*)', api_oauth.TwitterAuthorizationDetailsHandler),
     (r'/api/oauth/twitter/request_token', api_oauth.TwitterRequestLoginHandler),
 
-    
+
     (r'/api/oauth/facebook/signup',api_oauth.FacebookSignUpHandler),
     (r'/api/oauth/facebook/login', api_oauth.FacebookLoginHandler),
     (r'/api/oauth/facebook/logout', api_oauth.FacebookLogoutHandler),

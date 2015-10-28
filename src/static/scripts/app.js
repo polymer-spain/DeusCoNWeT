@@ -46,7 +46,7 @@
       .when("/user/:user_id", {
       templateUrl: "views/userHome.html",
       controller: "UserHomeController",
-      resolve: {
+/*      resolve: {
 
         auth: ["$q", "$cookies", "$backend", "$rootScope", "$route", function ($q, $cookies, $backend, $rootScope, $route) {
 
@@ -69,7 +69,7 @@
             return $q.reject({authenticated: false});
           }
         }]
-      }
+      }*/
     })
       .when("/about", {
       templateUrl: "views/about.html",
@@ -82,7 +82,7 @@
       .when("/user/:userId/profile", {
       templateUrl: "views/profile.html",
       controller: "ProfileController",
-      resolve: {
+/*      resolve: {
         auth: ["$q", "$cookies", "$backend", "$rootScope", function ($q, $cookies, $backend, $rootScope) {
 
           var session = $cookies.get("session");
@@ -100,7 +100,7 @@
             return $q.reject({authenticated: false});
           }
         }]
-      }
+      }*/
     })
       .when("/privacy", {
       templateUrl: "views/privacy.html",

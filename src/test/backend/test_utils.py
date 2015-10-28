@@ -68,7 +68,7 @@ def do_login_or_signup(social_network, token_id, access_token, user_identifier):
 def make_request(method, request_uri, params, status_ok, session, printHeaders=False, preTest=False):
     """
     Metodo make_request: Realiza llamadas HTTP a la API REST, retornando la
-    cookie de sesion enviada por el servidor. 
+    cookie de sesion enviada por el servidor.
     Parametros:
         method: metodo HTTP de la peticion
         request_uri: URL de la peticion
@@ -76,7 +76,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
         status_ok: status HTTP de retorno esperado de la peticion
         session: cookie de sesion para adjuntar en la peticion
         printHeaders: Si es True, se imprimirán los Headers de peticion y respuesta (Valor por defecto: False)
-        preTest: Indica si la petición a realizar se corresponde con un pre-test, y no es significativo el status HTTP de retorno 
+        preTest: Indica si la petición a realizar se corresponde con un pre-test, y no es significativo el status HTTP de retorno
                 (Valor por defecto: False)
     """
     global connection, nTest, nTestOK, nTestError, remoteConnection, nPreTest
@@ -89,13 +89,13 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
         headers['Cookie']  = session
         if printHeaders:
             print "\tHEADERS " + headers['Cookie']
-    
+
     # Request to API endpoint
     connection.request(method, request_uri, params, headers)
     response = connection.getresponse()
     session_cookie = response.getheader('Set-Cookie')
     responseData = response.read()
-    
+
     # Prints the result of the request
     if not response.status == status_ok:
         if not preTest:
@@ -103,10 +103,10 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
         else:
             nPreTest += 1
 
-        # We print a Log for the response obtained from the server  
+        # We print a Log for the response obtained from the server
         print bcolors.FAIL + "\t!!! STATUS: ERROR (STATUS " + str(response.status) + ")"
         print "\tDatos de la respuesta: " + responseData + bcolors.ENDC +"\n"
-        
+
     else:
         if not preTest:
             nTestOK += 1
@@ -115,10 +115,10 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
             nPreTest += 1
             text_color = bcolors.OKBLUE
 
-        # We print a Log for the response obtained from the server  
+        # We print a Log for the response obtained from the server
         print text_color + "\t>>> STATUS: OK (STATUS " + str(response.status) + ")"
         print "\tRESPUESTA: ", responseData + bcolors.ENDC + "\n"
-    
+
     # Prints the response session cookie, if proceed
     if not session_cookie == None and printHeaders:
         print "\tCookie de la respuesta: " + session_cookie + "\n"

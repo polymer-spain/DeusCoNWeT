@@ -105,7 +105,7 @@ class ComponentListHandler(SessionHandler):
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("versions")
-            
+
             # Predetermined is an optional param (default_value=False)
             predetermined = None
             if self.request.POST.has_key("predetermined"):
@@ -134,7 +134,7 @@ class ComponentListHandler(SessionHandler):
                     else:
                         response = {"error": "Bad value for 'predetermined' param (it must be 'True' or 'False')"}
                         self.response.write(json.dumps(response))
-                        self.response.set_status(400)    
+                        self.response.set_status(400)
                 else:
                     response = {"error": "The versions param must contains stable as one of its values"}
                     self.response.write(json.dumps(response))

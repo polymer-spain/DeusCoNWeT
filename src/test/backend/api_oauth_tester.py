@@ -10,27 +10,28 @@ import test_utils
 
 # Script para hacer pruebas a la API de Oauth de PicBit (api/oauth/{social_network})
 # Uso: api_oauth_tester {social_network} [borrado]
-# Ejemplo: python api_oauth_tester googleplus 
+# Ejemplo: python api_oauth_tester googleplus
 
 # NOTA: El flujo por github se debe probar a traves del componente de login de github
 #       (http://github-login-lab.appspot.com/app/demo.html)
 
 def main():
 	network_list = ["facebook", "stackoverflow", "instagram", "linkedin", "googleplus"]
-	
+
 	if len(sys.argv) >= 2:
 		social_network = sys.argv[1]
 	else:
 		social_network = ''
 	option = None
 	basePath = "/api/oauth/" + social_network
-	
+
 	if len(sys.argv) == 3:
 		option = sys.argv[2]
+
 	if social_network in network_list:
 		# Conexion con el servidor
 		test_utils.openConnection(False) # Pruebas en local(remote=False)
-		
+
 		if social_network == "googleplus" or social_network=="facebook":
 			session1 = None
 			session2 = None
@@ -40,11 +41,11 @@ def main():
 			user_id1 = "user" + social_network + "1"
 			user_id2 = "user" + social_network + "2"
 			access_token2 = social_network + "2TEST"
-			# Si no se especifica una opción, se realizan las pruebas relativas al sign-up, login, 
+			# Si no se especifica una opción, se realizan las pruebas relativas al sign-up, login,
 			# obtención de credenciales y logout
 			if option == None:
 				# TESTs relativos a los casos de sign-up en el sistema
-				# TEST 1: Sign up de usuario 1 en el sistema 
+				# TEST 1: Sign up de usuario 1 en el sistema
 				request_uri = basePath + "/signup"
 				print "TEST 1: Sign up de usuario 1 en el sistema"
 				print "Status esperado: 201"
@@ -70,14 +71,14 @@ def main():
 				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token,
 					'user_identifier': user_id1})
 				test_utils.make_request("POST", request_uri, params, 400, None)
-				
+
 				# TEST 4
 				print "TEST 4: Sign up de usuario 2 con un identificador de usuario ya en uso en el sistema"
 				print "Status esperado: 400"
 				params = urllib.urlencode({'token_id': token_id2, 'access_token': access_token,
 					'user_identifier': user_id1})
 				test_utils.make_request("POST", request_uri, params, 400, None)
-				
+
 				# TEST 5
 				print "TEST 5: Sign up de usuario 2 en el sistema (caso correcto)"
 				print "Status esperado: 201"
@@ -91,7 +92,7 @@ def main():
 				print "Status esperado: 200"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, session1)
-								
+
 				# TEST 7
 				request_uri = basePath + "/logout"
 				print "TEST 7: Logout de usuario 1 en el sistema"
@@ -121,7 +122,7 @@ def main():
 				access_token = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
 				old_session = session1
-				session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)	
+				session1 = test_utils.make_request("POST", request_uri, params, 200, None, True)
 
 				# TEST 11
 				request_uri = basePath + "/credenciales/" + token_id1
@@ -140,7 +141,7 @@ def main():
 				test_utils.make_request("GET", request_uri, params, 200, None)
 
 				# TEST 13
-				# Obtener credenciales con cookie	
+				# Obtener credenciales con cookie
 				request_uri = basePath + "/credenciales/" + token_id2
 				print "TEST 13: Obtener credenciales con cookie de sesion, a una credencial que no es propiedad del usuario"
 				print "Status esperado: 200 (Solo retorna el id de usuario propietario del token)"
@@ -168,14 +169,14 @@ def main():
 				print "TEST 16: Logout con cookie de sesion (usuario1)"
 				print "Status esperado: 200"
 				test_utils.make_request("POST", request_uri, params, 200, session1)
-				
+
 				# TEST 17
 				# Login (prueba de nueva sesión y actualizar credenciales)
 				request_uri = basePath + "/login"
 				print "TEST 17: Prueba de nueva sesión y actualizar credenciales (usuario 1)"
 				print "Status esperado: 200"
 				access_token = social_network + "Modify2TEST"
-				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})	
+				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
 				test_utils.make_request("POST", request_uri, params, 200, None)
 
 				# TEST 18
@@ -193,7 +194,7 @@ def main():
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
 				test_utils.make_request("POST", request_uri, params, 401, None)
-				
+
 				# TEST 20
 				# Logout con cookie antigua / incorrecta
 				request_uri = basePath + "/logout"
@@ -205,14 +206,14 @@ def main():
 				print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 				print "NOTA: para obtener los resultados esperados en estas pruebas, es necesario ejecutar el script con la BBDD vacía",
 				print "(o en su defecto, sin los usuarios 1 y 2)"
-			
+
 			elif option == "borrado":
 				# PRE-TEST 1: Login en el sistema de usuario de prueba 1
 				request_uri = basePath + "/login"
 				print "PRE-TEST 1: Login en el sistema de usuario de prueba 1"
 				print "Status esperado: 200"
 				access_token = social_network + "tokenTODELETE1"
-				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})	
+				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
 				session1 = test_utils.make_request("POST", request_uri, params, 200, None)
 
 				# PRE-TEST 2: Login en el sistema de usuario de prueba 2
@@ -220,7 +221,7 @@ def main():
 				print "PRE-TEST 2: Login en el sistema de usuario de prueba 1"
 				print "Status esperado: 200"
 				access_token = social_network + "tokenTODELETE2"
-				params = urllib.urlencode({'token_id': token_id2, 'access_token': access_token})	
+				params = urllib.urlencode({'token_id': token_id2, 'access_token': access_token})
 				session2 = test_utils.make_request("POST", request_uri, params, 200, None)
 
 				# TEST 21
@@ -229,7 +230,7 @@ def main():
 				print "TEST 21: Borrar creedenciales sin cookie de sesión"
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
-				test_utils.make_request("DELETE", request_uri, params, 401, None)			
+				test_utils.make_request("DELETE", request_uri, params, 401, None)
 
 				# TEST 22
 				# Borrar credenciales de usuario de prueba1 (Estando logeado)
@@ -238,7 +239,7 @@ def main():
 				print "Status esperado: 403 (Es el único token de login en el sistema)"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 403, session1)
-				
+
 				# TEST 23
 				# Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
 				request_uri = basePath + "/credenciales/" + token_id2
@@ -286,7 +287,7 @@ def main():
 			access_token1 = social_network + "TEST"
 			token_id2 = "idERROR" + social_network + "2"
 			user_id1 = "userTESTING1"
-			user_id2 = "userTESTING2" 
+			user_id2 = "userTESTING2"
 			session_error = "session=sessionError"
 
 			# Iniciamos dos sesiones distintas en googleplus para realizar las pruebas
@@ -319,22 +320,22 @@ def main():
 				print "Status esperado: 201"
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 201, session1)	
+				test_utils.make_request("POST", request_uri, params, 201, session1)
 
 				# TEST 3
 				print "TEST 3: Actualizar par de credenciales"
 				print "Status esperado: 200"
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':"ToKenMODIFICADO"})
-				test_utils.make_request("POST", request_uri, params, 200, session1)	
-				
+				test_utils.make_request("POST", request_uri, params, 200, session1)
+
 				# TEST 4
 				print "TEST 4: Actualizar par de credenciales con cookie de sesión incorrecta"
 				print "Status esperado: 400"
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 400, session_error)	
-				
+				test_utils.make_request("POST", request_uri, params, 400, session_error)
+
 				# TEST 5
 				print "TEST 5: Actualizar credenciales proporcionando un solo parámetro"
 				print "Status esperado: 400"
@@ -357,13 +358,13 @@ def main():
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
-				# TEST 8 
+				# TEST 8
 				# TODO GET credenciales (Con una cookie de sesion incorrecta)
 				print "TEST 8: Obtener credenciales con cookie incorrecta"
 				print "Status esperado: 400"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 400, session_error)
-				
+
 				# TEST 9
 				# TODO GET credenciales (Cookie de sesion correcta, a un token id no existente en el sistema)
 				request_uri = "/api/oauth/" + social_network + "/credenciales/tokenERROR"
@@ -373,15 +374,15 @@ def main():
 				test_utils.make_request("GET", request_uri, params, 404, session1)
 
 			elif option == 'borrado':
-				
+
 				# TEST 10
 				# Borrar credenciales de usuarios de prueba 1
 				request_uri = basePath + "/credenciales/" + token_id1
 				print "TEST 10: Borrar creedenciales sin cookie de sesión"
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
-				test_utils.make_request("DELETE", request_uri, params, 401, None)			
-				
+				test_utils.make_request("DELETE", request_uri, params, 401, None)
+
 				# TEST 11
 				# Borrar credenciales de usuario de prueba1 (Con una cookie incorrecta)
 				request_uri = basePath + "/credenciales/" + token_id1
@@ -409,13 +410,14 @@ def main():
 
 			# POST-TEST 1: Realizar logout en el sistema (usuario 1)
 			# Se desloguea el usuario logueado en el PRE TEST 1
+
 			request_uri = "/api/oauth/googleplus/logout"
 			print "POST-TEST 1: Logout de usuario 1 con cookie de sesión"
 			print "Status esperado: 200"
 			test_utils.make_request("POST", request_uri, params,200, session1, preTest=True)
 
 
-		
+
 			print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 		else:
 			print "Error: es obligatorio proporcionar un parámetro válido para indicar que red social se pretende testear"
@@ -423,11 +425,11 @@ def main():
 		# Cerramos conexión
 		test_utils.tests_status()
 		test_utils.closeConnection()
-	
-	elif social_network == "help": 
+
+	elif social_network == "help":
 		print "Script para hacer pruebas a la API de Oauth de PicBit (api/oauth/{social_network})"
 		print "Uso: api_oauth_tester {facebook | googleplus | stackoverflow | instagram | linkedin} [borrado]"
-		
+
 
 if __name__ == "__main__":
     main()

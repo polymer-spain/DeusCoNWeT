@@ -3,7 +3,7 @@
 import sys, urllib
 import test_utils
 
-# Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto (funcionalidades de alto nivel) 
+# Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto (funcionalidades de alto nivel)
 # (api/componentes y api/usuarios)
 # Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados | --help]
 
@@ -19,7 +19,8 @@ def main():
 	# Sets the option param
 	option = None
 	if len(sys.argv) == 2:
-		option = sys.argv[1] 
+		option = sys.argv[1]
+
 
 	if option in ["dashboard", "dashboard_borrado", "dashboard_predeterminados"]:
 		# We open the connection with the server
@@ -32,7 +33,7 @@ def main():
 		access_token_login2 = "googleTEST2"
 		session1 = test_utils.do_login_or_signup("googleplus", token_id_login, access_token_login, user_id1)
 		session2 = test_utils.do_login_or_signup("googleplus", token_id_login2, access_token_login2, user_id2)
-		
+
 		# PRE-TESTs. Añadimos dos componentes a utilizar en las pruebas
 		print "PRETEST 3: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
 		print "Componente no predeterminado. Id: linkedin-timeline"
@@ -59,7 +60,7 @@ def main():
 			request_uri = users_basepath + "/" + user_id1
 			params = urllib.urlencode({'component': 'componenteError'})
 			test_utils.make_request("POST", request_uri, params, 304, session1)
-			
+
 			# TEST 2
 			print "TEST 2: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (Cookie de sesión correcta)"
 			print "Status esperado: 200"
@@ -88,7 +89,7 @@ def main():
 			print "Status esperado: 204 (El usuario no tiene componentes de la red social Twitter)"
 			request_uri = components_basepath + "?social_network=twitter&filter=user&list_format=reduced"
 			test_utils.make_request("GET", request_uri, params, 204, session1)
-			
+
 			# TEST 6
 			print "TEST 6: Obtener la lista de componentes, proporcionando una cookie de sesion"
 			print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista reducido)"
@@ -103,7 +104,7 @@ def main():
 			print "Status esperado: 200"
 			request_uri = components_basepath + "?social_network=linkedin&filter=user&list_format=complete"
 			test_utils.make_request("GET", request_uri, params, 200, session1)
-			
+
 			# TEST 8
 			print "TEST 8: Obtener info de usuario"
 			print "Status esperado: 200"
@@ -138,15 +139,15 @@ def main():
 			# TEST 10
 			print "TEST 10: Borrar el componente del usuario, sin cookie"
 			print "Status esperado: 401"
-			request_uri = components_basepath + component_rel_uri 
+			request_uri = components_basepath + component_rel_uri
 			test_utils.make_request("DELETE", request_uri, params, 401, None)
-			
+
 			# TEST 11
 			print "TEST 11: Borrar el componente del usuario, proporcionando una cookie incorrecta"
 			print "Status esperado: 400"
 			request_uri = components_basepath + component_rel_uri
 			test_utils.make_request("DELETE", request_uri, params, 400, session_error)
-			
+
 			# TEST 12
 			print "TEST 12: Borrar el componente del usuario, a un componente que no existe"
 			print "Status esperado: 400"
@@ -165,8 +166,8 @@ def main():
 			print "(No debe aparecer el componente eliminado en la lista de componentes de usuario)"
 			print "Status esperado: 200"
 			request_uri = users_basepath + "/" + user_id1
-			test_utils.make_request("GET", request_uri, params, 200, session1)		
-			
+			test_utils.make_request("GET", request_uri, params, 200, session1)
+
 			# TEST 15
 			print "TEST 15: Volver a añadir el componente"
 			print "Status esperado: 200"
@@ -179,29 +180,29 @@ def main():
 			print "Status esperado: 200"
 			params = urllib.urlencode({})
 			request_uri = components_basepath + component_rel_uri + "?scope=user"
-			test_utils.make_request("DELETE", request_uri, params, 200, session1)		
-					
+			test_utils.make_request("DELETE", request_uri, params, 200, session1)
+
 			# TEST 17
 			print "TEST 17: Obtener lista filtrada de componentes (filter=user), proporcionando la cookie de sesión del usuario 1"
 			print "(No debe aparecer el componente eliminado)"
 			print "Status esperado: 204"
 			request_uri = components_basepath + "?filter=user&list_format=complete"
-			test_utils.make_request("GET", request_uri, params, 204, session1)		
-			
+			test_utils.make_request("GET", request_uri, params, 204, session1)
+
 			# TEST 18
 			print "TEST 18: Intentar eliminar el componente del dashboard del usuario 1, estando eliminado ya"
 			print "Status esperado: 404"
 			request_uri = components_basepath + component_rel_uri + "?scope=user"
-			test_utils.make_request("DELETE", request_uri, params, 404, session1)		
+			test_utils.make_request("DELETE", request_uri, params, 404, session1)
 
 			# TEST 19
 			print "TEST 19: Obtener info sobre el componente"
 			print "(Para verificar que no se ha eliminado por error el componente general)"
 			print "Status esperado: 200"
 			request_uri = components_basepath + component_rel_uri
-			test_utils.make_request("GET", request_uri, params, 200, session1)		
-		
-		
+			test_utils.make_request("GET", request_uri, params, 200, session1)
+
+
 		elif option == 'dashboard_predeterminados':
 			user_id3 = "id_usuario3"
 			session3 = None
@@ -220,7 +221,7 @@ def main():
 		            'predetermined': "True"
 			})
 			test_utils.make_request("PUT", request_uri, params, 201, None, preTest=True)
-			
+
 			# PRETEST 6
 			print "PRETEST 6: Añadimos un componente cualquiera al sistema (No predeterminado)"
 			print "Status esperado: 201 "
@@ -235,7 +236,7 @@ def main():
 		            'predetermined': "False"
 			}, doseq=True)
 			test_utils.make_request("PUT", request_uri, params, 201, None, preTest=True)
-			
+
 			# TEST 20: Creamos un nuevo usuario en el sistema (Realizando login mediante googleplus)
 			request_uri = "/api/oauth/googleplus/signup"
 			print "TEST 20: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
@@ -252,22 +253,22 @@ def main():
 			print "Status esperado: 304 (Ya estaba añadido anteriormente)"
 			request_uri = users_basepath + "/" + user_id3
 			params = urllib.urlencode({'component': 'insignia-fb-prededeterminada'})
-			test_utils.make_request("POST", request_uri, params, 304, session3)		
-			
+			test_utils.make_request("POST", request_uri, params, 304, session3)
+
 			# TEST 22: Añadimos un componente cualquiera al usuario
 			print "TEST 22: Añadimos un componente cualquiera al usuario"
 			print "Status esperado: 200"
 			request_uri = users_basepath + "/" + user_id3
 			params = urllib.urlencode({'component': 'google-inbox'})
 			test_utils.make_request("POST", request_uri, params, 200, session3, preTest=True)
-			
+
 			# TEST 23
 			print "TEST 23: Listamos los detalles sobre los componentes de usuario."
 			print "(Deben aparecer los componentes predeterminados y el añadido)"
 			print "Status esperado: 200"
 			params = urllib.urlencode({})
 			request_uri = components_basepath + "?filter=user&list_format=complete"
-			test_utils.make_request("GET", request_uri, params, 200, session3)		
+			test_utils.make_request("GET", request_uri, params, 200, session3)
 
 		# POST-TESTs. Logout de usuario en el sistema
 		request_uri = '/api/oauth/googleplus/logout'
@@ -284,6 +285,5 @@ def main():
 		print "Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto (funcionalidades de alto nivel) "
 		print "(api/componentes y api/usuarios)"
 		print "Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados| help]"
-
 if __name__ == "__main__":
 	main()
