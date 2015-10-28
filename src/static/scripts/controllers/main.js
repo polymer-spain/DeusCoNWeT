@@ -39,8 +39,8 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   } else {
     $scope.languageRequest("en_en.json");
     $cookies.put("language", "en");
-
   }
+
   $scope.loginProcess = function(userData){
     /* Cogemos el identificador del usuario */
     function newUser(userData) {
@@ -94,7 +94,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     $location.hash("");
     $location.path(view); // path not hash
   };
-  
+
 
   /* NOTE Necesario porque el dropmenu no hace correctamente el binding:
    * Si sabe la direccion pero no manda a ella porque el binding se hace posterior

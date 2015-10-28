@@ -27,7 +27,7 @@ import httplib
 import hashlib
 import urllib
 from google.appengine.ext import ndb
-# from google.appengine.api import memcache
+from google.appengine.api import memcache
 import time
 import ndb_pb
 from ndb_pb import Token, User

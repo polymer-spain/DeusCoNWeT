@@ -29,7 +29,7 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
     return $rootScope.promise;
   };
 
-  this.signUp = function (token, tokenId, userId, redSocial, oauthVerifier) {
+  this.signup = function (token, tokenId, userId, redSocial, oauthVerifier) {
     var request, uri, params;
 
     uri = this.endpoint + "/api/oauth/" + redSocial + "/signup";

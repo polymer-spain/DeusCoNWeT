@@ -14,7 +14,7 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
         $scope.userIdError = true;
         $scope.errorMessage = $scope.language.select_id.userIdError;
       }, function() {
-        $backend.signUp($rootScope.register.token, $rootScope.register.tokenId, userId, $rootScope.register.redSocial, $rootScope.register.oauthVerifier)
+        $backend.signup($rootScope.register.token, $rootScope.register.tokenId, userId, $rootScope.register.redSocial, $rootScope.register.oauthVerifier)
           .then(function() {
           $scope.userIdError = false;
           $rootScope.register = undefined;
