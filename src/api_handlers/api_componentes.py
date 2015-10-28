@@ -98,27 +98,43 @@ class ComponentListHandler(SessionHandler):
         """
         try:
             # Get the request POST params 
-            # Url to the component stable repo
-            url = self.request.POST["url"]
+            url = self.request.POST["url"] # Url to the component stable repo
             component_id = self.request.POST["component_id"]
             description = self.request.POST["description"]
             social_network = self.request.POST["social_network"]
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("versions")
+
+            # Predetermined is an optional param (default_value=False)
+            predetermined = None
+            if self.request.POST.has_key("predetermined"):
+                if self.request.POST["predetermined"] in ["True","true"]:
+                    predetermined = True
+                elif self.request.POST["predetermined"] in ["False","false"]:
+                    predetermined = False
+            else:
+                predetermined = False
+            # We check if the social network param has a proper value
             if social_network in social_list:
                 # We check if the request has provided at least the version "stable" for the version_list param
                 if "stable" in version_list:
-                    # We check if the component exists in our system
-                    component_stored = ndb_pb.searchComponent(component_id)
-                    if component_stored == None:
-                        # Adds the component to datastore
-                        ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type, version_list)
-                        response = {"status": "Component uploaded succesfully"}
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(201)
+                    # We check if "predetermined" has a boolean value
+                    if not predetermined == None: #isinstance(predetermined,bool):
+                        # We check if the component exists in our system
+                        component_stored = ndb_pb.searchComponent(component_id)
+                        if component_stored == None:
+                            # Adds the component to datastore
+                            ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type, version_list, predetermined)
+                            response = {"status": "Component uploaded succesfully"}
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(201)
+                        else:
+                            self.response.set_status(403)
                     else:
-                        self.response.set_status(403)    
+                        response = {"error": "Bad value for 'predetermined' param (it must be 'True' or 'False')"}
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)
                 else:
                     response = {"error": "The versions param must contains stable as one of its values"}
                     self.response.write(json.dumps(response))

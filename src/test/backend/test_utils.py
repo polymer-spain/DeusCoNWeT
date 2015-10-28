@@ -40,6 +40,31 @@ def closeConnection():
     global connection
     connection.close()
 
+def do_login_or_signup(social_network, token_id, access_token, user_identifier):
+    """
+    Metodo do_login_or_signup: Realiza el login o el registro en PicBit
+    Contemplado como preTest, para el testeo de las APIs de PicBit.
+    Retorna el id de sesion generado
+    Parametros:
+        social_network: Red social mediante la que se desea realizar el login en el sistema
+        token_id: token id de usuario
+        access_token: access_token de usuario
+        user_identifier: id de usuario
+    """
+    print "PRETEST: Login/Sign-up de usuario ", user_identifier, " en el sistema"
+    session = None
+    if social_network in ["googleplus", "facebook"]:
+        request_uri = "/api/oauth/" + social_network + "/login"
+        params = urllib.urlencode({'token_id': token_id, 'access_token': access_token})
+        session = make_request("POST", request_uri, params, 200, None, True, True)
+        # Si no se ha podido realizar el login en el sistema, registramos al usuario (Signup)
+        if session == None:
+            request_uri = "/api/oauth/" + social_network + "/signup"
+            params = urllib.urlencode({'token_id': token_id, 'access_token': access_token,
+                'user_identifier': user_identifier})
+            session = make_request("POST", request_uri, params, 201, None, True, True)
+    return session
+
 def make_request(method, request_uri, params, status_ok, session, printHeaders=False, preTest=False):
     """
     Metodo make_request: Realiza llamadas HTTP a la API REST, retornando la

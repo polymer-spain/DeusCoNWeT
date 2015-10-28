@@ -27,7 +27,7 @@ import httplib
 import hashlib
 import urllib
 from google.appengine.ext import ndb
-from google.appengine.api import memcache
+# from google.appengine.api import memcache
 import time
 import ndb_pb
 from ndb_pb import Token, User
@@ -60,96 +60,123 @@ callback_uri = "https://" + domain \
 # Request to Twitter the request_token and authorization URL
 client = oauth.TwitterClient(consumer_key, consumer_secret,
         callback_uri)
+
 # Generic handlers for the session management, login, logout and actions 
 # related to user credentials 
 class SessionHandler(webapp2.RequestHandler):
     """
     Class that handles the session of the application
     Methods:
-        login - Generates a valid hash for a given user_id
+        login - Generates a valid hash for a given user_key
         getUserInfo - Gets the info related to a logged user_id
         logout - Deletes the session for a given user
     """
 
-    def login(self, user_id):
-        message = str(user_id.id()) + str(time.time())
+    def login(self, user_key):
+        message = str(user_key.id()) + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
-
         # Store in memcache hash-user_id pair
-        memcache.add(hash_id, user_id)
+        # memcache.add(hash_id, user_key)
+        # Create a new session in the system
+        ndb_pb.createSession(user_key, hash_id)
         return hash_id
 
     def getUserInfo(self, hashed_id):
-        user = memcache.get(hashed_id)
-        return user
+        # user = memcache.get(hashed_id)
+        user_key = ndb_pb.getSessionOwner(hashed_id)
+        return user_key
 
     def logout(self, hashed_id):
         logout_status = False
-        status = memcache.delete(hashed_id)
+        # status = memcache.delete(hashed_id)
+        status = ndb_pb.deleteSession(hashed_id)
         if status == 2:
             logout_status = True
         return logout_status
 
 
-class OauthLoginHandler(SessionHandler):
-    """ Defines the logic for the login action, in those social networks that
+class OauthSignUpHandler(SessionHandler):
+    """ Defines the logic for the signup action, in those social networks that
         act as authentication services in PicBit, and have 
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
-            post_login - Implements the login action. Stores the pair of 
+            post_signup - Implements the signup action. Stores the pair of
             token_in and access_token in the system, and generates the
+            cookie for the session.
+    """
+    def post_signup(self, social_network):
+        try:
+            # We get the params from the POST data
+            access_token = self.request.POST["access_token"]
+            token_id = self.request.POST["token_id"]
+            user_identifier = self.request.POST["user_identifier"]
+            # Checks if the username was stored previously
+            stored_credentials = ndb_pb.searchToken(token_id, social_network)
+            if stored_credentials == None:
+                user_data = {}
+                user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
+                if not user_id_repeated:
+                    user_data["user_id"] = user_identifier
+                    # Generate a valid username for a new user
+                    user_key = ndb_pb.insertUser(social_network,
+                            token_id, access_token, user_data)
+                    # Assigns to the user a predetermined set of components
+                    ndb_pb.assignPredeterminedComponentsToUser(user_key)
+                    # Creates the session
+                    session_id = self.login(user_key)
+
+                    # Returns the session, user_id and social_network cookie
+                    self.response.set_cookie("session", session_id,
+                            path="/", domain=domain, secure=True)
+                    self.response.set_cookie("social_network", social_network,
+                            path="/", domain=domain, secure=True)
+                    self.response.set_cookie("user", user_identifier,
+                            path="/", domain=domain, secure=True)
+
+                    # Builds the response
+                    response = {"status": "User logged successfully", "user_id": user_identifier}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(201)
+                else:
+                    response = {"error": "The user_identifier provided for the sign up has been already taken"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
+            else:
+                response = \
+                {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        except KeyError:
+            response = \
+                {"error": "You must provide access_token, token_id and user_identifier params in the request"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
+
+
+class OauthLoginHandler(SessionHandler):
+    """ Defines the logic for the login action, in those social networks that
+        act as authentication services in PicBit, and have
+        a client authorization flow (for example, GooglePlus or Facebook)
+        Methods:
+            post_login - Implements the login action. Updates the
+            access_token for a given user in the system, and generates the
             cookie for the session.
     """
     def post_login(self, social_network):
         try:
             # We get the params from the POST data
-            post_params = self.request.POST
             access_token = self.request.POST["access_token"]
             token_id = self.request.POST["token_id"]
-            
-            if post_params.has_key("user_identifier"):
-                user_identifier = self.request.POST["user_identifier"]
 
             # Checks if the username was stored previously
             stored_credentials = ndb_pb.searchToken(token_id,
                     social_network)
-            if stored_credentials == None:
-                data = {}
-                if not user_identifier == "":
-                    user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
-                    if not user_id_repeated:
-                        data["user_id"] = user_identifier
-                        # Generate a valid username for a new user
-                        user_key = ndb_pb.insertUser(social_network,
-                                token_id, access_token, data)
-                        session_id = self.login(user_key)
-
-                        # Returns the session, user_id and social_network cookie
-                        self.response.set_cookie("session", session_id,
-                                path="/", domain=domain, secure=True)
-                        self.response.set_cookie("social_network", social_network,
-                                path="/", domain=domain, secure=True)
-                        self.response.set_cookie("user", user_identifier,
-                                path="/", domain=domain, secure=True)
-
-                        # Builds the response
-                        response = {"status": "User logged successfully", "user_id": user_identifier}
-                        self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(201)
-                    else:
-                        response = {"error": "The user_identifier provided for the sign up has been already taken"}
-                        self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(400)
-                else:
-                    response = {"error": "You must provide a valid user_identifier in the request"}
-                    self.response.content_type = "application/json"
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(400)
-            
-            else:
+            if not stored_credentials == None:
                 # We store the new set of credentials
                 user_key = ndb_pb.modifyToken(token_id,
                         access_token, social_network)
@@ -168,12 +195,19 @@ class OauthLoginHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
+            else:
+                response = \
+                {"error": "The token_id provided does not belong to any user in the system. Consider perform a signup request instead"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
         except KeyError:
             response = \
                 {"error": "You must provide a valid pair of access_token and token_id in the request"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(400)
+
 
 class OauthLogoutHandler(SessionHandler):
     """ Defines the logic for the logout action, in those social networks that
@@ -337,7 +371,6 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     if stored_credentials == None:
                         # Adds the token to the user credentials list
                         ndb_pb.insertToken(user, social_network, access_token, token_id)
-                        
                         #Builds the response
                         user_id = ndb_pb.getUserId(user)
                         response = {"user_id": user_id}
@@ -345,11 +378,9 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                         self.response.write(json.dumps(response))    
                         self.response.set_status(201)
                     else:
-
                         # We update the user credentials
                         user_id = ndb_pb.modifyToken(token_id, access_token,
                                 social_network)
-
                         # Builds the response
                         response = {"user_id": stored_credentials["user_id"]}
                         self.response.content_type = "application/json"
@@ -374,6 +405,11 @@ class OAuthCredentialsContainerHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(401)
 
+
+##################################################################################
+# HANDLERS MAPPERS / IMPLEMENTATIONS FOR EACH SOCIAL NETWORK SUPPORTED IN PICBIT
+##################################################################################
+
 # HANDLERS FOR RESOURCES RELATED TO FACEBOOK
 class FacebookHandler(OauthCredentialsHandler):
     """
@@ -396,6 +432,13 @@ class FacebookLoginHandler(OauthLoginHandler):
     """
     def post(self):
         self.post_login("facebook")
+
+class FacebookSignUpHandler(OauthSignUpHandler):
+    """ This class is a resource that represents the sign-up
+    action using the Facebook credentials to autenticate in PicBit
+    """
+    def post(self):
+        self.post_signup("facebook")
 
 class FacebookLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout 
@@ -511,6 +554,12 @@ class GooglePlusLoginHandler(OauthLoginHandler):
     def post(self):
         self.post_login("googleplus")
 
+class GooglePlusSignUpHandler(OauthSignUpHandler):
+    """ This class is a resource that represents the sign-up
+    action using the GooglePlus credentials to autenticate in PicBit
+    """
+    def post(self):
+        self.post_signup("googleplus")
 
 class GooglePlusLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout
@@ -689,13 +738,15 @@ class TwitterHandler(OauthCredentialsHandler):
         self.delete_credentials("twitter", token_id)
 
 
-class TwitterLoginHandler(SessionHandler):
-    """ This class is a resource that represents the login 
-    action using the Twitter credentials to autenticate in PicBit 
+class TwitterSignUpHandler(SessionHandler):
+    """ This class is a resource that represents the sign-up
+    action using the Twitter credentials to autenticate and
+    create a new user into PicBit
+    Methods:
+        post -- Signs ups a user in the system
     """
     def post(self):
-        oauth_verifier = self.request.get("oauth_verifier",
-                default_value="None")
+        oauth_verifier = self.request.get("oauth_verifier", default_value="None")
         user_identifier = self.request.get("user_identifier", default_value="")
         
         if not oauth_verifier == "":
@@ -744,8 +795,42 @@ class TwitterLoginHandler(SessionHandler):
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(400)
-
                 else:
+                    response = \
+                    {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
+            else:
+                response = \
+                    {"error": "There isn\"t any Twitter OAuth flow initiated in the system for the oauth_verifier value specified"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(404)
+        else:
+            response = \
+                {"error": "You must specify a value for the oauth_verifier param in the request"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
+
+
+class TwitterLoginHandler(SessionHandler):
+    """ This class is a resource that represents the login
+    action using the Twitter credentials to autenticate in PicBit
+    """
+    def post(self):
+        oauth_verifier = self.request.get("oauth_verifier",
+                default_value="None")
+        user_identifier = self.request.get("user_identifier", default_value="")
+
+        if not oauth_verifier == "":
+            key_verifier = "oauth_verifier_" + oauth_verifier
+            twitter_user_data = memcache.get(key_verifier)
+            if not twitter_user_data == None:
+                # Checks if the username was stored previously
+                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter")
+                if not stored_credentials == None:
                     # We store the new set of credentials
                     user_key = ndb_pb.modifyToken(twitter_user_data["token_id"],
                             twitter_user_data["access_token"], "twitter")
@@ -770,6 +855,12 @@ class TwitterLoginHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(200)
+                else:
+                    response = \
+                    {"error": "The token_id provided does not belong to a registered user in the system. Consider perform a signup request instead"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
             else:
                 response = \
                     {"error": "There isn\"t any session in the system for the oauth_verifier value specified"}

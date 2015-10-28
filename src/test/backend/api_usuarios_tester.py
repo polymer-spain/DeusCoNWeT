@@ -3,6 +3,7 @@ import sys, urllib
 import test_utils
 
 # Script para hacer pruebas a la API de Usuarios de PicBit (api/usuarios)
+# Si no se especifica ninguna opción, se ejecutan test relativos obtención y modificación de recursos
 # Uso: python api_usuarios_tester [borrado]
 
 
@@ -12,8 +13,8 @@ def main():
 	session1 = None
 	session2 = None
 	session_error = "session=session_error"
-	user_id1 = "idUsuario1"
-	user_id2 = "idUsuario2"
+	user_id1 = "id_test_usuario1"
+	user_id2 = "id_test_usuario2"
 	user_id_error = "idERROR"
 	basepath = "/api/usuarios"
 
@@ -21,21 +22,13 @@ def main():
 		option = sys.argv[1]
 
 	# PRETESTs: Inicio de sesion con Google+ en el sistema
-	request_uri = "/api/oauth/googleplus/login"
-	print "PRETEST 1: Login de usuario 1 en el sistema\n Ignorar el status de este caso"
+	# Iniciamos dos sesiones
 	token_id_login = "idgoogle"
 	access_token_login = "googleTEST"
-	params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login,
-	 'user_identifier': user_id1 })
-	session1 = test_utils.make_request("POST", request_uri, params, 200, None, True,True)
-
-	print "PRETEST 2: Login de usuario 2 en el sistema"
-	print "Ignorar el status de este caso"
 	token_id_login2 = "idgoogle2"
 	access_token_login2 = "googleTEST2"
-	params = urllib.urlencode({'token_id': token_id_login2, 'access_token': access_token_login2,
-	 'user_identifier': user_id2 })
-	session2 = test_utils.make_request("POST", request_uri, params, 200, None, True, True)
+	session1 = test_utils.do_login_or_signup("googleplus", token_id_login, access_token_login, user_id1)
+	session2 = test_utils.do_login_or_signup("googleplus", token_id_login2, access_token_login2, user_id2)
 
 	if option == None:
 		params = urllib.urlencode({})
