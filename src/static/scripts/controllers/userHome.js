@@ -54,22 +54,19 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 
   $scope.showMenu = function () {
     if (!$scope.menuStatus) {
-      document.querySelector("#menu-icon").icon = "arrow-forward";
+      //document.querySelector("#menu-icon").icon = "arrow-forward";
       $scope.menuStatus = true;
-
-      $timeout(function () {
-        $scope.showElement = true;
-      }, 350);
+      $scope.showElement = true;
     } else {
-      document.querySelector("#menu-icon").icon = "arrow-back";
+      //document.querySelector("#menu-icon").icon = "arrow-back";
       $scope.menuStatus = false;
       $scope.showElement = false;
       $scope.selected = "";
       $scope.showSingle = "";
       $scope.listaOpciones = [false, false, false];
-      document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-      document.querySelector("#arrowDelete").icon = "arrow-drop-down";
-      document.querySelector("#arrowModify").icon = "arrow-drop-down";
+      //document.querySelector("#arrowAdd").icon = "arrow-drop-down";
+      //document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+      //document.querySelector("#arrowModify").icon = "arrow-drop-down";
 
     }
   };
@@ -78,16 +75,16 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
     $scope.listaOpciones = [false, false, false];
     switch (event) {
       case "add":
-        document.querySelector("#arrowDelete").icon = "arrow-drop-down";
-        document.querySelector("#arrowModify").icon = "arrow-drop-down";
+        //document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+        //document.querySelector("#arrowModify").icon = "arrow-drop-down";
         break;
       case "delete":
-        document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-        document.querySelector("#arrowModify").icon = "arrow-drop-down";
+        //document.querySelector("#arrowAdd").icon = "arrow-drop-down";
+        //document.querySelector("#arrowModify").icon = "arrow-drop-down";
         break;
       case "modify":
-        document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-        document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+        //document.querySelector("#arrowAdd").icon = "arrow-drop-down";
+        //document.querySelector("#arrowDelete").icon = "arrow-drop-down";
         break;
       case "help":
         break;
@@ -99,34 +96,34 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
       case "add":
         $scope.listaOpciones = [!$scope.listaOpciones[0], false, false];
         if (!$scope.listaOpciones[0]) {
-          document.querySelector("#arrowAdd").icon = "arrow-drop-up";
-          document.querySelector("#arrowDelete").icon = "arrow-drop-down";
-          document.querySelector("#arrowModify").icon = "arrow-drop-down";
+          //document.querySelector("#arrowAdd").icon = "arrow-drop-up";
+          //document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+          //document.querySelector("#arrowModify").icon = "arrow-drop-down";
         }
         else {
-          document.querySelector("#arrowAdd").icon = "arrow-drop-down";
+          //document.querySelector("#arrowAdd").icon = "arrow-drop-down";
         }
         break;
       case "delete":
         $scope.listaOpciones = [false, !$scope.listaOpciones[1], false];
         if (!$scope.listaOpciones[1]){
-          document.querySelector("#arrowDelete").icon = "arrow-drop-up";
-          document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-          document.querySelector("#arrowModify").icon = "arrow-drop-down";
+          //document.querySelector("#arrowDelete").icon = "arrow-drop-up";
+          //document.querySelector("#arrowAdd").icon = "arrow-drop-down";
+          //document.querySelector("#arrowModify").icon = "arrow-drop-down";
         }
         else {
-          document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+          //document.querySelector("#arrowDelete").icon = "arrow-drop-down";
         }
         break;
       case "modify":
         $scope.listaOpciones = [false, false, !$scope.listaOpciones[2]];
         if (!$scope.listaOpciones[2]){
-          document.querySelector("#arrowModify").icon = "arrow-drop-up";
-          document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-          document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+          //document.querySelector("#arrowModify").icon = "arrow-drop-up";
+          //document.querySelector("#arrowAdd").icon = "arrow-drop-down";
+          //document.querySelector("#arrowDelete").icon = "arrow-drop-down";
         }
         else {
-          document.querySelector("#arrowModify").icon = "arrow-drop-down";
+          //document.querySelector("#arrowModify").icon = "arrow-drop-down";
         }
         break;
     }
@@ -135,11 +132,11 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   $scope.isListHidden = function (event) {
     switch(event){
       case "add":
-        return !$scope.listaOpciones[0];
+        return $scope.listaOpciones[0];
       case "delete":
-        return !$scope.listaOpciones[1];
+        return $scope.listaOpciones[1];
       case "modify":
-        return !$scope.listaOpciones[2];
+        return $scope.listaOpciones[2];
       default:
         return false;
     }
@@ -153,15 +150,13 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
     if ($scope.selected === event){
       $scope.selected = "";
       $scope.showSingle = "";
-      if (!$scope.isListHidden(event)) {
+      if ($scope.isListHidden(event)) {
         $scope.setList(event);
       }
     }
     else {
       $scope.selected = event;
-      $timeout(function(){
-        $scope.showSingle = event;
-      }, 350);
+      $scope.showSingle = event;
     }
   };
 
@@ -183,9 +178,12 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
     }
   };
 
+
+  /* No se usa en ningún lado
   $scope.modifyActive = function(elementName) {
     return elementName === $scope.modifySelected;
   };
+*/
 
   $scope.setModifySelected = function(elementName) {
     $scope.modifySelected = $scope.modifySelected !== elementName ? elementName : "";
@@ -196,7 +194,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   };
 
   $scope.deleteTimeline = function(elementName) {
-    angular.element(document.querySelector("#container")).find(elementName).remove();
+    //angular.element(document.querySelector("#container")).find(elementName).remove();
     var index = $scope.listComponentAdded.indexOf(elementName);
     $scope.listComponentAdded.splice(index, 1);
   };
@@ -217,7 +215,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 
   $scope.hideToggleHelp = function(event) {
     $scope.toggleHelp = false;
-    window.removeEventListener("onkeydown", $scope.listenEscKeydow);
+    window.removeEventListener("onkeydown", $scope.listenEscKeydown);
     if (event) {
       event.stopPropagation();
     }

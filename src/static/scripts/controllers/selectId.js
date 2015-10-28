@@ -9,11 +9,12 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
       $scope.errorMessage = $scope.language.select_id.invalid_username;
       $scope.userIdError = true;
     } else if ((event.type === "click" || (event.type === "keyup" && event.which === 13)) && userId) {
-      $backend.getUser(userId).then(function(){
+      $backend.getUser(userId)
+        .then(function(){
         $scope.userIdError = true;
         $scope.errorMessage = $scope.language.select_id.userIdError;
       }, function() {
-        $backend.sendData($rootScope.register.token, $rootScope.register.tokenId, userId, $rootScope.register.redSocial, $rootScope.register.oauthVerifier)
+        $backend.signUp($rootScope.register.token, $rootScope.register.tokenId, userId, $rootScope.register.redSocial, $rootScope.register.oauthVerifier)
           .then(function() {
           $scope.userIdError = false;
           $rootScope.register = undefined;

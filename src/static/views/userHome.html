@@ -21,7 +21,7 @@
             </core-icon>
           </div>
         </div>
-        <div class="animate-show list" ng-show="!isListHidden('add')">
+        <div class="animate-show list" ng-show="isListHidden('add')">
           <div sale ng-repeat="element in listComponents | arrayFilter:listComponentAdded">
             <ul style="padding-left:10px;padding-top:5px;padding-bottom:5px;margin-top:0px;margin-bottom:0px;">
               <p ng-create-element id-element="{{element.name}}" list-attributes="{{element.attributes}}">{{element.name}}</p>
@@ -45,7 +45,7 @@
             </core-icon>
           </div>
         </div>
-        <div class="animate-show list" ng-show="!isListHidden('delete')">
+        <div class="animate-show list" ng-show="isListHidden('delete')">
           <div horizontal layout center draggable="true" ng-repeat="element in listComponentAdded" class="deleteOption">
 
             <span flex style="padding-left: 10px" >{{element}}</span>
@@ -69,7 +69,7 @@
             </core-icon>
           </div>
         </div>
-        <div class="animate-show list" ng-show="!isListHidden('modify')" >
+        <div class="animate-show list" ng-show="isListHidden('modify')" >
           <div horizontal layout center ng-repeat="element in listComponentAdded" class="deleteOption" ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">
             <span flex style="padding-left:10px">{{element}}</span>
           </div>

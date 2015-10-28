@@ -3,7 +3,7 @@
 import sys, urllib
 import test_utils
 
-# Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto 
+# Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto
 # (api/componentes y api/usuarios)
 # Uso: python api_componentes_usuarios.py [borrado]
 
@@ -18,7 +18,7 @@ def main():
 	# Sets the option param
 	option = None
 	if len(sys.argv) == 2:
-		option = sys.argv[1] 
+		option = sys.argv[1]
 
 	# We open the connection with the server
 	test_utils.openConnection(False) # Realizamos pruebas en local (remote=False)
@@ -68,7 +68,7 @@ def main():
 		request_uri = users_basepath + "/" + user_id1
 		params = urllib.urlencode({'component': 'componenteError'})
 		test_utils.make_request("POST", request_uri, params, 304, session1)
-		
+
 		# TEST 2
 		print "TEST 2: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (Cookie de sesión correcta)"
 		print "Status esperado: 200"
@@ -97,7 +97,7 @@ def main():
 		print "Status esperado: 204 (El usuario no tiene componentes de la red social Twitter)"
 		request_uri = components_basepath + "?social_network=twitter&filter=user&list_format=reduced"
 		test_utils.make_request("GET", request_uri, params, 204, session1)
-		
+
 		# TEST 6
 		print "TEST 6: Obtener la lista de componentes, proporcionando una cookie de sesion"
 		print "(Combinamos el parámetro de filtrado por red social y el filtrado por usuario con el formato de lista reducido)"
@@ -112,7 +112,7 @@ def main():
 		print "Status esperado: 200"
 		request_uri = components_basepath + "?social_network=instagram&filter=user&list_format=complete"
 		test_utils.make_request("GET", request_uri, params, 200, session1)
-		
+
 		# TEST 8
 		print "TEST 8: Obtener info de usuario"
 		print "Status esperado: 200"
@@ -148,13 +148,13 @@ def main():
 		print "Status esperado: 401"
 		request_uri = components_basepath + "/instagram-timeline"
 		test_utils.make_request("DELETE", request_uri, params, 401, None)
-		
+
 		# TEST 11
 		print "TEST 11: Borrar el componente del usuario, proporcionando una cookie incorrecta"
 		print "Status esperado: 400"
 		request_uri = components_basepath + "/instagram-timeline"
 		test_utils.make_request("DELETE", request_uri, params, 400, session_error)
-		
+
 		# TEST 12
 		print "TEST 12: Borrar el componente del usuario, a un componente que no existe"
 		print "Status esperado: 400"
@@ -173,8 +173,8 @@ def main():
 		print "(No debe aparecer el componente eliminado en la lista de componentes de usuario)"
 		print "Status esperado: 200"
 		request_uri = users_basepath + "/" + user_id1
-		test_utils.make_request("GET", request_uri, params, 200, session1)		
-		
+		test_utils.make_request("GET", request_uri, params, 200, session1)
+
 		# TEST 15
 		print "TEST 15: Volver a añadir el componente"
 		print "Status esperado: 200"
@@ -187,28 +187,28 @@ def main():
 		print "Status esperado: 200"
 		params = urllib.urlencode({})
 		request_uri = components_basepath + "/instagram-timeline?scope=user"
-		test_utils.make_request("DELETE", request_uri, params, 200, session1)		
-				
+		test_utils.make_request("DELETE", request_uri, params, 200, session1)
+
 		# TEST 17
 		print "TEST 17: Obtener lista filtrada de componentes (filter=user), proporcionando la cookie de sesión del usuario 1"
 		print "(No debe aparecer el componente eliminado)"
 		print "Status esperado: 204"
 		request_uri = components_basepath + "?filter=user&list_format=complete"
-		test_utils.make_request("GET", request_uri, params, 204, session1)		
-		
+		test_utils.make_request("GET", request_uri, params, 204, session1)
+
 		# TEST 18
 		print "TEST 18: Intentar eliminar el componente del dashboard del usuario 1, estando eliminado ya"
 		print "Status esperado: 404"
 		request_uri = components_basepath + "/instagram-timeline?scope=user"
-		test_utils.make_request("DELETE", request_uri, params, 404, session1)		
+		test_utils.make_request("DELETE", request_uri, params, 404, session1)
 
 		# TEST 19
 		print "TEST 19: Obtener info sobre el componente"
 		print "(Para verificar que no se ha eliminado por error el componente general)"
 		print "Status esperado: 200"
 		request_uri = components_basepath + "/instagram-timeline"
-		test_utils.make_request("GET", request_uri, params, 200, session1)		
-	
+		test_utils.make_request("GET", request_uri, params, 200, session1)
+
 	# POST-TESTs. Logout de usuario en el sistema
 	request_uri = '/api/oauth/googleplus/logout'
 	params = urllib.urlencode({})
