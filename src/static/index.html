@@ -35,7 +35,7 @@
           <iron-icon icon="icons:language" class="searchIcon"></iron-icon>
           <span style="text-transform: none">{{languageSelected}}</span>
         </paper-button>
-        <paper-menu class="dropdown-content" ignoreSelect style="color:black">
+        <paper-menu class="dropdown-content" style="color:black">
           <paper-item ng-click="changelanguage('es', true)">{{language.lang.es}}</paper-item>
           <paper-item ng-click="changelanguage('en', true)">{{language.lang.en}}</paper-item>
         </paper-menu>
@@ -85,7 +85,9 @@
       <span>{{language.select_network}}</span>
       <div class="vertical center-justified layout button-login">
         <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
+        <br>
         <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static></twitter-login>
+        <br>
         <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static></login-facebook>
 
       </div>

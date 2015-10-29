@@ -1,0 +1,33 @@
+{
+  "name": "google-login",
+  "version": "2.0.0",
+  "keywords": [
+    "seed",
+    "polymer",
+    "web-components",
+    "google",
+    "plus",
+    "login",
+    "signin"
+  ],
+  "main": "google-login.html",
+  "dependencies": {
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.6",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.5",
+    "paper-button": "PolymerElements/paper-button#~1.0.7"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.0"
+  },
+  "homepage": "https://github.com/Mortega5/google-login",
+  "_release": "2.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.0",
+    "commit": "861bda59b3945f44ef436132d6856eb9400938eb"
+  },
+  "_source": "git://github.com/Mortega5/google-login.git",
+  "_target": "~2.0.0",
+  "_originalSource": "google-login",
+  "_direct": true
+}

@@ -56,7 +56,7 @@ body,html
 #language iron-dropdown
 {
   margin-top: 65px;
-  margin-left: 13px;
+  margin-left: 15px;
 }
 .loginButton
 {
@@ -154,6 +154,15 @@ footer
   color: brown;
   border-radius: 3px;
   background-color: whitesmoke;
+}
+.popup > paper-icon-button {
+  position: absolute;
+  right: 0;
+}
+
+.popup > span {
+  margin: 7% 10% 10% 10%;
+  font-size: 1.4em;
 }
 
 .shadow

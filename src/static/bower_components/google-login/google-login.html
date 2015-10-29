@@ -1,0 +1,217 @@
+<!--
+Copyright 2015 Miguel Ortega Moreno
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link href="https://fonts.googleapis.com/css?family=Roboto:400italic" rel="stylesheet" type="text/css">
+<!--
+  # Uso
+  <google-login></google-login>
+
+  @element google-login
+  @blurb Boton de login para google+
+  @status beta
+  @homepage https://github.com/Mortega5/google-login
+-->
+<dom-module is="google-login">
+  <style is="custom-style">
+    :host {
+      display: inline-block;
+    }
+    .large {
+      background: #DF4A32;
+      color: #fff;
+      border-radius: 3px;
+      cursor: pointer;
+      text-transform: none;
+      vertical-align: center;
+      width: 205px;
+      height: 50px;
+      font-size: 16px;
+    }
+
+    .sort{
+      background: #DF4A32;
+      border-radius: 3px;
+      cursor: pointer;
+      text-transform: none;
+      vertical-align: center;
+      height: 46px;
+      width: 82px;
+    }
+
+    .disconnect{
+      background: grey;
+    }
+  </style>
+  <template>
+    <iron-ajax id="request"
+               method="GET"
+               url="https://accounts.google.com/o/oauth2/revoke?"
+               params="{'token':'{{acToken}}'}"
+               >
+    </iron-ajax>
+
+    <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
+      <paper-button class="large" title="Google+" on-click="_login">
+        <iron-icon src="https://i.imgur.com/FM5Nzy7.png"></iron-icon>
+        <span>Log in with Google+</span>
+      </paper-button>
+    </template>
+
+    <template is="dom-if" if="[[_largeAndConnected(logged, sort)]]">
+      <paper-button class="large disconnect" title="Google+" on-click="_logout">
+        <iron-icon src="https://i.imgur.com/FM5Nzy7.png"></iron-icon>
+        <span>Log out from Google+</span>
+      </paper-button>
+    </template>
+
+    <template is="dom-if" if="[[_sortAndDisconnected(logged, sort)]]">
+      <paper-button class="sort" title="Google+" on-click="_login">
+        <iron-icon src="https://i.imgur.com/FM5Nzy7.png"></iron-icon>
+      </paper-button>
+    </template>
+
+    <template is="dom-if" if="[[_sortAndConnected(logged, sort)]]">
+      <paper-button class="sort desconectar" title="Google+" on-click="_logout">
+        <iron-icon src="https://i.imgur.com/FM5Nzy7.png"></iron-icon>
+      </paper-button>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is:"google-login",
+      properties: {
+        callback: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        clientID: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true
+        },
+        OAUTHURL:
+        {
+          type: String,
+          value: "https://accounts.google.com/o/oauth2/auth?",
+        },
+
+        scope: {
+          type: String,
+          reflectToAttribute: true,
+          value: "https://www.googleapis.com/auth/userinfo.profile",
+          notify: true
+        },
+
+        logged: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          notify: true
+        },
+        sort: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true,
+          notify: true
+        },
+        static:{
+          type: Boolean,
+          value: true,
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        acToken: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        tokenType:{
+          type: String,
+          reflectToAttribute: true,
+          notify: true
+        },
+        expiresToken: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true 
+        },
+        textLogin: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true,
+          value: "Sign in with Google+",
+        },
+        estado: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true,
+          value: "Sign in with Google+",
+        },
+      },
+
+      _login: function() {
+        var _url = this.OAUTHURL + "scope=" + this.scope + "&client_id=" + this.clientID + "&redirect_uri=" + this.callback + "&response_type=code token id_token gsession";
+        var win  = window.open(_url, "Google+ Login", "width=800, height=600");
+        var back = this;
+        var pollTimer  =  window.setInterval(function() {
+          try {
+            if (win.document.URL.indexOf("access_token") != -1) {
+              window.clearInterval(pollTimer);
+              var url =   win.document.URL;
+              var patron = "access_token"+"=([^&#]*)";
+              var exp = new RegExp(patron);
+              back.acToken = exp.exec(url)[1];0
+              back.fire("google-logged",{token: back.acToken,redSocial:"googleplus"});
+              back.logged= back.static?false:true;
+              win.close();
+            }
+          } catch(e) {
+          }
+        }, 100);
+      },
+
+      _logout: function() {
+        console.log(this.logged)
+        var back = this;
+        back.logged=false;
+        console.log(this.logged)
+      },
+
+      _largeAndDisconnected: function (logged,sort) {
+        return !logged && !sort;
+      },
+      _largeAndConnected: function(logged, sort) {
+        return logged && !sort;
+      },
+      _sortAndDisconnected: function(logged, sort) {
+        return !logged && sort; 
+      },
+      _sortAndConnected: function(logged, sort) {
+        return logged && sort; 
+      }
+    });
+  </script>
+</dom-module>

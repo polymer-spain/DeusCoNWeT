@@ -23,7 +23,7 @@
           var cookieSession = $cookies.get("session");
           var userId = $cookies.get("user");
           var socialnetwork = $cookies.get("social_network");
-           //Si tiene credenciales, pedimos los datos y le llamos a su pagina principal 
+           //Si tiene credenciales, pedimos los datos y le llamos a su pagina principal
           if (cookieSession && userId && socialnetwork ) {
             $backend.getUser(userId)
               .then(function (response) {
