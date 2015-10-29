@@ -52,6 +52,12 @@ def main():
 
 
 		if option == "dashboard":
+			# PRETEST 
+			print "PRETEST: Añadimos credenciales de linkedin al perfil de usuario 2"
+			print "Status esperado: 201"
+			request_uri = "/api/oauth/linkedin"
+			params = urllib.urlencode({'token_id': "token_linkedin", 'access_token': "access_token_linkedin"})
+			test_utils.make_request("POST", request_uri, params, 201, session1, preTest=True)
 
 			# TESTs relativos a la modificación de info de usuario (añadir un componente al usuario)
 			# TEST 1
@@ -63,9 +69,10 @@ def main():
 
 			# TEST 2
 			print "TEST 2: Modificar info de usuario, caso añadir un componente al dashboard del usuario 1 (Cookie de sesión correcta)"
-			print "Status esperado: 200"
+			print "El usuario no tiene añadidas credenciales de linkedin, por lo que no se le añade el componente"
+			print "Status esperado: 304"
 			params = urllib.urlencode({'component': 'linkedin-timeline'})
-			test_utils.make_request("POST", request_uri, params, 200, session1)
+			test_utils.make_request("POST", request_uri, params, 304, session1)
 
 			# TEST 3
 			print "TEST 3: Modificar info de usuario, caso añadir un componente al dashboard del usuario 2 (Cookie de sesión correcta)"
@@ -76,12 +83,20 @@ def main():
 
 			# TESTs relativos a la obtención de componentes de usuario
 			# TEST 4
-			print "TEST 4: Obtener la lista de componentes, proporcionando una cookie de sesion"
+			print "TEST 4: Obtener la lista de componentes del usuario1, proporcionando una cookie de sesion"
+			print "(parámetro de filtrado por usuario)"
+			print "Status esperado: 204 (El usuario no tiene componentes añadidos a su dashboard)"
+			request_uri = components_basepath + "?filter=user"
+			params = urllib.urlencode({})
+			test_utils.make_request("GET", request_uri, params, 204, session1)
+
+			# TEST 4B
+			print "TEST 4B: Obtener la lista de componentes del usuario2, proporcionando una cookie de sesion"
 			print "(parámetro de filtrado por usuario)"
 			print "Status esperado: 200"
 			request_uri = components_basepath + "?filter=user"
 			params = urllib.urlencode({})
-			test_utils.make_request("GET", request_uri, params, 200, session1)
+			test_utils.make_request("GET", request_uri, params, 200, session2)
 
 			# TEST 5
 			print "TEST 5: Obtener la lista de componentes, proporcionando una cookie de sesion"
@@ -125,7 +140,7 @@ def main():
 			print "Status esperado: 200 (Ignorar status de este caso)"
 			request_uri = users_basepath + "/" + user_id1
 			params = urllib.urlencode({'component': 'linkedin-timeline'})
-			test_utils.make_request("POST", request_uri, params, 200, session1, preTest=True)
+			test_utils.make_request("POST", request_uri, params, 200, session2, preTest=True)
 
 			# PRETEST 5
 			print "PRETEST 5: Obtenemos la info de usuario, con objeto de ver los componentes que tiene incluidos en su dashboard"

@@ -178,8 +178,8 @@ class UserHandler(SessionHandler):
               self.response.set_status(200)
             # We return a custom error message if the request had as purpose adding a component to the user's dashboard
             elif len(updated_info) == 0:
-                self.response.content_type = "application/json"
-                self.response.set_status(304)   
+              self.response.content_type = "application/json"
+              self.response.set_status(304)   
               if update_data.has_key("component_id"):
                 self.response.write(json.dumps({"details": "Resource not modified (The component specified does not exists" + 
                   "or the user has not added to its account the social networks that consumes the component)", "status": "Not Modified"}))
