@@ -98,53 +98,58 @@ class ComponentListHandler(SessionHandler):
         """
         try:
             # Get the request POST params 
-            url = self.request.POST["url"]
+            url = self.request.POST["url"] # Url to the component stable repo
             component_id = self.request.POST["component_id"]
             description = self.request.POST["description"]
             social_network = self.request.POST["social_network"]
-            input_type = self.request.POST["input_type"]
-            output_type = self.request.POST["output_type"]
+            input_type = self.request.POST.getall("input_type")
+            output_type = self.request.POST.getall("output_type")
+            version_list = self.request.POST.getall("versions")
 
-            # Auxiliar params
-            path = url.split("/")
-            basePath = "/repos/" + path[len(path) - 2] + "/" \
-            + path[len(path) - 1]
-
-            # Open connection to the API endpoint
-            cliente_gitHub.openConnection(basePath)
-
-            # Get repo info
-            repoDetails = cliente_gitHub.getRepoInfo()
-            cliente_gitHub.closeConnection()
-            if not repoDetails == None:
-                if social_network in social_list:
-                    created = ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type)
-                    if created:
-                        response = {"status": "Component uploaded succesfully"}
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(201)
-                    else:
-                        response = {"status": "Component updated"}
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(200)
-                else:
-                    response = {"error": "Bad value for the social_network param"}
-                    self.response.content_type = "application/json"
-                    self.response.write(json.dumps(response))
-                    self.response.set_status(400)        
+            # Predetermined is an optional param (default_value=False)
+            predetermined = None
+            if self.request.POST.has_key("predetermined"):
+                if self.request.POST["predetermined"] in ["True","true"]:
+                    predetermined = True
+                elif self.request.POST["predetermined"] in ["False","false"]:
+                    predetermined = False
             else:
-                response = {"error": "The url supplied in the request does not correspond to a github repo"}
+                predetermined = False
+            # We check if the social network param has a proper value
+            if social_network in social_list:
+                # We check if the request has provided at least the version "stable" for the version_list param
+                if "stable" in version_list:
+                    # We check if "predetermined" has a boolean value
+                    if not predetermined == None: #isinstance(predetermined,bool):
+                        # We check if the component exists in our system
+                        component_stored = ndb_pb.searchComponent(component_id)
+                        if component_stored == None:
+                            # Adds the component to datastore
+                            ndb_pb.insertComponent(component_id, url, description, social_network, input_type, output_type, version_list, predetermined)
+                            response = {"status": "Component uploaded succesfully"}
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(201)
+                        else:
+                            self.response.set_status(403)
+                    else:
+                        response = {"error": "Bad value for 'predetermined' param (it must be 'True' or 'False')"}
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)
+                else:
+                    response = {"error": "The versions param must contains stable as one of its values"}
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
+            else:
+                response = {"error": "Bad value for the social_network param"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(404)        
+                self.response.set_status(400)                
 
         except KeyError:
             response = {"error": "Missing params in the request body"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(400)
-
-
 
 class ComponentHandler(SessionHandler):
     """
@@ -213,7 +218,7 @@ class ComponentHandler(SessionHandler):
         if not cookie_value == None:
             # Checks whether the cookie belongs to an active user and the request has provided at least one param
             user_id = self.getUserInfo(cookie_value)
-            if not user_id == None and not rating == "none" or not x_axis == "none" or not y_axis == "none":
+            if not user_id == None and not rating == "none" or not x_axis == "none" or not y_axis == "none" :
                 data = {}
                 component_modified_success = False
                 rating_error = False
@@ -227,6 +232,7 @@ class ComponentHandler(SessionHandler):
                         data["y"] = float(y_axis)
                     if not listening == "none":
                         data["listening"] = listening
+                    
                 except ValueError:
                     response = \
                     {"error": "x_axis, y_axis and rating must have a numeric value"}
@@ -256,7 +262,7 @@ class ComponentHandler(SessionHandler):
 
                 # Updates the info about the component
                 if not len(data) == 0 and not rating_error:
-                    ndb_pb.modifyComponent(user_id, component_id, data)
+                    ndb_pb.modifyUserComponent(user_id, component_id, data)
                     component_modified_success = True
 
                 # Compounds the success response if the component has ben updated successfully
@@ -285,16 +291,48 @@ class ComponentHandler(SessionHandler):
         self -- info about the request build by webapp2
         component_id -- path url directory corresponding to the component id
         """
-        # Deletes the component in the datastore
-        status = ndb_pb.deleteComponent(component_id)
-        if status:
-            response = {"status": "Component deleted succesfully"}
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps(response))
-            self.response.set_status(204)
+        scope = self.request.get("scope", default_value="user")
+        cookie_value = self.request.cookies.get("session")
+        
+        if scope=="user":
+            if not cookie_value == None:
+                user_logged_key = self.getUserInfo(cookie_value)
+                if not user_logged_key == None:
+                    deactivated = ndb_pb.deactivateUserComponent(user_logged_key, component_id)
+                    if deactivated:
+                        response = {"status": "Component deleted succesfully"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(200)
+                    else:
+                        response = {"error": "The component does not correspond to the user's dashboard"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(404)
+                else:
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
+                    self.response.set_status(400)    
+            else:
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps({"error": "To perform this action, you must be authenticated"}))
+                self.response.set_status(401)
+        elif scope=="global":
+            # Deletes the component in the datastore
+            deleted = ndb_pb.deleteComponent(component_id)
+            if deleted:
+                response = {"status": "Component deleted succesfully"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(204)
+            else:
+                response = {"error": "Component not found in the system"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(404)
         else:
-            response = {"error": "Component not found in the system"}
+            response = {"error": "Bad value for the scope params"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
-            self.response.set_status(404)
+            self.response.set_status(400)
 

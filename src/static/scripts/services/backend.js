@@ -29,6 +29,29 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
     return $rootScope.promise;
   };
 
+  this.signup = function (token, tokenId, userId, redSocial, oauthVerifier) {
+    var request, uri, params;
+
+    uri = this.endpoint + "/api/oauth/" + redSocial + "/signup";
+    /* Añadimos los parametros necesarios */
+    params = "token_id=" + tokenId + "&access_token=" + token;
+
+    /* Si se indica el userId, se incluye en la peticion */
+    params += userId ? "&user_identifier=" + userId : "";
+
+    /* Si se trata de twitter añadimos el oauth_verifier*/
+    params += oauthVerifier && redSocial === "twitter" ? "&oauth_verifier=" + oauthVerifier : "";
+    request = {
+      method: "post",
+      url: uri,
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      data: params
+    };
+    /* Devolvemos la promesa*/
+    $rootScope.promise = $http(request);
+    return $rootScope.promise;
+  };
+
   this.getUserId = function (tokenId, redSocial) {
     var request, uri;
     uri = this.endpoint + "/api/oauth/" + redSocial + "/credenciales/" + tokenId;
