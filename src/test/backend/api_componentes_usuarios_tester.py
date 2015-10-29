@@ -57,7 +57,7 @@ def main():
 			print "Status esperado: 201"
 			request_uri = "/api/oauth/linkedin"
 			params = urllib.urlencode({'token_id': "token_linkedin", 'access_token': "access_token_linkedin"})
-			test_utils.make_request("POST", request_uri, params, 201, session1, preTest=True)
+			test_utils.make_request("POST", request_uri, params, 201, session2, preTest=True)
 
 			# TESTs relativos a la modificación de info de usuario (añadir un componente al usuario)
 			# TEST 1

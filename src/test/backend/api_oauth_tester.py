@@ -209,20 +209,12 @@ def main():
 
 			elif option == "borrado":
 				# PRE-TEST 1: Login en el sistema de usuario de prueba 1
-				request_uri = basePath + "/login"
-				print "PRE-TEST 1: Login en el sistema de usuario de prueba 1"
-				print "Status esperado: 200"
 				access_token = social_network + "tokenTODELETE1"
-				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
-				session1 = test_utils.make_request("POST", request_uri, params, 200, None)
+				session1 = test_utils.do_login_or_signup("googleplus", token_id1, access_token, user_id1)
 
 				# PRE-TEST 2: Login en el sistema de usuario de prueba 2
-				request_uri = basePath + "/login"
-				print "PRE-TEST 2: Login en el sistema de usuario de prueba 1"
-				print "Status esperado: 200"
 				access_token = social_network + "tokenTODELETE2"
-				params = urllib.urlencode({'token_id': token_id2, 'access_token': access_token})
-				session2 = test_utils.make_request("POST", request_uri, params, 200, None)
+				session2 = test_utils.do_login_or_signup("googleplus", token_id2, access_token, user_id2)
 
 				# TEST 21
 				# Borrar credenciales de usuarios de prueba2
@@ -291,18 +283,15 @@ def main():
 			session_error = "session=sessionError"
 
 			# Iniciamos dos sesiones distintas en googleplus para realizar las pruebas
-			request_uri = "/api/oauth/googleplus/login"
-			print "PRETEST 1: Login de usuario 1 por Googleplus\n Ignorar el status de este caso"
+			# PRE-TEST 1: Login en el sistema de usuario de prueba 1
 			token_id_login = "idgoogle"
 			access_token_login = "googleTEST"
-			params = urllib.urlencode({'token_id': token_id_login, 'access_token': access_token_login})
-			session1 = test_utils.make_request("POST", request_uri, params, 200, None)
+			session1 = test_utils.do_login_or_signup("googleplus", token_id_login, access_token_login, user_id1)
 
-			print "PRETEST 1: Login de usuario 1 por Googleplus\n Ignorar el status de este caso"
+			# PRE-TEST 2: Login en el sistema de usuario de prueba 2
 			token_id_login2 = "idgoogle2"
 			access_token_login2 = "googleTEST2"
-			params = urllib.urlencode({'token_id': token_id_login2, 'access_token': access_token_login2})
-			session2 = test_utils.make_request("POST", request_uri, params, 200, None)
+			session2 = test_utils.do_login_or_signup("googleplus", token_id_login2, access_token_login2, user_id2)
 
 			if option == None:
 				# Tests a la API seleccionada
@@ -314,7 +303,7 @@ def main():
 				print "Status esperado: 401"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
 				test_utils.make_request("POST", request_uri, params, 401, None)
-
+				
 				# TEST 2
 				print "TEST 2: Añadir nuevo par de credenciales"
 				print "Status esperado: 201"
@@ -335,6 +324,13 @@ def main():
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
 				test_utils.make_request("POST", request_uri, params, 400, session_error)
+
+				# TEST 4B
+				print "TEST 4B: Actualizar par de credenciales con cookie de sesión de otro usuario"
+				print "Status esperado: 401"
+				access_token1 = social_network + "ModifyTEST"
+				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
+				test_utils.make_request("POST", request_uri, params, 401, session1)
 
 				# TEST 5
 				print "TEST 5: Actualizar credenciales proporcionando un solo parámetro"
