@@ -22,7 +22,8 @@
     "ng-polymer-elements": "~0.3.0",
     "paper-icon-button": "Polymer/paper-icon-button#~0.5.6",
     "paper-input": "Polymer/paper-input#~0.5.6",
-    "twitter-timeline": "*"
+    "twitter-timeline": "*",
+    "paper-button": "Polymer/paper-button#~0.5.6"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "~0.9.1",

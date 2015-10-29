@@ -21,6 +21,5 @@
   },
   "_source": "git://github.com/Polymer/core-dropdown.git",
   "_target": "~0.5.6",
-  "_originalSource": "Polymer/core-dropdown",
-  "_direct": true
+  "_originalSource": "Polymer/core-dropdown"
 }
