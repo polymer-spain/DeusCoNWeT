@@ -254,11 +254,11 @@ def getCipher(token_entity_key):
 
 # Defines the version of a given component that will be served to a user that adds it
 # to his dashboard (transactional operation)
-
+# Params: - general_component: Component Entity that it is desired to be served to the user
+# Returns: string that represents the version that will be served to the user
 @ndb.transactional()
-def setComponentVersion(component_id):
+def setComponentVersion(general_component):
   version = ""
-  general_component = Component.query(Component.component_id == component_id).get()
   # We set the version that will be served to the user
   version = general_component.version_list[general_component.version_index]
   # We change the version_index field, that represents the version that will be served to the next user
@@ -267,8 +267,9 @@ def setComponentVersion(component_id):
   general_component.put()
   return version
 
-  # De momento se sirve la version estable del componente
-  return "stable"
+def getComponentEntity(component_id):
+  general_component = Component.query(Component.component_id == component_id).get()
+  return general_component
 
 #########################################################################################
 # Definicion de metodos relacionados con operaciones de alto nivel sobre la base de datos
@@ -292,55 +293,57 @@ def activateComponentToUser(component_id, entity_key):
   user_component = None
   status = False
   # We check if the user has added the corresponding social network to his/her profile
-  if general_component.rs in user.net_list:
-    #We check if the component provided is in the user component list
-    # If not, we create a new UserComponent Entity, setting the component version that will use the user
-    for comp in user.components:
-      if comp.component_id == component_id:
-        user_component = comp
+  for social_network in user.net_list:
+    if general_component.rs == social_network.social_name:
+      #We check if the component provided is in the user component list
+      # If not, we create a new UserComponent Entity, setting the component version that will use the user
+      for comp in user.components:
+        if comp.component_id == component_id:
+          user_component = comp
 
-    if not user_component == None:
-      # We set the field to active
-      # The user's preferences (heigh, width) does not change
-      # We get the version of the component that will be served to the user
-      # (the same version than the setted when the user activated the component for the first time)
-      version = user_component.version
-      if not user_component.active:
-        user_component.active = True
+      if not user_component == None:
+        # We set the field to active
+        # The user's preferences (heigh, width) does not change
+        # We get the version of the component that will be served to the user
+        # (the same version than the setted when the user activated the component for the first time)
+        version = user_component.version
+        if not user_component.active:
+          user_component.active = True
+          user.put()
+          status = True
+      else:
+        # We set the version of the component
+        general_component = getComponentEntity(component_id)
+        version = setComponentVersion(general_component)
+        # We create a new UserComponent entity
+        user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
+        # We add the component to the component_list of the user
+        user.components.append(user_component)
         user.put()
+
+        # We increase the counters that represents the times that a given component has been tested (general and versioned)
+        general_component.test_count = general_component.test_count + 1
+        general_component.put()
+        # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
+        # versionedComponent.version == version)).get()
+        # versioned_component.test_count = versioned_component.test_count + 1
+        # versioned_component.put()
         status = True
-    else:
-      # We set the version of the component
-      version = setComponentVersion(component_id)
-      # We create a new UserComponent entity
-      user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
-      # We add the component to the component_list of the user
-      user.components.append(user_component)
-      user.put()
 
-      # We increase the counters that represents the times that a given component has been tested (general and versioned)
-      general_component.test_count = general_component.test_count + 1
-      general_component.put()
-      # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
-      #  VersionedComponent.version == version)).get()
-      # versioned_component.test_count = versioned_component.test_count + 1
-      # versioned_component.put()
-      status = True
-
-    # We store in a ComponentTested entity the new version tested by the user
-    user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
-    if not user_component_tested == None:
-      # We update the field that represents the actual version that is being tested
-      user_component_tested.actual_version = version
-      # We add the version to the versions tested list, if is not was added previously
-      if not version in user_component_tested.versions_tested:
-        user_component_tested.versions_tested.append(version)
-        user_component_tested.put()
-    else:
-      # We create a new ComponentTested entity to store the versions of a component tested by the user
-      component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
-      component_tested.put()
-    return status
+      # We store in a ComponentTested entity the new version tested by the user
+      user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
+      if not user_component_tested == None:
+        # We update the field that represents the actual version that is being tested
+        user_component_tested.actual_version = version
+        # We add the version to the versions tested list, if is not was added previously
+        if not version in user_component_tested.versions_tested:
+          user_component_tested.versions_tested.append(version)
+          user_component_tested.put()
+      else:
+        # We create a new ComponentTested entity to store the versions of a component tested by the user
+        component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
+        component_tested.put()
+  return status
 
 
 # Removes the component from the user's dashboard
