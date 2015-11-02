@@ -65,6 +65,14 @@ def do_login_or_signup(social_network, token_id, access_token, user_identifier):
             session = make_request("POST", request_uri, params, 201, None, True, True)
     return session
 
+def do_logout(social_network, session, printSession=False):
+    request_uri = '/api/oauth/' + social_network + '/logout'
+    params = urllib.urlencode({})
+    print "POSTEST: Logout de usuario en el sistema"
+    print "Ignorar el status de este caso"
+    make_request("POST", request_uri, params, 200, session, printSession)
+
+
 def make_request(method, request_uri, params, status_ok, session, printHeaders=False, preTest=False):
     """
     Metodo make_request: Realiza llamadas HTTP a la API REST, retornando la
