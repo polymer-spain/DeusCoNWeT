@@ -654,7 +654,6 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   # Generates a random initial value that represents the version of the component that will be 
   # served to the next user who adds it to his dashboard
   initial_index = random.randint(0, len(version_list)-1)
-  print "\n\tDEBUG: Se añade componente: ", name, " con indice de version inicial: ", initial_index, "\n"
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined)
   # We create a new VersionedComponent Entity for each version_added to the version_list

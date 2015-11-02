@@ -344,12 +344,14 @@ def main():
 			print "Status esperado: 200"
 			test_utils.make_request("GET", request_uri, params, 200, session5)
 
+			# Cerramos las tres sesiones iniciadas en esta opcion de testeo
+			test_utils.do_logout("googleplus", session3)
+			test_utils.do_logout("googleplus", session4)
+			test_utils.do_logout("googleplus", session5)
+
 		# Cerramos todas las sesiones iniciadas en los tests
 		test_utils.do_logout("googleplus", session1)
 		test_utils.do_logout("googleplus", session2)
-		test_utils.do_logout("googleplus", session3)
-		test_utils.do_logout("googleplus", session4)
-		test_utils.do_logout("googleplus", session5)
 
 		# Cerramos conexión e imprimimos el ratio de test ok vs erróneos
 		test_utils.closeConnection()

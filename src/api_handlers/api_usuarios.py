@@ -171,9 +171,7 @@ class UserHandler(SessionHandler):
           
           # Updates the resource and return the proper response to the client
           if not len(update_data) == 0:
-            print "DEBUG: parametros correctos recibidos ", update_data.keys()
             updated_info = ndb_pb.updateUser(user_logged_key, update_data)    
-            print "DEBUG: informacion sobre el usuario actualizada ", updated_info
             if not len(updated_info) == 0:
               self.response.content_type = "application/json"
               self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
@@ -183,15 +181,12 @@ class UserHandler(SessionHandler):
               self.response.content_type = "application/json"
               self.response.set_status(304)   
               if update_data.has_key("component_id"):
-                print "DEBUG: The component specified does not exists or the user has not added to its account the social networks that consumes the component"
                 self.response.write(json.dumps({"details": "Resource not modified (The component specified does not exists" + 
                   "or the user has not added to its account the social networks that consumes the component)", "status": "Not Modified"}))
               else:
-                print "DEBUG: check parameters provided"
                 self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
           else:
             self.response.content_type = "application/json"
-            print "DEBUG: It has not been specified any valid parameter for this method"
             self.response.write(json.dumps({"details": "Resource not modified (It hasn't been specified any valid parameter for this method)",
              "status": "Not Modified"}))
             self.response.set_status(304) 

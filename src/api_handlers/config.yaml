@@ -5,4 +5,4 @@
 #						   or dynamic (serve random version of the component) basis. Posible values: static | dynamic
 
 domain: test-backend-dot-example-project-13.appspot.com
-component_versioning: static
+component_versioning: dynamic
