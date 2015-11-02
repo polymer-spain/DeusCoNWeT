@@ -75,7 +75,7 @@
             </iron-icon>
           </div>
         </div>
-        
+
         <!-- Options -->
         <div class="animate-show list" ng-show="!hidelist('modify')" >
           <div class="horizontal layout center deleteOption" ng-repeat="element in listComponentAdded" ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">
@@ -88,22 +88,16 @@
         </div>
       </div>
 
-      <!-- Opcion de ayuda -->
-      <div id="help" ng-class="{hidden: isMenuHidden('help')}" ng-click="showToggleHelp($event)" style="max-width:170px">
+      <!-- help and popup -->
+      <div id="help" ng-class="{hidden: isMenuHidden('help')}" data-dialog="helpModal" ng-click="showToggleHelp($event)" style="max-width:170px">
         <iron-icon icon="help"></iron-icon>
         <span ng-show="showElement" style="padding-left: 10px;">{{language.user_action.help}}</span>
       </div>
     </div>
   </div>
-</div>
-
-<div ng-show="toggleHelp" class="shadow">
-  <div ng-show="toggleHelp" class="helpModal">
-    <div class="titleHelp" horizontal layout>
-      <p flex>Ayuda</p>
-      <paper-icon-button center ng-click="hideToggleHelp($event)" icon="close"></paper-icon-button>
-    </div>
-    <div class="help-text" vertical center-justified layout>
+  <paper-dialog id="helpModal" modal>
+    <h2 >{{language.user_action.help}}</h2>
+    <div class="help-text vertical center-justified layout">
       <p>
         <strong>{{language.user_action.add}}</strong><span>: {{language.help.add}}</span>
       </p>
@@ -114,5 +108,9 @@
         <strong>{{language.user_action.modify}}</strong>: <span>{{language.help.modify}}</span>
       </p>
     </div>
-  </div>
+    <div class="buttons">
+      <paper-button dialog-confirm autofocus class="blue">{{language.close}}</paper-button>
+    </div>
+  </paper-dialog>
 </div>
+

@@ -10,39 +10,39 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   $scope.twitterData.token = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
   $scope.githubData.username = "mortega5";
   $scope.listComponents = [
-		{
-			name: "twitter-timeline",
-			attributes: {
-				"access-token": $scope.twitterData.token,
-				"secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-				"consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
-				"consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
-				"endpoint": $scope.domain + "/api/aux/twitterTimeline",
-				"language": "{{idioma}}",
-				"count": 200,
+    {
+      name: "twitter-timeline",
+      attributes: {
+        "access-token": $scope.twitterData.token,
+        "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
+        "consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
+        "consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+        "endpoint": $scope.domain + "/api/aux/twitterTimeline",
+        "language": "{{idioma}}",
+        "count": 200,
         "component_base": "bower_components/twitter-timeline/static/"
-			}
-		},
-		{
-			name: "github-events",
-			attributes: {
-				username: $scope.githubData.username,
-				token: $scope.githubData.token || "",
-				mostrar: "10",
-				language: "{{idioma}}",
+      }
+    },
+    {
+      name: "github-events",
+      attributes: {
+        username: $scope.githubData.username,
+        token: $scope.githubData.token || "",
+        mostrar: "10",
+        language: "{{idioma}}",
         component_directory: "bower_components/github-events/"
-			}
-		},
-		{
-			name: "instagram-timeline",
-			attributes: {
-				"access-token": $scope.instagramData.token,
-				endpoint: $scope.domain + "/api/aux/instagramTimeline",
-				language: "{{idioma}}",
+      }
+    },
+    {
+      name: "instagram-timeline",
+      attributes: {
+        "access-token": $scope.instagramData.token,
+        endpoint: $scope.domain + "/api/aux/instagramTimeline",
+        language: "{{idioma}}",
         component_directory: "bower_components/instagram-timeline/static/"
-			}
-		}
-	];
+      }
+    }
+  ];
   $scope.listComponentAdded = []; // added on dragdrop.js
   $scope.modifySelected = $scope.modifySelected || "";
   /* Authentication */
@@ -209,25 +209,11 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
     $scope.hovered = "";
   };
 
-  $scope.showToggleHelp = function (event){
-    $scope.toggleHelp = true;
-    window.onkeydown = $scope.listenEscKeydown;
-    event.stopPropagation();
-  };
-
-  $scope.hideToggleHelp = function(event) {
-    $scope.toggleHelp = false;
-    window.removeEventListener("onkeydown", $scope.listenEscKeydow);
-    if (event) {
-      event.stopPropagation();
+  $scope.showToggleHelp = function (e){
+    var id = e.target.parentElement.getAttribute("data-dialog");
+    var dialog = document.getElementById(id);
+    if (dialog) {
+      dialog.open();
     }
-  };
-
-  $scope.listenEscKeydown = function(event){
-    $scope.$apply(function() {
-      if (event.keyCode === 27) {
-        $scope.hideToggleHelp();
-      }
-    });
   };
 }]);
