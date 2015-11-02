@@ -16,6 +16,11 @@
 
     <!-- Polymer -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <!-- active shadow DOM -->
+    <script>
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = "shadow";
+    </script>
     <link rel="import" href="elements/elements.html">
 
     <!-- stylesheet -->

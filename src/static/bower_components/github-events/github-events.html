@@ -1,0 +1,391 @@
+<!--
+
+Copyright 2015 Miguel Ortega Moreno
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+<github-events></github-events>
+
+@element github-events
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://Mortega5.github.io/github-events
+-->
+<dom-module id="github-events">
+
+  <style is="custom-style">
+    :host{
+      display: inline-block;
+      font-family: Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+      color: #222;
+      font-size: 5px;
+    }
+
+    .box {
+      border: 5px solid #AEAEAE;
+      border-top: none;
+      width: 400px;
+      padding:15px 5px;
+      margin:0;
+      font-size: 12.5px;
+      background: #f2f5f6; /* Old browsers */
+      background: -moz-linear-gradient(-45deg,  #f2f5f6 0%, #e3eaed 51%, #c8d7dc 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#f2f5f6), color-stop(51%,#e3eaed), color-stop(100%,#c8d7dc)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* IE10+ */
+      background: linear-gradient(135deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f6', endColorstr='#c8d7dc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+    }
+    #logo {
+      margin: 5px;
+      width: 100px;
+      height: 40px;
+      display:inline-block;
+      float:left;
+    }
+    .box:last-child {
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      border: 5px solid #AEAEAE;
+      border-top: none;
+    }
+    #cabecera {
+      background: #dbdbdb; /* Old browsers */
+      background: -moz-radial-gradient(center, ellipse cover,  #dbdbdb 0%, #a8a8a8 100%); /* FF3.6+ */
+      background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#dbdbdb), color-stop(100%,#a8a8a8)); /* Chrome,Safari4+ */
+      background: -webkit-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* Opera 12+ */
+      background: -ms-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* IE10+ */
+      background: radial-gradient(ellipse at center,  #dbdbdb 0%,#a8a8a8 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbdbdb', endColorstr='#a8a8a8',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    #cabecera p {
+      text-align:center;
+    }
+    .imgEvent {
+      float: left;
+      width:50px;
+      height:50px;
+      margin-right: 5px;
+      margin-bottom: 8px;
+    }
+    .imgEvent /deep/ img {
+      border-radius: 50%; 
+      box-shadow: 1px 1px 5px #888;
+      border: 1px inset rgba(24, 41, 49, 0.67);
+    }
+    .name {
+      font-size: 15px;
+      font-weight: bold;
+    }
+    a {
+      text-decoration: none;
+      color: #2f4b6c;
+      font-weight: bold;
+    }
+    a:visited {
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    #scrollControl::-webkit-scrollbar {
+      width: 5px;
+      background: #b9b9b9;
+    }
+
+    #scrollControl::-webkit-scrollbar-thumb {
+      background: #55acee;
+      -webkit-border-radius: 1px;
+    }
+    #scrollControl {
+      overflow-y: scroll;
+      max-height: var(--github-events-contain-max-height, 400px);
+    }
+  </style>
+
+  <template id="template"> 
+    <iron-ajax
+               id="request"
+               method="GET"
+               url="{{events_url}}"
+               params="{{events_params}}"
+               handleAs="json"
+               on-response="_response"
+               >
+    </iron-ajax>
+
+    <iron-ajax
+               id="requestLanguage"
+               url="{{language_url}}"
+               method="GET"
+               handleAs='json'
+               on-response="_language_response"
+               >
+    </iron-ajax>
+
+    <paper-material elevation="2">
+      <div id ="cabecera" class="horizontal center-justified layout">
+        <iron-icon src="foto.png" id="logo"></iron-icon>
+        <p class="flex">{{language_data.title}}</p>
+        <paper-icon-button title="{{language_data.refresh}}" icon="icons:refresh" on-click="{{refresh}}">
+        </paper-icon-button>
+      </div>
+
+      <template if="{{show}}">
+        <ul class="box">
+          <p>{{language_data.loading}}</p>
+        </ul>
+      </template>
+
+
+
+      <div id="scrollControl">
+        <!-- Cambiado la manera del repeat -->
+        <template id="contenido" is="dom-repeat" items$="{{events}}">
+          <ul class="box">
+            <div style="text-align: center">
+              <iron-icon src="{{item.actor.avatar_url}}" class="imgEvent">
+              </iron-icon>
+              <a href$="{{_getUrlWithGithub(item.actor.login)}}" style="color: black" target="_blank">
+                <span class="name">{{item.actor.login}}</span>
+              </a>
+            </div>
+            <p style="clear:both;margin:10px inherit">{{item.operation}}<a target="_blank" href$="{{_getUrlWithGithub(item.repo.name)}}">
+              <span>{{item.repo.name}}</span>
+              </a>
+            </p>
+
+            <a href$="{{_getCommitInfo(item.repo.name, item.payload.commits[0],sha)}}"a target="_blank"><p>{{item.info}}</p></a>
+            <p style="font-size:11px;text-align:right">{{item.date}}</p>
+          </ul>
+        </template>
+
+        <template is="dom-if" if="[[_showLoadMore(lastPage, page, show)]]">
+          <ul class="box" style="text-align:center;cursor: pointer;font-size: 16px"  on-click="load">
+            <span style="font-size: 12px">{{language_data.load_more}}</span>
+          </ul>
+        </template>
+      </div>
+    </paper-material>
+  </template>
+
+  <script>
+
+
+    Polymer({
+
+      is: "github-events",
+      properties: {
+        lastPage: {
+          type: Number,
+          value: 0
+        },
+        per_page: {
+          type: Number,
+          value:15,
+          notify: true,
+          reflectToAttribute: true
+        },
+        username: {
+          type: String,
+          value: '',
+          notify: true,
+          reflectToAttribute: true
+        },
+        show: {
+          type: Boolean,
+          value: true,
+        },
+        page: {
+          type: Number,
+          value: 1,
+          notify: true
+        },
+        language: {
+          type: String,
+          value: 'es',
+          notify: true,
+          reflectToAttribute: true,
+          observer: "_languageChanged"
+        },
+        language_url: {
+          type: String,
+          computed: '_processUrl(component_directory, idioma)'
+        },
+        events_url: {
+          type: String,
+          computed: '_processEventUrl(username)'
+        },
+        events_params: {
+          type: String,
+          computed: '_processEventParams(page, per_page)'
+        },
+        events: Object,
+        token: {
+          type:String,
+          notify: true
+        },
+        component_directory: {
+          type:String,
+          value: "",
+          reflectToAttribute: true
+        }
+      },
+
+      attached : function() {
+        if (this.token) {
+          this.$.request.setAttribute("headers", '{"Authorization":"token '+this.token+'"}');
+        }
+        this.$.requestLanguage.generateRequest();
+      },
+      _response: function(event,detail){
+        // Github events
+        this.events = this.events != undefined?  this.events.concat(this.changeEvent(detail.response)) : this.changeEvent(detail.response);
+        // Check lastPage
+        if (this.lastPage == '') {
+          var headers = detail.xhr.getAllResponseHeaders();
+          headers = headers.split(",");
+          var head = headers[headers.length-1];
+          var patron = 'page'+'=([^&]*)';
+          var exp = new RegExp(patron);
+          this.lastPage = parseInt(exp.exec(head)[1]);
+        }
+        this.show = false;
+        // If not lastPage, next request is the next page
+        if (this.page != this.lastPage)
+          this.page++;
+      },
+
+      _language_response: function(event, detail){
+        this.language_data = detail.response;
+        if(!this.events){
+          this.$.request.generateRequest();
+        }
+        else{
+          this.events = this.changeEvent(this.events)
+        }
+      },
+
+      _languageChanged: function(newVal){
+        if(newVal === "en"){
+          this.language = "en";
+          this.idioma = "en_en.json"
+        }
+        else if(newVal === "es"){
+          this.language = "es";
+          this.idioma = "es_es.json"
+        }
+        if (this.component_directory || this.component_directory == "") {
+          this.$.requestLanguage.generateRequest();
+        }
+      },
+
+      load: function(){
+        this.$.request.generateRequest();
+      },
+
+      refresh: function(){
+        this.events = this.changeEvent(this.events);
+      },
+
+      changeEvent: function(list){
+        for (i=0;i<list.length;i++){
+          switch(list[i].type) {
+            case "PushEvent":
+              list[i].operation = this.language_data.push;
+              if (list[i].info) {
+                list[i].info = "Commit: \n "+list[i].payload.commits[0].message;
+              };
+              break;
+            case "WatchEvent":
+              list[i].operation = this.language_data.follow;
+              break;
+            case "CreateEvent":
+              list[i].operation = this.language_data.create;
+              break;
+            case "PullRequestEvent":
+              list[i].operation = this.language_data.pull_request;
+              break;
+            case "IssuesEvent":
+              break;
+            case "MemberEvent":
+              break;
+            case "ReleaseEvent":
+              break;
+            case "CommitCommentEvent":
+              break;
+            case "DelateEvent":
+              break;
+            case "GollumEvent":
+              break;
+            case "IssueCommentEvent":
+              break;
+            case "PublicEvent":
+              break;
+            case "PullRequestReviewCommentEvent":
+              break;
+          };
+          var date = new Date(list[i].created_at);
+          var month = [this.language_data.january,this.language_data.february,this.language_data.march,this.language_data.april, this.language_data.may,this.language_data.june,this.language_data.july,this.language_data.august,this.language_data.september,this.language_data.october,this.language_data.november,this.language_data.december];
+          list[i].date =this.language_data.date+date.getDate()+ this.language_data.of +month[date.getMonth()]+this.language_data.of+date.getFullYear();
+        }
+        return list;
+      },
+
+      // Proces
+      _processUrl: function(component_directory, idioma) {
+        return component_directory + "language/" + idioma; 
+      },
+      _processEventUrl: function(username) {
+        return "https://api.github.com/users/" + username + "/received_events";
+      },
+      _processEventParams: function(page, per_page) {
+        return {"page": page,"per_page": per_page}
+      },
+      _showLoadMore: function(lastPage, page, show){
+        return lastPage > page && !show;
+      },
+
+      _getUrlWithGithub: function(path) {
+        return "https://github.com/" + path;
+      },
+      _getCommitInfo: function(name, commit) {
+        return "https://github.com/" + name + "/commits/" + commit;
+      }
+
+    });
+  </script>
+</dom-module>

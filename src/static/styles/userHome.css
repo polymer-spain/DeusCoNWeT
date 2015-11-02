@@ -23,7 +23,10 @@ html {
 .dropdown{
   margin: auto;
 }
+.dropdown p {
+  padding-left:10px
 
+}
 .hidden{
   background: yellow;
 
@@ -55,7 +58,10 @@ html {
 .corto{
   padding: 0px 15px 0px;
 }
-
+.elementList {
+  padding: 20px 8px;
+  margin:0;
+}
 #listOption > div:hover {
   cursor: pointer;
 }
@@ -73,7 +79,6 @@ html {
   width:inherit;
   color:black;
   padding: 0px;
-  /*margin-bottom: 15px;*/
   padding-left: 0px;
   max-height: 200px;
   overflow: auto;

@@ -1,0 +1,526 @@
+<!--
+@license
+Copyright (c) 2015 Juan Francisco Salamanca Carmona
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-ajax/iron-ajax.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+
+
+
+<dom-module id="instagram-timeline">
+
+  <style is="custom-style">
+    :host{
+      display: inline-block;
+      font-family: 'Montserrat', sans-serif;
+    }
+    #header {
+      background: -webkit-linear-gradient(top,#517fa4,#306088);
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      text-align: center;
+    }
+    #header p {
+      text-align:center;
+    }
+    .materialShadow {
+      margin: 2%;
+      border-radius: 5px;
+    }
+    #refresh_button {
+      text-align: right;
+      padding-bottom: 10px;
+    }
+
+    #outline{
+      overflow-y: auto;
+      max-height: 400px;
+      background: #E0E1E2;
+    }
+
+    #box {
+      margin-top: 0px;
+      margin-bottom: 30px;
+      padding-left: 0px;
+      max-width: 400px;
+      min-width: 350px;
+      font-size: 14px;
+      background: white;
+      border-bottom: 1px solid rgba(63, 114, 155, 0.5);
+      border-radius: 5px;
+    }
+    #profile_picture{
+      margin-top: 10px;
+      margin-bottom: 5px;
+      margin-left: 5px;
+      border-radius: 30px;
+      float: left;
+      vertical-align:middle;
+      width: 40px;
+      height: 40px;
+    }
+
+    #profile_name{
+      text-decoration:none;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      vertical-align: middle;
+      float: left;
+      margin-left: 5px;
+    }
+
+    #hour{
+      float: right;
+      font-size: 13px;
+      margin-top: 22px;
+      margin-right: 10px;
+      color: #999;
+    }
+
+    #imagen{
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-top: 5px;
+      height: auto;
+      max-width: 95%;
+      border-radius: 2px;
+    }
+
+    iron-icon {
+      height: 20px;
+      width: 20px;
+      padding: 4px;
+      margin: 1px;
+    } 
+    #liked[liked] {
+      color:rgba(255,0,0,0.7);
+    }
+
+    #liked {
+      color:grey;
+    }
+    #liked_count{
+      color: #3f729b;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    #description{
+      display: inline-block;
+      text-align: justify;
+      margin-left: 15px;
+      margin-right: 15px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      max-width: 400px;
+    }
+    #description p {
+      margin:0;
+    }
+
+    #video{
+      max-width: 357px;
+      height: auto;
+      margin-left: 10px;
+    }
+    #likeContainer {
+      margin-left: 6px;
+      margin-right: 0px 
+    }
+    #button{
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 13px;
+      color: #E0E1E2;
+      font-style: oblique;
+      background: #3f729b;
+    }
+
+    #end {
+      background: #3f729b;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      height: 2px;
+    }
+    #loadMoreButton {
+      margin-top: -20px;
+    }
+    a{
+      font-size: 13px;
+      color: #3f729b;
+      font-weight: bold;
+    }
+
+    a:hover {
+      font-weight: 100;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: #b9b9b9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #517fa4;
+    }
+
+  </style>
+
+  <template>
+    <iron-ajax
+               id="requesttimeline"
+               url="{{endpoint}}"
+               method="GET"
+               params="{{requesttimelineParams}}"
+               handleAs='json'
+               on-response="_responsetimeline"
+               >
+    </iron-ajax>
+
+    <iron-ajax
+               id="load_more"
+               url="{{endpoint}}"
+               method="GET"
+               params="{{load_more_params}}"
+               handleAs='json'
+               on-response="_response_load"
+               >
+    </iron-ajax>
+
+    <iron-ajax
+               id="refresh"
+               url="{{endpoint}}"
+               method="GET"
+               params="{{refreshParams}}"
+               handleAs='json'
+               on-response="_response_refresh"
+               >
+    </iron-ajax>
+
+    <iron-ajax
+               id="requestLanguage"
+               url="{{requestLanguageUrl}}"
+               method="GET"
+               handleAs='json'
+               on-response="_language_response"
+               >
+    </iron-ajax>
+
+    <!--Header-->
+    <paper-material>
+      <div id ="header" class="horizontal center-justified layout">
+        <p class="flex">Instagram</p>
+        <paper-icon-button id="refresh_button" icon="refresh" title="{{language_data.refresh}}" on-click="refresh_func">
+        </paper-icon-button>
+      </div>
+    </paper-material>
+
+    <!-- Body -->
+    <div id="outline">
+      <template id="content" is="dom-repeat"  items="{{events}}">
+        <paper-material elevation="1" class="materialShadow">
+          <ul id="box">
+            <img id="profile_picture" src="{{item.user.profile_picture}}">
+            <a id="profile_name"
+               href="{{_get(item.user.username)}}" target='_blank'>
+              <p>{{item.user.username}}</p>
+            </a>
+            <span id="hour">{{item.time}}</span>
+            <template is="dom-if" if="{{_isSameType(item.type,'image')}}">
+              <a href="{{item.link}}" target="_blank"><img id="imagen" src="{{item.images.standard_resolution.url}}"></a>
+            </template>
+            <template is="dom-if" if="{{_isSameType(item.type, 'video')}}">
+              <a href="{{item.link}}" target="_blank">
+                <video id="video" controls muted>
+                  <source src="{{item.videos.standard_resolution.url}}">
+                  <span>{{language_data.video}}</span>
+                </video>
+              </a>
+            </template>
+            <div id="likeContainer">
+              <iron-icon id="liked" icon="favorite" liked$="{{item.user_has_liked}}"></iron-icon>
+              <span id="liked_count">
+                <span>{{item.likes.count}}</span>
+                <span>{{language_data.like}}</span>
+              </span>
+            </div>
+            <div id="description" hidden$="{{_isCaption(item.caption)}}">
+              <p>
+                <span><a href="{{_get(item.user.username)}}/" target='_blank'>{{item.user.username}}</a></span>
+                <span inner-h-t-m-l="{{item.caption.text}}"></span>
+              </p>
+            </div>
+          </ul>
+        </paper-material>
+      </template>
+      <template is="dom-if" if="{{thereAreModeData}}">
+        <div on-click="load" class="horizontal center-justified layout" id="loadMoreButton">
+          <paper-button id="button">{{language_data.load_more}}</paper-button>
+        </div>
+      </template>
+    </div>
+    <div id="end"></div>
+  </template>
+  <script>
+    Polymer({
+      is:"instagram-timeline",
+      properties:{
+        endpint: {
+          type: String,
+          notify:true,
+          reflectToAttribute: true
+        },
+        accessToken: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+        language: {
+          type:String,
+          value: "es",
+          notify: true,
+          reflectToAttribute: true,
+          observer:"_language_changed"
+        },
+        count: {
+          type: Number,
+          value: 100,
+          reflectToAttribute: true
+        },
+        media_id: {
+          type: String,
+          value: ""
+        },
+        max_id: String,
+        min_id: String,
+        languageFile: String,
+        requesttimelineParams: {
+          type: String,
+          computed: "_getRequesttimelineParams(accessToken)"
+        },
+        load_more_params: {
+          type: String,
+          computed: "_getLoadMoreParams(accessToken, count, max_id)"
+        },
+        refreshParams: {
+          type: String,
+          computed: "_getRefreshParams(accessToken, min_id)"
+        },
+        requestLanguageUrl: {
+          type: String,
+          computed: "_getRequestLanguageUrl(component_directory, languageFile)"
+        },
+        /* refres_time in seconds */
+        refresh_time: {
+          type: Number,
+          value: 60000,
+          reflectToAttribute: true
+        },
+        thereAreModeData: {
+          type: Boolean,
+          value:true
+        },
+        component_directory: {
+          type: String,
+          value: "",
+          reflectToAttribute: true
+        }
+      },
+
+
+      ready: function() {
+        this.$.requestLanguage.generateRequest();
+
+      },
+      /*
+       * Computed Functions and complex url
+       */
+
+      _getRequesttimelineParams: function(accessToken) {
+        return {access_token: accessToken};
+      },
+      _getLoadMoreParams: function(accessToken, count, max_id) {
+        return {access_token:accessToken, count:count, max_id:max_id};
+      },
+      _getRefreshParams: function(accessToken, min_id){
+        return {access_token: accessToken, min_id: min_id};
+      },
+      _getRequestLanguageUrl: function(component_directory, languageFile) {
+        return this.component_directory + "language/" + languageFile;
+      }, 
+      _get: function(username) {
+        return "https://instagram.com/" + username;
+      },
+      _isSameType: function(type, comparation){
+        return type === comparation;
+      },
+      _isCaption: function(caption) {
+        return caption === null;
+      },
+      /* Observers*/
+      _language_changed: function(newVal, oldVal) {
+        if(newVal === "en"){
+          this.language = "en";
+          this.languageFile = "en_en.json"
+        }
+        else if(newVal === "es"){
+          this.language = "es";
+          this.languageFile = "es_es.json"
+        }
+        if (this.component_directory) {
+          this.$.requestLanguage.generateRequest();
+        }
+      },
+
+      _responsetimeline: function(event, detail) {
+        this.data = detail.response;
+        this.min_id = this.data.data[0].id
+        this.set('events', this.parser(this.data.data));
+        this._changeTime(this.events)
+      },
+
+      _language_response: function(event, detail){
+        this.language_data = detail.response;
+        if(!this.events){
+          this.$.requesttimeline.generateRequest();
+          var back = this;
+          window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
+        }
+        else{
+          /* TODO cambir this._changeTime para modificar datos con this.set*/
+          this._changeTime(this.events);
+        }
+      },
+
+      refresh_func: function(){
+        this.$.refresh.generateRequest()
+      },
+
+      _response_refresh: function(event, detail){
+        var newData = detail.response.data;
+        if(newData.length > 0){
+          this.min_id = newData[0].id
+          for(i = newData.length-1; i>-1;i--){
+            this.unshift('events', newData[i]);
+          }
+        }
+        this._changeTime(this.events);
+      },
+
+      load: function(){
+
+        this.max_id = this.data.pagination.next_max_id
+        this.$.load_more.generateRequest()
+      },
+
+      _response_load: function(event, detail){
+        this.data = detail.response
+        if (this.data.data || this.data.data.length > 0) {
+          for(i = 0; i<this.data.data.length;i++){
+            this.push('events',this.data.data[i])
+          }
+        } else {
+          this.thereAreModeData = false;
+        }
+        this._changeTime(this.events)
+      },
+
+      _changeTime: function(list){
+
+        for (i=0;i<list.length;i++){
+          list[i].time = list[i].created_time*1000
+          var date = list[i].time;
+          var current_date = new Date();
+          current_date = current_date.getTime();
+          var time
+          calculate_date = (current_date-date)/(1000)
+
+          if( Math.floor(calculate_date/3600) == 0){
+            if ( Math.floor(calculate_date/60) == 0){
+              if (Math.floor(calculate_date) == 1){
+                time = Math.floor(calculate_date)+" "+this.language_data.second
+              }
+              else{
+                time = Math.floor(calculate_date)+" "+this.language_data.seconds
+              }
+            }
+            else{
+              if ( Math.floor(calculate_date/60) == 1 ){
+                time = Math.floor(calculate_date/60)+" "+this.language_data.minute
+              }
+              else{
+                time = Math.floor(calculate_date/60)+" "+this.language_data.minutes
+              }
+            }
+          }
+          else{
+            if( Math.floor(calculate_date/3600) == 1 ){
+              time = Math.floor(calculate_date/3600)+" "+this.language_data.hour
+            }
+            else if(calculate_date/3600 < 24){
+              time = Math.floor(calculate_date/3600)+" "+this.language_data.hours
+            }
+            else{
+              time = Math.floor(calculate_date/86400)+" "+this.language_data.days
+            }
+          }
+          this.set("events." + i + ".time", time);
+        }
+      },
+
+      parser: function(lista){
+        for(i = 0; i < lista.length; i++){
+          if(lista[i].caption){
+            lista[i].caption.text = this.parseURL(lista[i].caption.text);
+            lista[i].caption.text = this.parseUsername(lista[i].caption.text);
+            lista[i].caption.text = this.parseHashtag(lista[i].caption.text);
+          }
+        }
+        return lista;
+      },
+
+      /*URL parser*/
+      parseURL: function(tweet) {
+        return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+          return '<a href='+url+' target="_blank">'+url+'</a>'
+        })
+      },
+
+      /*Usernames parser*/
+      parseUsername: function(tweet) {
+        return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
+          var username = u.replace("@","")
+          return '<a href="https://instagram.com/'+username+' "target="_blank">@'+username+'</a>'
+        })
+      },
+
+      /*Hashtag parser*/
+      parseHashtag: function(tweet) {
+        return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
+          var tag = t.replace("#","")
+          return '<a href="https://instagram.com/explore/tags/'+tag+' "target="_blank">#'+tag+'</a>'
+        });
+      }
+    })
+  </script>
+</dom-module>

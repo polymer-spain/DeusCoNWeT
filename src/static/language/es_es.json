@@ -50,5 +50,7 @@
     "input_title": "Nombre de usuario",
     "userIdError": "* Nombre de usuario ya existente",
     "invalid_username": "Solo letras, numeros, '-', o '_'"
-  }
+  },
+  "componentAddedEmpty": "No hay componentes añadidos",
+  "componentListEmpty": "No tenemos más componentes"
 }
