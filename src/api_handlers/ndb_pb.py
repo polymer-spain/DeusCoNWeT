@@ -25,6 +25,7 @@ import webapp2
 from Crypto.Cipher import AES
 import base64
 import os
+import yaml
 import random
 
 # Definimos la lista de redes sociales con las que trabajamos
@@ -38,6 +39,15 @@ social_list = [
     'github',
     ]
 
+
+# We read the relevant fields in the config.yaml file (config params for PicBit Backend)
+basepath = os.path.dirname(__file__)
+configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+with open(configFile, "r") as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+# If the param is set wrong, we configure component versioning as static
+component_versioning = cfg["component_versioning"] if cfg["component_versioning"] in ["static", "dynamic"] else "static"
 
 #####################################################################################
 # Definicion de entidades de la base de datos
@@ -259,12 +269,18 @@ def getCipher(token_entity_key):
 @ndb.transactional()
 def setComponentVersion(general_component):
   version = ""
-  # We set the version that will be served to the user
-  version = general_component.version_list[general_component.version_index]
-  # We change the version_index field, that represents the version that will be served to the next user
-  general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
-  # Update the info about the component changed
-  general_component.put()
+  if component_versioning == "dynamic":
+    # We set the version that will be served to the user
+    version = general_component.version_list[general_component.version_index]
+    # We change the version_index field, that represents the version that will be served to the next user
+    general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
+    # Update the info about the component changed
+    general_component.put()
+
+  # If the component versioning is set as static, we always set the stable version for the component
+  elif component_versioning == "static":
+    version="stable"
+
   return version
 
 def getComponentEntity(component_id):
@@ -638,7 +654,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   # Generates a random initial value that represents the version of the component that will be 
   # served to the next user who adds it to his dashboard
   initial_index = random.randint(0, len(version_list)-1)
-  print "\tDEBUG: Se añade componente: ", name, " con indice de version inicial: ", initial_index, "\n"
+  print "\n\tDEBUG: Se añade componente: ", name, " con indice de version inicial: ", initial_index, "\n"
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined)
   # We create a new VersionedComponent Entity for each version_added to the version_list

@@ -344,20 +344,6 @@ def main():
 			print "Status esperado: 200"
 			test_utils.make_request("GET", request_uri, params, 200, session5)
 
-		# POST-TESTs. Logout de usuario en el sistema
-		# request_uri = '/api/oauth/googleplus/logout'
-		# params = urllib.urlencode({})
-		# print "POSTEST 1: Logout de usuario 1 en el sistema"
-		# print "Ignorar el status de este caso"
-		# test_utils.make_request("POST", request_uri, params, 200, session1, True)
-
-		# # POST-TESTs. Logout de usuario 2 en el sistema
-		# request_uri = '/api/oauth/googleplus/logout'
-		# params = urllib.urlencode({})
-		# print "POSTEST 1: Logout de usuario 2 en el sistema"
-		# print "Ignorar el status de este caso"
-		# test_utils.make_request("POST", request_uri, params, 200, session2, True)
-
 		# Cerramos todas las sesiones iniciadas en los tests
 		test_utils.do_logout("googleplus", session1)
 		test_utils.do_logout("googleplus", session2)

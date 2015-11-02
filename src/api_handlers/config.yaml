@@ -1,1 +1,8 @@
+# Config.yaml - Config file for PicBit Backend
+# Parameters: 
+# 	- Domain: Defines the endpoint in which PicBit is deployed (this param is used in the session cookie generation)
+# 	- Component_versioning: Sets if the components will be served in a static (always serve stable version of the component) 
+#						   or dynamic (serve random version of the component) basis. Posible values: static | dynamic
+
 domain: test-backend-dot-example-project-13.appspot.com
+component_versioning: static
