@@ -50,11 +50,27 @@
       <!-- End Languages -->
 
       <!-- TODO cambiar ng-show a negado y el de abajo a true -->
-      <div ng-show="!isLogged" ng-click="showPopup()" class="loginButton">
-        <paper-icon-button  id="siginButton"  icon="social:person">
-        </paper-icon-button>
+      <div ng-show="!isLogged" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton">      
+
+        <paper-icon-button  id="siginButton"  icon="social:person"></paper-icon-button>
         <span id="nameId" style="text-transform: none">{{language.login}}</span>
       </div>
+
+      <!-- Modal login -->
+      <paper-dialog id="loginModal" modal>
+        <h2>{{language.select_network}}</h2>
+        <div class="vertical center layout button-login socialNetwork">
+          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
+          <br>
+          <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static></twitter-login>
+          <br>
+          <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static></login-facebook>
+
+        </div>
+        <div class="buttons">
+          <paper-button dialog-confirm autofocus class="blue">{{language.close}}</paper-button>
+        </div>
+      </paper-dialog>
 
       <div ng-show="isLogged" class="loginButton">
         <paper-menu-button id="userButton" >
@@ -70,7 +86,7 @@
         </paper-menu-button>
 
       </div>
-      
+
     </paper-toolbar>
 
     <footer class="horizontal center-justified layout">
@@ -81,21 +97,6 @@
     </footer>
     <div ng-view="" id="view" class="view">
 
-    </div>
-
-    <!-- pop up social networks -->
-    <div ng-show="shadow" class="shadow"></div>
-    <div ng-show="popup" class="vertical center layout popup" id="popup">
-      <paper-icon-button  ng-click="hidePopup()" icon="close"></paper-icon-button>
-      <span>{{language.select_network}}</span>
-      <div class="vertical center-justified layout button-login">
-        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-        <br>
-        <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static></twitter-login>
-        <br>
-        <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static></login-facebook>
-
-      </div>
     </div>
 
     <!-- build:js scripts/min/dependencies.min.js -->

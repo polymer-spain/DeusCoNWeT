@@ -112,7 +112,6 @@ footer paper-button
 {
   font-size: 12px;
 }
-#header paper-button:hover,
 #header .loginButton:hover
 {
   background-color: #b71c1c;
@@ -133,49 +132,30 @@ footer
 
   background-color: rgba(0,0,0,.6);
 }
-
-.popup
-{
-  position: fixed;
-  z-index: 200;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-
-  width: 300px;
-  height: 250px;
-  margin: auto;
-  padding: 30px;
-  padding-top: 0;
-
-  text-align: center;
-
-  color: brown;
-  border-radius: 3px;
-  background-color: whitesmoke;
-}
-.popup > paper-icon-button {
-  position: absolute;
-  right: 0;
+paper-dialog {
+  max-width: 500px;
+  border: 1px solid #284350;
 }
 
-.popup > span {
-  margin: 7% 10% 10% 10%;
-  font-size: 1.4em;
+paper-button.blue:hover {
+  background-color: #64b5f6;
+  color:white;
 }
 
-.shadow
-{
-  position: fixed;
-  top: 0;
-  right: 0;
-
-  width: 100%;
-  height: 100%;
-
-  background: rgba(0,0,0,.8);
+#loginModal .socialNetwork {
+  border-top: 2px solid #03A9F4;
+  padding-top: 20px;
 }
+#loginModal {
+  background-color: #1976d2;
+}
+#loginModal > h2 {
+  color: white;
+}
+#loginModal div {
+  background-color: #e8eaf6;
+}
+
 .view
 {
   height: 75%;

@@ -210,7 +210,8 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   };
 
   $scope.showToggleHelp = function (e){
-    var id = e.target.parentElement.getAttribute("data-dialog");
+    var element = e.target;
+    var id = element.getAttribute("data-dialog") || element.parentElement.getAttribute("data-dialog");
     var dialog = document.getElementById(id);
     if (dialog) {
       dialog.open();

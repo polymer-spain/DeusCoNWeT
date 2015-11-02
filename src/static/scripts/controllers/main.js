@@ -121,20 +121,13 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     });
   };
 
-  $scope.showPopup = function () {
-    if (!$rootScope.isLogged) {
-      $scope.popup = true;
-      $scope.shadow = true;
-      window.onkeydown = $scope.listenEscKeydown;
-    } else {
-      $scope.changeView("user/213");
+  $scope.showPopup = function (e) {
+    var element = e.target;
+    var id = element.getAttribute("data-dialog") || element.parentElement.getAttribute("data-dialog");
+    var dialog = document.getElementById(id);
+    if (dialog && !$rootScope.isLogged) {
+      dialog.open();
     }
-  };
-
-  $scope.hidePopup = function () {
-    $scope.popup = false;
-    $scope.shadow = false;
-    window.removeEventListener("onkeydown", $scope.listenEscKeydown);
   };
 
   $window.addEventListener("scroll", function() {

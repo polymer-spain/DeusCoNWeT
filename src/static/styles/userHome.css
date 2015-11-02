@@ -161,11 +161,3 @@ html {
   width: 400px;
 }
 
-paper-dialog {
-  max-width: 500px;
-  border: 1px solid #284350;
-}
-paper-button.blue:hover {
-  background-color: #64b5f6;
-  color:white;
-}
