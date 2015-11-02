@@ -16,13 +16,13 @@
 
     <!-- Polymer -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    
     <!-- active shadow DOM -->
     <script>
       window.Polymer = window.Polymer || {};
       window.Polymer.dom = "shadow";
     </script>
     <link rel="import" href="elements/elements.html">
-
     <!-- stylesheet -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/landingPage.css">
@@ -60,7 +60,7 @@
       <paper-dialog id="loginModal" modal>
         <h2>{{language.select_network}}</h2>
         <div class="vertical center layout button-login socialNetwork">
-          <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
+          <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
           <br>
           <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static></twitter-login>
           <br>

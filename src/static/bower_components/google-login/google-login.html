@@ -105,7 +105,7 @@ limitations under the License.
           notify: true
         },
 
-        clientID: {
+        client_id: {
           type: String,
           reflectToAttribute: true,
           notify: true
@@ -173,7 +173,7 @@ limitations under the License.
       },
 
       _login: function() {
-        var _url = this.OAUTHURL + "scope=" + this.scope + "&client_id=" + this.clientID + "&redirect_uri=" + this.callback + "&response_type=code token id_token gsession";
+        var _url = this.OAUTHURL + "scope=" + this.scope + "&client_id=" + this.client_id + "&redirect_uri=" + this.callback + "&response_type=code token id_token gsession";
         var win  = window.open(_url, "Google+ Login", "width=800, height=600");
         var back = this;
         var pollTimer  =  window.setInterval(function() {

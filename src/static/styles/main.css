@@ -148,6 +148,7 @@ paper-button.blue:hover {
 }
 #loginModal {
   background-color: #1976d2;
+  width: 350px;
 }
 #loginModal > h2 {
   color: white;

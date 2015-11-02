@@ -11,7 +11,6 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
 
   $rootScope.isLogged = $rootScope.user ? true : false; // Registr el stado de logueado
   $scope.domain = "https://" + $location.host(); // Dominio bajo el que ejecutamos
-  $scope.shadow = false; // Sombra del popup
   $scope.sended = false; // popup de notificar
   $scope.idioma = $cookies.get("language") || $window.navigator.language;
 
@@ -129,7 +128,13 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
       dialog.open();
     }
   };
-
+  $scope.hidePopup = function() {
+    var element = document.getElementById("loginModal");
+    
+    if (element) {
+      element.close();
+    }
+  }
   $window.addEventListener("scroll", function() {
     $scope.$apply(function() {
       var size = 	document.body.scrollTop;
