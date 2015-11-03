@@ -353,6 +353,55 @@ class OauthCredentialsHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(401)
 
+class OAuthCredentialProviderHandler(OauthCredentialsHandler):
+
+    def update_credentials(self, social_network):
+        cookie_value = self.request.cookies.get("session")
+        if not cookie_value == None:
+            user = self.getUserInfo(cookie_value)
+            if not user == None:
+                try:
+                    # Gets the data from the request form
+                    access_token = self.request.POST["access_token"]
+                    token_id = self.request.POST["token_id"]
+
+                    # Checks if the username was stored previously
+                    stored_credentials = ndb_pb.getToken(token_id,
+                            social_network)
+                    if not stored_credentials == None:
+                        # We update the user credentials
+                        user_id = ndb_pb.modifyToken(token_id, access_token,
+                                social_network)
+                        # Builds the response
+                        response = {"user_id": stored_credentials["user_id"]}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))    
+                        self.response.set_status(200)
+                    else:
+                        response = \
+                        {"error": "Credentials not found in the system"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(404)        
+                except KeyError:
+                    response = \
+                        {"error": "You must provide a valid pair of access_token and token_id in the request"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
+            else:
+                response = \
+                    {"error": "The cookie session provided does not belongs to any active user"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        else:
+            response = \
+                {"error": "You must provide a session cookie"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(401)
+
 
 class OAuthCredentialsContainerHandler(SessionHandler):
     def post_credentials(self, social_network):
@@ -378,14 +427,11 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                         self.response.write(json.dumps(response))    
                         self.response.set_status(201)
                     else:
-                        # We update the user credentials
-                        user_id = ndb_pb.modifyToken(token_id, access_token,
-                                social_network)
-                        # Builds the response
-                        response = {"user_id": stored_credentials["user_id"]}
+                        response = \
+                        {"error": "This set of credentials already exists in the system"}
                         self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))    
-                        self.response.set_status(200)
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)    
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
