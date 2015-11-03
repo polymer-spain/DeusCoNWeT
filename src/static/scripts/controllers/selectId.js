@@ -28,7 +28,11 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
       $scope.userIdError = false;
     }
   };
-
+  $scope.clearInput = function (event) {
+    document.querySelector('#username_input').value = "";  
+  }
+  
+  // Problem with apply. Check if its happening
   document.querySelector("paper-input").addEventListener("bind-value-changed", function(event) {
     $scope.$apply(function() {
       $scope.showSendButton = event.detail.value !== "" ? true : false;

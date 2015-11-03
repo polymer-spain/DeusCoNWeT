@@ -19,8 +19,8 @@
     <br>
     <iron-icon id="gif" src="https://d4z6dx8qrln4r.cloudfront.net/image-54e5caa730e3a-default.gif"></iron-icon>
     <br>
-    <paper-input autofocus pattern="^[a-zA-Z0-9_-]*$" id="username_input" label="{{language.select_id.input_title}}" error-message="{{errorMessage}}" ng-keyup="sendUsername($event)" bind-polymer>
-      <paper-icon-button suffix icon="clear"></paper-icon-button>
+    <paper-input autofocus pattern="^[a-zA-Z0-9_-]*$" id="username_input" label="{{language.select_id.input_title}}" error-message="{{errorMessage}}" ng-keyup="sendUsername($event)" invalid="{{userIdError}}"bind-polymer>
+      <paper-icon-button suffix icon="clear" ng-click="clearInput()"></paper-icon-button>
     </paper-input>
 
     <div ng-show="showSendButton" id="sendUsernameButton" class="horizontal layout reverse">
