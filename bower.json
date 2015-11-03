@@ -29,7 +29,8 @@
     "facebook-wall": "*",
     "google-login": "~2.0.0",
     "github-events": "events-github#~2.0.1",
-    "paper-dialog": "PolymerElements/paper-dialog#~1.0.2"
+    "paper-dialog": "PolymerElements/paper-dialog#~1.0.2",
+    "polymer": "Polymer/polymer#~1.2.1"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "~0.9.1",

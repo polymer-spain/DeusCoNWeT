@@ -41,22 +41,22 @@ body,html
 {
   cursor: pointer;
 }
+
 #language
 {
   margin-right: 2%;
   padding-top: 25px;
 }
 
-
-#language paper-menu
+#language /deep/ paper-menu
 {
   color: black;
 }
 
-#language iron-dropdown
+#language /deep/ iron-dropdown
 {
   margin-top: 65px;
-  margin-left: 15px;
+  margin-left: 20px;
 }
 .loginButton
 {
@@ -134,7 +134,6 @@ footer
 }
 paper-dialog {
   max-width: 500px;
-  border: 1px solid #284350;
 }
 
 paper-button.blue:hover {
@@ -142,20 +141,24 @@ paper-button.blue:hover {
   color:white;
 }
 
-#loginModal .socialNetwork {
-  border-top: 2px solid #03A9F4;
-  padding-top: 20px;
-}
 #loginModal {
-  background-color: #1976d2;
-  width: 350px;
+  min-width: 350px;
+  background-color: rgba(206, 206, 206, 0.83);
+  color:white;
 }
-#loginModal > h2 {
-  color: white;
+#loginModal .content {
+  padding: 20px;
+  margin-bottom: 0;
 }
-#loginModal div {
-  background-color: #e8eaf6;
+#loginModal .tittle{
+  text-align: center;
 }
+#loginModal .tittle paper-icon-button{
+  position:absolute;
+  top:15px;
+  right: 5px;
+}
+
 
 .view
 {

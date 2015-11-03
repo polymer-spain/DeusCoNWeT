@@ -16,7 +16,7 @@
 
     <!-- Polymer -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-    
+
     <!-- active shadow DOM -->
     <script>
       window.Polymer = window.Polymer || {};
@@ -49,16 +49,18 @@
 
       <!-- End Languages -->
 
-      <!-- TODO cambiar ng-show a negado y el de abajo a true -->
+      <!-- Button when the user is no logged -->
       <div ng-show="!isLogged" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton">      
-
         <paper-icon-button  id="siginButton"  icon="social:person"></paper-icon-button>
         <span id="nameId" style="text-transform: none">{{language.login}}</span>
       </div>
-
+      
       <!-- Modal login -->
-      <paper-dialog id="loginModal" modal>
-        <h2>{{language.select_network}}</h2>
+      <paper-dialog id="loginModal" modal ng-load="{{loadListener($event)}}">
+        <div class="tittle">
+          <h2>{{language.select_network}}</h2>
+          <paper-icon-button dialog-confirm autofocus icon="close"></paper-icon-button>
+        </div>
         <div class="vertical center layout button-login socialNetwork">
           <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
           <br>
@@ -67,11 +69,9 @@
           <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static></login-facebook>
 
         </div>
-        <div class="buttons">
-          <paper-button dialog-confirm autofocus class="blue">{{language.close}}</paper-button>
-        </div>
-      </paper-dialog>
-
+      </paper-dialog><!-- End no logged button -->
+      
+      <!-- Dropdown when the user is logged -->
       <div ng-show="isLogged" class="loginButton">
         <paper-menu-button id="userButton" >
           <paper-button class="dropdown-trigger">
@@ -84,8 +84,8 @@
             <paper-item class="paper-item" ng-click="logout()">{{language.logout}}</paper-item>
           </paper-menu>
         </paper-menu-button>
+      </div><!-- End Dropdown -->
 
-      </div>
 
     </paper-toolbar>
 
@@ -95,10 +95,10 @@
       <paper-button ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
       <a href="https://mixpanel.com/f/partner"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
     </footer>
-    <div ng-view="" id="view" class="view">
+
+    <div ng-view="" id="view" class="view" ng-hide="popupOpened">
 
     </div>
-
     <!-- build:js scripts/min/dependencies.min.js -->
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>

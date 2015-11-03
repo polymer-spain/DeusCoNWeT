@@ -13,7 +13,15 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   $scope.domain = "https://" + $location.host(); // Dominio bajo el que ejecutamos
   $scope.sended = false; // popup de notificar
   $scope.idioma = $cookies.get("language") || $window.navigator.language;
+  $scope.popupOpened = false;
 
+  $scope.loadListener = function(){
+    document.querySelector('#loginModal').addEventListener("iron-overlay-closed", function(){
+      $scope.$apply(function() {
+        $scope.popupOpened = false;
+      });
+    })
+  }
   $scope.languageRequest = function(file){
     RequestLanguage.language(file).success(function (data){
       $scope.language = data;
@@ -119,18 +127,18 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
       console.error("Error " + response.status + ": Fallo al intentar realizar un logout del usurio " + $rootScope.user.name);
     });
   };
-
   $scope.showPopup = function (e) {
     var element = e.target;
     var id = element.getAttribute("data-dialog") || element.parentElement.getAttribute("data-dialog");
     var dialog = document.getElementById(id);
     if (dialog && !$rootScope.isLogged) {
       dialog.open();
+      $scope.popupOpened = true;
     }
   };
   $scope.hidePopup = function() {
     var element = document.getElementById("loginModal");
-    
+
     if (element) {
       element.close();
     }
