@@ -41,7 +41,6 @@ body,html
 {
   cursor: pointer;
 }
-
 #language
 {
   margin-right: 2%;
@@ -78,23 +77,17 @@ body,html
 
   cursor: pointer;
 }
-#userButton span
+#userButton /deep/ span
 {
   vertical-align: middle;
 }
-#paper-icon-button span 
-{
-  cursor:pointer;
+#userButton /deep/ .dropdown-trigger {
+  padding:0;
 }
-#userButton .dropdown-trigger
+#userButton /deep/ iron-dropdown
 {
-  padding: 2px 10px 2px 5px;
-
-  border-radius: 3px;
-}
-#userButton iron-dropdown
-{
-  margin-top: 34px;
+  margin-top: 38px;
+  min-width: 117px;
 }
 paper-item
 {
@@ -111,6 +104,10 @@ paper-item
 footer paper-button
 {
   font-size: 12px;
+}
+
+footer paper-button:hover {
+  background-color: #b71c1c;
 }
 #header .loginButton:hover
 {

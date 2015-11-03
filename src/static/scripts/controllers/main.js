@@ -15,6 +15,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
   $scope.idioma = $cookies.get("language") || $window.navigator.language;
   $scope.popupOpened = false;
 
+  /* Listen popup when he's close */
   $scope.loadListener = function(){
     document.querySelector('#loginModal').addEventListener("iron-overlay-closed", function(){
       $scope.$apply(function() {
@@ -106,10 +107,13 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     $location.path(view); // path not hash
   };
 
+  /* NOTE its needed because the dropmenu do no correctly the binding.
+   * Its know path but it no redirect to them because the binding is done after.
+   *
   /* NOTE Necesario porque el dropmenu no hace correctamente el binding:
    * Si sabe la direccion pero no manda a ella porque el binding se hace posterior
   */
-  $scope.goto = function(addr) {
+  $scope.goto = function(addr, parent) {
     switch(addr) {
       case "home":
         $scope.changeView("user/" + $rootScope.user.user_id);
@@ -117,6 +121,9 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
       case "profile":
         $scope.changeView("user/" + $rootScope.user.user_id + "/profile");
         break;
+    }
+    if (parent){
+      document.getElementById(parent).close();
     }
   };
 
@@ -143,6 +150,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
       element.close();
     }
   }
+
   $window.addEventListener("scroll", function() {
     $scope.$apply(function() {
       var size = 	document.body.scrollTop;
@@ -152,14 +160,6 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
 
   $scope.dropmenu  =  function(){
     document.querySelector("#dropmenu").toggle();
-  };
-
-  $scope.listenEscKeydown = function (event) {
-    $scope.$apply(function() {
-      if (event.keyCode === 27) {
-        $scope.hidePopup();
-      }
-    });
   };
 
   $scope.calculateWidthUserDropdown = function() {

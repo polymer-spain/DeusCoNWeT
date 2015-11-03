@@ -89,6 +89,7 @@
           if (session && userId) {
             $backend.getUser(userId).then(function (response) {
               $rootScope.user = response.data;
+              $rootScope.isLogged = true;
               return $q.when(session);
             }, function (response) {
               console.error("Error " + response.status + ": al intentar coger los datos del usuario " + userId);

@@ -49,12 +49,12 @@
 
       <!-- End Languages -->
 
-      <!-- Button when the user is no logged -->
-      <div ng-show="!isLogged" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton">      
+<!-- Button when the user is no logged -->
+      <div ng-show="!user" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton">      
         <paper-icon-button  id="siginButton"  icon="social:person"></paper-icon-button>
         <span id="nameId" style="text-transform: none">{{language.login}}</span>
       </div>
-      
+
       <!-- Modal login -->
       <paper-dialog id="loginModal" modal ng-load="{{loadListener($event)}}">
         <div class="tittle">
@@ -70,20 +70,23 @@
 
         </div>
       </paper-dialog><!-- End no logged button -->
-      
+
       <!-- Dropdown when the user is logged -->
-      <div ng-show="isLogged" class="loginButton">
+      <div ng-show="user" class="loginButton">
         <paper-menu-button id="userButton" >
           <paper-button class="dropdown-trigger">
-            <iron-icon icon="social:person" class="searchIcon"></iron-icon>
-            <span style="text-transform: none">{{user.user_id}}</span>
+            <iron-icon icon="social:person" class="social:person"></iron-icon>
+            <span class="flex" style="text-transform: none">{{user.user_id}}</span>
           </paper-button>
-          <paper-menu class="dropdown-content" style="text-align: center">
-            <paper-item class="paper-item" ng-click="goto('home')">{{language.profile}}</paper-item>
-            <paper-item ng-click="goto('profile')" class="paper-item">{{language.settings}}</paper-item>
-            <paper-item class="paper-item" ng-click="logout()">{{language.logout}}</paper-item>
+          
+          <paper-menu class="dropdown-content">
+            <paper-item class="paper-item" ng-click="goto('home', 'userButton')">{{language.profile}}</paper-item>
+            <paper-item ng-click="goto('profile', 'userButton')" class="paper-item">{{language.settings}}</paper-item>
+            <paper-item class="paper-item" ng-click="logout('userButton')">{{language.logout}}</paper-item>
           </paper-menu>
         </paper-menu-button>
+
+
       </div><!-- End Dropdown -->
 
 
