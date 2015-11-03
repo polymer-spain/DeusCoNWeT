@@ -169,21 +169,29 @@ class UserHandler(SessionHandler):
             if not component == None:
               update_data["component"] = component_id
           
-          # Updates the resource 
+          # Updates the resource and return the proper response to the client
           if not len(update_data) == 0:
-            updated_info = ndb_pb.updateUser(user_logged_key, update_data)
+            updated_info = ndb_pb.updateUser(user_logged_key, update_data)    
             if not len(updated_info) == 0:
               self.response.content_type = "application/json"
               self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
               self.response.set_status(200)
-            else:
+            # We return a custom error message if the request had as purpose adding a component to the user's dashboard
+            elif len(updated_info) == 0:
               self.response.content_type = "application/json"
-              self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
               self.response.set_status(304)   
+              if update_data.has_key("component_id"):
+                self.response.write(json.dumps({"details": "Resource not modified (The component specified does not exists" + 
+                  "or the user has not added to its account the social networks that consumes the component)", "status": "Not Modified"}))
+              else:
+                self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
           else:
             self.response.content_type = "application/json"
-            self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
+            self.response.write(json.dumps({"details": "Resource not modified (It hasn't been specified any valid parameter for this method)",
+             "status": "Not Modified"}))
             self.response.set_status(304) 
+        
+        # Status errors related to permission and user authentication
         else:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "You don\"t have the proper rights to modify this resource" +
