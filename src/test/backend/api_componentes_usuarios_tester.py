@@ -55,9 +55,9 @@ def main():
 		# PRETEST 
 		print "PRETEST 4: Añadimos credenciales de linkedin al perfil de usuario 2"
 		print "Status esperado: 201"
-		request_uri = "/api/oauth/linkedin"
+		request_uri = "/api/oauth/linkedin/credenciales"
 		params = urllib.urlencode({'token_id': "token_linkedin", 'access_token': "access_token_linkedin"})
-		test_utils.make_request("POST", request_uri, params, 201, session2, preTest=True)
+		test_utils.make_request("PUT", request_uri, params, 201, session2, preTest=True)
 
 		if option == "dashboard":
 

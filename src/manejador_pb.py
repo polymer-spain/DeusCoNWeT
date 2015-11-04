@@ -61,8 +61,8 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/googleplus/logout', api_oauth.GooglePlusLogoutHandler),
     (r'/api/oauth/googleplus/credenciales/(.*)', api_oauth.GooglePlusHandler),
     
-    (r'/api/oauth/stackoverflow/credenciales', api_oauth.StackOverflowCredentialHandler),
-    (r'/api/oauth/stackoverflow/credenciales/(.*)', api_oauth.StackOverflowHandler),
+    (r'/api/oauth/stackoverflow/credenciales', api_oauth.StackOverflowContainerHandler),
+    (r'/api/oauth/stackoverflow/credenciales/(.*)', api_oauth.StackOverflowCredentialHandler),
 
     (r'/api/oauth/github/credenciales', api_oauth.GitHubContainerHandler),
     (r'/api/oauth/github/credenciales/(.*)', api_oauth.GitHubCredentialHandler),

@@ -355,7 +355,7 @@ class OauthCredentialsHandler(SessionHandler):
 
 class OAuthCredentialProviderHandler(OauthCredentialsHandler):
 
-    def update_credentials(self, social_network):
+    def update_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
             user = self.getUserInfo(cookie_value)
@@ -363,7 +363,6 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
                 try:
                     # Gets the data from the request form
                     access_token = self.request.POST["access_token"]
-                    token_id = self.request.POST["token_id"]
 
                     # Checks if the username was stored previously
                     stored_credentials = ndb_pb.getToken(token_id,
@@ -494,7 +493,7 @@ class FacebookLogoutHandler(OauthLogoutHandler):
         self.post_logout("facebook")
 
 # HANDLERS FOR RESOURCES RELATED TO GITHUB
-class GitHubCredentialHandler(OauthCredentialProviderHandler):
+class GitHubCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the GitHub token resource. 
     Methods:
@@ -584,12 +583,12 @@ class GitHubContainerHandler(webapp2.RequestHandler):
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):
     """
-    Class that represents the Instagram token resource. 
+    Class that represents the GooglePlus token resource. 
     Methods:
-        get -- Returns the Instagram access_token and token_id
+        get -- Returns the GooglePlus access_token and token_id
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
-                  in Instagram for the user authenticated
+                  in GooglePlus for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("googleplus", token_id)
@@ -620,7 +619,7 @@ class GooglePlusLogoutHandler(OauthLogoutHandler):
 
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
-class InstagramCredentialHandler(OauthCredentialProviderHandler):
+class InstagramCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the Instagram token resource. 
     Methods:
@@ -651,7 +650,7 @@ class InstagramContainerHandler(OAuthCredentialsContainerHandler):
 
 
 # HANDLERS FOR RESOURCES RELATED TO LINKEDIN
-class LinkedinCredentialHandler(OauthCredentialProviderHandler):
+class LinkedinCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the Linkedin token resource. 
     Methods:
@@ -682,7 +681,7 @@ class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
 
 
 # HANDLERS FOR RESOURCES RELATED TO STACKOVERFLOW
-class StackOverflowCredentialHandler(OauthCredentialProviderHandler):
+class StackOverflowCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the StackOverflow token resource. 
     Methods:
@@ -700,7 +699,7 @@ class StackOverflowCredentialHandler(OauthCredentialProviderHandler):
         self.delete_credentials("stackoverflow", token_id)
 
     def post(self,token_id):
-        self.post_credentials("stackoverflow", token_id)
+        self.update_credentials("stackoverflow", token_id)
 
 class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     """
