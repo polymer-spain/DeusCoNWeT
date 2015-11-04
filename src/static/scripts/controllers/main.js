@@ -101,9 +101,13 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     });
   };
 
-  $scope.changeView = function (view) {
+  $scope.changeView = function (view, name) {
     $location.hash("");
-    $location.path(view); // path not hash
+    if (name) {
+      $scope.user ? $location.path("user/" + $scope.user.user_id) : $location.path("");
+    }else {
+      $location.path(view); // path not hash
+    }
   };
 
   /* NOTE its needed because the dropmenu do not correctly the binding.

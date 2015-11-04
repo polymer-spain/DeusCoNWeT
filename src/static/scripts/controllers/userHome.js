@@ -80,23 +80,19 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   };
 
   $scope.ocultar = function (event) {
-    // Document commented too
+    $scope.listaOpciones = [false, false, false];
     switch (event) {
       case "add":
-        $scope.listaOpciones = [true, false, false];
         document.querySelector("#arrowDelete").icon = "arrow-drop-down";
         document.querySelector("#arrowModify").icon = "arrow-drop-down";
         break;
       case "delete":
-        $scope.listaOpciones = [false, true, false];
         document.querySelector("#arrowAdd").icon = "arrow-drop-down";
         document.querySelector("#arrowModify").icon = "arrow-drop-down";
         break;
       case "modify":
-        $scope.listaOpciones = [false, false, true];
         document.querySelector("#arrowAdd").icon = "arrow-drop-down";
         document.querySelector("#arrowDelete").icon = "arrow-drop-down";
-
     }
   };
   $scope.setList = function (event) {
@@ -195,19 +191,11 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   $scope.isModifySelected = function(elementName) {
     return elementName === $scope.modifySelected;
   };
-
+  
   $scope.deleteTimeline = function(elementName) {
     angular.element(document.querySelector("#container")).find(elementName).remove();
     var index = $scope.listComponentAdded.indexOf(elementName);
     $scope.listComponentAdded.splice(index, 1);
-  };
-
-  $scope.deleteTimelineHovered = function(index) {
-    $scope.hovered = index;
-  };
-
-  $scope.deleteTimelineLeaveHover = function () {
-    $scope.hovered = "";
   };
 
   $scope.showToggleHelp = function (e){

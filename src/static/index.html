@@ -31,8 +31,10 @@
   <body unresolved ng-app="picbit" ng-controller="MainController">
 
     <paper-toolbar id="header">
-      <img class="logoPicbit" src="images/logo.png" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">
-      <h2 class="flex" id="name" ng-click="changeView('/')">Picbit</h2>
+      <img class="logoPicbit" src="images/logo.png" ng-click="changeView('',true)">
+      <div class="horizontal layout flex">
+        <h2 id="name" ng-click="changeView('',true)">Picbit</h2>
+      </div>
 
       <!-- Languages --> 
       <paper-menu-button id="language" >
@@ -49,7 +51,7 @@
 
       <!-- End Languages -->
 
-<!-- Button when the user isn't logged -->
+      <!-- Button when the user isn't logged -->
       <div ng-show="!user" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton">      
         <paper-icon-button  id="siginButton"  icon="social:person"></paper-icon-button>
         <span id="nameId" style="text-transform: none">{{language.login}}</span>
@@ -78,7 +80,7 @@
             <iron-icon icon="social:person" class="social:person"></iron-icon>
             <span class="flex" style="text-transform: none">{{user.user_id}}</span>
           </paper-button>
-          
+
           <paper-menu class="dropdown-content">
             <paper-item class="paper-item" ng-click="goto('home', 'userButton')">{{language.profile}}</paper-item>
             <paper-item ng-click="goto('profile', 'userButton')" class="paper-item">{{language.settings}}</paper-item>

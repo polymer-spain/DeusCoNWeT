@@ -13,7 +13,7 @@
       <div id="add" ng-class="{hidden: isMenuHidden('add')}">
         <!-- HEADER -->
         <div class="horizontal layout" ng-class="{corto: !isMenuHidden('add')}">
-          <div class="div_button" ng-click="ocultar('add'); setSelected('add'); sort=[false, false, false]" ng-class="{sort: sort[0]}">
+          <div class="div_button" ng-click="ocultar('add'); setSelected('add')" ng-class="{sort: !sort[0]}">
             <iron-icon icon="add-box"></iron-icon>
           </div>
           <div class="flex horizontal layout dropdown" ng-click="setList('add'); setSort('add')" ng-class="{sort: sort[0]}">
@@ -51,9 +51,9 @@
 
         <!-- Options-->
         <div class="animate-show list" ng-show="showlist('delete')">
-          <div class="horizontal layout center deleteOption" draggable="true" ng-repeat="element in listComponentAdded" ng-mouseover="deleteTimelineHovered($index)" ng-mouseleave="deleteTimelineLeaveHover()">
+          <div class="horizontal layout center deleteOption" draggable="true" ng-repeat="element in listComponentAdded">
             <p class="flex elementList">{{element}}</p>
-            <paper-icon-button class="icon" ng-click="deleteTimeline(element)" ng-show="hovered===$index" icon="cancel"></paper-icon-button>
+            <paper-icon-button class="icon" ng-click="deleteTimeline(element)" icon="cancel"></paper-icon-button>
           </div>
           <!-- Default -->
           <div ng-if="listComponentAdded.length == 0">
