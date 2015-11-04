@@ -32,7 +32,7 @@
 
     <paper-toolbar id="header">
       <img class="logoPicbit" src="images/logo.png" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">
-      <h2 class="flex" id="name" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">Picbit</h2>
+      <h2 class="flex" id="name" ng-click="changeView('/')">Picbit</h2>
 
       <!-- Languages --> 
       <paper-menu-button id="language" >
@@ -49,7 +49,7 @@
 
       <!-- End Languages -->
 
-<!-- Button when the user is no logged -->
+<!-- Button when the user isn't logged -->
       <div ng-show="!user" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton">      
         <paper-icon-button  id="siginButton"  icon="social:person"></paper-icon-button>
         <span id="nameId" style="text-transform: none">{{language.login}}</span>
@@ -64,7 +64,7 @@
         <div class="vertical center layout button-login socialNetwork">
           <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
           <br>
-          <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static></twitter-login>
+          <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
           <br>
           <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static></login-facebook>
 

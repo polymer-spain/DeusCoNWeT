@@ -107,8 +107,8 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     $location.path(view); // path not hash
   };
 
-  /* NOTE its needed because the dropmenu do no correctly the binding.
-   * Its know path but it no redirect to them because the binding is done after.
+  /* NOTE its needed because the dropmenu do not correctly the binding.
+   * Its know path but it dont redirect to them because the binding is done after.
    *
   /* NOTE Necesario porque el dropmenu no hace correctamente el binding:
    * Si sabe la direccion pero no manda a ella porque el binding se hace posterior
@@ -127,8 +127,11 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     }
   };
 
-  $scope.logout = function () {
+  $scope.logout = function (parent) {
     $backend.logout().then(function() {
+      if (parent){
+        document.getElementById(parent).close();
+      }
       $scope.changeView("/");
     }, function(response){
       console.error("Error " + response.status + ": Fallo al intentar realizar un logout del usurio " + $rootScope.user.name);
