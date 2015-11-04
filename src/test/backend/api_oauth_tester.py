@@ -302,27 +302,27 @@ def main():
 				print "TEST 1: Añadir nuevo par de credenciales, sin cookie de sesión"
 				print "Status esperado: 401"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 401, None)
+				test_utils.make_request("PUT", request_uri, params, 401, None)
 				
 				# TEST 2
 				print "TEST 2: Añadir nuevo par de credenciales proporcionando un solo parámetro"
 				print "Status esperado: 400"
 				params = urllib.urlencode({'token_id': token_id1})
-				test_utils.make_request("POST", request_uri, params, 400, session1)
+				test_utils.make_request("PUT", request_uri, params, 400, session1)
 				
 				# TEST 3
 				print "TEST 3: Añadir nuevo par de credenciales"
 				print "Status esperado: 201"
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 201, session1)
+				test_utils.make_request("PUT", request_uri, params, 201, session1)
 
 				# TEST 4
 				print "TEST 4: Añadir par de credenciales repetido"
 				print "Status esperado: 400"
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 400, session1)
+				test_utils.make_request("PUT", request_uri, params, 400, session1)
 
 				# TEST 5
 				print "TEST 5: Actualizar par de credenciales con cookie de sesión incorrecta"
@@ -330,19 +330,19 @@ def main():
 				request_uri = "/api/oauth/" + social_network + "/credenciales/" + token_id1
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'access_token':access_token1})
-				test_utils.make_request("PUT", request_uri, params, 400, session_error)
+				test_utils.make_request("POST", request_uri, params, 400, session_error)
 
 				# TEST 6
 				print "TEST 6: Actualizar par de credenciales con cookie de sesión de otro usuario"
 				print "Status esperado: 401"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-				test_utils.make_request("PUT", request_uri, params, 401, session2)
+				test_utils.make_request("POST", request_uri, params, 401, session2)
 
 				# TEST 7
 				print "TEST 7: Actualizar par de credenciales"
 				print "Status esperado: 200"
 				params = urllib.urlencode({'access_token':access_token1})
-				test_utils.make_request("PUT", request_uri, params, 200, session1)
+				test_utils.make_request("POST", request_uri, params, 200, session1)
 
 
 				# TEST relativos a la obtencion de credenciales (GET /api/oauth/{social_network}/credenciales/{token_id})
