@@ -9,6 +9,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   $scope.instagramData.token = "2062815740.34af286.169a9c42e1404ae58591d066c00cb979";
   $scope.twitterData.token = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
   $scope.githubData.username = "mortega5";
+
   $scope.listComponents = [
     {
       name: "twitter-timeline",
@@ -21,6 +22,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
         "language": "{{idioma}}",
         "count": 200,
         "component_base": "bower_components/twitter-timeline/static/"
+
       }
     },
     {
@@ -50,7 +52,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   $scope.menuStatus = false;
   $scope.sort = [false, false, false];
   $scope.showElement = false;
-  $scope.listaOpciones = ["false", "false", "false"];
+  $scope.listaOpciones = [false, false, false];
 
   $scope.showMenu = function () {
     if (!$scope.menuStatus) {
@@ -66,38 +68,41 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
       $scope.showElement = false;
       $scope.selected = "";
       $scope.showSingle = "";
-      $scope.listaOpciones = ["false", "false", "false"];
+      $scope.listaOpciones = [false, false, false];
+
+      // Develop has commented them
       document.querySelector("#arrowAdd").icon = "arrow-drop-down";
       document.querySelector("#arrowDelete").icon = "arrow-drop-down";
       document.querySelector("#arrowModify").icon = "arrow-drop-down";
+
 
     }
   };
 
   $scope.ocultar = function (event) {
+    // Document commented too
     switch (event) {
       case "add":
-        $scope.listaOpciones = ["true", "false", "false"];
+        $scope.listaOpciones = [true, false, false];
         document.querySelector("#arrowDelete").icon = "arrow-drop-down";
         document.querySelector("#arrowModify").icon = "arrow-drop-down";
         break;
       case "delete":
-        $scope.listaOpciones = ["false", "true", "false"];
+        $scope.listaOpciones = [false, true, false];
         document.querySelector("#arrowAdd").icon = "arrow-drop-down";
         document.querySelector("#arrowModify").icon = "arrow-drop-down";
         break;
       case "modify":
-        $scope.listaOpciones = ["false", "false", "true"];
+        $scope.listaOpciones = [false, false, true];
         document.querySelector("#arrowAdd").icon = "arrow-drop-down";
         document.querySelector("#arrowDelete").icon = "arrow-drop-down";
-        break;
+
     }
   };
-
   $scope.setList = function (event) {
     switch(event){
       case "add":
-        $scope.listaOpciones = [!$scope.listaOpciones[0], "false", "false"];
+        $scope.listaOpciones = [!$scope.listaOpciones[0], false, false];
         if (!$scope.listaOpciones[0]) {
           document.querySelector("#arrowAdd").icon = "arrow-drop-up";
           document.querySelector("#arrowDelete").icon = "arrow-drop-down";
@@ -108,7 +113,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
         }
         break;
       case "delete":
-        $scope.listaOpciones = ["false", !$scope.listaOpciones[1], "false"];
+        $scope.listaOpciones = [false, !$scope.listaOpciones[1], false];
         if (!$scope.listaOpciones[1]){
           document.querySelector("#arrowDelete").icon = "arrow-drop-up";
           document.querySelector("#arrowAdd").icon = "arrow-drop-down";
@@ -119,7 +124,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
         }
         break;
       case "modify":
-        $scope.listaOpciones = ["false", "false", !$scope.listaOpciones[2]];
+        $scope.listaOpciones = [false, false, !$scope.listaOpciones[2]];
         if (!$scope.listaOpciones[2]){
           document.querySelector("#arrowModify").icon = "arrow-drop-up";
           document.querySelector("#arrowAdd").icon = "arrow-drop-down";
@@ -132,7 +137,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
     }
   };
 
-  $scope.hidelist = function (event) {
+  $scope.showlist = function (event) {
     switch(event){
       case "add":
         return $scope.listaOpciones[0];
@@ -153,7 +158,7 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
     if ($scope.selected === event){
       $scope.selected = "";
       $scope.showSingle = "";
-      if (!$scope.hidelist(event)) {
+      if ($scope.showlist(event)) {
         $scope.setList(event);
       }
     }
@@ -181,10 +186,6 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
         $scope.sort = [false, false, !$scope.sort[2]];
         break;
     }
-  };
-
-  $scope.modifyActive = function(elementName) {
-    return elementName === $scope.modifySelected;
   };
 
   $scope.setModifySelected = function(elementName) {

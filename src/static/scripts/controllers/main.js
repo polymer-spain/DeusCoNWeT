@@ -9,7 +9,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     });
   }
 
-  $rootScope.isLogged = $rootScope.user ? true : false; // Registr el stado de logueado
+  $rootScope.isLogged = $rootScope.user ? true : false; // Registrar el estado de logueado
   $scope.domain = "https://" + $location.host(); // Dominio bajo el que ejecutamos
   $scope.sended = false; // popup de notificar
   $scope.idioma = $cookies.get("language") || $window.navigator.language;
@@ -46,14 +46,12 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
 
   if ($scope.idioma === "es") {
     $scope.languageRequest("es_es.json");
-    $scope.idioma = "es";
     $cookies.put("language", "es");
   } else {
     $scope.languageRequest("en_en.json");
-    $scope.idioma = "en";
     $cookies.put("language", "en");
-
   }
+
   $scope.loginProcess = function(userData){
     /* Cogemos el identificador del usuario */
     function newUser(userData) {
@@ -87,6 +85,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
         $http.get(uri).success(function (responseData) {
           e.detail.userId = responseData.id;
           $scope.loginProcess(e.detail);
+          // ¿Por qué twitter si tiene salida de error si no funciona la peticion mientras que los demas(Google+ y facebook) no?)
         });
       } else if (e.detail.redSocial === "twitter") {
         var uri = $backend.endpoint + "/api/oauth/twitter/authorization/" + e.detail.oauth_verifier;

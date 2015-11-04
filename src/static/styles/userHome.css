@@ -91,6 +91,14 @@ html {
   color:white;
 }
 
+.list > icon{
+  color: black;
+}
+
+.list > icon:hover{
+  opacity: 1;
+}
+
 .list .modifySelected{
   background-color:#00a000;
   color: white;
@@ -108,9 +116,9 @@ html {
   max-height:0;
 }
 
-.icon :hover{
+/*.icon{
   color: white;
-}
+}*/
 
 .deleteOption{
   height: 51px;
