@@ -109,10 +109,7 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
 
   /* NOTE its needed because the dropmenu do not correctly the binding.
    * Its know path but it dont redirect to them because the binding is done after.
-   *
-  /* NOTE Necesario porque el dropmenu no hace correctamente el binding:
-   * Si sabe la direccion pero no manda a ella porque el binding se hace posterior
-  */
+   */
   $scope.goto = function(addr, parent) {
     switch(addr) {
       case "home":
