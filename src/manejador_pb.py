@@ -61,17 +61,17 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/googleplus/logout', api_oauth.GooglePlusLogoutHandler),
     (r'/api/oauth/googleplus/credenciales/(.*)', api_oauth.GooglePlusHandler),
     
-    (r'/api/oauth/stackoverflow', api_oauth.StackOverflowContainerHandler),
+    (r'/api/oauth/stackoverflow/credenciales', api_oauth.StackOverflowCredentialHandler),
     (r'/api/oauth/stackoverflow/credenciales/(.*)', api_oauth.StackOverflowHandler),
 
-    (r'/api/oauth/github', api_oauth.GitHubContainerHandler),
-    (r'/api/oauth/github/credenciales/(.*)', api_oauth.GitHubHandler),
+    (r'/api/oauth/github/credenciales', api_oauth.GitHubContainerHandler),
+    (r'/api/oauth/github/credenciales/(.*)', api_oauth.GitHubCredentialHandler),
 
-    (r'/api/oauth/linkedin', api_oauth.LinkedinContainerHandler),
-    (r'/api/oauth/linkedin/credenciales/(.*)', api_oauth.LinkedinHandler),
+    (r'/api/oauth/linkedin/credenciales', api_oauth.LinkedinContainerHandler),
+    (r'/api/oauth/linkedin/credenciales/(.*)', api_oauth.LinkedinCredentialHandler),
 
-    (r'/api/oauth/instagram', api_oauth.InstagramContainerHandler),
-    (r'/api/oauth/instagram/credenciales/(.*)', api_oauth.InstagramHandler),
+    (r'/api/oauth/instagram/credenciales', api_oauth.InstagramContainerHandler),
+    (r'/api/oauth/instagram/credenciales/(.*)', api_oauth.InstagramCredentialHandler),
 
     (r'/api/subscriptions', api_contacto.SubscriptionHandler),
 

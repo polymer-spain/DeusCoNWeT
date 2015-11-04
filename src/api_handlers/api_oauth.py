@@ -494,7 +494,7 @@ class FacebookLogoutHandler(OauthLogoutHandler):
         self.post_logout("facebook")
 
 # HANDLERS FOR RESOURCES RELATED TO GITHUB
-class GitHubHandler(OauthCredentialsHandler):
+class GitHubCredentialHandler(OauthCredentialProviderHandler):
     """
     Class that represents the GitHub token resource. 
     Methods:
@@ -502,6 +502,8 @@ class GitHubHandler(OauthCredentialsHandler):
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
                   in GitHub for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                GitHub for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("github", token_id)
@@ -509,8 +511,10 @@ class GitHubHandler(OauthCredentialsHandler):
     def delete(self, token_id):
         self.delete_credentials("github", token_id)
 
+    def post(self,token_id):
+        self.update_credentials("github", token_id)
 
-class GitHubContainerHandler(OAuthCredentialsContainerHandler):
+class GitHubContainerHandler(webapp2.RequestHandler):
     """
     Class that represents the List of Github credentials resource. 
     Methods:
@@ -616,7 +620,7 @@ class GooglePlusLogoutHandler(OauthLogoutHandler):
 
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
-class InstagramHandler(OauthCredentialsHandler):
+class InstagramCredentialHandler(OauthCredentialProviderHandler):
     """
     Class that represents the Instagram token resource. 
     Methods:
@@ -624,12 +628,17 @@ class InstagramHandler(OauthCredentialsHandler):
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
                   in Instagram for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Instagram for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("instagram", token_id)
 
     def delete(self, token_id):
         self.delete_credentials("instagram", token_id)
+
+    def post(self, token_id):
+        self.update_credentials("instagram", token_id)
 
 class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     """
@@ -642,7 +651,7 @@ class InstagramContainerHandler(OAuthCredentialsContainerHandler):
 
 
 # HANDLERS FOR RESOURCES RELATED TO LINKEDIN
-class LinkedinHandler(OauthCredentialsHandler):
+class LinkedinCredentialHandler(OauthCredentialProviderHandler):
     """
     Class that represents the Linkedin token resource. 
     Methods:
@@ -650,12 +659,17 @@ class LinkedinHandler(OauthCredentialsHandler):
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
                   in Linkedin for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Linkedin for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("linkedin", token_id)
 
     def delete(self, token_id):
         self.delete_credentials("linkedin", token_id)
+
+    def post(self, token_id):
+        self.update_credentials("linkedin", token_id)
 
 class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
     """
@@ -668,7 +682,7 @@ class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
 
 
 # HANDLERS FOR RESOURCES RELATED TO STACKOVERFLOW
-class StackOverflowHandler(OauthCredentialsHandler):
+class StackOverflowCredentialHandler(OauthCredentialProviderHandler):
     """
     Class that represents the StackOverflow token resource. 
     Methods:
@@ -676,12 +690,17 @@ class StackOverflowHandler(OauthCredentialsHandler):
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
                   in StackOverflow for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                StackOverflow for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("stackoverflow", token_id)
 
     def delete(self, token_id):
         self.delete_credentials("stackoverflow", token_id)
+
+    def post(self,token_id):
+        self.post_credentials("stackoverflow", token_id)
 
 class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     """
