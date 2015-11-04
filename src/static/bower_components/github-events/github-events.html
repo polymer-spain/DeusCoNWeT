@@ -16,13 +16,13 @@ limitations under the License.
 -->
 
 
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
 
 <!--
 Element providing solution to no problem in particular.
@@ -160,7 +160,7 @@ Element providing solution to no problem in particular.
       <div id ="cabecera" class="horizontal center-justified layout">
         <iron-icon src="foto.png" id="logo"></iron-icon>
         <p class="flex">{{language_data.title}}</p>
-        <paper-icon-button title="{{language_data.refresh}}" icon="icons:refresh" on-click="{{refresh}}">
+        <paper-icon-button title="{{language_data.refresh}}" icon="icons:refresh" on-click="refresh">
         </paper-icon-button>
       </div>
 
@@ -174,7 +174,7 @@ Element providing solution to no problem in particular.
 
       <div id="scrollControl">
         <!-- Cambiado la manera del repeat -->
-        <template id="contenido" is="dom-repeat" items$="{{events}}">
+        <template id="contenido" is="dom-repeat" items="{{events}}">
           <ul class="box">
             <div style="text-align: center">
               <iron-icon src="{{item.actor.avatar_url}}" class="imgEvent">
@@ -273,7 +273,16 @@ Element providing solution to no problem in particular.
       },
       _response: function(event,detail){
         // Github events
-        this.events = this.events != undefined?  this.events.concat(this.changeEvent(detail.response)) : this.changeEvent(detail.response);
+
+        if (this.events) {
+          for (i=0;i<detail.response.length;i++) {
+            this.push('events', detail.response[i])
+          };
+        } else {
+          this.set('events', detail.response);
+        }
+        this.changeEvent(this.events);
+
         // Check lastPage
         if (this.lastPage == '') {
           var headers = detail.xhr.getAllResponseHeaders();
@@ -318,26 +327,26 @@ Element providing solution to no problem in particular.
       },
 
       refresh: function(){
-        this.events = this.changeEvent(this.events);
+        this.changeEvent(this.events);
       },
 
       changeEvent: function(list){
         for (i=0;i<list.length;i++){
           switch(list[i].type) {
             case "PushEvent":
-              list[i].operation = this.language_data.push;
+              this.set("events." + i + ".operation", this.language_data.push);
               if (list[i].info) {
-                list[i].info = "Commit: \n "+list[i].payload.commits[0].message;
+                this.set("events." + i + ".info", "Commit: \n "+list[i].payload.commits[0].message)
               };
               break;
             case "WatchEvent":
-              list[i].operation = this.language_data.follow;
+              this.set("events." + i + ".operation", this.language_data.follow);
               break;
             case "CreateEvent":
-              list[i].operation = this.language_data.create;
+              this.set("events." + i + ".operation", this.language_data.create);
               break;
             case "PullRequestEvent":
-              list[i].operation = this.language_data.pull_request;
+              this.set("events." + i + ".operation", this.language_data.pull_request);
               break;
             case "IssuesEvent":
               break;

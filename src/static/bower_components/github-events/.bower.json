@@ -19,7 +19,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v2.0.1",
-    "commit": "cd50816c9adf5eaba1bd27767187383b9ae52801"
+    "commit": "8fe0e962269d0eb75ddeb28d71265ef902afb8c2"
   },
   "_source": "git://github.com/Mortega5/github-events.git",
   "_target": "~2.0.1",

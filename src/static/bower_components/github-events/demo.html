@@ -4,10 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>github-events Demo</title>
-    <script src="../webcomponentsjs/webcomponents.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="github-events.html">
   </head>
   <body unresolved>
-      <github-events username="Mortega5" per_page="5"></github-events>
+    <template id="Demo" is="dom-bind">
+      <github-events username="Mortega5" per_page="5" language="{{language}}"></github-events>
+      <br>
+      <button name="es" on-click="changeIdiom">Spanish</button>
+      <button name="en" on-click="changeIdiom">English</button>
+    </template>
+    <script>
+      Demo.language = "es";
+      Demo.changeIdiom = function(event,detail) {
+        Demo.language = event.target.getAttribute('name');
+      }
+    </script>
   </body>
 </html>
