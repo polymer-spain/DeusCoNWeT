@@ -403,7 +403,7 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
 
 
 class OAuthCredentialsContainerHandler(SessionHandler):
-    def post_credentials(self, social_network):
+    def put_credentials(self, social_network):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
             user = self.getUserInfo(cookie_value)
@@ -645,8 +645,8 @@ class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
-    def post(self):
-        self.post_credentials("instagram")
+    def put(self):
+        self.put_credentials("instagram")
 
 
 # HANDLERS FOR RESOURCES RELATED TO LINKEDIN
@@ -676,8 +676,8 @@ class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
-    def post(self):
-        self.post_credentials("linkedin")
+    def put(self):
+        self.put_credentials("linkedin")
 
 
 # HANDLERS FOR RESOURCES RELATED TO STACKOVERFLOW
@@ -707,8 +707,8 @@ class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
-    def post(self):
-        self.post_credentials("stackoverflow")
+    def put(self):
+        self.put_credentials("stackoverflow")
 
 # HANDLERS FOR RESOURCES RELATED TO TWITTER
 # Handler that manages the first step in the Twitter login flow 

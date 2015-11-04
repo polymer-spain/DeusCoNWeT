@@ -330,19 +330,19 @@ def main():
 				request_uri = "/api/oauth/" + social_network + "/credenciales/" + token_id1
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 400, session_error)
+				test_utils.make_request("PUT", request_uri, params, 400, session_error)
 
 				# TEST 6
 				print "TEST 6: Actualizar par de credenciales con cookie de sesión de otro usuario"
 				print "Status esperado: 401"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 401, session2)
+				test_utils.make_request("PUT", request_uri, params, 401, session2)
 
 				# TEST 7
 				print "TEST 7: Actualizar par de credenciales"
 				print "Status esperado: 200"
 				params = urllib.urlencode({'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 200, session1)
+				test_utils.make_request("PUT", request_uri, params, 200, session1)
 
 
 				# TEST relativos a la obtencion de credenciales (GET /api/oauth/{social_network}/credenciales/{token_id})
@@ -414,7 +414,7 @@ def main():
 			# Se realiza logout de los usuarios que iniciaron sesión de cara a las pruebas
 			test_utils.do_logout("googleplus", session1)
 			test_utils.do_logout("googleplus", session2)
-			
+
 			print "\nTESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 		else:
 			print "Error: es obligatorio proporcionar un parámetro válido para indicar que red social se pretende testear"
