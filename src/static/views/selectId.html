@@ -2,13 +2,17 @@
 <style is="custom-style">
 
   paper-input {
-    --paper-input-container-label: {
-       color:#eee; 
+    --paper-input-container-input: {
+      color: #e6e6e6;
     }
-    --paper-input-container-focus-color: #334c9b;
-    --paper-input-container-underline: {
-        background-color:#334c9b;
+    --paper-input-container: {
+      font-size: 20px;
     };
+
+    --paper-input-container-label-focus: {
+      font-size: 18px;
+      color: bisque;
+    }
   }
 </style>
 <div class="vertical center layout" id="selectId">
@@ -19,13 +23,13 @@
     <br>
     <iron-icon id="gif" src="https://d4z6dx8qrln4r.cloudfront.net/image-54e5caa730e3a-default.gif"></iron-icon>
     <br>
-    <paper-input autofocus pattern="^[a-zA-Z0-9_-]*$" id="username_input" label="{{language.select_id.input_title}}" error-message="{{errorMessage}}" ng-keyup="sendUsername($event)" invalid="{{userIdError}}"bind-polymer>
+    <paper-input autofocus pattern="^[a-zA-Z0-9_-]*$" id="username_input" label="{{language.select_id.input_title}}" error-message="{{errorMessage}}" ng-keyup="sendUsername($event)">
       <paper-icon-button suffix icon="clear" ng-click="clearInput()"></paper-icon-button>
     </paper-input>
 
     <div ng-show="showSendButton" id="sendUsernameButton" class="horizontal layout reverse">
       <paper-button  ng-click="sendUsername($event, value)">
-      {{language.send}}
+        {{language.send}}
       </paper-button>
     </div>
   </div>

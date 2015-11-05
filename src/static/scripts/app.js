@@ -44,7 +44,7 @@
     })
       .when("/user/:user_id", {
       templateUrl: "views/userHome.html",
-      controller: "UserHomeController"/*,
+      controller: "UserHomeController",
       resolve: {
 
         auth: ["$q", "$cookies", "$backend", "$rootScope", "$route", function ($q, $cookies, $backend, $rootScope, $route) {
@@ -69,7 +69,7 @@
             return $q.reject({authenticated: false});
           }
         }]
-      }*/
+      }
     })
       .when("/about", {
       templateUrl: "views/about.html",
@@ -111,7 +111,7 @@
     })
       .when("/selectId", {
       templateUrl: "views/selectId.html",
-      controller: "SelectidController",
+      controller: "SelectidController"/*,
       resolve: {
         auth: ["$q", "$rootScope", function ($q, $rootScope) {
 
@@ -123,7 +123,7 @@
             });
           }
         }]
-      }
+      }*/
     })
     /* Por defecto */
       .otherwise({
