@@ -1,5 +1,5 @@
 {
-  "title" : "Your Timeline",
+  "title" : "Your timeline",
   "refresh" : "Refresh",
   "load_more" : "Load More",
   "seconds" : "seconds",
@@ -8,6 +8,10 @@
   "hours" : "hours",
   "day" : "day",
   "days" : "days",
+  "month": "month",
+  "months": "months",
+  "year": "year",
+  "years": "years",
   "january" : "January",
   "february" : "February",
   "march" : "March",

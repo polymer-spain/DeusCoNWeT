@@ -8,96 +8,128 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../core-ajax/core-ajax.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../core-icon/core-icon.html">
-<!--
-Element providing solution to no problem in particular.
+<link rel="import" href="../iron-icon/iron-icon.html">
 
-##### Example
 
-<twitter-login></twitter-login>
 
-@element twitter-login
-@blurb Element providing solution to no problem in particular.
-@status alpha
-@homepage http://polymerlabs.github.io/twitter-login
--->
-<polymer-element name="twitter-login" attributes="endpoint logged sort static">
 
+<dom-module id="twitter-login">
+  <style is="custom-style">
+    .large{
+      background: #00B0ED;
+      color: #fff;
+      border-radius: 3px;
+      cursor: pointer;
+      text-transform: none;
+      vertical-align: center;
+      width: 205px;
+      height: 50px;
+      font-size: 16px;
+    }
+
+    .sort{
+      background: #00B0ED;
+      border-radius: 3px;
+      cursor: pointer;
+      vertical-align: center;
+      height: 46px;
+      width: 82px;
+    }
+
+    .icon{
+      --iron-icon-width: 24px;
+      --iron-icon-height: 24px;
+      margin-right: 5px;
+    }
+
+    .disconnect{
+      background: grey;
+    }
+  </style>
   <template>
-
-    <link rel="stylesheet" href="twitter-login.css">
-    <core-ajax
+    <iron-ajax
                id="requestToken"
-               url="{{endpoint}}/request_token"
+               url="{{endpoint}}"
                method="GET"
                handleAs="json"
-               on-core-response="{{authentication}}"
+               on-response="_authentication"
                >
-    </core-ajax>
+    </iron-ajax>
+    <!-- Large and disconnected -->
+    <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
+      <paper-button class="large" tittle="Twitter" on-click="_login">
+        <iron-icon src="twitter_logo.png" class="icon"></iron-icon> 
+        <span>Login with Twitter</span>
+      </paper-button>
+    </template>
 
-    <!--Large Buttons-->
+    <!-- large and connected-->
+    <template is="dom-if" if="[[_largeAndConnected(logged, sort)]]">
+      <paper-button class="large disconnect" tittle="Twitter" on-click="_logout">
+        <iron-icon src="twitter_logo.png" class="icon"></iron-icon> 
+        <span>Logout with Twitter</span>
+      </paper-button>
+    </template>
 
-    <paper-button class="TwitterButton" title="Twitter" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
-      <core-icon src='twitter_logo.png' class="icono" ></core-icon>
-      Log in with Twitter
-    </paper-button>
-    <content></content>
+    <!-- sort and disconnected -->
+    <template is="dom-if" if="[[_sortAndDisconnected(logged, sort)]]">
+      <paper-button class="sort" tittle="Twitter" on-click="_login">
+        <iron-icon src="twitter_logo.png" class="icon"></iron-icon> 
+      </paper-button>
+    </template>
 
-    <!--<paper-button class="TwitterButton desconectar" title="Twitter" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}">
-      <core-icon src='twitter_logo.png' class="icono"  ></core-icon>
-      Log out from Twitter
-    </paper-button>
-    <content></content>-->
+    <!-- sort and connected-->
+    <template is="dom-if" if="[[_sortAndConnected(logged, sort)]]">
+      <paper-button class="sort disconnect" tittle="Twitter" on-click="_logout">
+        <iron-icon src="twitter_logo.png" class="icon"></iron-icon> 
+      </paper-button>
+    </template>
 
-    <!--Small Buttons-->
-
-    <paper-button class="TwitterButton2" title="Twitter" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
-      <core-icon src='twitter_logo.png' class="icono2" ></core-icon>
-    </paper-button>
-    <content></content>
-
-    <paper-button class="TwitterButton2 desconectar" title="Twitter" hidden?="{{!(logged && sort)}}" on-click="{{logout}}">
-      <core-icon src='twitter_logo.png' class="icono2"></core-icon>
-    </paper-button>
-    <content></content>
   </template>
-
   <script>
     Polymer({
-      endpoint:'',
-      /* Hay que comprobar si hay datos del
-        usuario en la base de datos para saber
-        si esta logueado o no */
-      logged: false,
-      sort: false,
-      /*static: false,*/
-      /**
-         * The `sayHello` method will return a greeting.
-         *
-         * @method sayHello
-         * @param {String} greeting Pass in a specific greeting.
-         * @return {String} Returns a string greeting.
-         */
-      login: function(event, detail, sender) {
-        this.$.requestToken.go();
+      is:"twitter-login",
+      properties:{
+        endpoint: {
+          type: String,
+          value: "",
+          reflectToAttribute: true
+        },
+        logged: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        sort: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+      },
+      _largeAndDisconnected: function (logged,sort) {
+        return !logged && !sort;
+      },
+      _largeAndConnected: function(logged, sort) {
+        return logged && !sort;
+      },
+      _sortAndDisconnected: function(logged, sort) {
+        return !logged && sort; 
+      },
+      _sortAndConnected: function(logged, sort) {
+        return logged && sort; 
+      },
+      _login: function() {
+        this.$.requestToken.generateRequest();
       },
 
-      /**
-         * The `sayHello` method will return a greeting.
-         *
-         * @method sayHello
-         * @param {String} greeting Pass in a specific greeting.
-         * @return {String} Returns a string greeting.
-         */
-      authentication: function(event, detail, sender) {
+      _authentication: function(event, detail, sender) {
         var oauth_url = detail.response.oauth_url;
         var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
         var back = this;
         var pollTimer  =  window.setInterval(function() {
           try {
-            if(win.document.URL.indexOf('example-project-13') != -1){
               var url, verifier_patron, exp, token_patron;
               url =   win.document.URL;
               verifier_patron = "oauth_verifier"+"=([^&#]*)";
@@ -108,20 +140,19 @@ Element providing solution to no problem in particular.
               back.oauth_token = exp.exec(url)[1];
               back.fire('twitter-logged',{oauth_verifier:back.oauth_verifier, redSocial:'twitter',token:back.oauth_token});
               window.clearInterval(pollTimer);
-              /*if (!back.static){back.logged = true};*/
               win.close();
-            }
           } catch(e) {
           }
         }, 100);
       },
 
       /* Borrar todo relacionado en base de datos */
-      logout: function(event, detail, sender){
+      _logout: function(event, detail, sender){
         /* Borrar datos de la base de datos */
         var back = this;
         back.logged = false
-      }
+      },
     });
+
   </script>
-</polymer-element>
+</dom-module>

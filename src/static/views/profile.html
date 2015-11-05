@@ -1,51 +1,34 @@
 <link rel="stylesheet" href="styles/profile.css" />
 
-<div class="content">
+<div class="profile">
   <div>
-    <div id="background">
+    <div id="inputUserInfo">
       <h1 id="title">{{language.user_profile.title}}</h1>
-      <div id="form" center layout>
-        <paper-input-decorator label="{{language.user_profile.name}}" floatinglabel class="form">
-          <input is="core-input" class="nom" type="text">
-        </paper-input-decorator>
-        <paper-input-decorator label="{{language.user_profile.surname}}" floatinglabel class="form">
-          <input is="core-input" class="nom" type="text">
-        </paper-input-decorator>
-        <paper-input-decorator label="{{language.user_profile.email}}" floatinglabel autoValidate class="form">
-          <input is="core-input" class="nom" type="email" style="width: 620px;">
-        </paper-input-decorator>
+      <div id="form">
+        <paper-input label="{{language.user_profile.name}}" name="name" floatinglabel class="form" value="{{userData.name}}">
+        </paper-input>
+        <paper-input label="{{language.user_profile.surname}}" name="surname" floatinglabel class="form" value="{{userData.surname}}">
+        </paper-input>
+        <paper-input label="{{language.user_profile.email}}" value="{{userData.email}}" name="email" floatinglabel autoValidate class="form" type="email" auto-validate>
+        </paper-input>
       </div>
-      <div class="button" horizontal layout center-justified>
-        <a href="{{domain}}">
-          <paper-button id="but" ng-click="calC()" class="login">
-            <core-icon icon="check"></core-icon>
-            {{language.user_profile.save}}
-          </paper-button>
-        </a>
+      <div class="button horizontal layout center-justified">
+        <paper-button id="saveUserData" ng-click="registerUserData()" class="login">
+          <iron-icon icon="cons:send"></iron-icon>
+          {{language.user_profile.save}}
+        </paper-button>
       </div>
     </div>
     <br>
-    <div id="background2">
+    <div id="netWorksInfo">
       <h1 id="title2">{{language.user_profile.social}}</h1>
-      <div id ="networks" horizontal center-justified layout>
-        <core-item label="" id="facebookitem">
-          <login-facebook id ="facebook" class="button-login" key_app="928341650551653" scope="public_profile,email" sort={{sort}}></login-facebook>
-        </core-item>
-        <core-item label="" id="googleitem">
-          <google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" sort={{sort}}></google-login>
-        </core-item>
-        <core-item label=""id="twitteritem">
-          <twitter-login class="button-login" id="twitter" endpoint='{{domain}}/api/oauth/twitter' sort={{sort}}></twitter-login>
-        </core-item>
-        <core-item label=""id="githubitem">
-          <github-login id ="github" class="button-login" scope="user:email" client_id="dc994a092e5f28ad0ffa" endpoint={{domain}} sort={{sort}}></github-login>
-        </core-item>
-        <core-item label=""id="linkedinitem">
-          <linkedin-login id ="linkedin" class="button-login" apiKey="775t0r02k5gfre" sort={{sort}}></linkedin-login>
-        </core-item>
-        <core-item label=""id="instagramitem">
-          <instagram-login id ="instagram" class="button-login" clientId="34af286560fc492cbabc62285f098047" redirectUri="{{domain}}" sort={{sort}}></instagram-login>
-        </core-item>
+      <div id="socialNetworksButtons" class="horizontal center-justified layout">
+        <login-facebook id="facebook" class="button-login" key_app="928341650551653" scope="public_profile,email" sort="{{sort}}"></login-facebook>
+        <google-login id="google" class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" sort="{{sort}}"></google-login>
+        <twitter-login class="button-login" id="twitter" endpoint="{{domain}}/api/oauth/twitter" sort="{{sort}}"></twitter-login>
+        <github-login id="github" class="button-login" scope="user:email" client_id="dc994a092e5f28ad0ffa" endpoint="{{domain}}" sort="{{sort}}"></github-login>
+        <linkedin-login id ="linkedin" class="button-login" apiKey="775t0r02k5gfre" sort="{{sort}}"></linkedin-login>
+        <instagram-login id ="instagram" class="button-login" clientId="34af286560fc492cbabc62285f098047" redirectUri="{{domain}}" sort="{{sort}}"></instagram-login>
       </div>
     </div>
   </div>

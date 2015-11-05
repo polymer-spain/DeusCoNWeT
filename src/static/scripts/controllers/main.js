@@ -11,10 +11,18 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
 
   $rootScope.isLogged = $rootScope.user ? true : false; // Registrar el estado de logueado
   $scope.domain = "https://" + $location.host(); // Dominio bajo el que ejecutamos
-  $scope.shadow = false; // Sombra del popup
   $scope.sended = false; // popup de notificar
   $scope.idioma = $cookies.get("language") || $window.navigator.language;
+  $scope.popupOpened = false;
 
+  /* Listen popup when he's close */
+  $scope.loadListener = function(){
+    document.querySelector('#loginModal').addEventListener("iron-overlay-closed", function(){
+      $scope.$apply(function() {
+        $scope.popupOpened = false;
+      });
+    })
+  }
   $scope.languageRequest = function(file){
     RequestLanguage.language(file).success(function (data){
       $scope.language = data;
@@ -22,13 +30,16 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     });
   };
 
-  $scope.changelanguage = function (language) {
+  $scope.changelanguage = function (language, closeMenu) {
     var file;
     $scope.idioma = language;
     $cookies.put("language", language);
     file = $scope.idioma === "es" ? "es_es.json" : "en_en.json";
     $scope.languageRequest(file);
-    document.querySelector("#language").$.label.innerHTML = $scope.languageSelected;
+
+    if(closeMenu) {
+      document.querySelector('#language').close();
+    }
   };
 
   /* Monitorizamos el lenguage */
@@ -90,16 +101,19 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     });
   };
 
-  $scope.changeView = function (view) {
+  $scope.changeView = function (view, name) {
     $location.hash("");
-    $location.path(view); // path not hash
+    if (name) {
+      $scope.user ? $location.path("user/" + $scope.user.user_id) : $location.path("");
+    }else {
+      $location.path(view); // path not hash
+    }
   };
 
-
-  /* NOTE Necesario porque el dropmenu no hace correctamente el binding:
-   * Si sabe la direccion pero no manda a ella porque el binding se hace posterior
-  */
-  $scope.goto = function(addr) {
+  /* NOTE its needed because the dropmenu do not correctly the binding.
+   * Its know path but it dont redirect to them because the binding is done after.
+   */
+  $scope.goto = function(addr, parent) {
     switch(addr) {
       case "home":
         $scope.changeView("user/" + $rootScope.user.user_id);
@@ -108,31 +122,37 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
         $scope.changeView("user/" + $rootScope.user.user_id + "/profile");
         break;
     }
+    if (parent){
+      document.getElementById(parent).close();
+    }
   };
 
-  $scope.logout = function () {
+  $scope.logout = function (parent) {
     $backend.logout().then(function() {
+      if (parent){
+        document.getElementById(parent).close();
+      }
       $scope.changeView("/");
     }, function(response){
       console.error("Error " + response.status + ": Fallo al intentar realizar un logout del usurio " + $rootScope.user.name);
     });
   };
-
-  $scope.showPopup = function () {
-    if (!$rootScope.isLogged) {
-      $scope.popup = true;
-      $scope.shadow = true;
-      window.onkeydown = $scope.listenEscKeydown;
-    } else {
-      $scope.changeView("user/213");
+  $scope.showPopup = function (e) {
+    var element = e.target;
+    var id = element.getAttribute("data-dialog") || element.parentElement.getAttribute("data-dialog");
+    var dialog = document.getElementById(id);
+    if (dialog && !$rootScope.isLogged) {
+      dialog.open();
+      $scope.popupOpened = true;
     }
   };
+  $scope.hidePopup = function() {
+    var element = document.getElementById("loginModal");
 
-  $scope.hidePopup = function () {
-    $scope.popup = false;
-    $scope.shadow = false;
-    window.removeEventListener("onkeydown", $scope.listenEscKeydown);
-  };
+    if (element) {
+      element.close();
+    }
+  }
 
   $window.addEventListener("scroll", function() {
     $scope.$apply(function() {
@@ -145,12 +165,8 @@ angular.module("picbit").controller("MainController", ["$scope", "$location", "$
     document.querySelector("#dropmenu").toggle();
   };
 
-  $scope.listenEscKeydown = function (event) {
-    $scope.$apply(function() {
-      if (event.keyCode === 27) {
-        $scope.hidePopup();
-      }
-    });
+  $scope.calculateWidthUserDropdown = function() {
+    return "200px";
   };
 
   /* Escuhas de los botones*/

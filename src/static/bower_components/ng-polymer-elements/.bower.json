@@ -34,6 +34,5 @@
   },
   "_source": "git://github.com/GabiAxel/ng-polymer-elements.git",
   "_target": "~0.3.0",
-  "_originalSource": "ng-polymer-elements",
-  "_direct": true
+  "_originalSource": "ng-polymer-elements"
 }
