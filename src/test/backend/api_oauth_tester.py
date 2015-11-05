@@ -332,9 +332,9 @@ def main():
 
 				# TEST 6
 				print "TEST 6: Actualizar par de credenciales con cookie de sesión de otro usuario"
-				print "Status esperado: 401"
+				print "Status esperado: 403"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 401, session2)
+				test_utils.make_request("POST", request_uri, params, 403, session2)
 
 				# TEST 7
 				print "TEST 7: Actualizar par de credenciales"

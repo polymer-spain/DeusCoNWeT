@@ -360,6 +360,7 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
         if not cookie_value == None:
             user = self.getUserInfo(cookie_value)
             if not user == None:
+                logged_user_id = ndb_pb.getUserId(user)
                 try:
                     # Gets the data from the request form
                     access_token = self.request.POST["access_token"]
@@ -368,14 +369,22 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
                     stored_credentials = ndb_pb.getToken(token_id,
                             social_network)
                     if not stored_credentials == None:
-                        # We update the user credentials
-                        user_id = ndb_pb.modifyToken(token_id, access_token,
-                                social_network)
-                        # Builds the response
-                        response = {"user_id": stored_credentials["user_id"]}
-                        self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))    
-                        self.response.set_status(200)
+                        token_owner_id = stored_credentials['user_id']
+                        if token_owner_id == logged_user_id:
+                            # We update the user credentials
+                            user_id = ndb_pb.modifyToken(token_id, access_token,
+                                    social_network)
+                            # Builds the response
+                            response = {"user_id": stored_credentials["user_id"]}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))    
+                            self.response.set_status(200)
+                        else:
+                            response = \
+                            {"error": "You don't have the proper rights to perform this action"}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(403)
                     else:
                         response = \
                         {"error": "Credentials not found in the system"}
