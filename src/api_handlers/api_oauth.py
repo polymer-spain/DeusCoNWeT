@@ -353,9 +353,66 @@ class OauthCredentialsHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(401)
 
+class OAuthCredentialProviderHandler(OauthCredentialsHandler):
+
+    def update_credentials(self, social_network, token_id):
+        cookie_value = self.request.cookies.get("session")
+        if not cookie_value == None:
+            user = self.getUserInfo(cookie_value)
+            if not user == None:
+                logged_user_id = ndb_pb.getUserId(user)
+                try:
+                    # Gets the data from the request form
+                    access_token = self.request.POST["access_token"]
+
+                    # Checks if the username was stored previously
+                    stored_credentials = ndb_pb.getToken(token_id,
+                            social_network)
+                    if not stored_credentials == None:
+                        token_owner_id = stored_credentials['user_id']
+                        if token_owner_id == logged_user_id:
+                            # We update the user credentials
+                            user_id = ndb_pb.modifyToken(token_id, access_token,
+                                    social_network)
+                            # Builds the response
+                            response = {"user_id": stored_credentials["user_id"]}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))    
+                            self.response.set_status(200)
+                        else:
+                            response = \
+                            {"error": "You don't have the proper rights to perform this action"}
+                            self.response.content_type = "application/json"
+                            self.response.write(json.dumps(response))
+                            self.response.set_status(403)
+                    else:
+                        response = \
+                        {"error": "Credentials not found in the system"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(404)        
+                except KeyError:
+                    response = \
+                        {"error": "You must provide a valid pair of access_token and token_id in the request"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
+            else:
+                response = \
+                    {"error": "The cookie session provided does not belongs to any active user"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        else:
+            response = \
+                {"error": "You must provide a session cookie"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(401)
+
 
 class OAuthCredentialsContainerHandler(SessionHandler):
-    def post_credentials(self, social_network):
+    def put_credentials(self, social_network):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
             user = self.getUserInfo(cookie_value)
@@ -378,14 +435,11 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                         self.response.write(json.dumps(response))    
                         self.response.set_status(201)
                     else:
-                        # We update the user credentials
-                        user_id = ndb_pb.modifyToken(token_id, access_token,
-                                social_network)
-                        # Builds the response
-                        response = {"user_id": stored_credentials["user_id"]}
+                        response = \
+                        {"error": "This set of credentials already exists in the system"}
                         self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))    
-                        self.response.set_status(200)
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)    
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
@@ -448,7 +502,7 @@ class FacebookLogoutHandler(OauthLogoutHandler):
         self.post_logout("facebook")
 
 # HANDLERS FOR RESOURCES RELATED TO GITHUB
-class GitHubHandler(OauthCredentialsHandler):
+class GitHubCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the GitHub token resource. 
     Methods:
@@ -456,6 +510,8 @@ class GitHubHandler(OauthCredentialsHandler):
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
                   in GitHub for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                GitHub for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("github", token_id)
@@ -463,8 +519,10 @@ class GitHubHandler(OauthCredentialsHandler):
     def delete(self, token_id):
         self.delete_credentials("github", token_id)
 
+    def post(self,token_id):
+        self.update_credentials("github", token_id)
 
-class GitHubContainerHandler(OAuthCredentialsContainerHandler):
+class GitHubContainerHandler(webapp2.RequestHandler):
     """
     Class that represents the List of Github credentials resource. 
     Methods:
@@ -534,12 +592,12 @@ class GitHubContainerHandler(OAuthCredentialsContainerHandler):
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):
     """
-    Class that represents the Instagram token resource. 
+    Class that represents the GooglePlus token resource. 
     Methods:
-        get -- Returns the Instagram access_token and token_id
+        get -- Returns the GooglePlus access_token and token_id
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
-                  in Instagram for the user authenticated
+                  in GooglePlus for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("googleplus", token_id)
@@ -570,7 +628,7 @@ class GooglePlusLogoutHandler(OauthLogoutHandler):
 
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
-class InstagramHandler(OauthCredentialsHandler):
+class InstagramCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the Instagram token resource. 
     Methods:
@@ -578,6 +636,8 @@ class InstagramHandler(OauthCredentialsHandler):
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
                   in Instagram for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Instagram for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("instagram", token_id)
@@ -585,18 +645,21 @@ class InstagramHandler(OauthCredentialsHandler):
     def delete(self, token_id):
         self.delete_credentials("instagram", token_id)
 
+    def post(self, token_id):
+        self.update_credentials("instagram", token_id)
+
 class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Instagram credentials resource. 
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
-    def post(self):
-        self.post_credentials("instagram")
+    def put(self):
+        self.put_credentials("instagram")
 
 
 # HANDLERS FOR RESOURCES RELATED TO LINKEDIN
-class LinkedinHandler(OauthCredentialsHandler):
+class LinkedinCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the Linkedin token resource. 
     Methods:
@@ -604,6 +667,8 @@ class LinkedinHandler(OauthCredentialsHandler):
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
                   in Linkedin for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Linkedin for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("linkedin", token_id)
@@ -611,18 +676,21 @@ class LinkedinHandler(OauthCredentialsHandler):
     def delete(self, token_id):
         self.delete_credentials("linkedin", token_id)
 
+    def post(self, token_id):
+        self.update_credentials("linkedin", token_id)
+
 class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Linkedin credentials resource. 
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
-    def post(self):
-        self.post_credentials("linkedin")
+    def put(self):
+        self.put_credentials("linkedin")
 
 
 # HANDLERS FOR RESOURCES RELATED TO STACKOVERFLOW
-class StackOverflowHandler(OauthCredentialsHandler):
+class StackOverflowCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the StackOverflow token resource. 
     Methods:
@@ -630,6 +698,8 @@ class StackOverflowHandler(OauthCredentialsHandler):
                for a user authenticated
         delete -- Deletes the pair of token_id and access_token
                   in StackOverflow for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                StackOverflow for the user authenticated
     """
     def get(self, token_id):
         self.get_credentials("stackoverflow", token_id)
@@ -637,14 +707,17 @@ class StackOverflowHandler(OauthCredentialsHandler):
     def delete(self, token_id):
         self.delete_credentials("stackoverflow", token_id)
 
+    def post(self,token_id):
+        self.update_credentials("stackoverflow", token_id)
+
 class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Stackoverflow credentials resource. 
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
-    def post(self):
-        self.post_credentials("stackoverflow")
+    def put(self):
+        self.put_credentials("stackoverflow")
 
 # HANDLERS FOR RESOURCES RELATED TO TWITTER
 # Handler that manages the first step in the Twitter login flow 
