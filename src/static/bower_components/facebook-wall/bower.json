@@ -1,0 +1,35 @@
+{
+  "name": "facebook-wall",
+  "version": "1.0.0",
+  "keywords": [
+    "polymer",
+    "web-components",
+    "facebook",
+    "wall",
+    "facebook-wall"
+  ],
+  "main": "facebook-wall.html",
+  "dependencies": {
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.7",
+    "paper-header-panel": "PolymerElements/paper-header-panel#~1.0.5",
+    "paper-styles": "PolymerElements/paper-styles#~1.0.12",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.7",
+    "iron-icons": "PolymerElements/iron-icons#~1.0.4",
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
+    "paper-material": "PolymerElements/paper-material#~1.0.3"
+  },
+  "authors": [
+    "Miguel Ortega Moreno <miguel.ortega.moreno5@gmail.com>"
+  ],
+  "description": "Polymer component which show a facebook wall",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "https://github.com/Mortega5/facebook-wall",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "*.*~"
+  ]
+}

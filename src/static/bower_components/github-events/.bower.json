@@ -1,0 +1,28 @@
+{
+  "name": "github-events",
+  "version": "2.0.1",
+  "homepage": "https://github.com/Mortega5/github-events",
+  "authors": [
+    "Miguel Ortega Moreno <miguel.ortega.moreno5@gmail.com>"
+  ],
+  "description": "Componente polymer que muestra los eventos de github de un usuario",
+  "main": "github-events.html",
+  "license": "Apache",
+  "dependencies": {
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.4",
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.6",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.5",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4",
+    "paper-material": "PolymerElements/paper-material#~1.0.2"
+  },
+  "_release": "2.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.1",
+    "commit": "8fe0e962269d0eb75ddeb28d71265ef902afb8c2"
+  },
+  "_source": "git://github.com/Mortega5/github-events.git",
+  "_target": "~2.0.1",
+  "_originalSource": "events-github",
+  "_direct": true
+}

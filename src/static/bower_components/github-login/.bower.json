@@ -1,0 +1,32 @@
+{
+  "name": "github-login",
+  "version": "2.0.0",
+  "authors": [
+    "Luis <l.ruizr04@gmail.com>"
+  ],
+  "description": "Componente web para autenticarse con la cuenta de GitHub",
+  "main": "github-login.html",
+  "keywords": [
+    "github",
+    "login",
+    "web-components"
+  ],
+  "license": "Apache",
+  "homepage": "https://github.com/lruizr/github-login",
+  "dependencies": {
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.4",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.4",
+    "paper-button": "PolymerElements/paper-button#~1.0.7"
+  },
+  "devDependencies": {},
+  "_release": "2.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.0",
+    "commit": "0f2371f49daba77f3232df31c2023e5394932bfc"
+  },
+  "_source": "git://github.com/Mortega5/github-login.git",
+  "_target": "~2.0.0",
+  "_originalSource": "github-login",
+  "_direct": true
+}

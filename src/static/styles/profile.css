@@ -1,11 +1,33 @@
 html {
-	background: url("../images/background.jpg") no-repeat;
-	background-size: 100% 100%;
-	background-repeat: no-repeat;
-	background-attachment: fixed;
+  /* background: rgb(167,207,223); 
+  background: -moz-linear-gradient(-45deg,  rgba(167,207,223,1) 0%, rgba(35,83,138,1) 100%);  
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(167,207,223,1)), color-stop(100%,rgba(35,83,138,1))); 
+  background: -webkit-linear-gradient(-45deg,  rgba(167,207,223,1) 0%,rgba(35,83,138,1) 100%); 
+  background: -o-linear-gradient(-45deg,  rgba(167,207,223,1) 0%,rgba(35,83,138,1) 100%); 
+  background: -ms-linear-gradient(-45deg,  rgba(167,207,223,1) 0%,rgba(35,83,138,1) 100%); 
+  background: linear-gradient(135deg,  rgba(167,207,223,1) 0%,rgba(35,83,138,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7cfdf', endColorstr='#23538a',GradientType=1 );*/
+
+  background: url("../images/background.jpg") no-repeat;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-#title{
+.profile #inputUserInfo{
+  color: black;
+  background-color: rgba(245, 245, 245, 0.5);
+  border-radius: 2.5em;
+  padding: 3.125em 3.75em;
+  max-width: 37.5em;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.875em;
+  padding-bottom: 0.625em;
+}
+
+.profile #title{
 	text-align: center;
 	text-decoration: underline;
 	font-size: 1.875em;
@@ -13,10 +35,19 @@ html {
 	margin-top: -0.625em;
 }
 
-.small{
-	background: #5f4630;
-	box-shadow: 0px 4px 5px -1px #6c533d;
-	z-index: 1000;
+#netWorksInfo{
+	background-color: rgba(245, 245, 245, 0.5);
+	border-radius: 2.5em;
+	padding: 3.125em 3.75em;
+	max-width: 37.5em;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+  color:black;
+}
+
+#socialNetworksButtons {
+ background:transparent; 
 }
 
 #title2{
@@ -27,95 +58,15 @@ html {
 	text-decoration: underline;
 }
 
-.content {
-	color: black;
-	margin-top: 75px;
-	width: 100%;
+#inputUserInfo #form {
+ margin-bottom: 15px; 
 }
 
-#background{
-	background-color: rgba(245, 245, 245, 0.5);
-	border-radius: 2.5em;
-	padding: 3.125em 3.75em;
-	max-width: 37.5em;
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 1.875em;
-	padding-bottom: 0.625em;
+paper-button#saveUserData {
+ border: 1px solid transparent; 
 }
 
-#background2{
-	background-color: rgba(245, 245, 245, 0.5);
-	border-radius: 2.5em;
-	padding: 3.125em 3.75em;
-	max-width: 37.5em;
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.button{
-	margin-top: 1.875em;
-	margin-bottom: 1.25em;
-}
-
-.login{
-	background-color: rgba(57, 57, 57, 0.51);
-	color: antiquewhite;
-	border-radius: 5px;
-	text-transform: None;
-	font-family: inherit;
-	font-size: 1.0625em;
-}
-
-.button-login{
-	margin: 0.625em;
-}
-
-/*Texto a introducir*/
-.form{
-	color: black;
-	font-size: 1.25em;
-	margin: -1.25em;
-}
-
-/*Transicion texto*/
-.form /deep/ #labelText {
-	color: black;
-}
-
-/*Color letra*/
-.form /deep/ ::-webkit-input-placeholder {
-	color: black;
-}
-
-/*Texto despues transicion*/
-.form /deep/ .floated-label #floatedLabelText{
-	color: black;
-}
-
-.form /deep/ #underline .unfocused-underline{
-	background-color: black;
-}
-
-.form /deep/ #underline .focused-underline{
-	background-color: black;
-}
-
-.form.invalid /deep/ .floated-label #floatedLabelText{
-	color: red;
-}
-
-.form.invalid /deep/ #underline .focused-underline{
-	background-color: red;
-}
-
-.form.invalid /deep/ #underline .unfocused-underline{
-	background-color: red;
-}
-
-paper-input-decorator /deep/ .error{
-	margin-top: -27px;
-	margin-bottom: 7px;
+paper-button#saveUserData:hover {
+  background-color: #A5D6A7;
+  border: 1px solid #1B5E20;
 }

@@ -1,62 +1,141 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../core-ajax/core-ajax.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../core-icon/core-icon.html">
-<polymer-element name="github-login" attributes="endpoint client_id scope logged sort">
-  <!-- Lo primero es el template -->
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<dom-module id="github-login">
+  <style is="custom-style">
+    .large{
+      background: rgba(71,68,67,1);
+      background: -moz-linear-gradient(left, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      background: -webkit-gradient(left top, right top, color-stop(0%, rgba(71,68,67,1)), color-stop(58%, rgba(87,87,87,1)), color-stop(100%, rgba(71,68,67,1)));
+      background: -webkit-linear-gradient(left, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      background: -o-linear-gradient(left, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      background: -ms-linear-gradient(left, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      background: linear-gradient(to right, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#474443', endColorstr='#474443', GradientType=1 );
+      color: #fff;
+      border-radius: 3px;
+      text-transform: none;
+      width: 205px;
+      height: 50px;
+      font-size: 16px;
+    }
+    .sort{
+      background-image: linear-gradient(#202d5f, #614381);
+      border-radius: 3px;
+      cursor: pointer;
+      vertical-align: center;
+      margin: 0;
+      height: 46px;
+      width: 82px;
+    }
+
+    .disconnected {
+      background: rgb(102,102,102);
+    }
+
+    .icon{
+      margin-left: -12px;
+      margin-right: 6px;
+      --iron-icon-width: 24px;
+      --iron-icon-height: 24px;
+      background-repeat:no-repeat;
+    }
+
+    .sortIcon{
+      --iron-icon-width: 30px;
+      --iron-iron-height: 25px;
+    }
+
+  </style>
+
   <template>
-    <link rel="stylesheet" href="github-login.css">
-    <core-ajax
-               id="githubcode"
-               url="{{endpoint}}/api/oauth/github"
-               method="POST"
+    <iron-ajax 
+               id="githubcode" url="http://github-login-lab.appspot.com/oauth/github"
+               method="GET"
                params='{
                        "action": "request_token",
                        "code": "{{code}}"
                        }'
                handleAs="json"
-               on-core-response='{{response}}'
-               >
-    </core-ajax>
+               on-response='response'>
+    </iron-ajax>
 
-    <paper-button class="GithubButton" title="Github" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}" >
-      <core-icon src='../../images/icon-github.png' class="icono" ></core-icon>
-      Log in with GitHub
-    </paper-button>
+    <!-- large and disconnected -->
+    <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
+      <paper-button class="large" title="Github" on-click="_login">
+        <iron-icon src='images/github-image.png' class="icon" ></iron-icon>
+        <span>Login with GitHub</span>
+      </paper-button>
+    </template>
 
-    <paper-button class="GithubButton desconectar" title="Github" hidden?="{{!(logged && !sort)}}" on-click="{{logout}}" >
-      <core-icon src='../../images/icon-github.png' class="icono" ></core-icon>
-      Log out from GitHub
-    </paper-button>
+    <!-- large and connected -->
+    <template is="dom-if" if="[[_largeAndConnected(logged, sort)]]">
+      <paper-button class="large disconnected" title="Github" on-click="_logout" >
+        <iron-icon src="images/github-image.png" class="icono" ></iron-icon>
+        <span>Logout from GitHub</span>
+      </paper-button>
+    </template>
 
-    <paper-button class="GithubButton2" title="Github" hidden?="{{!(!logged && sort)}}" on-click="{{login}}" >
-      <core-icon src='../../images/icon-github2.png' class="icono2" ></core-icon>
-    </paper-button>
+    <!-- sort and disconnected -->
+    <template is="dom-if" if="[[_sortAndDisconnected(logged, sort)]]">
 
-    <paper-button class="GithubButton2 desconectar" title="Github" hidden?="{{!(logged && sort)}}" on-click="{{logout}}" >
-      <core-icon src='../../images/icon-github2.png' class="icono2" ></core-icon>
-    </paper-button>
+      <paper-button class="sort" title="Github" on-click="_login" >
+        <iron-icon src='images/github-image.png' class="sortIcon" ></iron-icon>
+      </paper-button>
+    </template>
 
-
+    <!-- sort and connected -->
+    <template is="dom-if" if="[[_sortAndConnected(logged, sort)]]">
+      <paper-button class="sort disconnected" title="Github" on-click="_logout" >
+        <iron-icon src="images/github-image.png" class="sortIcon"></iron-icon>
+      </paper-button>
+    </template>
   </template>
-  <!-- Después va el script, en JS, que añade la lógica -->
+
   <script>
     Polymer({
-      /* Hay que comprobar si hay datos del
-      usuario en la base de datos para saber
-      si esta logueado o no */
-      logged: false,
-      sort: false,
-      endpoint: '',
-      accessToken: '',
-      code:'',
-      scope:'',
-      response: function(e, d, s){
+      is: "github-login",
+      properties: {
+        logged: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        sort: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        endpoint: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        access_token: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        code: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        scope: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        }
+      },
+
+      _response: function(e, d, s){
         this.accessToken = s.response;
         this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
       },
 
-      login: function(event, detail, sender){
+      _login: function(event, detail, sender){
         // Generamos la direccion donde vamos a realizar la peticion
         var url = 'https://github.com/login/oauth/authorize?';
         url += 'scope='+this.scope;
@@ -90,10 +169,22 @@
           }
         }, 100);
       },
-      logout: function(event, detail, sender){
+      _logout: function(event, detail, sender){
         var back = this;
         this.logged = false;
+      },
+      _largeAndDisconnected: function (logged,sort) {
+        return !logged && !sort;
+      },
+      _largeAndConnected: function(logged, sort) {
+        return logged && !sort;
+      },
+      _sortAndDisconnected: function(logged, sort) {
+        return !logged && sort; 
+      },
+      _sortAndConnected: function(logged, sort) {
+        return logged && sort; 
       }
-    });
+    })
   </script>
-</polymer-element>
+</dom-module>

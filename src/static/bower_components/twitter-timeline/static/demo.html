@@ -10,8 +10,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!doctype html>
 <html>
   <head>
+    <meta name="content-type"  content="text/html;" http-equiv="content-type" charset="utf-8">
+
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>Tu Timeline</title>
+    <title>Tu timeline</title>
     <link rel="shortcut icon" href="favicon.ico">
 
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
@@ -19,7 +21,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   </head>
   <body unresolved>
-    <twitter-timeline endpoint="http://twitter-timeline-app.appspot.com/oauth/twitter" accessToken="3072043347-hbcrkzLJfVzTg7BTjgzkKqZx3bbzpYb04IO573x" secretToken="VmQX0z3ZWpRv63M92z0SrmmUNGFjNIMZ06iGiJ67kK9oY" consumerKey="J4bjMZmJ6hh7r0wlG9H90cgEe" consumerSecret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" count="200" language="es">
-    </twitter-timeline>
+    <template is="dom-bind" id="Demo">
+      <twitter-timeline endpoint="http://twitter-timeline-app.appspot.com/oauth/twitter" access-token="3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf" secret-token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock" consumer-key="J4bjMZmJ6hh7r0wlG9H90cgEe" consumer-secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" count="200" language="{{language}}" component_directory="./">
+      </twitter-timeline>
+      </br>
+      <button on-click="prueba" name="es">Spanish</button>
+      <button on-click="prueba" name="en">English</button>
+      <script>
+        Demo.language = "es";
+        Demo.prueba = function(event,detail) {
+          Demo.language = event.target.getAttribute('name');
+        }
+      </script>
+    </template>
   </body>
 </html>

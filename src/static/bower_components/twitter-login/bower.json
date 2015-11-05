@@ -18,10 +18,9 @@
     "/tests/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.5",
-    "core-ajax": "Polymer/core-ajax",
-    "paper-button": "Polymer/paper-button",
-    "core-icon": "Polymer/core-icon"
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.4",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.4",
+    "paper-button": "PolymerElements/paper-button#~1.0.7"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^2.0.5"

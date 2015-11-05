@@ -13,11 +13,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>Instagram</title>
 
-    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../../webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="instagram-timeline.html">
   </head>
   <body unresolved>
-    <instagram-timeline endpoint="http://instagram-timeline.appspot.com/request/instagram" accessToken="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="es">
-    </instagram-timeline>
+    <template id="Demo" is="dom-bind">
+      <instagram-timeline endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" language="{{language}}">
+      </instagram-timeline>
+      <br>
+      <button name="es" on-click="changeIdiom">Spanish</button>
+      <button name="en" on-click="changeIdiom">English</button>
+      
+      <script>
+        Demo.language = "es";
+        Demo.changeIdiom = function(event,detail) {
+          Demo.language = event.target.getAttribute('name');
+        }
+      </script>
+    </template>
   </body>
 </html>

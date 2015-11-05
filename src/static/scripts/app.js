@@ -1,4 +1,3 @@
-/*global angular, document, wrap, console*/
 (function () {
 
   "use strict";
@@ -24,7 +23,7 @@
           var cookieSession = $cookies.get("session");
           var userId = $cookies.get("user");
           var socialnetwork = $cookies.get("social_network");
-          /* Si tiene credenciales, pedimos los datos y le llamos a su pagina principal */
+          //Si tiene credenciales, pedimos los datos y le llamos a su pagina principal
           if (cookieSession && userId && socialnetwork ) {
             $backend.getUser(userId)
               .then(function (response) {
@@ -62,6 +61,7 @@
               return $q.when(session);
             }, function (response) {
               console.error("Error " + response.status + ": al intentar coger los datos del usuario " + userId);
+              $backend.logout();
               return $q.reject();
             });
 
@@ -90,9 +90,12 @@
           if (session && userId) {
             $backend.getUser(userId).then(function (response) {
               $rootScope.user = response.data;
+              $rootScope.isLogged = true;
               return $q.when(session);
             }, function (response) {
               console.error("Error " + response.status + ": al intentar coger los datos del usuario " + userId);
+              $backend.logout();
+
               return $q.reject();
             });
 
@@ -108,7 +111,7 @@
     })
       .when("/selectId", {
       templateUrl: "views/selectId.html",
-      controller: "SelectidController",
+      controller: "SelectidController"/*,
       resolve: {
         auth: ["$q", "$rootScope", function ($q, $rootScope) {
 
@@ -120,7 +123,7 @@
             });
           }
         }]
-      }
+      }*/
     })
     /* Por defecto */
       .otherwise({

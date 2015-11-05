@@ -1,5 +1,5 @@
 html {
-  background-image: url('../images/beach.jpg');
+  background-image: url('../images/landingimage.jpg');
   background-size: 100% 100%;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -9,9 +9,9 @@ html {
   height:460px;
   color: whitesmoke;
   width:100%;
-  margin-top: 13%;
   border-radius: 15px;
   background-color:rgba(46, 45, 45, 0.2);
+  padding: 2% 4%;
 }
 
 .information > div {
@@ -19,6 +19,8 @@ html {
 }
 .information .right {
   min-width: 300px;
+  font-size:18px;
+  margin:0;
 }
 .information .left {
   background-size: contain;
@@ -28,14 +30,12 @@ html {
   width: 400px;
   height: 400px;
 }
-#social {
-  margin-top:100px; 
-}
-#social  core-icon-button {
+
+#social  paper-icon-button {
   border-radius:5px;
   margin:5px 10px;
 }
-core-icon-button /deep/ core-icon div {
+paper-icon-button /deep/ iron-icon div {
   background-repeat: no-repeat;
 }
 #social .facebook {

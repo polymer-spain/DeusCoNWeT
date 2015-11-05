@@ -63,7 +63,6 @@ angular.module("picbit").controller("LandingController", ["$scope", "$timeout", 
           sender.value = "";
           surname.value = "";
 
-          $scope.$parent.shadow = true;
           $scope.$parent.sended = true;
 
         } else if (status === 200) {
@@ -114,7 +113,6 @@ angular.module("picbit").controller("LandingController", ["$scope", "$timeout", 
   /*document.onmousewheel = $scope.wheel;*/
 
   $scope.closeSended = function () {
-    $scope.$parent.shadow = false;
     $scope.$parent.sended = false;
     $scope.goto(1);
   };
