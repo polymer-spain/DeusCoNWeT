@@ -58,16 +58,7 @@ def main():
 				request_uri = basePath + "/signup"
 				print "TEST 2: Sign up repetido de usuario1 (error 400)"
 				print "Status esperado: 400"
-				access_token = social_network + "TEST1"
-				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token,
-					'user_identifier': user_id1})
-				test_utils.make_request("POST", request_uri, params, 400, None)
-
-				# TEST 3
-				request_uri = basePath + "/signup"
 				access_token = social_network + "TEST2"
-				print "TEST 3: Sign up de usuario proporcionando un token_id ya registrado en el sistema"
-				print "Status esperado: 400"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token,
 					'user_identifier': user_id1})
 				test_utils.make_request("POST", request_uri, params, 400, None)
@@ -156,7 +147,7 @@ def main():
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
-				#Logouts
+				#Tests relativos a Logouts
 				# TEST 15
 				request_uri = basePath + "/logout"
 				print "TEST 15: Logout sin cookie de sesion"
@@ -165,44 +156,51 @@ def main():
 				test_utils.make_request("POST", request_uri, params, 401, None)
 
 				# TEST 16
+				# Logout con cookie antigua / incorrecta
+				request_uri = basePath + "/logout"
+				print "TEST 16: Logout con cookie de sesión antigua"
+				print "Status esperado: 400"
+				params = urllib.urlencode({})
+				test_utils.make_request("POST", request_uri, params, 400, old_session)
+
+				# TEST 17
 				# Se desloguea el usuario logueado (usuario1)
-				print "TEST 16: Logout con cookie de sesion (usuario1)"
+				print "TEST 17: Logout con cookie de sesion (usuario1)"
 				print "Status esperado: 200"
 				test_utils.make_request("POST", request_uri, params, 200, session1)
 
-				# TEST 17
+				# Hacemos un flujo de login, obtención credenciales y logout para verificar que se realiza correctamente
+				# TEST 18
 				# Login (prueba de nueva sesión y actualizar credenciales)
 				request_uri = basePath + "/login"
-				print "TEST 17: Prueba de nueva sesión y actualizar credenciales (usuario 1)"
+				print "TEST 18: Prueba de nueva sesión y actualizar credenciales (usuario 1)"
 				print "Status esperado: 200"
-				access_token = social_network + "Modify2TEST"
+				access_token = social_network + "TEST18"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token': access_token})
-				test_utils.make_request("POST", request_uri, params, 200, None)
-
-				# TEST 18
-				# Obtener credenciales con cookie antigua
-				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 18: Obtener credenciales con cookie de sesión antigua"
-				print "Status esperado: 400"
-				params = urllib.urlencode({})
-				test_utils.make_request("GET", request_uri, params, 400, session1)
+				session1 = test_utils.make_request("POST", request_uri, params, 200, None)
 
 				# TEST 19
-				# Logout con cookie antigua
+				# Obtener credenciales con cookie antigua
+				request_uri = basePath + "/credenciales/" + token_id1
+				print "TEST 19: Obtener credenciales con cookie de sesión antigua"
+				print "Status esperado: 400"
+				params = urllib.urlencode({})
+				test_utils.make_request("GET", request_uri, params, 400, old_session)
+
+				# TEST 20
+				# Logout sin cookie
 				request_uri = basePath + "/logout"
-				print "TEST 19: Logout sin cookie de sesion"
+				print "TEST 20: Logout sin cookie de sesion"
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
 				test_utils.make_request("POST", request_uri, params, 401, None)
 
-				# TEST 20
-				# Logout con cookie antigua / incorrecta
-				request_uri = basePath + "/logout"
-				print "TEST 20: Logout con cookie de sesión antigua"
-				print "Status esperado: 400"
-				params = urllib.urlencode({})
-				test_utils.make_request("POST", request_uri, params, 400, session1)
-
+				# TEST 21
+				# Se desloguea el usuario logueado (usuario1)
+				print "TEST 21: Logout con cookie de sesion (usuario1)"
+				print "Status esperado: 200"
+				test_utils.make_request("POST", request_uri, params, 200, session1)
+				
 				print "TESTs finalizados. Comprobar las entidades de tipo Usuario y Token almacenadas en datastore"
 				print "NOTA: para obtener los resultados esperados en estas pruebas, es necesario ejecutar el script con la BBDD vacía",
 				print "(o en su defecto, sin los usuarios 1 y 2)"
