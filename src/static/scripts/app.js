@@ -61,7 +61,7 @@
             }, function (response) {
               console.error('Error ' + response.status + ': al intentar coger los datos del usuario ' + userId);
               $backend.logout();
-              return $q.reject();
+              return $q.reject({authenticated: false});
             });
 
           } else {
@@ -94,8 +94,7 @@
             }, function (response) {
               console.error('Error ' + response.status + ': al intentar coger los datos del usuario ' + userId);
               $backend.logout();
-
-              return $q.reject();
+              return $q.reject({authenticated: false});
             });
 
           } else {
@@ -110,7 +109,7 @@
     })
       .when('/selectId', {
       templateUrl: 'views/selectId.html',
-      controller: 'SelectidController'/*,
+      controller: 'SelectidController',
       resolve: {
         auth: ['$q', '$rootScope', function ($q, $rootScope) {
 
@@ -122,7 +121,7 @@
             });
           }
         }]
-      }*/
+      }
     })
     /* Por defecto */
       .otherwise({

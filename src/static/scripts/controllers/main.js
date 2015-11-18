@@ -58,6 +58,7 @@ angular.module('picbit').controller('MainController', ['$scope', '$location', '$
       $rootScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
       $scope.changeView('/selectId');
     }
+    $rootScope.token = userData.token;
     if ($location.$$path.indexOf('profile') === -1) {
       $backend.getUserId(userData.userId, userData.redSocial)
         .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/

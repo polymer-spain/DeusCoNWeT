@@ -1,27 +1,27 @@
 /*global angular */
-angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope", "$cookies", "$q", function ($http, $location, $rootScope, $cookies, $q) {
+angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope', '$cookies', '$q', function ($http, $location, $rootScope, $cookies, $q) {
 
-  "use strict";
-  this.endpoint = "https://" + $location.host();
+  'use strict';
+  this.endpoint = 'https://' + $location.host();
 
   /* Envia el token y el identificador del token correspondiente a una red social */
   /* ¿¿ Control de errores ??*/
   this.sendData = function (token, tokenId, userId, redSocial, oauthVerifier) {
     var request, uri, params;
 
-    uri = this.endpoint + "/api/oauth/" + redSocial + "/login";
+    uri = this.endpoint + '/api/oauth/' + redSocial + '/login';
     /* Añadimos los parametros necesarios */
-    params = "token_id=" + tokenId + "&access_token=" + token;
+    params = 'token_id=' + tokenId + '&access_token=' + token;
 
     /* Si se indica el userId, se incluye en la peticion */
-    params += userId ? "&user_identifier=" + userId : "";
+    params += userId ? '&user_identifier=' + userId : '';
 
     /* Si se trata de twitter añadimos el oauth_verifier*/
-    params += oauthVerifier && redSocial === "twitter" ? "&oauth_verifier=" + oauthVerifier : "";
+    params += oauthVerifier && redSocial === 'twitter' ? '&oauth_verifier=' + oauthVerifier : '';
     request = {
-      method: "post",
+      method: 'post',
       url: uri,
-      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
     /* Devolvemos la promesa*/
@@ -32,19 +32,19 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
   this.signup = function (token, tokenId, userId, redSocial, oauthVerifier) {
     var request, uri, params;
 
-    uri = this.endpoint + "/api/oauth/" + redSocial + "/signup";
+    uri = this.endpoint + '/api/oauth/' + redSocial + '/signup';
     /* Añadimos los parametros necesarios */
-    params = "token_id=" + tokenId + "&access_token=" + token;
+    params = 'token_id=' + tokenId + '&access_token=' + token;
 
     /* Si se indica el userId, se incluye en la peticion */
-    params += userId ? "&user_identifier=" + userId : "";
+    params += userId ? '&user_identifier=' + userId : '';
 
     /* Si se trata de twitter añadimos el oauth_verifier*/
-    params += oauthVerifier && redSocial === "twitter" ? "&oauth_verifier=" + oauthVerifier : "";
+    params += oauthVerifier && redSocial === 'twitter' ? '&oauth_verifier=' + oauthVerifier : '';
     request = {
-      method: "post",
+      method: 'post',
       url: uri,
-      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
     /* Devolvemos la promesa*/
@@ -54,12 +54,12 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
 
   this.getUserId = function (tokenId, redSocial) {
     var request, uri;
-    uri = this.endpoint + "/api/oauth/" + redSocial + "/credenciales/" + tokenId;
+    uri = this.endpoint + '/api/oauth/' + redSocial + '/credenciales/' + tokenId;
 
     request = {
-      methor: "get",
+      methor: 'get',
       url: uri,
-      headers: {"Content-Type": "application/x-www-form-urlencoded"}
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     };
 
     $rootScope.promise = $http(request);
@@ -69,12 +69,12 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
   /* Permite elegir un usuario por user_id */
   this.getUser = function (userId) {
     var request, uri;
-    uri = this.endpoint + "/api/usuarios/" + userId;
+    uri = this.endpoint + '/api/usuarios/' + userId;
 
     request = {
-      method: "get",
+      method: 'get',
       url: uri,
-      headers: {"Content-Type": "application/x-www-form-urlencoded"}
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     };
     $rootScope.promise = $http(request);
     return $rootScope.promise;
@@ -84,16 +84,16 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
   this.sendEmail = function (message, sender, subject) {
     var request, uri, params;
 
-    uri = this.endpoint + "/api/contact";
-    params = "action=contact&message=" + message + "&sender=" + sender;
+    uri = this.endpoint + '/api/contact';
+    params = 'action=contact&message=' + message + '&sender=' + sender;
 
     if (subject) {
-      params += "&subject=" + subject;
+      params += '&subject=' + subject;
     }
     request = {
-      method: "post",
+      method: 'post',
       url: uri,
-      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
 
@@ -103,12 +103,12 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
 
   this.sendSub = function (name, sender, surname) {
     var request, uri, params;
-    uri = this.endpoint + "/api/subscriptions";
-    params = "name=" + name + "&email=" + sender + "&surname=" + surname;
+    uri = this.endpoint + '/api/subscriptions';
+    params = 'name=' + name + '&email=' + sender + '&surname=' + surname;
     request = {
-      method: "post",
+      method: 'post',
       url: uri,
-      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params
     };
 
@@ -118,12 +118,12 @@ angular.module("picbit").service("$backend", ["$http", "$location", "$rootScope"
 
   this.logout = function () {
     var request, uri, socialnetwork;
-    socialnetwork = $cookies.get("social_network") || "googleplus";
-    uri = this.endpoint + "/api/oauth/" + socialnetwork + "/logout";
+    socialnetwork = $cookies.get('social_network') || 'googleplus';
+    uri = this.endpoint + '/api/oauth/' + socialnetwork + '/logout';
     request = {
-      method: "post",
+      method: 'post',
       url: uri,
-      headers: {"Content-Type": "application/x-www-form-urlencoded"}
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     };
     $rootScope.user = undefined;
     $rootScope.isLogged = false;

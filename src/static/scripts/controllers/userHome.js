@@ -10,7 +10,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
   $scope.twitterData.token = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf';
   $scope.githubData.username = 'mortega5';
-  $scope.facebookData.token = 'CAACEdEose0cBAG6qZAL27xtAxiT6fwD2eykcZCo63KPwrm5lEgp3Jz6QDFodhG9wU1cuBhAy0jm3Oz5XaSZCpwE3K5lZC9bvRqVZAt3PFaYMaqQZC2wSC4NKty0laHDoZAgxrsnkQWUoTyNZAAQJdRgwtO76Kawvcomk6btwzZBedaFhHJ3fdn7bc122QExIhD94tJnZAlj0IEFQZDZD';
+  $scope.facebookData.token = $scope.token;
 
   $scope.listComponents = [
     {
@@ -55,7 +55,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
     }
   ];
-  $scope.listComponentAdded = ['facebook-wall']; // added on dragdrop.js
+  $scope.listComponentAdded = []; // added on dragdrop.js
   $scope.modifySelected = $scope.modifySelected || '';
   /* Authentication */
 

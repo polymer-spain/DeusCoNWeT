@@ -15,9 +15,9 @@
         color: black;
       }
       paper-header-panel {
-        min-width: 400px;
-        max-width: 450px;
-        height: 500px;
+        min-width: 300px;
+        max-width: 350px;
+        height: 400px;
         @apply(--shadow-elevation-3dp);
         border-radius: 8px;
         background: #E9EAED;
@@ -93,8 +93,8 @@
 
       }
       .photo-source {
-        width: 100%;
-        height: auto;
+        max-width: 300px;
+        /*max-height: 30px;*/
       }
       .postLikes > p {
         font-size: 12px;
@@ -145,6 +145,11 @@
       }
       .singleSharedDescription {
         margin: 10px 5px;
+      }
+      .loading {
+        width:50%;
+        height: 50%;
+        margin:auto auto;
       }
     </style>
     <iron-ajax
@@ -308,8 +313,7 @@ access_token={{access_token}}&summary=true -->
         <template is="dom-if" if="{{_noExist(events.length)}}">
           <paper-material elevation="2">
             <div class="post vertical center-justified layout">
-              <img src="images/oops.png">
-              <p>{{data.error.noToken}}</p>
+              <img class="loading" src="https://cbschicago.files.wordpress.com/2014/09/loading.gif?w=620&h=349&crop=1">
             </div>
           </paper-material>
         </template>
@@ -351,7 +355,7 @@ access_token={{access_token}}&summary=true -->
           reflectToAttribute: true
         }
       },
-      ready: function(){
+      attached: function(){
         this.$.requestLanguage.generateRequest();
       },
       /* Observer and computed properties*/
@@ -373,8 +377,8 @@ access_token={{access_token}}&summary=true -->
         return component_directory + "language/" + idiom;
       },
       _getRequestDataUrl: function(component_directory, access_token){
-        return component_directory + "mockData/mockData.json";
-        /*return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + this.access_token;*/
+        /*return component_directory + "mockData/mockData2.json";*/
+        return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + this.access_token;
       },
       _checkAccessToken: function(newValue) {
         if (newValue) {
