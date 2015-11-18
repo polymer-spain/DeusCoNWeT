@@ -3,11 +3,11 @@ angular.module('picbit').controller('MainController', ['$scope', '$location', '$
 
   'use strict';
 
-  if ($cookies.get('user')) {
+/*  if ($cookies.get('user')) {
     $backend.getUser($cookies.get('user')).then(function(response) {
       $rootScope.user = response.data;
     });
-  }
+  }*/
 
   $rootScope.isLogged = $rootScope.user ? true : false; // Registrar el estado de logueado
   $scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos

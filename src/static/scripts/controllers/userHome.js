@@ -1,4 +1,4 @@
-angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout', function ($scope, $timeout) {
+angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope', function ($scope, $timeout, $rootScope) {
   'use strict';
 
   /* Network infomation */
@@ -7,10 +7,11 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.githubData = {};
   $scope.instagramData = {};
   $scope.facebookData = {};
+  
   $scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
   $scope.twitterData.token = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf';
   $scope.githubData.username = 'mortega5';
-  $scope.facebookData.token = $scope.token;
+  $scope.facebookData.token = $rootScope.user.tokens.facebook;
 
   $scope.listComponents = [
     {

@@ -79,6 +79,17 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     $rootScope.promise = $http(request);
     return $rootScope.promise;
   };
+  
+  this.syncGetUser = function (userId) {
+    var request, uri;
+    uri = this.endpoint + '/api/usuarios/' + userId;
+    request = new XMLHttpRequest();
+    
+    request.open('GET', uri, false);
+    request.send();
+    
+    return request;
+  };
 
   /* Contacto: envia un email al backend */
   this.sendEmail = function (message, sender, subject) {
@@ -130,4 +141,32 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     $rootScope.promise = $http(request);
     return $rootScope.promise;
   };
+
+  this.getSingleToken = function(socialNetwork, tokenid) {
+    var request, uri;
+
+    request = new XMLHttpRequest();
+
+    uri = this.endpoint + '/api/oauth/' + socialNetwork + '/credenciales/' + tokenid;
+    request.open('GET', uri, false);
+    request.send();
+    /*    request = {
+      methor: 'get',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    };*/
+    return request;
+  };
+  this.getTokens = function(tokensId) {
+    var access_tokens, item, request, data;
+    access_tokens = {};
+    while(tokensId.length > 0) {
+      item = tokensId.pop();      
+      request  = this.getSingleToken(item.social_network, item.token_id);
+      data = JSON.parse(request.response);
+      access_tokens[item.social_network] = data.access_token;
+    } 
+      return access_tokens;
+  };
+
 }]);

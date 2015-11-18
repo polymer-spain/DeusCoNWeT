@@ -24,19 +24,21 @@
           var socialnetwork = $cookies.get('social_network');
           //Si tiene credenciales, pedimos los datos y le llamos a su pagina principal
           if (cookieSession && userId && socialnetwork ) {
-            $backend.getUser(userId)
-              .then(function (response) {
-              $rootScope.user = response.data;
+            var requestUser = $backend.syncGetUser(userId);
+            if (requestUser.status === 200) {
+              $rootScope.user = JSON.parse(requestUser.response);
+              var tokens = $backend.getTokens($rootScope.user.token_ids);
+              $rootScope.user.tokens = tokens;
               $rootScope.isLogged = true;
               if (!$rootScope.unauthorized) {
                 $location.path('/user/' + userId);
                 return $q.when();
               }
-            }, function (response) {
-              console.error(response.data.error);
+            } else {
+              console.error(requestUser.statusText);
               $backend.logout();
               return $q.when();
-            });
+            }
           }
         }]
       }
@@ -54,15 +56,20 @@
             return $q.reject({authorized: false});
           }
           else if (session && userId) {
-            $backend.getUser(userId).then(function (response) {
-              $rootScope.user = response.data;
+            var responseUser = $backend.syncGetUser(userId);
+
+            if (responseUser.status === 200) {
+              $rootScope.user = JSON.parse(responseUser.response);
+              var tokens = $backend.getTokens($rootScope.user.token_ids);
+              $rootScope.user.tokens = tokens;
               $rootScope.isLogged = true;
               return $q.when(session);
-            }, function (response) {
-              console.error('Error ' + response.status + ': al intentar coger los datos del usuario ' + userId);
+
+            } else {
+              console.error('Error ' + responseUser.status + ': al intentar coger los datos del usuario ' + userId);
               $backend.logout();
               return $q.reject({authenticated: false});
-            });
+            }
 
           } else {
             return $q.reject({authenticated: false});
@@ -87,16 +94,20 @@
           var session = $cookies.get('session');
           var userId = $cookies.get('user');
           if (session && userId) {
-            $backend.getUser(userId).then(function (response) {
-              $rootScope.user = response.data;
+            var responseUser = $backend.syncGetUser(userId);
+
+            if (responseUser.status === 200) {
+              $rootScope.user = JSON.parse(responseUser.response);
+              var tokens = $backend.getTokens($rootScope.user.token_ids);
+              $rootScope.user.tokens = tokens;
               $rootScope.isLogged = true;
               return $q.when(session);
-            }, function (response) {
-              console.error('Error ' + response.status + ': al intentar coger los datos del usuario ' + userId);
+
+            } else {
+              console.error('Error ' + responseUser.status + ': al intentar coger los datos del usuario ' + userId);
               $backend.logout();
               return $q.reject({authenticated: false});
-            });
-
+            }
           } else {
             return $q.reject({authenticated: false});
           }
