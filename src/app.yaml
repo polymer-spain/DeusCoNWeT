@@ -1,6 +1,6 @@
 application: example-project-13
 
-version: test-backend
+version: test-frontend
 runtime: python27
 threadsafe: true
 api_version: 1

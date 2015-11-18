@@ -12,11 +12,12 @@
     <style is="custom-style">
       :host {
         font-family: helvetica, arial, sans-serif;
+        color: black;
       }
       paper-header-panel {
-        min-width: 300px;
-        max-width: 350px;
-        height: 400px;
+        min-width: 400px;
+        max-width: 450px;
+        height: 500px;
         @apply(--shadow-elevation-3dp);
         border-radius: 8px;
         background: #E9EAED;
@@ -92,8 +93,8 @@
 
       }
       .photo-source {
-        max-width: 300px;
-        /*max-height: 30px;*/
+        width: 100%;
+        height: auto;
       }
       .postLikes > p {
         font-size: 12px;
@@ -148,7 +149,7 @@
     </style>
     <iron-ajax
                id="requestData"
-               url="mockData/mockData2.json"
+               url="{{requestDataUrl}}"
                method="GET"
                handleAs="json"
                on-response="_dataResponse"
@@ -333,14 +334,25 @@ access_token={{access_token}}&summary=true -->
         },
         languageUrl: {
           type:String,
-          computed: "_getLanguageUrl(idiom)"
+          computed: "_getLanguageUrl(component_directory, idiom)"
+        },
+        requestDataUrl: {
+          type: String,
+          computed: "_getRequestDataUrl(component_directory, access_token)"
         },
         access_token: {
           type: String,
           value:"",
-          observer: "_checkAccessToken",
           refrectToAttribute:true
+        },
+        component_directory: {
+          type:String,
+          value: "",
+          reflectToAttribute: true
         }
+      },
+      ready: function(){
+        this.$.requestLanguage.generateRequest();
       },
       /* Observer and computed properties*/
       _languageUpdate: function(newValue){
@@ -353,11 +365,16 @@ access_token={{access_token}}&summary=true -->
           this.idiom = "es_es.json"
 
         }
-        this.$.requestLanguage.generateRequest();
-
+        if (this.component_directory || this.component_directory == "") {
+          this.$.requestLanguage.generateRequest();
+        }
       },
-      _getLanguageUrl:function(idiom){
-        return "language/" + idiom;
+      _getLanguageUrl:function(component_directory, idiom){
+        return component_directory + "language/" + idiom;
+      },
+      _getRequestDataUrl: function(component_directory, access_token){
+        return component_directory + "mockData/mockData.json";
+        /*return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + this.access_token;*/
       },
       _checkAccessToken: function(newValue) {
         if (newValue) {
@@ -457,9 +474,16 @@ access_token={{access_token}}&summary=true -->
         }
       },
       _dataResponse: function(event, detail){
-        this.set("events", detail.response.data);
-        this._reParserLinked(this.events);
-        this._changeTime(this.events);
+        if (detail.response) {
+          // Support mocked data
+          if (detail.response.home) {
+            this.set("events", detail.response.home.data);  
+          } else {
+            this.set("events", detail.response.data);
+          }
+          this._reParserLinked(this.events);
+          this._changeTime(this.events);
+        }
       },
       _changeTime: function(list){
         for (i=0;i<list.length;i++){
