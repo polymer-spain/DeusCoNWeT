@@ -426,6 +426,17 @@ def modifyToken(user_id, new_token, rs): #FUNCIONA
   return user.key
 
 ## Metodos asociados a la entidad Usuario
+# Obtiene la lista de credenciales (token_id, red_social) de un usuario en el sistema
+def getUserCredentialList(user_id):
+  user = User.query(User.user_id == user_id).get()
+  credential_list = []
+  for token in user.tokens:
+    credential = {"token_id": token.identifier,
+    "social_network": token.social_name}
+    credential_list.append(credential)
+  return credential_list
+
+
 def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
@@ -440,6 +451,8 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
     # Componemos la lista de componentes de usuario, detallada o reducida
     user_component_list = getUserComponentList(user_id, component_detailed_info)
 
+    # Obtenemos la lista de credenciales de usuario
+    credential_list = getUserCredentialList(user_id)
     # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
                 "description": user.description,
@@ -450,6 +463,7 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
                 "email": user.email,
                 "phone": user.phone,
                 "nets": net_names,
+                "token_ids": credential_list,
                 "components": user_component_list}
 
   return user_info
