@@ -8,7 +8,7 @@
         "angular-route": "~1.4.1",
         "angular-sanitize": "~1.4.1",
         "angular-touch": "~1.4.1",
-        "iron-ajax": "~1.0.9",
+        "iron-ajax": "PolymerElements/iron-ajax~1.1.1",
         "iron-dropdown": "PolymerElements/iron-dropdown#~1.0.6",
         "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4",
         "iron-icon": "PolymerElements/iron-icon#~1.0.5",
@@ -26,11 +26,12 @@
         "github-login": "~2.0.0",
         "twitter-timeline": "~2.0.0",
         "instagram-timeline": "~2.0.0",
-        "facebook-wall": "*",
         "google-login": "~2.0.0",
         "paper-dialog": "PolymerElements/paper-dialog#~1.0.2",
         "polymer": "Polymer/polymer#~1.2.1",
-        "github-events": "events-github#~2.0.1"
+        "github-events": "events-github#~2.0.1",
+        "paper-header-panel": "PolymerElements/paper-header-panel",
+        "facebook-wall": "5bf1cc7"
     },
     "devDependencies": {
         "grunt-contrib-uglify": "~0.10.1",

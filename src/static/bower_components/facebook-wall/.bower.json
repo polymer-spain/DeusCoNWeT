@@ -9,13 +9,14 @@
   ],
   "main": "facebook-wall.html",
   "dependencies": {
-    "iron-ajax": "PolymerElements/iron-ajax#~1.0.7",
-    "paper-header-panel": "PolymerElements/paper-header-panel#~1.0.5",
-    "paper-styles": "PolymerElements/paper-styles#~1.0.12",
-    "iron-icon": "PolymerElements/iron-icon#~1.0.7",
-    "iron-icons": "PolymerElements/iron-icons#~1.0.4",
-    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
-    "paper-material": "PolymerElements/paper-material#~1.0.3"
+    "iron-ajax": "PolymerElements/iron-ajax",
+    "paper-header-panel": "PolymerElements/paper-header-panel",
+    "paper-styles": "PolymerElements/paper-styles",
+    "iron-icon": "PolymerElements/iron-icon",
+    "iron-icons": "PolymerElements/iron-icons",
+    "paper-icon-button": "PolymerElements/paper-icon-button",
+    "paper-material": "PolymerElements/paper-material",
+    "paper-button": "PolymerElements/paper-button"
   },
   "authors": [
     "Miguel Ortega Moreno <miguel.ortega.moreno5@gmail.com>"
@@ -31,14 +32,14 @@
     "tests",
     "*.*~"
   ],
-  "_release": "c665ea0c04",
+  "_release": "3b08ff397b",
   "_resolution": {
     "type": "branch",
-    "branch": "master",
-    "commit": "c665ea0c0400b808e44a56116ff324f745b2201b"
+    "branch": "update1.0",
+    "commit": "3b08ff397bd723de79589ac69ac466e654ef8313"
   },
   "_source": "git://github.com/Mortega5/facebook-wall.git",
-  "_target": "*",
+  "_target": "update1.0",
   "_originalSource": "facebook-wall",
   "_direct": true
 }

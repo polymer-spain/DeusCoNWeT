@@ -4,5 +4,5 @@
 # 	- Component_versioning: Sets if the components will be served in a static (always serve stable version of the component) 
 #						   or dynamic (serve random version of the component) basis. Posible values: static | dynamic
 
-domain: test-frontend-dot-example-project-13.appspot.com
+domain: example-project-13.appspot.com
 component_versioning: dynamic

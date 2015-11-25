@@ -12,12 +12,15 @@
     <style is="custom-style">
       :host {
         font-family: helvetica, arial, sans-serif;
-        color: black;
+        --facebook-wall-color: black;
+        --facebook-wall-width: 420px;
+        --facebook-wall-height: 450px;
+        --iframe-video-height: 208px;
+        color: var(--facebook-wall-color);
       }
       paper-header-panel {
-        min-width: 300px;
-        max-width: 350px;
-        height: 400px;
+        width: var(--facebook-wall-width);
+        height: var(--facebook-wall-height);
         @apply(--shadow-elevation-3dp);
         border-radius: 8px;
         background: #E9EAED;
@@ -53,15 +56,15 @@
       }
       #logo {
         margin:8px;
-        min-width: 40px;
-        min-height: 40px;
+        width: 40px;
+        height: 40px;
       }
       .postHeader {
 
       }
 
       .postInfo{
-        font-size: 10px;
+        font-size: 12px;
         margin:8px;
 
       }
@@ -93,8 +96,8 @@
 
       }
       .photo-source {
-        max-width: 300px;
-        /*max-height: 30px;*/
+        width: 100%;
+        height: auto;
       }
       .postLikes > p {
         font-size: 12px;
@@ -115,7 +118,7 @@
         margin: 10px 5px;
       }
       .descriptionPostNested {
-        font-size: 10px;
+        font-size: 12px;
         margin: 10px 8px;
       }
       .authorPostNested {
@@ -131,7 +134,7 @@
       }
       .sharedStory {
         margin: 10px 5px;
-        font-size: 10px;
+        font-size: 12px;
 
       }
       .sharedDescription {
@@ -151,6 +154,10 @@
         height: 50%;
         margin:auto auto;
       }
+      iframe.video {
+        width: 100%;
+        height: var(--iframe-video-height);
+      }
     </style>
     <iron-ajax
                id="requestData"
@@ -168,7 +175,7 @@
                on-response="_language_response"
                >
     </iron-ajax>
-    <paper-header-panel mode="waterfall" class="blue">
+    <paper-header-panel id="header" mode="waterfall" class="blue">
       <div class="paper-header horizontal layout center-justified">
         <div><iron-icon src="images/facebook.svg"></iron-icon></div>
         <div class="flex" style="text-align:center"><span>Facebook wall</span></div>
@@ -182,16 +189,14 @@
             <div class="post">
 
               <!-- Nested header -->
-              <template is="dom-if" if="{{item.linked}}">
+              <template is="dom-if" if="{{item.story}}">
                 <div class="reactedTo" inner-h-t-m-l="{{_getShareInformation(item)}}"></div>
               </template>
-
-              <!-- Generic header -->
               <div class="horizontal layout postHeader">
                 <iron-icon id="logo" src="{{_getUserPicture(item)}}"></iron-icon>
                 <div class="vertical layout postInfo">
                   <div id="username">
-                    <a id="username" href="{{_getUsernameUrl(item)}}" target="_blank">{{_getAuthorPost(item)}}</a>
+                    <a href="{{_getUsernameUrl(item)}}" target="_blank">{{_getAuthorPost(item)}}</a>
                     <span>{{_getAuthorPostStory(item)}}</span></div>
                   <div>{{item.time}}</div>
                 </div>
@@ -211,6 +216,9 @@
                       <p inner-h-t-m-l="{{_parseText(item.description)}}"></p>
                     </template>
 
+                    <template is="dom-if" if="{{item.message}}">
+                      <p>{{item.message}}</p>
+                    </template>
                     <div class="borderPost">
                       <a href="{{item.linked.link}}" target="_blank">
                         <template is="dom-if" if="{{_isType(item.linked.type, 'photo','link')}}">
@@ -241,11 +249,11 @@
                         <!-- its a video -->
                         <template is="dom-if" if="{{_isType(item.linked.type, 'video')}}">
                           <!-- Youtube video -->
-                          <template is="dom-if" if="{{_isType(item.linked.caption,'youtube.com')}}">
-                            <iframe src="{{_getYoutubeVideo(item.linked.source)}}" allowfullscreen frameborder="0">
+                          <template is="dom-if" if="{{_isType(item.linked.caption,'youtube.com', 'youtu.be')}}">
+                            <iframe src="{{_getYoutubeVideo(item.linked.source)}}" allowfullscreen class="video" frameborder="0">
                             </iframe>
                           </template>
-                          <template is="dom-if" if="{{_isNoType(item.linked.caption, 'youtube.com')}}">
+                          <template is="dom-if" if="{{_isNoType(item.linked.caption, 'youtube.com', 'youtu.be')}}">
                             <!-- How do we parse instragam's videos -->
                             <video class="photo-source" controls>
                               We cant show this video yet.
@@ -259,14 +267,16 @@
                       <a href="{{item.link}}" target="_blank"><p class="authorPostNested">{{item.linked.caption}}</p></a>
                     </div>
                   </template>
-
                 </template>
                 <!-- END nested post -->
 
                 <!-- Single Post-->
                 <template is="dom-if" if="{{_noExist(item.linked)}}">
+                  <!-- CHeck if message is empty-->
+                  <template is="dom-if" if="{{item.message}}">
+                    <p inner-h-t-m-l="{{item.message}}"></p>
+                  </template>
 
-                  <p inner-h-t-m-l="{{item.message}}"></p>
                   <!-- status_type = shared_story --> 
                   <template is="dom-if" if="{{_isType(item.status_type, 'shared_story')}}">
                     <div class="borderPost">
@@ -279,12 +289,8 @@
 
                   <!-- status type = mobile status update-->
                   <template is="dom-if" if="{{_isType(item.status_type, 'mobile_status_update')}}">
+                    <p>{{item.story}}</p>
                   </template>
-
-                  <template is="dom-if" if="{{_isType(item.status_type, 'mobile_status_update')}}">
-
-                  </template>
-
 
                 </template>
               </div>
@@ -336,6 +342,11 @@ access_token={{access_token}}&summary=true -->
           observer: "_languageUpdate",
           refrectToAttribute:true
         },
+        component_directory: {
+          type:String,
+          value: "",
+          reflectToAttribute: true
+        },
         languageUrl: {
           type:String,
           computed: "_getLanguageUrl(component_directory, idiom)"
@@ -348,14 +359,9 @@ access_token={{access_token}}&summary=true -->
           type: String,
           value:"",
           refrectToAttribute:true
-        },
-        component_directory: {
-          type:String,
-          value: "",
-          reflectToAttribute: true
         }
       },
-      attached: function(){
+      ready: function(){
         this.$.requestLanguage.generateRequest();
       },
       /* Observer and computed properties*/
@@ -363,10 +369,12 @@ access_token={{access_token}}&summary=true -->
         if(newValue === "en"){
           this.language = "en";
           this.idiom = "en_en.json"
+          this.locale = "en_GB";
         }
         else if(newValue === "es"){
           this.language = "es";
           this.idiom = "es_es.json"
+          this.locale = "es_ES";
 
         }
         if (this.component_directory || this.component_directory == "") {
@@ -377,8 +385,8 @@ access_token={{access_token}}&summary=true -->
         return component_directory + "language/" + idiom;
       },
       _getRequestDataUrl: function(component_directory, access_token){
-        /*return component_directory + "mockData/mockData2.json";*/
-        return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + this.access_token;
+        /*return component_directory + "mockData/mockData.json";*/
+        return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&locale=" + this.locale + "&access_token=" + this.access_token;
       },
       _checkAccessToken: function(newValue) {
         if (newValue) {
@@ -435,7 +443,7 @@ access_token={{access_token}}&summary=true -->
         return item.linked && item.linked.shares;
       },
       _getShareInformation: function(item) {
-        tag = this._parserUser(item.from) + item.story.replace(item.from.name+ " ", "");
+        tag = this._parserUser(item.from) + " " + item.story.replace(item.from.name+ " ", "");
         return tag;
       },
       _getUserPicture: function(item) {
@@ -451,8 +459,8 @@ access_token={{access_token}}&summary=true -->
       _isType: function(item, type, type2) {
         return item === type || item === type2;
       },
-      _isNoType: function(item, type) {
-        return item !== type;
+      _isNoType: function(item, type, type2) {
+        return item !== type && item !== type2;
       },
       _getFullPhoto: function(item) {
         return "https://graph.facebook.com/" + item.linked.object_id + "/picture?access_token=" + this.access_token;
@@ -481,9 +489,19 @@ access_token={{access_token}}&summary=true -->
         if (detail.response) {
           // Support mocked data
           if (detail.response.home) {
-            this.set("events", detail.response.home.data);  
+            if (this.events) {
+              this.set("events", detail.response.home.data);  
+            } else {
+              this.set("events", []);
+              this.set("events", detail.response.home.data);
+            }
           } else {
-            this.set("events", detail.response.data);
+            if (this.events) {
+              this.set("events", detail.response.data);
+            } else {
+              this.set("events", []);
+              this.set("events", detail.response.home);
+            }
           }
           this._reParserLinked(this.events);
           this._changeTime(this.events);
@@ -545,17 +563,20 @@ access_token={{access_token}}&summary=true -->
             this.splice("events", i+1, 1);
           } 
           if (list[i].message) {
-            this.set("events." + i + ".message", list[i].message.replace(/(?:\r\n|\r|\n)/g, "<br />"));
+            this.set("events." + i + ".message", list[i].message.replace(/(?:\r\n|\r|\n)/g, "<br>"));
             this.set("events." + i + ".message", this._parseText(list[i].message));
           }
         }
+        if (list[list.length-1].story && !list[list.length-1].caption){
+          this.splice("events", list.length-1, 1);
+        }
       },
       _parserUser: function(user) {
-        var tag = "<a style='color:rgb(59, 89, 152);font-weight:bold;text-decoration:none' href='https://www.facebook.com/app_scoped_user_id/" + user.id + "' target='_blank'>" + user.name + " </a>";
+        var tag = "<a style='color:rgb(59, 89, 152);font-weight:bold;text-decoration:none;overflow-wrap:break-word' href='https://www.facebook.com/app_scoped_user_id/" + user.id + "' target='_blank'>" + user.name + "</a>";
         return tag;
       },
       _parsePageUrl: function(page) {
-        var tag = "<a style='color:rgb(59, 89, 152);font-weight:bold;text-decoration:none' href='http://facebook.com/pages/-/" + page.id + "' target='_blank'>" + page.name + " </a>";
+        var tag = "<a style='color:rgb(59, 89, 152);font-weight:bold;text-decoration:none;overflow-wrap:break-word' href='http://facebook.com/pages/-/" + page.id + "' target='_blank'>" + page.name + "</a>";
         return tag
       },
       _parseText: function(text) {
@@ -566,15 +587,15 @@ access_token={{access_token}}&summary=true -->
         return text? text : "";
       },
       _parseURL: function(tweet) {
-        return tweet.replace(/[^"](?:http|https)+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=#]+/g, function(url) {
+        return tweet.replace(/(?:http|https)+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=#]+/g, function(url) {
           url = url.replace("#", "%23");
-          return '<a style="color:rgb(59, 89, 152)" href='+url+' target="_blank">'+url+'</a>'
+          return '<a style="color:rgb(59, 89, 152);overflow-wrap:break-word" href='+url+' target="_blank">'+url+'</a>'
         })
       },
       _parseHashtag: function(tweet) {
         return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
-          return '<a style="color:rgb(59, 89, 152)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
+          return '<a style="color:rgb(59, 89, 152);overflow-wrap:break-word" href="https://www.facebook.com/hashtag/'+tag+' "target="_blank"><span>#'+tag+'</span></a>'
         });
       },
     });

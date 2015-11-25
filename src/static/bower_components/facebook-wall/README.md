@@ -1,10 +1,10 @@
-# Facebook Wall
+# Facebook wall
 
-It is a [Polymer](https://www.polymer-project.org/1.0/) component which show a Facebook Wall.
+It is a [Polymer](https://www.polymer-project.org/1.0/) component which show a Facebook wall.
 
 `<facebook-wall>`
 
-The `facebook-wall` element displays a Facebook Wall.
+The `facebook-wall` element displays a Facebook wall.
 For use it, you  must take an `access token` of the user that you want to show him facebook's wall.
 
 **NOTE**: you need a [`read_stream`](https://developers.facebook.com/docs/facebook-login/permissions/v2.3) permission to
@@ -46,15 +46,17 @@ using [Facebook API](https://developers.facebook.com/docs/facebook-login/access-
 + [ ] `Likes` only return 25 post, I cannot get *#likes* with this field. Use GET to `/{object_id}/likes?summary=true`
       The response have *#likes*.
 
-+ [ ] Wrap post with border. Which ones?.
++ [x] Wrap post with border. Which ones?.
 
 + [x] Some linked posts have `story` field, some need use it as "general header".
 
 + [ ] Add `name` and `message` format to `shared_story` and `type link`.
 
-+ [ ] Get Post with correct language. (use the correct request)
++ [x] Get Post with correct language. (use the correct request)
 
-+ [ ] Use API to get user's posts. (you need `read_stream` permissions)
++ [ ] Refresh post messages when the language change.
+
++ [x] Use API to get user's posts. (you need `read_stream` permissions)
 
 
 
