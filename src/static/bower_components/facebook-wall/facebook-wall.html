@@ -12,6 +12,7 @@
     <style is="custom-style">
       :host {
         font-family: helvetica, arial, sans-serif;
+        color: black;
       }
       paper-header-panel {
         min-width: 300px;
@@ -145,10 +146,15 @@
       .singleSharedDescription {
         margin: 10px 5px;
       }
+      .loading {
+        width:50%;
+        height: 50%;
+        margin:auto auto;
+      }
     </style>
     <iron-ajax
                id="requestData"
-               url="mockData/mockData2.json"
+               url="{{requestDataUrl}}"
                method="GET"
                handleAs="json"
                on-response="_dataResponse"
@@ -307,8 +313,7 @@ access_token={{access_token}}&summary=true -->
         <template is="dom-if" if="{{_noExist(events.length)}}">
           <paper-material elevation="2">
             <div class="post vertical center-justified layout">
-              <img src="images/oops.png">
-              <p>{{data.error.noToken}}</p>
+              <img class="loading" src="https://cbschicago.files.wordpress.com/2014/09/loading.gif?w=620&h=349&crop=1">
             </div>
           </paper-material>
         </template>
@@ -333,14 +338,25 @@ access_token={{access_token}}&summary=true -->
         },
         languageUrl: {
           type:String,
-          computed: "_getLanguageUrl(idiom)"
+          computed: "_getLanguageUrl(component_directory, idiom)"
+        },
+        requestDataUrl: {
+          type: String,
+          computed: "_getRequestDataUrl(component_directory, access_token)"
         },
         access_token: {
           type: String,
           value:"",
-          observer: "_checkAccessToken",
           refrectToAttribute:true
+        },
+        component_directory: {
+          type:String,
+          value: "",
+          reflectToAttribute: true
         }
+      },
+      attached: function(){
+        this.$.requestLanguage.generateRequest();
       },
       /* Observer and computed properties*/
       _languageUpdate: function(newValue){
@@ -353,11 +369,16 @@ access_token={{access_token}}&summary=true -->
           this.idiom = "es_es.json"
 
         }
-        this.$.requestLanguage.generateRequest();
-
+        if (this.component_directory || this.component_directory == "") {
+          this.$.requestLanguage.generateRequest();
+        }
       },
-      _getLanguageUrl:function(idiom){
-        return "language/" + idiom;
+      _getLanguageUrl:function(component_directory, idiom){
+        return component_directory + "language/" + idiom;
+      },
+      _getRequestDataUrl: function(component_directory, access_token){
+        /*return component_directory + "mockData/mockData2.json";*/
+        return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + this.access_token;
       },
       _checkAccessToken: function(newValue) {
         if (newValue) {
@@ -457,9 +478,16 @@ access_token={{access_token}}&summary=true -->
         }
       },
       _dataResponse: function(event, detail){
-        this.set("events", detail.response.data);
-        this._reParserLinked(this.events);
-        this._changeTime(this.events);
+        if (detail.response) {
+          // Support mocked data
+          if (detail.response.home) {
+            this.set("events", detail.response.home.data);  
+          } else {
+            this.set("events", detail.response.data);
+          }
+          this._reParserLinked(this.events);
+          this._changeTime(this.events);
+        }
       },
       _changeTime: function(list){
         for (i=0;i<list.length;i++){

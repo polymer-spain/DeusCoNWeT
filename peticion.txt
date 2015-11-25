@@ -1,0 +1,12 @@
+1) Go to http://example-project-13.appspot.com
+
+2) Click on the "Log in" button.
+
+3) Click on the "Login with Facebook" button
+
+4) You will be redirected to the URL where you can accept the requested permissions, which will be granted to the application.
+
+5) When your username has been accepted, you will be redirected to your default dashboard. Your Facebook wall will be showed in one of the components that take part of your dashboard. Your token access will be used on this component to
+get your home (Facebook's wall)
+
+NOTE: at this moment, your wall 

@@ -1,52 +1,63 @@
-angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout", function ($scope, $timeout) {
-  "use strict";
+angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope', function ($scope, $timeout, $rootScope) {
+  'use strict';
 
   /* Network infomation */
   $scope.toggleHelp = false;
   $scope.twitterData = {};
   $scope.githubData = {};
   $scope.instagramData = {};
-  $scope.instagramData.token = "2062815740.34af286.169a9c42e1404ae58591d066c00cb979";
-  $scope.twitterData.token = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
-  $scope.githubData.username = "mortega5";
+  $scope.facebookData = {};
+  
+  $scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
+  $scope.twitterData.token = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf';
+  $scope.githubData.username = 'mortega5';
+  $scope.facebookData.token = $rootScope.user.tokens.facebook;
 
   $scope.listComponents = [
     {
-      name: "twitter-timeline",
+      name: 'twitter-timeline',
       attributes: {
-        "access-token": $scope.twitterData.token,
-        "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-        "consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
-        "consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
-        "endpoint": $scope.domain + "/api/aux/twitterTimeline",
-        "language": "{{idioma}}",
-        "count": 200,
-        "component_base": "bower_components/twitter-timeline/static/"
+        'access-token': $scope.twitterData.token,
+        'secret-token': 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock',
+        'consumer-key': 'J4bjMZmJ6hh7r0wlG9H90cgEe',
+        'consumer-secret': '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf',
+        'endpoint': $scope.domain + '/api/aux/twitterTimeline',
+        'language': '{{idioma}}',
+        'count': 200,
+        'component_base': 'bower_components/twitter-timeline/static/'
 
       }
     },
     {
-      name: "github-events",
+      name: 'github-events',
       attributes: {
         username: $scope.githubData.username,
-        token: $scope.githubData.token || "",
-        mostrar: "10",
-        language: "{{idioma}}",
-        component_directory: "bower_components/github-events/"
+        token: $scope.githubData.token || '',
+        mostrar: '10',
+        language: '{{idioma}}',
+        component_directory: 'bower_components/github-events/'
       }
     },
     {
-      name: "instagram-timeline",
+      name: 'instagram-timeline',
       attributes: {
-        "access-token": $scope.instagramData.token,
-        endpoint: $scope.domain + "/api/aux/instagramTimeline",
-        language: "{{idioma}}",
-        component_directory: "bower_components/instagram-timeline/static/"
+        'access-token': $scope.instagramData.token,
+        endpoint: $scope.domain + '/api/aux/instagramTimeline',
+        language: '{{idioma}}',
+        component_directory: 'bower_components/instagram-timeline/static/'
+      }
+    },
+    {
+      name: 'facebook-wall',
+      attributes: {
+        language: '{{idioma}}',
+        component_directory: 'bower_components/facebook-wall/',
+        'access_token': $scope.facebookData.token
       }
     }
   ];
   $scope.listComponentAdded = []; // added on dragdrop.js
-  $scope.modifySelected = $scope.modifySelected || "";
+  $scope.modifySelected = $scope.modifySelected || '';
   /* Authentication */
 
   $scope.menuStatus = false;
@@ -56,24 +67,24 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 
   $scope.showMenu = function () {
     if (!$scope.menuStatus) {
-      document.querySelector("#menu-icon").icon = "arrow-forward";
+      document.querySelector('#menu-icon').icon = 'arrow-forward';
       $scope.menuStatus = true;
 
       $timeout(function () {
         $scope.showElement = true;
       }, 350);
     } else {
-      document.querySelector("#menu-icon").icon = "arrow-back";
+      document.querySelector('#menu-icon').icon = 'arrow-back';
       $scope.menuStatus = false;
       $scope.showElement = false;
-      $scope.selected = "";
-      $scope.showSingle = "";
+      $scope.selected = '';
+      $scope.showSingle = '';
       $scope.listaOpciones = [false, false, false];
 
       // Develop has commented them
-      document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-      document.querySelector("#arrowDelete").icon = "arrow-drop-down";
-      document.querySelector("#arrowModify").icon = "arrow-drop-down";
+      document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
+      document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
+      document.querySelector('#arrowModify').icon = 'arrow-drop-down';
 
 
     }
@@ -82,52 +93,52 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   $scope.ocultar = function (event) {
     $scope.listaOpciones = [false, false, false];
     switch (event) {
-      case "add":
-        document.querySelector("#arrowDelete").icon = "arrow-drop-down";
-        document.querySelector("#arrowModify").icon = "arrow-drop-down";
+      case 'add':
+        document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
+        document.querySelector('#arrowModify').icon = 'arrow-drop-down';
         break;
-      case "delete":
-        document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-        document.querySelector("#arrowModify").icon = "arrow-drop-down";
+      case 'delete':
+        document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
+        document.querySelector('#arrowModify').icon = 'arrow-drop-down';
         break;
-      case "modify":
-        document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-        document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+      case 'modify':
+        document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
+        document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
     }
   };
   $scope.setList = function (event) {
     switch(event){
-      case "add":
+      case 'add':
         $scope.listaOpciones = [!$scope.listaOpciones[0], false, false];
         if (!$scope.listaOpciones[0]) {
-          document.querySelector("#arrowAdd").icon = "arrow-drop-up";
-          document.querySelector("#arrowDelete").icon = "arrow-drop-down";
-          document.querySelector("#arrowModify").icon = "arrow-drop-down";
+          document.querySelector('#arrowAdd').icon = 'arrow-drop-up';
+          document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
+          document.querySelector('#arrowModify').icon = 'arrow-drop-down';
         }
         else {
-          document.querySelector("#arrowAdd").icon = "arrow-drop-down";
+          document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
         }
         break;
-      case "delete":
+      case 'delete':
         $scope.listaOpciones = [false, !$scope.listaOpciones[1], false];
         if (!$scope.listaOpciones[1]){
-          document.querySelector("#arrowDelete").icon = "arrow-drop-up";
-          document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-          document.querySelector("#arrowModify").icon = "arrow-drop-down";
+          document.querySelector('#arrowDelete').icon = 'arrow-drop-up';
+          document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
+          document.querySelector('#arrowModify').icon = 'arrow-drop-down';
         }
         else {
-          document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+          document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
         }
         break;
-      case "modify":
+      case 'modify':
         $scope.listaOpciones = [false, false, !$scope.listaOpciones[2]];
         if (!$scope.listaOpciones[2]){
-          document.querySelector("#arrowModify").icon = "arrow-drop-up";
-          document.querySelector("#arrowAdd").icon = "arrow-drop-down";
-          document.querySelector("#arrowDelete").icon = "arrow-drop-down";
+          document.querySelector('#arrowModify').icon = 'arrow-drop-up';
+          document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
+          document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
         }
         else {
-          document.querySelector("#arrowModify").icon = "arrow-drop-down";
+          document.querySelector('#arrowModify').icon = 'arrow-drop-down';
         }
         break;
     }
@@ -135,11 +146,11 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 
   $scope.showlist = function (event) {
     switch(event){
-      case "add":
+      case 'add':
         return $scope.listaOpciones[0];
-      case "delete":
+      case 'delete':
         return $scope.listaOpciones[1];
-      case "modify":
+      case 'modify':
         return $scope.listaOpciones[2];
       default:
         return false;
@@ -152,8 +163,8 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
 
   $scope.setSelected = function (event) {
     if ($scope.selected === event){
-      $scope.selected = "";
-      $scope.showSingle = "";
+      $scope.selected = '';
+      $scope.showSingle = '';
       if ($scope.showlist(event)) {
         $scope.setList(event);
       }
@@ -167,25 +178,25 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   };
 
   $scope.isMenuHidden = function(event) {
-    return !($scope.menuStatus | $scope.isSelected(event));
+    return !($scope.menuStatus || $scope.isSelected(event));
   };
 
   $scope.setSort = function(event) {
     switch(event){
-      case "add":
+      case 'add':
         $scope.sort = [!$scope.sort[0], false, false];
         break;
-      case "delete":
+      case 'delete':
         $scope.sort = [false, !$scope.sort[1], false];
         break;
-      case "modify":
+      case 'modify':
         $scope.sort = [false, false, !$scope.sort[2]];
         break;
     }
   };
 
   $scope.setModifySelected = function(elementName) {
-    $scope.modifySelected = $scope.modifySelected !== elementName ? elementName : "";
+    $scope.modifySelected = $scope.modifySelected !== elementName ? elementName : '';
   };
 
   $scope.isModifySelected = function(elementName) {
@@ -193,14 +204,14 @@ angular.module("picbit").controller("UserHomeController", ["$scope", "$timeout",
   };
   
   $scope.deleteTimeline = function(elementName) {
-    angular.element(document.querySelector("#container")).find(elementName).remove();
+    angular.element(document.querySelector('#container')).find(elementName).remove();
     var index = $scope.listComponentAdded.indexOf(elementName);
     $scope.listComponentAdded.splice(index, 1);
   };
 
   $scope.showToggleHelp = function (e){
     var element = e.target;
-    var id = element.getAttribute("data-dialog") || element.parentElement.getAttribute("data-dialog");
+    var id = element.getAttribute('data-dialog') || element.parentElement.getAttribute('data-dialog');
     var dialog = document.getElementById(id);
     if (dialog) {
       dialog.open();
