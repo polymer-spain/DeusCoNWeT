@@ -32,14 +32,12 @@
     "tests",
     "*.*~"
   ],
-  "_release": "3b08ff397b",
+  "_release": "5bf1cc7",
   "_resolution": {
-    "type": "branch",
-    "branch": "update1.0",
-    "commit": "3b08ff397bd723de79589ac69ac466e654ef8313"
+    "type": "commit",
+    "commit": "5bf1cc7"
   },
   "_source": "git://github.com/Mortega5/facebook-wall.git",
-  "_target": "update1.0",
-  "_originalSource": "facebook-wall",
-  "_direct": true
+  "_target": "5bf1cc7",
+  "_originalSource": "facebook-wall"
 }

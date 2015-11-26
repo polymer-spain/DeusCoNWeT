@@ -2,7 +2,7 @@
 
 <div ng-container id="container">
   
-  <facebook-wall component_directory="bower_components/facebook-wall/" language="{{idioma}}" access_token="{{user.tokens.facebook}}" class="facebook-wall"></facebook-wall>
+  <facebook-wall component_directory="bower_components/facebook-wall/" language="{{idioma}}" ng-drag access_token="{{user.tokens.facebook}}" class="facebook-wall"></facebook-wall>
   <div class="horizontal around-justified layout">
     <div class="vertical layout end" id="listOption" style="z-index:1">
       <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">

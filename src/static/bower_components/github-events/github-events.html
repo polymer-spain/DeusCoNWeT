@@ -19,10 +19,15 @@ limitations under the License.
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+
 <link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="stylesheet" href="octicons/octicons.css">
 
 <!--
 Element providing solution to no problem in particular.
@@ -39,100 +44,118 @@ Element providing solution to no problem in particular.
 <dom-module id="github-events">
 
   <style is="custom-style">
-    :host{
+    :host {
       display: inline-block;
-      font-family: Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-      color: #222;
-      font-size: 5px;
+      --github-events-width: 450px;
+      --github-events-height: 450px;
+      font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      color:#2e2e2e;
     }
 
-    .box {
-      border: 5px solid #AEAEAE;
-      border-top: none;
-      width: 400px;
-      padding:15px 5px;
-      margin:0;
-      font-size: 12.5px;
-      background: #f2f5f6; /* Old browsers */
-      background: -moz-linear-gradient(-45deg,  #f2f5f6 0%, #e3eaed 51%, #c8d7dc 100%); /* FF3.6+ */
-      background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#f2f5f6), color-stop(51%,#e3eaed), color-stop(100%,#c8d7dc)); /* Chrome,Safari4+ */
-      background: -webkit-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* Chrome10+,Safari5.1+ */
-      background: -o-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* Opera 11.10+ */
-      background: -ms-linear-gradient(-45deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* IE10+ */
-      background: linear-gradient(135deg,  #f2f5f6 0%,#e3eaed 51%,#c8d7dc 100%); /* W3C */
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f6', endColorstr='#c8d7dc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
+    paper-header-panel {
+      width: var(--github-events-width);
+      height: var(--github-events-height);
+      @apply(--shadow-elevation-3dp);
+      border-radius: 8px;
+      background: #e8e2e2;
     }
-    #logo {
-      margin: 5px;
-      width: 100px;
-      height: 40px;
-      display:inline-block;
-      float:left;
-    }
-    .box:last-child {
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-      border: 5px solid #AEAEAE;
-      border-top: none;
-    }
-    #cabecera {
-      background: #dbdbdb; /* Old browsers */
-      background: -moz-radial-gradient(center, ellipse cover,  #dbdbdb 0%, #a8a8a8 100%); /* FF3.6+ */
-      background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#dbdbdb), color-stop(100%,#a8a8a8)); /* Chrome,Safari4+ */
-      background: -webkit-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* Chrome10+,Safari5.1+ */
-      background: -o-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* Opera 12+ */
-      background: -ms-radial-gradient(center, ellipse cover,  #dbdbdb 0%,#a8a8a8 100%); /* IE10+ */
-      background: radial-gradient(ellipse at center,  #dbdbdb 0%,#a8a8a8 100%); /* W3C */
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbdbdb', endColorstr='#a8a8a8',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      font-weight: bold;
+    div.paper-header {
+      height: 60px;
       font-size: 16px;
+      line-height: 60px;
+      padding: 0 10px;
+      color: white;
+      transition: height 0.2s;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
     }
-    #cabecera p {
-      text-align:center;
+    div.paper-header {
+      background: rgb(77,105,162);
+      background: linear-gradient(to bottom,  rgb(46, 46, 46) 0%,rgb(69, 69, 69) 100%);
+
     }
-    .imgEvent {
-      float: left;
-      width:50px;
-      height:50px;
-      margin-right: 5px;
-      margin-bottom: 8px;
+    div.paper-header iron-icon {
+      border-radius: 5px;
+      width: 40px;
+      height: 40px;
     }
-    .imgEvent /deep/ img {
-      border-radius: 50%; 
-      box-shadow: 1px 1px 5px #888;
-      border: 1px inset rgba(24, 41, 49, 0.67);
-    }
-    .name {
-      font-size: 15px;
+    .title {
       font-weight: bold;
+      font-size: 1.3em;
+    }
+    .event {
+      min-height: 100px;
+      padding: 8px;
+      border-radius: 3px;
+      font-size:14px;
+      background: rgb(238,238,238);
+      background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(233,233,233,1) 52%, rgba(238,238,238,1) 100%);
+      background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+      background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
+    }
+
+    .eventShadow{
+      margin: 15px 8px;
+    }
+    paper-button {
+      background-color:#9e9e9e;
+      text-transform: none;
+      color: #444;
+      margin:0;
+      font-size: 14px;
+    }
+    .loadmore {
+      margin:5px auto 10px auto;
+    }
+    .header .name {
+      margin: auto 12px;			
+    }
+    .header iron-icon {
+      width: 40px;
+      height: 40px;
+    }
+    .header iron-icon /deep/ img {
+      border-radius: 50%;
+    }
+    .header .date {
+      font-size:11px;
     }
     a {
       text-decoration: none;
-      color: #2f4b6c;
+      color: #1e71bf;
       font-weight: bold;
-    }
-    a:visited {
     }
     a:hover {
       text-decoration: underline;
     }
-
-    #scrollControl::-webkit-scrollbar {
-      width: 5px;
-      background: #b9b9b9;
+    .event > .content {
+      margin: 10px 3px;
     }
 
-    #scrollControl::-webkit-scrollbar-thumb {
-      background: #55acee;
-      -webkit-border-radius: 1px;
+    .additionalInfo {
+      margin: 5px 28px;
+      font-size: 12px;
     }
-    #scrollControl {
-      overflow-y: scroll;
-      max-height: var(--github-events-contain-max-height, 400px);
+    .additionalInfo p{
+      color: #666;
+    }
+    .githubIcon {
+      margin:auto 0;
+    }
+    .watchevent .starIcon iron-icon{
+      width: 18px;
+    }
+    .text{
+      margin: 3px 0px 3px 8px;
+      word-break: break-all
+    }
+    .loading {
+      margin:auto;
+    }
+    .deletedBranch{
+      font-weight: bold;
+      color:darkred;
     }
   </style>
 
@@ -144,62 +167,350 @@ Element providing solution to no problem in particular.
                params="{{events_params}}"
                handleAs="json"
                on-response="_response"
+               on-request="waitCursor"
                >
     </iron-ajax>
-
+    <iron-ajax
+               id="refresh"
+               method="GET"
+               url="{{events_url}}"
+               handleAs="json"
+               on-response="_refreshResponse"
+               on-error="_refreshResponse"
+               on-request="waitCursor"
+               >
+    </iron-ajax>
     <iron-ajax
                id="requestLanguage"
                url="{{language_url}}"
                method="GET"
                handleAs='json'
                on-response="_language_response"
+               on-request="waitCursor"
                >
     </iron-ajax>
-
-    <paper-material elevation="2">
-      <div id ="cabecera" class="horizontal center-justified layout">
-        <iron-icon src="foto.png" id="logo"></iron-icon>
-        <p class="flex">{{language_data.title}}</p>
-        <paper-icon-button title="{{language_data.refresh}}" icon="icons:refresh" on-click="refresh">
-        </paper-icon-button>
+    <paper-header-panel id="panelHeader" mode="waterfall" class="blue">
+      <div class="paper-header horizontal layout center-justified">
+        <div><iron-icon src="picture.png"></iron-icon></div>
+        <div class="flex" style="text-align:center"><span class="title">GitHub Events</span></div>
+        <div><paper-icon-button icon="refresh" on-click="refresh"></paper-icon-button></div>
       </div>
+      <div class="content">
+        <template is="dom-repeat" items="{{events}}">
+          <paper-material elevation="2" class="eventShadow">
+            <div class="event">
+              <!-- HEADER user and time information -->
+              <div class="header horizontal layout">
+                <iron-icon src="{{item.actor.avatar_url}}" class="imgEvent"></iron-icon>
+                <div class="flex"><a href="{{_getUrlWithGithub(item.actor.login)}}" target="_blank" class="name">
+                  {{item.actor.login}}
+                  </a>
+                </div>
+                <span class="date">{{item.date}}</span>
+              </div>
 
-      <template if="{{show}}">
-        <ul class="box">
-          <p>{{language_data.loading}}</p>
-        </ul>
-      </template>
+              <!-- content information-->
+              <div class="content">
+
+                <!-- PUSH EVENT -->
+                <template is="dom-if" if="{{_checkPostType(item.type, 'PushEvent')}}">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-git-commit"></span>
+                    </div>
+                    <div>
+                      <p class="text">
+                        <span>{{language_data.push}}</span>
+                        <a href="{{_getBranchUrl(item.repo.name, item.payload.ref)}}" target="_blank">
+                          <span>{{_getBranch(item.payload.ref)}}</span>
+                        </a>
+                        <span>{{language_data.at}}</span>
+                        <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                          <span>{{item.repo.name}}</span>
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="additionalInfo">
+                    <p>
+                      <a href="{{_getCommitInfo(item.repo.name, item.payload.head)}}" target="_blank">
+                        <span>{{_getCommitHead(item.payload.head)}}</span>
+                      </a>
+                      <span> {{_getCommitMessage(item.payload.commits, 0)}}</span>
+                    </p>
+                  </div>
+                </template>
+
+                <!-- WATCH EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'WatchEvent')]]">
+                  <div class="horizontal layout watchevent">
+                    <div class="githubIcon"><span class="octicon octicon-star"></span>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.starred}}</span>
+                      <a href="{{_getUrlWithGithub(item.repo.name)}}" target="_blank">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
+
+                <!-- CREATE EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'CreateEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <template is="dom-if" if="[[_checkPostType(item.payload.ref_type, 'branch')]]">
+                        <span class="octicon octicon-git-branch"></span>
+                      </template>
+                      <template is="dom-if" if="[[_checkPostType(item.payload.ref_type, 'tag')]]">
+                        <span class="octicon octicon-tag"></span>
+                      </template>
+                      <template is="dom-if" if="[[_checkPostType(item.payload.ref_type, 'repository')]]">
+                        <span class="octicon octicon-git-branch"></span>
+                      </template>
+                    </div>
+                    <p class="text">
+                      <span>{{item.createEvent}}</span>
+                      <template is="dom-if" if="{{item.payload.ref}}">
+                        <a href="{{_getBranchUrl(item.repo.name, item.payload.ref)}}" target="_blank">
+                          <span>{{item.payload.ref}}</span>
+                        </a>
+                      </template>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
+
+                <!-- PULL REQUEST EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'PullRequestEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-git-pull-request">
+                      </span>
+                    </div>
+                    <div>
+                      <p class="text">
+                        <span>{{item.pullRequestAction}}</span>
+                        <a href="{{_getPullRequestUrl(item.repo.name, item.payload.number)}}" target="_blank">
+                          <span>#{{item.payload.number}}</span>
+                        </a>
+                        <span>{{language_data.at}}</span>
+                        <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                          <span>{{item.repo.name}}</span>
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="additionalInfo">
+                    <p style="margin:0px">{{item.payload.pull_request.title}}</p>
+                  </div>
+                </template>
+                <!-- ISSUES EVENTS -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'IssuesEvent')]]">
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'opened')]]">
+                    <div class="horizontal layout">
+                      <div class="githubIcon">
+                        <span class="octicon octicon-issue-opened"></span>
+                      </div>
+                      <div>
+                        <p class="text">
+                          <span>{{language_data.issuesEvent.opened}}</span>
+                          <a href="{{_getIssueUrl(item.repo.name, item.payload.issue.number)}}" target="_blank">
+                            <span>#{{item.payload.issue.number}}</span>
+                          </a>
+                          <span> {{language_data.at}}</span>
+                          <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                            <span>{{item.repo.name}}</span>
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="additionalInfo">
+                      <p style="margin:0px">{{item.payload.issue.title}}</p>
+                    </div>
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'closed')]]">
+                    <div class="horizontal layout">
+                      <div class="githubIcon">
+                        <span class="octicon octicon-issue-closed"></span>
+                      </div>
+                      <div>
+                        <p class="text">
+                          <span>{{language_data.issuesEvent.closed}}</span>
+                          <a href="{{_getIssueUrl(item.repo.name, item.payload.issue.number)}}" target="_blank">
+                            <span>#{{item.payload.issue.number}}</span>
+                          </a>
+                          <span> {{language_data.at}}</span>
+                          <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                            <span>{{item.repo.name}}</span>
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="additionalInfo">
+                      <p style="margin:0px">{{item.payload.issue.title}}</p>
+                    </div>
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'assigned')]]">
+                    Not yet implemented assigned
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'unassigned')]]">
+                    Not yet implemented unassigned
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'labeled')]]">
+                    Not yet implemented labeled
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'unlabeled')]]">
+                    Not yet implemented unlabeled
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'reopened')]]">
+                    <div class="horizontal layout">
+                      <div class="githubIcon">
+                        <span class="octicon octicon-issue-reopened"></span>
+                      </div>
+                      <div>
+                        <p class="text">
+                          <span>{{language_data.issuesEvent.reopened}}</span>
+                          <a href="{{_getIssueUrl(item.repo.name, item.payload.issue.number)}}" target="_blank">
+                            <span>#{{item.payload.issue.number}}</span>
+                          </a>
+                          <span> {{language_data.at}}</span>
+                          <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                            <span>{{item.repo.name}}</span>
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="additionalInfo">
+                      <p style="margin:0px">{{item.payload.issue.title}}</p>
+                    </div>
+                  </template>
+                </template>
+
+                <!-- DELETE EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'DeleteEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon"><span class="octicon octicon-trashcan"></span>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.delete}}</span>
+                      <span class="deletedBranch">{{_getBranch(item.payload.ref)}}</span>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
+
+                <!-- MEMBER EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'MemberEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-person"></span>
+
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.member}}</span>
+                      <a href="{{_getUrlWithGithub(item.payload.member.login)}}" target="_blank" class="name">
+                        <span>{{item.payload.member.login}}</span>
+                      </a>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
+
+                <!-- RELEASE EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'ReleaseEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-tag"></span>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.releaseEvent}}</span>
+                      <a href="{{_getReleaseUrl(item.repo.name, item.payload.release.tag_name)}}" target="_blank" class="name">
+                        <span>{{item.payload.release.name}}</span>
+                      </a>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
+
+                <!-- COMMIT COMMENT EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'CommitCommentEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-comment"></span>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.commitCommentEvent}}</span>
+                      <a href="{{item.payload.comment.html_url}}" target="_blank" class="name">
+                        <span>{{_getCommitHead(item.payload.comment.commit_id)}}</span>
+                      </a>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                  <div class="additionalInfo">
+                    <p>
+                      <iron-icon src="{{item.payload.comment.user.avatar_url}}"></iron-icon>
+                      <span>{{item.payload.comment.body}}</span>
+                    </p>
+                  </div>
+                </template>
+
+                <template is="dom-if" if="[[_checkPostType(item.type, 'GollumEvent')]]">
+                  TODO gollum event
+                </template>
+
+                <template is="dom-if" if="[[_checkPostType(item.type, 'IssueCommentEvent')]]">
+                  TODO issue comment event
+                </template>
+
+                <template is="dom-if" if="[[_checkPostType(item.type, 'PublicEvent')]]">
+                  TODO public event
+                </template>
+
+                <template is="dom-if" if="[[_checkPostType(item.type, 'PullRequestReviewCommentEvent')]]">
+                  TODO pull request review event
+                </template>
+                <template is="dom-if" if="[[_checkPostType(item.type, 'ForkEvent')]]">
+                  TODO pull request fork event
+                </template>
 
 
-
-      <div id="scrollControl">
-        <!-- Cambiado la manera del repeat -->
-        <template id="contenido" is="dom-repeat" items="{{events}}">
-          <ul class="box">
-            <div style="text-align: center">
-              <iron-icon src="{{item.actor.avatar_url}}" class="imgEvent">
-              </iron-icon>
-              <a href$="{{_getUrlWithGithub(item.actor.login)}}" style="color: black" target="_blank">
-                <span class="name">{{item.actor.login}}</span>
-              </a>
+              </div>
             </div>
-            <p style="clear:both;margin:10px inherit">{{item.operation}}<a target="_blank" href$="{{_getUrlWithGithub(item.repo.name)}}">
-              <span>{{item.repo.name}}</span>
-              </a>
-            </p>
-
-            <a href$="{{_getCommitInfo(item.repo.name, item.payload.commits[0],sha)}}"a target="_blank"><p>{{item.info}}</p></a>
-            <p style="font-size:11px;text-align:right">{{item.date}}</p>
-          </ul>
+          </paper-material>						
         </template>
 
+        <!-- Show more button -->
         <template is="dom-if" if="[[_showLoadMore(lastPage, page, show)]]">
-          <ul class="box" style="text-align:center;cursor: pointer;font-size: 16px"  on-click="load">
-            <span style="font-size: 12px">{{language_data.load_more}}</span>
-          </ul>
+          <div class="horizontal center-justified layout">
+            <paper-material elevation="2" class="loadmore">
+              <paper-button on-click="load">{{language_data.load_more}}</paper-button>
+            </paper-material>
+          </div>
+        </template>
+        <!-- loading screen-->
+        <template is="dom-if" if="{{_noEvents(events.length)}}">
+          <div class="vertical center-justified layout">
+            <img class="loading" src="http://www.schultzlawoffice.com/img/loading/loading-x.gif">
+          </div>
         </template>
       </div>
-    </paper-material>
+    </paper-header-panel>
   </template>
 
   <script>
@@ -216,8 +527,8 @@ Element providing solution to no problem in particular.
         per_page: {
           type: Number,
           value:15,
-          notify: true,
-          reflectToAttribute: true
+          notify: true/*,
+          reflectToAttribute: true*/
         },
         username: {
           type: String,
@@ -231,7 +542,7 @@ Element providing solution to no problem in particular.
         },
         page: {
           type: Number,
-          value: 1,
+          value: 0,
           notify: true
         },
         language: {
@@ -253,7 +564,10 @@ Element providing solution to no problem in particular.
           type: String,
           computed: '_processEventParams(page, per_page)'
         },
-        events: Object,
+        events: {
+          type: Object,
+          value: []
+        },
         token: {
           type:String,
           notify: true
@@ -262,26 +576,59 @@ Element providing solution to no problem in particular.
           type:String,
           value: "",
           reflectToAttribute: true
+        },
+        etag: {
+          type: String,
+          notify: true,
+          observer: '_processRefreshHeader'
+        },
+        refresh_time: {
+          type: Number,
+          value: 60000,
+          reflectToAttribute: true,
+          notify: true,
+          observer: '_refresUpdate'
         }
       },
 
       attached : function() {
+        //TODO remove that
         if (this.token) {
-          this.$.request.setAttribute("headers", '{"Authorization":"token '+this.token+'"}');
+          this.$.request.setAttribute("headers", '{"Authorization":"token '+this.token + '"}');
+          this.$.refresh.setAttribute("headers", '{"Authorization":"token '+this.token + '"}');
         }
+        var back = this;
+        window.setInterval(function(){back.$.request.generateRequest();}, back.refresh_time);
+
         this.$.requestLanguage.generateRequest();
       },
-      _response: function(event,detail){
-        // Github events
 
-        if (this.events) {
+      // AJAX RESPONSE
+      _response: function(event,detail){
+        this.$.panelHeader.style.cursor = "default";
+        if (this.events.length > 0) {
           for (i=0;i<detail.response.length;i++) {
+            if (detail.response[i].type === "PullRequestEvent") {
+              detail.response[i].pullRequestAction = this.language_data[detail.response[i].payload.action + "PullRequest"];
+            } else if (detail.response[i].type === "CreateEvent") {
+              detail.response[i].createEvent = this.language_data.createEvent[detail.response[i].payload.ref_type];
+            }
             this.push('events', detail.response[i])
           };
         } else {
           this.set('events', detail.response);
-        }
-        this.changeEvent(this.events);
+          for (i=0;i<this.events.length;i++) {
+            if (this.events[i].type === "PullRequestEvent") {
+              this.set('events.' + i + '.pullRequestAction', this.language_data[this.events[i].payload.action + "PullRequest"])
+            } else if (this.events[i].type === "CreateEvent") {
+              this.set('events.' + i + '.createEvent', this.language_data.createEvent[this.events[i].payload.ref_type]);
+            }
+          };
+        };
+        this._changeTime(this.events);
+
+        // take etag
+        this.etag = detail.xhr.getResponseHeader("ETag");
 
         // Check lastPage
         if (this.lastPage == '') {
@@ -299,15 +646,21 @@ Element providing solution to no problem in particular.
       },
 
       _language_response: function(event, detail){
+        this.$.panelHeader.style.cursor = "default";
         this.language_data = detail.response;
-        if(!this.events){
+        if(this.events.length === 0){
           this.$.request.generateRequest();
         }
         else{
-          this.events = this.changeEvent(this.events)
+          this._changeTime(this.events);
+          for (i=0;i<this.events.length;i++) {
+            if (this.events[i].type === "PullRequestEvent") {
+              this.set('events.' + i + '.pullRequestAction', this.language_data[this.events[i].payload.action + "PullRequest"])
+            }
+          }
         }
       },
-
+      // OBSERVERS
       _languageChanged: function(newVal){
         if(newVal === "en"){
           this.language = "en";
@@ -321,60 +674,127 @@ Element providing solution to no problem in particular.
           this.$.requestLanguage.generateRequest();
         }
       },
+      _refresUpdate: function(newVal) {
+        var back = this;
+        window.clearInterval();
+        window.setInterval(function(){back.$.refresh.generateRequest()}, back.refresh_time);
+      },
 
+      // MORE BUTTON
       load: function(){
         this.$.request.generateRequest();
       },
 
+      // REFRESH REQUEST
       refresh: function(){
-        this.changeEvent(this.events);
+        // if-none-match minusculas
+        this.$.refresh.generateRequest();
       },
-
-      changeEvent: function(list){
-        for (i=0;i<list.length;i++){
-          switch(list[i].type) {
-            case "PushEvent":
-              this.set("events." + i + ".operation", this.language_data.push);
-              if (list[i].info) {
-                this.set("events." + i + ".info", "Commit: \n "+list[i].payload.commits[0].message)
-              };
-              break;
-            case "WatchEvent":
-              this.set("events." + i + ".operation", this.language_data.follow);
-              break;
-            case "CreateEvent":
-              this.set("events." + i + ".operation", this.language_data.create);
-              break;
-            case "PullRequestEvent":
-              this.set("events." + i + ".operation", this.language_data.pull_request);
-              break;
-            case "IssuesEvent":
-              break;
-            case "MemberEvent":
-              break;
-            case "ReleaseEvent":
-              break;
-            case "CommitCommentEvent":
-              break;
-            case "DelateEvent":
-              break;
-            case "GollumEvent":
-              break;
-            case "IssueCommentEvent":
-              break;
-            case "PublicEvent":
-              break;
-            case "PullRequestReviewCommentEvent":
-              break;
+      _refreshResponse: function(e, d) {
+        this.$.panelHeader.style.cursor = "default";
+        if (d.status === 200){
+          var last_id = this.events[0].id;
+          this.etag = d.xhr.getResponseHeader('ETag');
+          var isNew = true;
+          for (i=0;i<d.response.length && isNew;i++) {
+            if (d.response[i].id == last_id) {
+              isNew = false;
+            } else {
+              if (d.response[i].type === "PullRequestEvent") {
+                d.response[i].pullRequestAction = this.language_data[d.response[i].payload.action + "PullRequest"];
+              } else if (d.response[i].type === "CreateEvent") {
+                d.response[i].createEvent = this.language_data.createEvent[d.response[i].payload.ref_type];
+              }
+              this.unshift('events', d.response[i])
+            }
           };
-          var date = new Date(list[i].created_at);
-          var month = [this.language_data.january,this.language_data.february,this.language_data.march,this.language_data.april, this.language_data.may,this.language_data.june,this.language_data.july,this.language_data.august,this.language_data.september,this.language_data.october,this.language_data.november,this.language_data.december];
-          list[i].date =this.language_data.date+date.getDate()+ this.language_data.of +month[date.getMonth()]+this.language_data.of+date.getFullYear();
         }
-        return list;
+        this._changeTime(this.events);
+      },
+      // PARSE TIME
+      _changeTime: function(list){
+        for (i=0;i<list.length;i++){
+          var date = new Date(list[i].created_at);
+          var current_date = new Date();
+          var time;
+          /* Años*/
+          if ((current_date.getFullYear() - date.getFullYear()) != 0) {
+            var dif = current_date.getFullYear() - date.getFullYear()
+            time = dif==1 ? dif + " " + this.language_data.year : dif + " " + this.language_data.years;
+            /* Meses */
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+            var dif = current_date.getMonth() - date.getMonth();
+            time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
+            /* Dias */
+          } else if((current_date.getDate() - date.getDate()) == 0 ){
+            if((current_date.getHours() - date.getHours()) == 0 ){
+              if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
+
+                time = current_date.getSeconds() - date.getSeconds()+" "+this.language_data.seconds
+              }
+              else{
+                time = current_date.getMinutes() - date.getMinutes()+" "+this.language_data.minutes
+              }
+            }
+            else{
+              if (current_date.getHours() - date.getHours() == 1) {
+                time = current_date.getHours() - date.getHours()+" "+this.language_data.hour;
+              }else {
+                time = current_date.getHours() - date.getHours()+" "+this.language_data.hours;
+              }
+            }
+          }
+          else if( ((current_date.getDate() - date.getDate()) < 8) && ( (current_date.getDate() - date.getDate()) > 0)){
+            if( (current_date.getDate() - date.getDate()) == 1){
+              time = current_date.getDate() - date.getDate()+" "+ this.language_data.day
+            }
+            else{
+              time = current_date.getDate() - date.getDate()+" "+this.language_data.days
+            }
+          }
+          else{
+            var month = [this.language_data.january,this.language_data.february,this.language_data.march,this.language_data.april, this.language_data.may,this.language_data.june,this.language_data.july,this.language_data.august,this.language_data.september,this.language_data.october,this.language_data.november,this.language_data.december];
+            time = date.getDate()+" "+month[date.getMonth()] + ". "+date.getFullYear();
+
+          }
+          this.set("events." + i + ".date", time);
+
+        }
       },
 
-      // Proces
+      // GETTERS
+      _getBranch: function(ref) {
+        refSplited = ref.split("/");
+        return refSplited[refSplited.length-1];
+      },
+      _getBranchUrl: function(url, ref){
+        var branch = this._getBranch(ref);
+        return "https://github.com/" + url + "/tree/" + branch;
+      },
+      _getCommitHead: function(sha) {
+        return sha.slice(0, 7);
+      },
+      _getCommitMessage: function(commits, position) {
+        return commits[position].message;
+      },
+      _getUrlWithGithub: function(path) {
+        return "https://github.com/" + path;
+      },
+      _getCommitInfo: function(name, commit) {
+        return "https://github.com/" + name + "/commit/" + commit;
+      },
+      _getPullRequestUrl: function(repo, pullRequesId) {
+        return "https://github.com/" + repo + "/pull/" + pullRequesId;
+      },
+      _getIssueUrl: function(repo, number) {
+        return "https://github.com/" + repo + "/issues/" + number;
+      },
+      _getReleaseUrl: function(repo, tag) {
+        return "https://github.com/" + repo + "/releases/tag/" + tag;
+      },
+
+
+      // PROCESS
       _processUrl: function(component_directory, idioma) {
         return component_directory + "language/" + idioma; 
       },
@@ -382,17 +802,25 @@ Element providing solution to no problem in particular.
         return "https://api.github.com/users/" + username + "/received_events";
       },
       _processEventParams: function(page, per_page) {
-        return {"page": page,"per_page": per_page}
+        return page == 0? {}: {page: page};
       },
-      _showLoadMore: function(lastPage, page, show){
-        return lastPage > page && !show;
+      _processRefreshHeader: function(etag) {
+        this.$.refresh.headers["If-None-Match"] = etag;       
       },
 
-      _getUrlWithGithub: function(path) {
-        return "https://github.com/" + path;
+
+      // BOOLEAN FUNCTION
+      _showLoadMore: function(lastPage, page, show){
+        return lastPage > page && !show;
+      },      
+      _checkPostType: function(origin, type) {
+        return origin === type;
       },
-      _getCommitInfo: function(name, commit) {
-        return "https://github.com/" + name + "/commits/" + commit;
+      _noEvents: function(events) {
+        return events == 0;
+      },
+      waitCursor: function(){
+        this.$.panelHeader.style.cursor = "wait";
       }
 
     });

@@ -46,17 +46,15 @@ using [Facebook API](https://developers.facebook.com/docs/facebook-login/access-
 + [ ] `Likes` only return 25 post, I cannot get *#likes* with this field. Use GET to `/{object_id}/likes?summary=true`
       The response have *#likes*.
 
-+ [x] Wrap post with border. Which ones?.
++ [ ] Wrap post with border. Which ones?.
 
 + [x] Some linked posts have `story` field, some need use it as "general header".
 
 + [ ] Add `name` and `message` format to `shared_story` and `type link`.
 
-+ [x] Get Post with correct language. (use the correct request)
++ [ ] Get Post with correct language. (use the correct request)
 
-+ [ ] Refresh post messages when the language change.
-
-+ [x] Use API to get user's posts. (you need `read_stream` permissions)
++ [ ] Use API to get user's posts. (you need `read_stream` permissions)
 
 
 

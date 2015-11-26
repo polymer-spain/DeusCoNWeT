@@ -92,6 +92,12 @@ picbit.directive("ngDrag", function () {
     element.on("drag", scope.dragging);
     element.on("dragstart", scope.deleteShadow);
     element.on("dragend", scope.deleteMove);
+    if (!element.attr("draggable")) {
+      element.attr("draggable", "{{modifySelected === '" + element[0].tagName.toLowerCase() + "'}}");
+      var injector = element.injector();
+      var $compile = injector.get("$compile");
+      $compile(element)(element.scope());
+    }
   }
   /* creamos un scope propio */
   return {link: link, scope: true};
@@ -100,7 +106,6 @@ picbit.directive("ngDrag", function () {
 picbit.directive("ngContainer", function () {
   "use strict";
   function link(scope, element) {
-
 
     scope.dropObject = function (evento) {
       /* Evitamos la accion por defecto y la propagacion a los hijos*/
@@ -121,7 +126,7 @@ picbit.directive("ngContainer", function () {
         /* TODO: si se elimina existe un problema con añadirlo de nuevo
          * habría que hacer un AND entre dos listas (idk como )
          */
-/*        for (var i = 0; i < scope.listComponents.length; i++) {
+        /*        for (var i = 0; i < scope.listComponents.length; i++) {
           if (scope.listComponents[i].name === id) {
             scope.listComponents.splice(i, 1);
             break;
