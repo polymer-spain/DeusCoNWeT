@@ -47,8 +47,9 @@ class ComponentListHandler(SessionHandler):
         Keyword arguments: 
         self -- info about the request build by webapp2
         """
-        # Get the cookie in the request
+        # Get the cookies in the request
         cookie_value = self.request.cookies.get("session")
+
         # Social_network,filter_param and list_format are optional params
         social_network = self.request.get("social_network", default_value="")
         filter_param = self.request.get("filter",default_value="general")
@@ -78,6 +79,20 @@ class ComponentListHandler(SessionHandler):
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)        
             else:
+                # We invalidate the session cookie received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                
+                # Response to the client
                 response = \
                     {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
@@ -93,6 +108,7 @@ class ComponentListHandler(SessionHandler):
     # POST Method
     def put(self):
         """ Uploads a component. The component is stored in the Datastore of the application
+        This request does not need to be made along with a cookie identifying the session
         Keyword arguments: 
         self -- info about the request build by webapp2
         """
@@ -175,22 +191,43 @@ class ComponentHandler(SessionHandler):
         format = self.request.get("format", default_value="reduced")
         if not cookie_value == None:
             user_id = self.getUserInfo(cookie_value)
-            if not user_id == None and format == "reduced" or format == "complete":
-                format_flag = True if format == "complete" else False
-                component = ndb_pb.getComponent(user_id, component_id, format_flag)
-                if not component == None:
-                    self.response.content_type = "application/json"
-                    self.response.write(component)
-                    self.response.set_status(200)
+            if not user_id == None:
+                if format == "reduced" or format == "complete":
+                    format_flag = True if format == "complete" else False
+                    component = ndb_pb.getComponent(user_id, component_id, format_flag)
+                    if not component == None:
+                        self.response.content_type = "application/json"
+                        self.response.write(component)
+                        self.response.set_status(200)
+                    else:
+                        response = \
+                        {"error": "Component not found in the system"}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(404)    
                 else:
                     response = \
-                    {"error": "Component not found in the system"}
+                    {"error": "The format param provided is incorrect"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
-                    self.response.set_status(404)            
+                    self.response.set_status(400)
             else:
+                # We invalidate the session cookie received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                
+                # We write the response providing details about the error 
                 response = \
-                    {"error": "The cookie session or the format param provided are incorrect"}
+                    {"error": "The session cookie provided is incorrect"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
@@ -272,6 +309,20 @@ class ComponentHandler(SessionHandler):
                     self.response.write(json.dumps(response))
                     self.response.set_status(200)
             else:
+                # We invalidate the session cookie received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which the user performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                
+                # We write in the response details about the error
                 response = \
                     {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
@@ -310,8 +361,22 @@ class ComponentHandler(SessionHandler):
                         self.response.write(json.dumps(response))
                         self.response.set_status(404)
                 else:
+                    # We invalidate the session cookie received
+                    expire_date = datetime.datetime(1970,1,1,0,0,0)
+                    self.response.set_cookie("session", cookie_value,
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                    # We delete and invalidate other cookies received, like the user logged nickname
+                    # and social network in which the user performed the login
+                    if not self.request.cookies.get("social_network") == None:
+                        self.response.set_cookie("social_network", "",
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                    if not self.request.cookies.get("user") == None:
+                        self.response.set_cookie("user", "",
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                    
                     self.response.content_type = "application/json"
-                    self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
+                    response = {"error": "The session cookie header does not belong to an active user in the system"}
+                    self.response.write(json.dumps(response))
                     self.response.set_status(400)    
             else:
                 self.response.content_type = "application/json"

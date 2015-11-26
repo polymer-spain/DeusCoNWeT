@@ -229,7 +229,7 @@ class OauthLogoutHandler(SessionHandler):
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
                 self.response.set_cookie("session", cookie_value,
                             path="/", domain=domain, secure=True, expires=expire_date)
-                self.response.set_cookie("social_network", social_network,
+                self.response.set_cookie("social_network", "",
                             path="/", domain=domain, secure=True, expires=expire_date)
                 self.response.set_cookie("user", "",
                             path="/", domain=domain, secure=True, expires=expire_date)
