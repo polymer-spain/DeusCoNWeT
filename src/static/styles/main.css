@@ -4,47 +4,119 @@
   src: url('../fonts/ArchisticoBold.ttf');
 }
 
+/* Responsive letter size */
+
+/* mobile*/
+@media only screen and (max-width: 480px){
+  .letterSmall {
+    font-size: 0.3em;
+  }
+  .letterMedium {
+    font-size: 0.4em;
+  }
+  .letterBig {
+    font-size: 0.5em;
+  }
+  .letterTittle {
+    font-size: 1em;
+  }
+
+  #language /deep/ iron-dropdown {
+    margin-top: 9%;
+    /*margin-left: 20px;*/
+  }
+}
+@media only screen  and (min-width: 480px) and (max-width: 640px) {
+
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.8em;
+  }
+  .letterTittle {
+    font-size: 1.7em;
+  }
+  #language /deep/ iron-dropdown{
+    margin-top: 45px;
+    /*margin-left: 20px;*/
+  }
+}
+
+/* laptops */
+@media only screen and (min-width:640px) and (max-width: 1024px) {
+  .letterSmall {
+    font-size: 0.7em;
+  }
+  .letterMedium {
+    font-size: 0.8em;
+  }
+  .letterBig {
+    font-size: 0.9em;
+  }
+  .letterTittle {
+    font-size: 2.4em;
+  }
+  #language /deep/ iron-dropdown{
+    margin-top: 9%;
+    /*margin-left: 20px;*/
+  }
+}
+@media only screen and (min-width:1024px) and  (max-width: 1600px) {
+  .letterSmall {
+    font-size: 0.8em;
+  }
+  .letterMedium {
+    font-size: 0.9em;
+  }
+  .letterBig {
+    font-size: 1em;
+  }
+  .letterTittle {
+    font-size: 2.7em;
+  }
+  #language /deep/ iron-dropdown{
+    margin-top: 9%;
+    /*margin-left: 20px;*/
+  }
+}
+
+
 body,html
 {
-  min-width: 1024px;
   height: 100%;
   margin: 0;
-
   color: rgb(255, 255, 255);
   background-attachment: fixed;
 }
 
 #header
 {
-  height: 80px;
   padding-right: 3%;
   padding-left: 3%;
-  min-width: 600px;
   background-color: rgba(0,0,0,.6);
 }
 #header .logoPicbit
 {
-  height: 50px;
-
   cursor: pointer;
+  padding: 0;
+  margin: 1%;
 }
-#name
-{
+#name {
   font-family: archistico;
-  font-size: 60px;
-
   margin: 0;
-
   color: #cbc7c7;
 }
+
 #name:hover
 {
   cursor: pointer;
 }
-#language
-{
-  margin-right: 2%;
-  padding-top: 25px;
+#language > paper-button {
+  text-transform: none;
 }
 
 #language /deep/ paper-menu
@@ -54,12 +126,11 @@ body,html
 
 #language /deep/ iron-dropdown
 {
-  margin-top: 65px;
-  margin-left: 20px;
+  margin-top: 9%;
+  /*margin-left: 20px;*/
 }
 .loginButton
 {
-  margin-top: 18px;
   padding-right: 10px;
   cursor:pointer;
   border-radius: 3px;
@@ -91,10 +162,7 @@ body,html
 }
 paper-item
 {
-  font-size: 14px !important;
-
   cursor: pointer;
-
   color: black;
   border-bottom: 1px solid #aaa;
   outline: none;
