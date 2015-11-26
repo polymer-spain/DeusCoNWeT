@@ -1,6 +1,6 @@
 {
   "name": "instagram-timeline",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "authors": [
     "Juan Francisco Salamanca Carmona <jfsalca@gmail.com>"
   ],
@@ -30,11 +30,11 @@
     "iron-icons": "PolymerElements/iron-icons#~1.0.4",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4"
   },
-  "_release": "2.0.0",
+  "_release": "2.0.1",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.0",
-    "commit": "9e85b0f8dcc22d7314c057c87b237e735c296e53"
+    "tag": "v2.0.1",
+    "commit": "209dd4507b7963dcfcda56f6e489c8ed68aa4213"
   },
   "_source": "git://github.com/JuanFryS/instagram-timeline.git",
   "_target": "~2.0.0",
