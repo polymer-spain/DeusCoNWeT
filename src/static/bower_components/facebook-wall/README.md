@@ -1,10 +1,10 @@
-# Facebook Wall
+# Facebook wall
 
-It is a [Polymer](https://www.polymer-project.org/1.0/) component which show a Facebook Wall.
+It is a [Polymer](https://www.polymer-project.org/1.0/) component which show a Facebook wall.
 
 `<facebook-wall>`
 
-The `facebook-wall` element displays a Facebook Wall.
+The `facebook-wall` element displays a Facebook wall.
 For use it, you  must take an `access token` of the user that you want to show him facebook's wall.
 
 **NOTE**: you need a [`read_stream`](https://developers.facebook.com/docs/facebook-login/permissions/v2.3) permission to

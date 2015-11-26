@@ -12,21 +12,40 @@ It is a [Polymer](https://www.polymer-project.org/1.0/) component that show Gith
 | username            | The username on Github that you want to get her events                                                                                      | Required  `<String>`                |
 | token               | The access_token on Github. If you use it, you have more request per hour                                                                   | Optional `<String>`               |
 | component_directory | The component directory where the component is. You must provide it when your component directory is different that your project directory. | Optional `<String>`               |
-| per_page            | The number of events per request.                                                                                                           | Optional Default: 15  `<Integer>` |
+| refresh_time            | how often the component refresh the data (milliseconds)                                                                                                           | Optional Default: 60000  `<Integer>`  |
 | language            | The language in which you want to get the posts (only allow `en` (english) and `es` (spanish) at the moment)                                | Optional Default: es `<String>`   |
 
 ## Parser Status
 
-- [x] PushEvent
-- [x] WatchEvent
-- [x] CreateEvent
-- [x] PullRequestEvent
-- [ ] IssuesEvent
-- [ ] MemberEvent
-- [ ] ReleaseEvent
-- [ ] CommitCommentEvent
-- [ ] DelateEvent
-- [ ] GollumEvent
-- [ ] IssueCommentEvent
-- [ ] PublicEvent
-- [ ] PullRequestReviewCommentEvent
+- [x] 1.PushEvent
+- [x] 2.WatchEvent
+- [x] 3.CreateEvent
+- [x] 4.PullRequestEvent
+- [x] 5.IssuesEvent
+  - [x] opened
+  - [x] closed
+  - [x] reopened
+  - [ ] assigned (useless)
+  - [ ] unassigned (useless)
+  - [ ] labeled (useless)
+  - [ ] unlabeled (useless)
+- [x] 6.MemberEvent
+- [X] 7.ReleaseEvent
+- [X] 8.CommitCommentEvent
+- [x] 9.DeleteEvent
+- [ ] 10.GollumEvent
+- [ ] 11.IssueCommentEvent
+- [ ] 12.PublicEvent
+- [ ] 13.PullRequestReviewCommentEvent
+- [ ] 14.ForkEvent
+- [ ] 15.TeamAddEvent
+- [ ] 16.StatusEvent
+- [ ] 17.RepositoryEvent
+- [ ] 18.PageBuildEvent
+- [ ] 19.MembershipEvent
+- [ ] 20.GistEvent
+- [ ] 21.ForkApplyEvent
+- [ ] 22.FollowEvent
+- [ ] 23.DownloadEvent
+- [ ] 24.DeploymentStatusEvent
+- [ ] 25.DeploymentEvent

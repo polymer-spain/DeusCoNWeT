@@ -7,13 +7,20 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.githubData = {};
   $scope.instagramData = {};
   $scope.facebookData = {};
-  
+
   $scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
   $scope.twitterData.token = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf';
   $scope.githubData.username = 'mortega5';
-  $scope.facebookData.token = $rootScope.user.tokens.facebook;
 
   $scope.listComponents = [
+    {
+      name: 'facebook-wall',
+      attributes: {
+        language: '{{idioma}}',
+        component_directory: 'bower_components/facebook-wall/',
+        access_token: $rootScope.user.tokens.facebook
+      }
+    },
     {
       name: 'twitter-timeline',
       attributes: {
@@ -46,17 +53,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         language: '{{idioma}}',
         component_directory: 'bower_components/instagram-timeline/static/'
       }
-    },
-    {
-      name: 'facebook-wall',
-      attributes: {
-        language: '{{idioma}}',
-        component_directory: 'bower_components/facebook-wall/',
-        'access_token': $scope.facebookData.token
-      }
     }
   ];
-  $scope.listComponentAdded = []; // added on dragdrop.js
+  $scope.listComponentAdded = ['facebook-wall']; // added on dragdrop.js
   $scope.modifySelected = $scope.modifySelected || '';
   /* Authentication */
 
@@ -202,7 +201,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.isModifySelected = function(elementName) {
     return elementName === $scope.modifySelected;
   };
-  
+
   $scope.deleteTimeline = function(elementName) {
     angular.element(document.querySelector('#container')).find(elementName).remove();
     var index = $scope.listComponentAdded.indexOf(elementName);

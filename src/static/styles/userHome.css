@@ -163,3 +163,8 @@ html {
   width: 400px;
 }
 
+.facebook-wall {
+  position:absolute;
+  top:20%;
+  left: 45%;
+}
