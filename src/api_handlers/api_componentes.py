@@ -26,7 +26,17 @@ import json
 import ndb_pb
 from api_oauth import SessionHandler
 
-import cliente_gitHub
+# import cliente_gitHub
+
+# Import config vars and datetime package (to manage request/response cookies)
+import datetime, os, yaml
+basepath = os.path.dirname(__file__)
+configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+with open(configFile, "r") as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+domain = cfg["domain"]
+
 
 social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github"]
 
@@ -255,7 +265,7 @@ class ComponentHandler(SessionHandler):
         if not cookie_value == None:
             # Checks whether the cookie belongs to an active user and the request has provided at least one param
             user_id = self.getUserInfo(cookie_value)
-            if not user_id == None and not rating == "none" or not x_axis == "none" or not y_axis == "none" :
+            if not user_id == None:
                 data = {}
                 component_modified_success = False
                 rating_error = False

@@ -1,5 +1,4 @@
-
-# -*- coding: utf8 -*-
+#-*- coding: utf8 -*-
 import sys, urllib
 import test_utils
 
@@ -163,9 +162,9 @@ def main():
 			print "TEST 12: Borrar el componente del usuario, proporcionando una cookie incorrecta"
 			print "Status esperado: 400"
 			request_uri = components_basepath + component_rel_uri
-			test_utils.make_request("DELETE", request_uri, params, 400, session_error)
+			test_utils.make_request("DELETE", request_uri, params, 400, session_error, printHeaders=True)
 
-			# TEST 13
+			# printH 13
 			print "TEST 13: Borrar el componente del usuario, a un componente que no existe"
 			print "Status esperado: 400"
 			request_uri = components_basepath + "/component_error"
@@ -360,5 +359,9 @@ def main():
 		print "Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto (funcionalidades de alto nivel) "
 		print "(api/componentes y api/usuarios)"
 		print "Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados| help]"
+	else:
+		print "ERROR: opción incorrecta"
+		print "Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados| help]"
+
 if __name__ == "__main__":
 	main()

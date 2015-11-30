@@ -169,7 +169,7 @@ def main():
 				# TEST 11
 				print "TEST 11: Obtener la lista de componentes, proporcionando una cookie de sesión no válida"
 				print "Status esperado: 400"
-				test_utils.make_request("GET", request_uri, params, 400, session_error, p)
+				test_utils.make_request("GET", request_uri, params, 400, session_error, printHeaders=True)
 
 				# TEST 12
 				print "TEST 12: Obtener la lista de componentes, proporcionando una cookie de sesion (Sin parámetros)"
@@ -202,7 +202,7 @@ def main():
 				print "TEST 16: Obtener información sobre el componente 1, proporcionando una cookie de sesión incorrecta"
 				print "Status esperado: 400"
 				request_uri = basepath + '/twitter-timeline'
-				test_utils.make_request("GET", request_uri, params, 400, session1)
+				test_utils.make_request("GET", request_uri, params, 400, session_error, printHeaders=True)
 
 				# TEST 17
 				print "TEST 17: Obtener información sobre un componente no existente en el sistema"
@@ -225,6 +225,7 @@ def main():
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 			elif option == "modificación":
+				params = urllib.urlencode({})
 				# TESTs relativos al método POST Componente (modificar info de un componente)
 				# TEST 20
 				print "TEST 20: Modificar información sobre un componente, sin proporcionar una cookie de sesión"
@@ -238,7 +239,7 @@ def main():
 				request_uri = basepath + '/twitter-timeline'
 				params = urllib.urlencode({'x_axis': 200,
 						'y_axis': 250})
-				test_utils.make_request("POST", request_uri, params, 400, session_error)
+				test_utils.make_request("POST", request_uri, params, 400, session_error, printHeaders=True)
 				
 				# TEST 22
 				print "TEST 22: Modificar información sobre el componente 1 (Valor incorrecto para parámetro X)"
