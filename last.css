@@ -1,0 +1,59 @@
+.loginButton
+{
+	padding-right: 10px;
+	cursor:pointer;
+	border-radius: 3px;
+}
+
+#language span
+{
+	vertical-align: middle;
+}
+
+paper-item
+{
+	cursor: pointer;
+	color: black;
+	border-bottom: 1px solid #aaa;
+	outline: none;
+	background-color: #eee;
+}
+
+footer paper-button
+{
+	font-size: 12px;
+}
+
+footer paper-button:hover {
+	background-color: #b71c1c;
+}
+#header .loginButton:hover
+{
+	background-color: #b71c1c;
+}
+paper-item:hover
+{
+	background-color: #aaa;
+}
+
+footer
+{
+	position: fixed;
+	z-index: 10;
+	bottom: 0;
+
+	width: 100%;
+	padding: 7px;
+
+	background-color: rgba(0,0,0,.6);
+}
+paper-button.blue:hover {
+	background-color: #64b5f6;
+	color:white;
+}
+.view
+{
+	height: 83%;
+	margin: 0 15%;
+	padding-top: 5%;
+}

@@ -47,12 +47,10 @@
           <paper-item ng-click="changelanguage('en', true)" class="letterMedium">{{language.lang.en}}</paper-item>
         </paper-menu>
       </paper-menu-button>
-
-
       <!-- End Languages -->
 
       <!-- Button when the user isn't logged -->
-      <div ng-show="!user" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton">      
+      <div ng-show="!user" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton letterBig">      
         <paper-icon-button  id="siginButton"  icon="social:person"></paper-icon-button>
         <span id="nameId" style="text-transform: none">{{language.login}}</span>
       </div>
@@ -61,7 +59,7 @@
       <paper-dialog id="loginModal" modal ng-load="{{loadListener($event)}}">
         <div class="tittle">
           <h2>{{language.select_network}}</h2>
-          <paper-icon-button dialog-confirm autofocus icon="close"></paper-icon-button>
+          <paper-icon-button dialog-confirm icon="close"></paper-icon-button>
         </div>
         <div class="vertical center layout button-login socialNetwork">
           <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
@@ -74,36 +72,31 @@
       </paper-dialog><!-- End no logged button -->
 
       <!-- Dropdown when the user is logged -->
-      <div ng-show="user" class="loginButton">
-        <paper-menu-button id="userButton" >
+        <paper-menu-button id="userButton" ng-show="user" class="loginButton">
           <paper-button class="dropdown-trigger">
             <iron-icon icon="social:person" class="social:person"></iron-icon>
-            <span class="flex" style="text-transform: none">{{user.user_id}}</span>
+            <span class="flex letterBig">{{user.user_id}}</span>
           </paper-button>
 
           <paper-menu class="dropdown-content">
-            <paper-item class="paper-item" ng-click="goto('home', 'userButton')">{{language.profile}}</paper-item>
+            <paper-item class="paper-item letterMedium" ng-click="goto('home', 'userButton')">{{language.profile}}</paper-item>
             <!--<paper-item ng-click="goto('profile', 'userButton')" class="paper-item">{{language.settings}}</paper-item>-->
-            <paper-item class="paper-item" ng-click="logout('userButton')">{{language.logout}}</paper-item>
+            <paper-item class="paper-item letterMedium" ng-click="logout('userButton')">{{language.logout}}</paper-item>
           </paper-menu>
         </paper-menu-button>
-
-
-      </div><!-- End Dropdown -->
-
-
     </paper-toolbar>
 
+    <div ng-view="" id="view" class="view" data-popupOpen="{{popupOpened}}">
+    </div>
+    
     <footer class="horizontal center-justified layout">
-      <paper-button ng-click="changeView('/about')">{{language.about}}</paper-button>
-      <paper-button><a href="https://deusconwet.typeform.com/to/opLyCo">{{language.contact}}</a></paper-button>
-      <paper-button ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
+      <paper-button class="letterMedium" ng-click="changeView('/about')">{{language.about}}</paper-button>
+      <paper-button class="letterMedium"><a href="https://deusconwet.typeform.com/to/opLyCo">{{language.contact}}</a></paper-button>
+      <paper-button  class="letterMedium" ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
       <a href="https://mixpanel.com/f/partner"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
     </footer>
 
-    <div ng-view="" id="view" class="view" ng-hide="popupOpened">
 
-    </div>
     <!-- build:js scripts/min/dependencies.min.js -->
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>
