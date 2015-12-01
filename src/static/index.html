@@ -13,6 +13,7 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Exo:400,300" rel="stylesheet" type="text/css">
+    <!-- Latest compiled and minified CSS -->
 
     <!-- Polymer -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
@@ -29,49 +30,49 @@
   </head>
 
   <body unresolved ng-app="picbit" ng-controller="MainController">
-
-    <paper-toolbar id="header">
-      <paper-icon-button class="logoPicbit" src="images/logo.png" ng-click="changeView('',true)"></paper-icon-button>
-      <div class="horizontal layout flex">
-        <h2 id="name" ng-click="changeView('',true)" class="letterTittle">Picbit</h2>
-      </div>
-
-      <!-- Languages --> 
-      <paper-menu-button id="language" >
-        <paper-button class="dropdown-trigger">
-          <iron-icon icon="icons:language" class="searchIcon"></iron-icon>
-          <span class="letterBig">{{languageSelected}}</span>
-        </paper-button>
-        <paper-menu class="dropdown-content" style="color:black">
-          <paper-item ng-click="changelanguage('es', true)" class="letterMedium">{{language.lang.es}}</paper-item>
-          <paper-item ng-click="changelanguage('en', true)" class="letterMedium">{{language.lang.en}}</paper-item>
-        </paper-menu>
-      </paper-menu-button>
-      <!-- End Languages -->
-
-      <!-- Button when the user isn't logged -->
-      <div ng-show="!user" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton letterBig">      
-        <paper-icon-button  id="siginButton"  icon="social:person"></paper-icon-button>
-        <span id="nameId" style="text-transform: none">{{language.login}}</span>
-      </div>
-
-      <!-- Modal login -->
-      <paper-dialog id="loginModal" modal ng-load="{{loadListener($event)}}">
-        <div class="tittle">
-          <h2>{{language.select_network}}</h2>
-          <paper-icon-button dialog-confirm icon="close"></paper-icon-button>
+    <div id="wrapper">
+      <paper-toolbar id="header">
+        <paper-icon-button class="logoPicbit" src="images/logo.png" ng-click="changeView('',true)"></paper-icon-button>
+        <div class="horizontal layout flex">
+          <h2 id="name" ng-click="changeView('',true)" class="letterTittle">Picbit</h2>
         </div>
-        <div class="vertical center layout button-login socialNetwork">
-          <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-          <br>
-          <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
-          <br>
-          <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
 
+        <!-- Languages --> 
+        <paper-menu-button id="language" >
+          <paper-button class="dropdown-trigger">
+            <iron-icon icon="icons:language" class="searchIcon"></iron-icon>
+            <span class="letterBig">{{languageSelected}}</span>
+          </paper-button>
+          <paper-menu class="dropdown-content" style="color:black">
+            <paper-item ng-click="changelanguage('es', true)" class="letterMedium">{{language.lang.es}}</paper-item>
+            <paper-item ng-click="changelanguage('en', true)" class="letterMedium">{{language.lang.en}}</paper-item>
+          </paper-menu>
+        </paper-menu-button>
+        <!-- End Languages -->
+
+        <!-- Button when the user isn't logged -->
+        <div ng-show="!user" data-dialog="loginModal" ng-click="showPopup($event)" class="loginButton letterBig">      
+          <paper-icon-button  id="siginButton"  icon="social:person"></paper-icon-button>
+          <span id="nameId" style="text-transform: none">{{language.login}}</span>
         </div>
-      </paper-dialog><!-- End no logged button -->
 
-      <!-- Dropdown when the user is logged -->
+        <!-- Modal login -->
+        <paper-dialog id="loginModal" modal ng-load="{{loadListener($event)}}">
+          <div class="tittle">
+            <h2>{{language.select_network}}</h2>
+            <paper-icon-button dialog-confirm icon="close"></paper-icon-button>
+          </div>
+          <div class="vertical center layout button-login socialNetwork">
+            <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
+            <br>
+            <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+            <br>
+            <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+
+          </div>
+        </paper-dialog><!-- End no logged button -->
+
+        <!-- Dropdown when the user is logged -->
         <paper-menu-button id="userButton" ng-show="user" class="loginButton">
           <paper-button class="dropdown-trigger">
             <iron-icon icon="social:person" class="social:person"></iron-icon>
@@ -84,11 +85,12 @@
             <paper-item class="paper-item letterMedium" ng-click="logout('userButton')">{{language.logout}}</paper-item>
           </paper-menu>
         </paper-menu-button>
-    </paper-toolbar>
+      </paper-toolbar>
 
-    <div ng-view="" id="view" class="view" data-popupOpen="{{popupOpened}}">
+      <div ng-view="" id="view" class="view" data-popupOpen="{{popupOpened}}">
+      </div>
+
     </div>
-
     <!-- build:js scripts/min/dependencies.min.js -->
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>

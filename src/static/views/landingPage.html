@@ -1,13 +1,13 @@
 
 <div id="landing">
-	<div class="content vertical center-justified layout">
-		<p class="letterTittle">{{language.title}}</p>
-		<p class="letterSubtittle slogan">{{language.slogan}}</p>
-		<paper-button data-dialog="loginModal" ng-click="showPopup($event)">{{language.login}}</paper-button>
-	</div>
-	<footer class="horizontal center-justified layout">
-		<paper-button class="letterMedium" ng-click="changeView('/about')">{{language.about}}</paper-button>
-		<paper-button class="letterMedium"><a href="https://deusconwet.typeform.com/to/opLyCo">{{language.contact}}</a></paper-button>
-		<paper-button  class="letterMedium" ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
-	</footer>
+  <div class="content">
+    <p class="letterTittle">{{language.title}}</p>
+    <p class="letterSubtittle slogan">{{language.slogan}}</p>
+    <paper-button data-dialog="loginModal" class="letterBig" ng-click="showPopup($event)">{{language.login}}</paper-button>
+  </div>
 </div>
+<footer class="horizontal center-justified layout">
+  <paper-button class="letterMedium" ng-click="changeView('/about')">{{language.about}}</paper-button>
+  <paper-button class="letterMedium"><a href="https://deusconwet.typeform.com/to/opLyCo">{{language.contact}}</a></paper-button>
+  <paper-button  class="letterMedium" ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
+</footer>

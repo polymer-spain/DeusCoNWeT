@@ -1,41 +1,17 @@
 
 /* Añadir Responsive para margin y texto*/
-@media only screen and (max-width: 480px){
-	#landing > .content
-	{
-		text-align: center;
-		margin-top:50%;
-	}
-}
-@media only screen  and (min-width: 480px) and (max-width: 640px) {
-	#landing > .content
-	{
-		text-align: center;
-		margin-top:35%;
-	}
-}
 
-/* laptops */
-@media only screen and (min-width:640px) and (max-width: 1400px) {
-	#landing > .content
-	{
-		text-align: center;
-		margin-top:17%;
-	}
-}
-@media only screen and (min-width:1400px) {
-	#landing > .content
-	{
-		text-align: center;
-		margin-top:15%;
-	}
-}
 html
 {
 	background-image: url('../images/landingimage.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: 100% 100%;
+}
+
+#landing .content {
+  text-align: center;
+  margin-top:15%;
 }
 
 #landing  .slogan
@@ -47,7 +23,6 @@ html
 
 #landing .content paper-button
 {
-	font-size: 16px;
 	margin:auto;
 	background-color: #b71c1c;
 }
@@ -65,9 +40,11 @@ a:visited
 
 footer{
 	max-height: 5%;
-	position:absolute;
-	bottom:0;left:0;right:0;
 	min-height: 40px;
+  position:absolute;
+  bottom:0;
+  left: 0;
+  right: 0;
 }
 footer paper-button {
 	margin:auto 10px;

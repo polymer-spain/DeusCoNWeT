@@ -1,172 +1,252 @@
 @font-face {
-	font-family: archistico;
-	src: url('../fonts/ArchisticoBold.ttf');
+  font-family: archistico;
+  src: url('../fonts/ArchisticoBold.ttf');
 }
 
 /* Responsive letter size */
 
 /* mobile*/
-@media only screen and (max-width: 480px){
-	.letterSmall {
-		font-size: 0.4em;
-	}
-	.letterMedium {
-		font-size: 0.5em;
-	}
-	.letterBig {
-		font-size: 0.6em;
-	}
-	.letterTittle {
-		font-size: 1.2em;
-	}
-	.letterSubtittle {
-		font-size: 0.9em
-	}
-}
-@media only screen  and (min-width: 480px) and (max-width: 640px) {
 
-	.letterSmall {
-		font-size: 0.6em;
-	}
-	.letterMedium {
-		font-size: 0.7em;
-	}
-	.letterBig {
-		font-size: 0.8em;
-	}
-	.letterTittle {
-		font-size: 1.7em;
-	}
-	.letterSubtittle {
-		font-size: 1.2em
-	}
+/* HEIGTH*/
+@media only screen and (max-height: 480px) {
+  .letterSmall {
+    font-size: 0.3em !important;
+  }
+  .letterMedium {
+    font-size: 0.4em !important;
+  }
+  .letterBig {
+    font-size: 0.6em !important;
+  }
+  .letterTittle {
+    font-size: 0.9em !important;
+  }
+  .letterSubtittle {
+    font-size: 0.8em !important;
+  }
+}
+@media only screen and (min-height: 480px) and (max-height: 480px) {
+
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.8em;
+  }
+  .letterTittle {
+    font-size: 1.7em;
+  }
+  .letterSubtittle {
+    font-size: 1.2em
+  }
 }
 
 /* laptops */
-@media only screen and (min-width:640px) and (max-width: 1400px) {
-	.letterSmall {
-		font-size: 0.6em;
-	}
-	.letterMedium {
-		font-size: 0.7em;
-	}
-	.letterBig {
-		font-size: 0.9em;
-	}
-	.letterSubtittle {
-		font-size: 1.4em
-	}
-	.letterTittle {
-		font-size: 2.4em;
-	}
+@media only screen and (min-height: 720px) and (max-height: 1024px){
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.9em;
+  }
+  .letterSubtittle {
+    font-size: 1.4em
+  }
+  .letterTittle {
+    font-size: 2.4em;
+  }
 }
-@media only screen and (min-width:1400px) {
-	.letterSmall {
-		font-size: 0.7em;
-	}
-	.letterMedium {
-		font-size: 0.8em;
-	}
-	.letterBig {
-		font-size: 1em;
-	}
-	.letterTittle {
-		font-size: 2.7em;
-	}
+@media only screen and (min-height:1024px) {
+  .letterSmall {
+    font-size: 0.7em;
+  }
+  .letterMedium {
+    font-size: 0.8em;
+  }
+  .letterBig {
+    font-size: 1em;
+  }
+  .letterSubtittle {
+    font-size: 1.4em
+  }
+  .letterTittle {
+    font-size: 2.7em;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .letterSmall {
+    font-size: 0.5em;
+  }
+  .letterMedium {
+    font-size: 0.6em;
+  }
+  .letterBig {
+    font-size: 0.7em;
+  }
+  .letterTittle {
+    font-size: 1.2em;
+  }
+  .letterSubtittle {
+    font-size: 0.9em
+  }
+}
+@media only screen  and (min-width: 480px) and (max-width: 720px){
+
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.8em;
+  }
+  .letterTittle {
+    font-size: 1.7em;
+  }
+  .letterSubtittle {
+    font-size: 1.2em
+  }
+}
+
+/* laptops */
+@media only screen and (min-width:720px) and (max-width: 1024px){
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.9em;
+  }
+  .letterSubtittle {
+    font-size: 1.4em
+  }
+  .letterTittle {
+    font-size: 2.4em;
+  }
+}
+@media only screen and (min-width:1024px) {
+  .letterSmall {
+    font-size: 0.7em;
+  }
+  .letterMedium {
+    font-size: 0.8em;
+  }
+  .letterBig {
+    font-size: 1em;
+  }
+  .letterSubtittle {
+    font-size: 1.4em
+  }
+  .letterTittle {
+    font-size: 2.7em;
+  }
 }
 
 
 body,html
 {
-	height: 100%;
-	margin: 0;
-	color: rgb(255, 255, 255);
-	background-attachment: fixed;
+  height: 100%;
+  margin: 0;
+  color: rgb(255, 255, 255);
+  background-attachment: fixed;
 }
 
 #header
 {
-	padding-right: 3%;
-	padding-left: 3%;
-	background-color: rgba(0,0,0,.6);
+  padding-right: 3%;
+  padding-left: 3%;
+  background-color: rgba(0,0,0,.6);
 }
 #header .logoPicbit
 {
-	cursor: pointer;
-	padding: 0;
-	margin: 1%;
+  cursor: pointer;
+  padding: 0;
+  margin: 1%;
 }
 #name {
-	font-family: archistico;
-	margin: 0;
-	color: #cbc7c7;
+  font-family: archistico;
+  margin: 0;
+  color: #cbc7c7;
 }
 
 #name:hover,
 .loginButton
 {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 paper-menu-button{
-	padding: 0;
-	margin: auto 1%;
+  padding: 0;
+  margin: auto 1%;
 }
 paper-menu-button > paper-button {
-	text-transform: none;
-	margin:0;
-	padding: 0;
+  text-transform: none;
+  margin:0;
+  padding: 0;
 }
 paper-menu-button /deep/ iron-dropdown {
-	margin-top: 30px;
+  margin-top: 30px;
 }
 paper-menu{
-	padding:0;
-	color: black;
+  padding:0;
+  color: black;
 }
 paper-item {
-	cursor: pointer;
+  cursor: pointer;
 }
 paper-item:hover {
-	background-color: #a3a3a3;
+  background-color: #a3a3a3;
 }
 
 .view
 {
-	position:absolute;
-	top:0;right: 0;bottom:0;left:0;
-	margin: 60px 15% 0% 15%;
+  position:absolute;
+  top:0;right: 0;bottom:0;left:0;
+  margin: 63px 15% 0% 15%;
+  min-height: 320px;
 
 }
 .view[data-popupOpen=true] {
-	opacity: 0;
+  opacity: 0;
 }
 
 
 #loginModal {
-	min-width: 350px;
-	background-color: rgba(206, 206, 206, 0.83);
-	color:white;
-	border-radius:3%;
+  min-width: 350px;
+  background-color: rgba(206, 206, 206, 0.83);
+  color:white;
+  border-radius:3%;
 }
-#loginModal .content {
-	padding: 20px;
-	margin-bottom: 0;
-}
+
 #loginModal .tittle{
-	text-align: center;
+  text-align: center;
 }
 #loginModal .tittle paper-icon-button{
-	position:absolute;
-	top:2px;
-	right: 2px;
+  position:absolute;
+  top:2px;
+  right: 2px;
 }
 paper-dialog {
-	max-width: 500px;
+  max-width: 500px;
 }
 paper-icon-button[icon="close"]:hover {
-	color:black;
+  color:black;
 }
 p {
-	margin:0;
+  margin:0;
+}
+
+#wrapper{ 
+  min-height: 100%;
+  position:relative;
 }
