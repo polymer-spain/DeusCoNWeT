@@ -225,16 +225,34 @@ class OauthLogoutHandler(SessionHandler):
             if not user_id == None:
                 # Logout
                 logout_status = self.logout(cookie_value)
-                # Invalidates the cookie
+                # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
                 self.response.set_cookie("session", cookie_value,
-                            path="/", domain=domain, secure=True, expires=expire_date)
-                self.response.set_cookie("social_network", "",
-                            path="/", domain=domain, secure=True, expires=expire_date)
-                self.response.set_cookie("user", "",
-                            path="/", domain=domain, secure=True, expires=expire_date)
-                self.response.set_status(200)
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which the user performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+
             else:
+                # We invalidate the session cookies received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which the user performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+
+                # Builds the response
                 response = \
                 {"error": "The cookie session provided does not belongs to any active user. The logout action was not performed"}
                 self.response.content_type = "application/json"
@@ -282,11 +300,26 @@ class OauthCredentialsHandler(SessionHandler):
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
             else:
+                # We invalidate the session cookies received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which the user performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+
+                # Builds the response
                 response = \
                 {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)       
+        
         # If we don't provide a cookie in the request, we search for the token in the system
         # and return a 200 o 404 status. It is a request included in the login flow of the system
         else:
@@ -342,6 +375,20 @@ class OauthCredentialsHandler(SessionHandler):
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
             else:
+                # We invalidate the session cookies received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which the user performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+
+                # Builds the response
                 response = \
                     {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
@@ -398,6 +445,20 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
             else:
+                # We invalidate the session cookies received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which the user performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+
+                # Builds the response
                 response = \
                     {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
@@ -447,6 +508,20 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
             else:
+                # We invalidate the session cookies received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", cookie_value,
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which the user performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+
+                # Builds the response
                 response = \
                     {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
