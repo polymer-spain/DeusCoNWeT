@@ -120,7 +120,7 @@ def main():
 				print "TEST 11: Obtenemos credenciales con una sesion invalidada"
 				print "Status esperado: 400 (la cookie proporcionada no es correcta)"
 				params = urllib.urlencode({})
-				test_utils.make_request("GET", request_uri, params, 400, old_session)
+				test_utils.make_request("GET", request_uri, params, 400, old_session, printHeaders=True)
 
 				# Tests relativos al método GET de credenciales
 				# Obtener credenciales sin cookie
@@ -161,7 +161,7 @@ def main():
 				print "TEST 16: Logout con cookie de sesión antigua"
 				print "Status esperado: 400"
 				params = urllib.urlencode({})
-				test_utils.make_request("POST", request_uri, params, 400, old_session)
+				test_utils.make_request("POST", request_uri, params, 400, old_session, printHeaders=True)
 
 				# TEST 17
 				# Se desloguea el usuario logueado (usuario1)
@@ -185,7 +185,7 @@ def main():
 				print "TEST 19: Obtener credenciales con cookie de sesión antigua"
 				print "Status esperado: 400"
 				params = urllib.urlencode({})
-				test_utils.make_request("GET", request_uri, params, 400, old_session)
+				test_utils.make_request("GET", request_uri, params, 400, old_session, printHeaders=True)
 
 				# TEST 20
 				# Logout sin cookie
@@ -206,6 +206,7 @@ def main():
 				print "(o en su defecto, sin los usuarios 1 y 2)"
 
 			elif option == "borrado":
+				session_error = "session=session_error"
 				# PRE-TEST 1: Login en el sistema de usuario de prueba 1
 				access_token = social_network + "tokenTODELETE1"
 				session1 = test_utils.do_login_or_signup("googleplus", token_id1, access_token, user_id1)
@@ -223,33 +224,41 @@ def main():
 				test_utils.make_request("DELETE", request_uri, params, 401, None)
 
 				# TEST 22
+				# Borrar credenciales de usuarios de prueba2 con cookie de sesión incorrecta
+				request_uri = basePath + "/credenciales/" + token_id2
+				print "TEST 21: Borrar creedenciales con cookie de sesión incorrecta"
+				print "Status esperado: 400"
+				params = urllib.urlencode({})
+				test_utils.make_request("DELETE", request_uri, params, 400, session_error, printHeaders=True)
+
+				# TEST 23
 				# Borrar credenciales de usuario de prueba1 (Estando logeado)
 				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 22: Borrado de credenciales estando logeado (usuario 1)"
+				print "TEST 23: Borrado de credenciales estando logeado (usuario 1)"
 				print "Status esperado: 403 (Es el único token de login en el sistema)"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 403, session1)
 
-				# TEST 23
+				# TEST 24
 				# Borrar credenciales de usuario de prueba2 (Con una cookie incorrecta)
 				request_uri = basePath + "/credenciales/" + token_id2
-				print "TEST 23: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
+				print "TEST 24: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
 				print "Status esperado: 401 (Es el único token de login en el sistema)"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 401, session1)
 
-				# TEST 24
+				# TEST 25
 				# Borrar credenciales de usuario de prueba2 (Estando logeado)
 				request_uri = basePath + "/credenciales/" + token_id2
-				print "TEST 24: Borrado de credenciales estando logeado"
+				print "TEST 25: Borrado de credenciales estando logeado"
 				print "Status esperado: 403"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 403, session2)
 
-				# TEST 25
+				# TEST 26
 				# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
 				request_uri = basePath + "/" + token_id2
-				print "TEST 25: Intento de borrado por segunda vez (credenciales de usuario 2)"
+				print "TEST 26: Intento de borrado por segunda vez (credenciales de usuario 2)"
 				print "Status esperado: 404"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 404, session2)
@@ -303,107 +312,113 @@ def main():
 				test_utils.make_request("PUT", request_uri, params, 401, None)
 				
 				# TEST 2
-				print "TEST 2: Añadir nuevo par de credenciales proporcionando un solo parámetro"
+				print "TEST 2: Añadir nuevo par de credenciales, con cookie de sesión incorrecta"
+				print "Status esperado: 400"
+				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
+				test_utils.make_request("PUT", request_uri, params, 400, session_error, printHeaders=True)
+				
+				# TEST 3
+				print "TEST 3: Añadir nuevo par de credenciales proporcionando un solo parámetro"
 				print "Status esperado: 400"
 				params = urllib.urlencode({'token_id': token_id1})
 				test_utils.make_request("PUT", request_uri, params, 400, session1)
 				
-				# TEST 3
-				print "TEST 3: Añadir nuevo par de credenciales"
+				# TEST 4
+				print "TEST 4: Añadir nuevo par de credenciales"
 				print "Status esperado: 201"
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
 				test_utils.make_request("PUT", request_uri, params, 201, session1)
 
-				# TEST 4
-				print "TEST 4: Añadir par de credenciales repetido"
+				# TEST 5
+				print "TEST 5: Añadir par de credenciales repetido"
 				print "Status esperado: 400"
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
 				test_utils.make_request("PUT", request_uri, params, 400, session1)
 
-				# TEST 5
-				print "TEST 5: Actualizar par de credenciales con cookie de sesión incorrecta"
+				# TEST 6
+				print "TEST 6: Actualizar par de credenciales con cookie de sesión incorrecta"
 				print "Status esperado: 400"
 				request_uri = "/api/oauth/" + social_network + "/credenciales/" + token_id1
 				access_token1 = social_network + "ModifyTEST"
 				params = urllib.urlencode({'access_token':access_token1})
-				test_utils.make_request("POST", request_uri, params, 400, session_error)
+				test_utils.make_request("POST", request_uri, params, 400, session_error, printHeaders=True)
 
-				# TEST 6
-				print "TEST 6: Actualizar par de credenciales con cookie de sesión de otro usuario"
+				# TEST 7
+				print "TEST 7: Actualizar par de credenciales con cookie de sesión de otro usuario"
 				print "Status esperado: 403"
 				params = urllib.urlencode({'token_id': token_id1, 'access_token':access_token1})
 				test_utils.make_request("POST", request_uri, params, 403, session2)
 
-				# TEST 7
-				print "TEST 7: Actualizar par de credenciales"
+				# TEST 8
+				print "TEST 8: Actualizar par de credenciales"
 				print "Status esperado: 200"
 				params = urllib.urlencode({'access_token':access_token1})
 				test_utils.make_request("POST", request_uri, params, 200, session1)
 
 
 				# TEST relativos a la obtencion de credenciales (GET /api/oauth/{social_network}/credenciales/{token_id})
-				# TEST 8
+				# TEST 9
 				# Get (Sin cookie)
 				request_uri = "/api/oauth/" + social_network + "/credenciales/" + token_id1
-				print "TEST 8: Obtener credenciales sin cookie de sesión"
+				print "TEST 9: Obtener credenciales sin cookie de sesión"
 				print "Status esperado: 200 (Retorna el propietario de las credenciales)"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, None)
 
-				# TEST 9
+				# TEST 10
 				# TODO Get (Con Cookie)
-				print "TEST 9: Obtener credenciales con cookie"
+				print "TEST 10: Obtener credenciales con cookie"
 				print "Status esperado: 200"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
-				# TEST 10
+				# TEST 11
 				# TODO GET credenciales (Con una cookie de sesion incorrecta)
-				print "TEST 10: Obtener credenciales con cookie incorrecta"
+				print "TEST 11: Obtener credenciales con cookie incorrecta"
 				print "Status esperado: 400"
 				params = urllib.urlencode({})
-				test_utils.make_request("GET", request_uri, params, 400, session_error)
+				test_utils.make_request("GET", request_uri, params, 400, session_error, printHeaders=True)
 
-				# TEST 11
+				# TEST 12
 				# TODO GET credenciales (Cookie de sesion correcta, a un token id no existente en el sistema)
 				request_uri = "/api/oauth/" + social_network + "/credenciales/tokenERROR"
-				print "TEST 11: Intento de obtener un token no existente en el sistema"
+				print "TEST 12: Intento de obtener un token no existente en el sistema"
 				print "Status esperado: 404"
 				params = urllib.urlencode({})
 				test_utils.make_request("GET", request_uri, params, 404, session1)
 
 			elif option == 'borrado':
 
-				# TEST 12
+				# TEST 13
 				# Borrar credenciales de usuarios de prueba 1
 				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 12: Borrar creedenciales sin cookie de sesión"
+				print "TEST 13: Borrar creedenciales sin cookie de sesión"
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 401, None)
 
-				# TEST 13
+				# TEST 14
 				# Borrar credenciales de usuario de prueba1 (Con una cookie incorrecta)
 				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 13: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
+				print "TEST 14: Borrado de credenciales estando logeado, pero sin ser propietario de las mismas"
 				print "Status esperado: 401"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 401, session2)
 
-				# TEST 14
+				# TEST 15
 				# Borrar credenciales de usuario de prueba1 (Estando logeado)
 				request_uri = basePath + "/credenciales/" + token_id1
-				print "TEST 14: Borrado de credenciales estando logeado (usuario 1)"
+				print "TEST 15: Borrado de credenciales estando logeado (usuario 1)"
 				print "Status esperado: 204"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 204, session1)
 
-				# TEST 15
+				# TEST 16
 				# Borrar credenciales de usuario de prueba 2 por segunda vez (Caso de error)
 				request_uri = basePath + "/credenciales/" + token_id2
-				print "TEST 15: Intento de borrado por segunda vez (credenciales de usuario 2)"
+				print "TEST 16: Intento de borrado por segunda vez (credenciales de usuario 2)"
 				print "Status esperado: 404"
 				params = urllib.urlencode({})
 				test_utils.make_request("DELETE", request_uri, params, 404, session2)

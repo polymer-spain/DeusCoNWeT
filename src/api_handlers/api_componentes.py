@@ -91,7 +91,7 @@ class ComponentListHandler(SessionHandler):
             else:
                 # We invalidate the session cookie received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which performed the login
@@ -224,7 +224,7 @@ class ComponentHandler(SessionHandler):
             else:
                 # We invalidate the session cookie received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which performed the login
@@ -321,7 +321,7 @@ class ComponentHandler(SessionHandler):
             else:
                 # We invalidate the session cookie received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
@@ -373,7 +373,7 @@ class ComponentHandler(SessionHandler):
                 else:
                     # We invalidate the session cookie received
                     expire_date = datetime.datetime(1970,1,1,0,0,0)
-                    self.response.set_cookie("session", cookie_value,
+                    self.response.set_cookie("session", "",
                         path="/", domain=domain, secure=True, expires=expire_date)
                     # We delete and invalidate other cookies received, like the user logged nickname
                     # and social network in which the user performed the login

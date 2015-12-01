@@ -227,7 +227,7 @@ class OauthLogoutHandler(SessionHandler):
                 logout_status = self.logout(cookie_value)
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
@@ -241,7 +241,7 @@ class OauthLogoutHandler(SessionHandler):
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
@@ -258,6 +258,7 @@ class OauthLogoutHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
+            
         else:
             response = \
                 {"error": "This request requires a secure_cookie with the session identifier"}
@@ -302,7 +303,7 @@ class OauthCredentialsHandler(SessionHandler):
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
@@ -377,7 +378,7 @@ class OauthCredentialsHandler(SessionHandler):
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
@@ -447,7 +448,7 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
@@ -510,7 +511,7 @@ class OAuthCredentialsContainerHandler(SessionHandler):
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", cookie_value,
+                self.response.set_cookie("session", "",
                     path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
