@@ -1,64 +1,74 @@
+
+/* Añadir Responsive para margin y texto*/
+@media only screen and (max-width: 480px){
+	#landing > .content
+	{
+		text-align: center;
+		margin-top:50%;
+	}
+}
+@media only screen  and (min-width: 480px) and (max-width: 640px) {
+	#landing > .content
+	{
+		text-align: center;
+		margin-top:35%;
+	}
+}
+
+/* laptops */
+@media only screen and (min-width:640px) and (max-width: 1400px) {
+	#landing > .content
+	{
+		text-align: center;
+		margin-top:17%;
+	}
+}
+@media only screen and (min-width:1400px) {
+	#landing > .content
+	{
+		text-align: center;
+		margin-top:15%;
+	}
+}
 html
 {
-    background-image: url('../images/landingimage.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
+	background-image: url('../images/landingimage.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: 100% 100%;
 }
-#landing
-{
-    padding-top: 7%;
-}
-#landing  #section1
-{
-    z-index: 0;
 
-    height: 100%;
-}
-#landing > .content
-{
-    padding: 10px 50px 20px 50px;
-}
 #landing  .slogan
 {
-    font-size: 22px;
-
-    display: inline-block;
-
-    width: 400px;
-    min-width: 300px;
-
-    text-align: center;
+	margin:5% auto;
+	max-width: 400px;
 }
-#landing .content h1
-{
-    font-size: 45px;
 
-    text-align: center;
-}
 
 #landing .content paper-button
 {
-    font-size: 16px;
-
-    background-color: #b71c1c;
+	font-size: 16px;
+	margin:auto;
+	background-color: #b71c1c;
 }
-.contacto
-{
-    padding: 15px 45px 10px;
 
-    resize: both;
-
-    color: black;
-    background-color: #eee;
-}
 a
 {
-    text-decoration: none;
+	text-decoration: none;
 
-    color: inherit;
+	color: inherit;
 }
 a:visited
 {
-    color: inherit;
+	color: inherit;
+}
+
+footer{
+	max-height: 5%;
+	position:absolute;
+	bottom:0;left:0;right:0;
+	min-height: 40px;
+}
+footer paper-button {
+	margin:auto 10px;
 }
