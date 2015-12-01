@@ -23,6 +23,16 @@ import ndb_pb
 from google.appengine.api import memcache
 from api_oauth import SessionHandler
 
+# Import config vars and datetime package (to manage request/response cookies)
+import datetime, os, yaml
+basepath = os.path.dirname(__file__)
+configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+with open(configFile, "r") as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+domain = cfg["domain"]
+
+
 class UserListHandler(SessionHandler):
 
   """
@@ -47,6 +57,20 @@ class UserListHandler(SessionHandler):
           self.response.write(json.dumps(users_list))
           self.response.set_status(200)
       else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", cookie_value,
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        
+        # Builds the response
         self.response.content_type = "application/json"
         self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
         self.response.set_status(400)
@@ -102,6 +126,20 @@ class UserHandler(SessionHandler):
             self.response.write(json.dumps(user_dict))
             self.response.set_status(200)
       else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", cookie_value,
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+
+        # Builds the response
         self.response.content_type = "application/json"
         self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
         self.response.set_status(400)
@@ -116,6 +154,7 @@ class UserHandler(SessionHandler):
       else:
         self.response.write(json.dumps({"error": "User not found in the system"}))
         self.response.set_status(404)
+
 
   def post(self, user_id):
     cookie_value = self.request.cookies.get("session")
@@ -198,6 +237,20 @@ class UserHandler(SessionHandler):
             " (The cookie session header does not match with the resource requested)"}))
           self.response.set_status(401)
       else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", cookie_value,
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+
+        # Builds the response
         self.response.content_type = "application/json"
         self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
         self.response.set_status(400)
@@ -236,6 +289,19 @@ class UserHandler(SessionHandler):
           " (The cookie session header does not match with the resource requested)"}))
           self.response.set_status(401)
       else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", cookie_value,
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        # Builds the response
         self.response.content_type = "application/json"
         self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
         self.response.set_status(400)
