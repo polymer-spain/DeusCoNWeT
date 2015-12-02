@@ -59,15 +59,13 @@
         <!-- Modal login -->
         <paper-dialog id="loginModal" modal ng-load="{{loadListener($event)}}">
           <div class="tittle">
-            <h2>{{language.select_network}}</h2>
+            <p class="letterSubtittle">{{language.select_network}}</p>
             <paper-icon-button dialog-confirm icon="close"></paper-icon-button>
           </div>
           <div class="vertical center layout button-login socialNetwork">
-            <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-            <br>
-            <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
-            <br>
-            <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+            <google-login class="button-login letterBig" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
+            <twitter-login class="button-login letterBig" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+            <login-facebook class="button-login letterBig" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
 
           </div>
         </paper-dialog><!-- End no logged button -->
@@ -89,7 +87,11 @@
 
       <div ng-view="" id="view" class="view" data-popupOpen="{{popupOpened}}">
       </div>
-
+      <footer class="horizontal center-justified layout">
+        <paper-button class="letterMedium" ng-click="changeView('/about')">{{language.about}}</paper-button>
+        <paper-button class="letterMedium"><a href="https://deusconwet.typeform.com/to/opLyCo">{{language.contact}}</a></paper-button>
+        <paper-button  class="letterMedium" ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
+      </footer>
     </div>
     <!-- build:js scripts/min/dependencies.min.js -->
     <script src="bower_components/angular/angular.min.js"></script>

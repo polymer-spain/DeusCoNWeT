@@ -210,10 +210,10 @@ paper-item:hover {
 
 .view
 {
-  position:absolute;
-  top:0;right: 0;bottom:0;left:0;
+/*  position:absolute;
+  top:0;right: 0;bottom:0;left:0;*/
   margin: 63px 15% 0% 15%;
-  min-height: 320px;
+  min-height: 100%;
 
 }
 .view[data-popupOpen=true] {
@@ -222,7 +222,6 @@ paper-item:hover {
 
 
 #loginModal {
-  min-width: 350px;
   background-color: rgba(206, 206, 206, 0.83);
   color:white;
   border-radius:3%;
@@ -231,7 +230,7 @@ paper-item:hover {
 #loginModal .tittle{
   text-align: center;
 }
-#loginModal .tittle paper-icon-button{
+paper-icon-button[icon="close"]{
   position:absolute;
   top:2px;
   right: 2px;
@@ -249,4 +248,7 @@ p {
 #wrapper{ 
   min-height: 100%;
   position:relative;
+}
+.button-login {
+  margin:8px;
 }
