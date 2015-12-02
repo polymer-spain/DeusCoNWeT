@@ -13,6 +13,7 @@ def main():
 		basepath = "/api/componentes"
 		option_list = ['subida', 'obtención', 'modificación', 'borrado']
 		user_id1 = "id_usuario_test_componentes_1"
+		session_error = "session=session_error"
 		if option in option_list:
 			test_utils.openConnection(False) # Pruebas en local (Remote = False)
 
@@ -161,51 +162,62 @@ def main():
 				params = urllib.urlencode({})
 
 				# TEST 10
-				print "TEST 10: Obtener la lista de componentes, sin proporcionar una cookie de sesion"
+				print "TEST 10: Obtener la lista de componentes, sin proporcionar una cookie de sesión"
 				print "Status esperado: 401 "
 				test_utils.make_request("GET", request_uri, params, 401, None)
 
 				# TEST 11
-				print "TEST 11: Obtener la lista de componentes, proporcionando una cookie de sesion (Sin parámetros)"
+				print "TEST 11: Obtener la lista de componentes, proporcionando una cookie de sesión no válida"
+				print "Status esperado: 400"
+				test_utils.make_request("GET", request_uri, params, 400, session_error, printHeaders=True)
+
+				# TEST 12
+				print "TEST 12: Obtener la lista de componentes, proporcionando una cookie de sesion (Sin parámetros)"
 				print "Status esperado: 200"
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 				# Casos de obtención de lista de componentes, aplicando criterios de filtrado
-				# TEST 12
-				print "TEST 12: Obtener la lista de componentes, proporcionando una cookie de sesion"
+				# TEST 13
+				print "TEST 13: Obtener la lista de componentes, proporcionando una cookie de sesion"
 				print "(parámetro de filtrado por red social)"
 				print "Status esperado: 200"
 				request_uri = basepath + "?social_network=twitter"
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
-				# TEST 13
-				print "TEST 13: Obtener la lista de componentes, proporcionando una cookie de sesion"
+				# TEST 14
+				print "TEST 14: Obtener la lista de componentes, proporcionando una cookie de sesion"
 				print "(formato de lista completo)"
 				print "Status esperado: 200"
 				request_uri = basepath + "?format=complete"
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 				# TESTs relativos al metodo GET Componente (obtener info de un componente en particular)
-				# TEST 14
-				print "TEST 14: Obtener información sobre componente 1, sin proporcionar cookie de usuario"
+				# TEST 15
+				print "TEST 15: Obtener información sobre componente 1, sin proporcionar cookie de usuario"
 				print "Status esperado: 401"
 				request_uri = basepath + '/twitter-timeline'
 				test_utils.make_request("GET", request_uri, params, 401, None)
 
-				# TEST 15
-				print "TEST 15: Obtener información sobre un componente no existente en el sistema"
+				# TEST 16
+				print "TEST 16: Obtener información sobre el componente 1, proporcionando una cookie de sesión incorrecta"
+				print "Status esperado: 400"
+				request_uri = basepath + '/twitter-timeline'
+				test_utils.make_request("GET", request_uri, params, 400, session_error, printHeaders=True)
+
+				# TEST 17
+				print "TEST 17: Obtener información sobre un componente no existente en el sistema"
 				print "Status esperado: 404"
 				request_uri = basepath + '/componenteERROR'
 				test_utils.make_request("GET", request_uri, params, 404, session1)
 
-				# TEST 16
-				print "TEST 16: Obtener información sobre el componente 1"
+				# TEST 18
+				print "TEST 18: Obtener información sobre el componente 1"
 				print "Status esperado: 200"
 				request_uri = basepath + '/twitter-timeline'
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
-				# TEST 17
-				print "TEST 17: Obtener información sobre el componente 2."
+				# TEST 19
+				print "TEST 19: Obtener información sobre el componente 2."
 				print "Se especifica formato completo, pero se retornará el formato reducido,"
 				print " ya que el componente está incluido en el conjunto de componentes del usuario"
 				print "Status esperado: 200"
@@ -213,30 +225,39 @@ def main():
 				test_utils.make_request("GET", request_uri, params, 200, session1)
 
 			elif option == "modificación":
+				params = urllib.urlencode({})
 				# TESTs relativos al método POST Componente (modificar info de un componente)
-				# TEST 18
-				print "TEST 18: Modificar información sobre un componente, sin proporcionar una cookie de sesión"
+				# TEST 20
+				print "TEST 20: Modificar información sobre un componente, sin proporcionar una cookie de sesión"
 				print "Status esperado: 401"
 				request_uri = basepath + '/twitter-timeline'
 				test_utils.make_request("POST", request_uri, params, 401, None)
 
-				# TEST 19
-				print "TEST 19: Modificar información sobre el componente 1 (Valor incorrecto para parámetro X)"
+				# TEST 21
+				print "TEST 21: Modificar información sobre el componente 1, proporcionando una cookie de sesión incorrecta"
+				print "Status esperado: 400"
+				request_uri = basepath + '/twitter-timeline'
+				params = urllib.urlencode({'x_axis': 200,
+						'y_axis': 250})
+				test_utils.make_request("POST", request_uri, params, 400, session_error, printHeaders=True)
+				
+				# TEST 22
+				print "TEST 22: Modificar información sobre el componente 1 (Valor incorrecto para parámetro X)"
 				print "Status esperado: 400"
 				request_uri = basepath + '/twitter-timeline'
 				params = urllib.urlencode({'x_axis': 'string',
 						'y_axis': 250})
 				test_utils.make_request("POST", request_uri, params, 400, session1)
 
-				# TEST 20
-				print "TEST 20: Modificar información sobre el componente 2 (Valor incorrecto para parámetro Rating, mayor que 5)"
+				# TEST 23
+				print "TEST 23: Modificar información sobre el componente 2 (Valor incorrecto para parámetro Rating, mayor que 5)"
 				print "Status esperado: 400"
 				request_uri = basepath + '/instagram-timeline'
 				params = urllib.urlencode({'rating': 6})
 				test_utils.make_request("POST", request_uri, params, 400, session1)
 
-				# TEST 21
-				print "TEST 21: Modificar información sobre el componente 1, caso cambiar posición del componente y rating incorrecto " + \
+				# TEST 24
+				print "TEST 24: Modificar información sobre el componente 1, caso cambiar posición del componente y rating incorrecto " + \
 				 "(x:300, y:300, rating: 7.5)"
 				print "Status esperado: 400"
 				request_uri = basepath + '/twitter-timeline'
@@ -244,8 +265,8 @@ def main():
 						'y_axis': 300, 'rating':7.5})
 				test_utils.make_request("POST", request_uri, params, 400, session1)
 
-				# TEST 22
-				print "TEST 22: Modificar información sobre el componente 1, caso cambiar posición del componente" + \
+				# TEST 25
+				print "TEST 25: Modificar información sobre el componente 1, caso cambiar posición del componente" + \
 				" (x:150, y:250, listening: string)"
 				print "Status esperado: 200"
 				request_uri = basepath + '/twitter-timeline'
@@ -253,15 +274,15 @@ def main():
 						'y_axis': 250, 'listening': 'string'})
 				test_utils.make_request("POST", request_uri, params, 200, session1)
 
-				# TEST 23
-				print "TEST 23: Modificar información sobre el componente 2, caso cambiar valoración, sobre un componente que no es propiedad del usuario (Rating: 4.5)"
+				# TEST 26
+				print "TEST 26: Modificar información sobre el componente 2, caso cambiar valoración, sobre un componente que no es propiedad del usuario (Rating: 4.5)"
 				print "Status esperado: 400"
 				request_uri = basepath + '/twitter-timeline'
 				params = urllib.urlencode({'rating': 4.5})
 				test_utils.make_request("POST", request_uri, params, 400, session1)
 
-				# TEST 24
-				print "TEST 24: Obtención de la lista de componentes del sistema, para verificar "
+				# TEST 27
+				print "TEST 27: Obtención de la lista de componentes del sistema, para verificar "
 				print "que se ha modificado la información solicitada en las anteriores pruebas"
 				print "Status esperado: 200"
 				request_uri = basepath + "?format=complete"
@@ -273,7 +294,7 @@ def main():
 				# TESTs relativos al método DELETE Componente
 
 				# TEST 25
-				print "TEST 25: Borrar componente no existente en el sistema "
+				print "TEST 25: Borrar componente no existente en el sistema"
 				print "Status esperado: 404 "
 				request_uri = basepath + '/componenteERROR?scope=global'
 				test_utils.make_request("DELETE", request_uri, params, 404, None)
