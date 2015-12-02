@@ -5,7 +5,7 @@
 import webapp2
 import urllib2, httplib
 import sys
-
+    
 class instagramRequest(webapp2.RequestHandler):
   def get(self):
     access_token = self.request.get("access_token", default_value="")
@@ -29,6 +29,9 @@ class instagramRequest(webapp2.RequestHandler):
     #Cargar mas datos
     else:
       respuesta = urllib2.urlopen(peticion+"&max_id="+max_id+"&count="+count).read()
+    
+    self.response.headers.add_header('Access-Control-Allow-Origin', '*')
+    self.response.headers['Content-Type'] = 'application/json'
     self.response.write(respuesta)
 
 app = webapp2.WSGIApplication([

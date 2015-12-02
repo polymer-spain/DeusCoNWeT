@@ -8,13 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../paper-button/paper-button.html">
-<link rel="import" href="../../iron-ajax/iron-ajax.html">
-<link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
 
@@ -242,7 +242,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <ul id="box">
             <img id="profile_picture" src="{{item.user.profile_picture}}">
             <a id="profile_name"
-               href="{{_get(item.user.username)}}" target='_blank'>
+               href="{{_getUser(item.user.username)}}" target='_blank'>
               <p>{{item.user.username}}</p>
             </a>
             <span id="hour">{{item.time}}</span>
@@ -266,7 +266,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
             <div id="description" hidden$="{{_isCaption(item.caption)}}">
               <p>
-                <span><a href="{{_get(item.user.username)}}/" target='_blank'>{{item.user.username}}</a></span>
+                <span><a href="{{_getUser(item.user.username)}}/" target='_blank'>{{item.user.username}}</a></span>
                 <span inner-h-t-m-l="{{item.caption.text}}"></span>
               </p>
             </div>
@@ -304,7 +304,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         count: {
           type: Number,
-          value: 100,
+          value: 20,
           reflectToAttribute: true
         },
         media_id: {
@@ -368,7 +368,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _getRequestLanguageUrl: function(component_directory, languageFile) {
         return this.component_directory + "language/" + languageFile;
       }, 
-      _get: function(username) {
+      _getUser: function(username) {
         return "https://instagram.com/" + username;
       },
       _isSameType: function(type, comparation){
