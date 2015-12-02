@@ -209,11 +209,11 @@ def main():
 				session_error = "session=session_error"
 				# PRE-TEST 1: Login en el sistema de usuario de prueba 1
 				access_token = social_network + "tokenTODELETE1"
-				session1 = test_utils.do_login_or_signup("googleplus", token_id1, access_token, user_id1)
+				session1 = test_utils.do_login_or_signup(social_network, token_id1, access_token, user_id1)
 
 				# PRE-TEST 2: Login en el sistema de usuario de prueba 2
 				access_token = social_network + "tokenTODELETE2"
-				session2 = test_utils.do_login_or_signup("googleplus", token_id2, access_token, user_id2)
+				session2 = test_utils.do_login_or_signup(social_network, token_id2, access_token, user_id2)
 
 				# TEST 21
 				# Borrar credenciales de usuarios de prueba2
