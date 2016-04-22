@@ -168,3 +168,44 @@ html {
   top:20%;
   left: 45%;
 }
+
+.instagram-timeline {
+  position:absolute;
+  top:10%;
+  left: 25%;
+}
+
+/* User form styles */
+  .userForm{
+  padding-left: 15px;
+  height: auto;
+  width: 500px;
+  padding-bottom: 15px;
+  background-color: white;
+  color: black;
+}
+
+.userForm p{
+  
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+
+.userForm paper-radio-group{
+  padding: 5px; 
+}
+
+.submitButton{
+  background-color: var(--paper-indigo-500);
+  color: black !important;
+}
+
+#yesButton{
+  background-color: var(--paper-green-500);
+  color: black !important;
+}
+
+#noButton{
+  background-color: var(--paper-red-500); 
+  color: black !important;
+}

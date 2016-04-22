@@ -32,7 +32,11 @@
     "github-events": "events-github#~2.0.2",
     "paper-header-panel": "PolymerElements/paper-header-panel",
     "facebook-wall": "5bf1cc7",
-    "paper-listbox": "polymerelements/paper-listbox#~1.0.0"
+    "paper-listbox": "polymerelements/paper-listbox#~1.0.0",
+    "paper-checkbox": "PolymerElements/paper-checkbox#~1.1.3",
+    "paper-radio-button": "PolymerElements/paper-radio-button#~1.1.2",
+    "paper-radio-group": "PolymerElements/paper-radio-group#~1.0.9",
+    "iron-form": "PolymerElements/iron-form#~1.0.16"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "~0.10.1",

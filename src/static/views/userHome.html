@@ -3,6 +3,9 @@
 <div ng-container id="container">
   
   <facebook-wall component_directory="bower_components/facebook-wall/" language="{{idioma}}" ng-drag access_token="{{user.tokens.facebook}}" class="facebook-wall"></facebook-wall>
+
+  <instagram-timeline id="componentTested" endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" component_directory="bower_components/instagram-timeline/static/"></instagram-timeline>
+
   <div class="horizontal around-justified layout">
     <div class="vertical layout end" id="listOption" style="z-index:1">
       <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
@@ -113,4 +116,3 @@
     </div>
   </paper-dialog>
 </div>
-
