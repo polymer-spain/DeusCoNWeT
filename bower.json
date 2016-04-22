@@ -31,7 +31,8 @@
     "polymer": "Polymer/polymer#~1.2.1",
     "github-events": "events-github#~2.0.2",
     "paper-header-panel": "PolymerElements/paper-header-panel",
-    "facebook-wall": "5bf1cc7"
+    "facebook-wall": "5bf1cc7",
+    "paper-listbox": "polymerelements/paper-listbox#~1.0.0"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "~0.10.1",

@@ -1,164 +1,254 @@
 @font-face {
   font-family: archistico;
-
   src: url('../fonts/ArchisticoBold.ttf');
 }
 
+/* Responsive letter size */
+
+/* mobile*/
+
+/* HEIGTH*/
+@media only screen and (max-height: 480px) {
+  .letterSmall {
+    font-size: 0.3em !important;
+  }
+  .letterMedium {
+    font-size: 0.4em !important;
+  }
+  .letterBig {
+    font-size: 0.6em !important;
+  }
+  .letterTittle {
+    font-size: 0.9em !important;
+  }
+  .letterSubtittle {
+    font-size: 0.8em !important;
+  }
+}
+@media only screen and (min-height: 480px) and (max-height: 480px) {
+
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.8em;
+  }
+  .letterTittle {
+    font-size: 1.7em;
+  }
+  .letterSubtittle {
+    font-size: 1.2em
+  }
+}
+
+/* laptops */
+@media only screen and (min-height: 720px) and (max-height: 1024px){
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.9em;
+  }
+  .letterSubtittle {
+    font-size: 1.4em
+  }
+  .letterTittle {
+    font-size: 2.4em;
+  }
+}
+@media only screen and (min-height:1024px) {
+  .letterSmall {
+    font-size: 0.7em;
+  }
+  .letterMedium {
+    font-size: 0.8em;
+  }
+  .letterBig {
+    font-size: 1em;
+  }
+  .letterSubtittle {
+    font-size: 1.4em
+  }
+  .letterTittle {
+    font-size: 2.7em;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .letterSmall {
+    font-size: 0.5em;
+  }
+  .letterMedium {
+    font-size: 0.6em;
+  }
+  .letterBig {
+    font-size: 0.7em;
+  }
+  .letterTittle {
+    font-size: 1.2em;
+  }
+  .letterSubtittle {
+    font-size: 0.9em
+  }
+}
+@media only screen  and (min-width: 480px) and (max-width: 720px){
+
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.8em;
+  }
+  .letterTittle {
+    font-size: 1.7em;
+  }
+  .letterSubtittle {
+    font-size: 1.2em
+  }
+}
+
+/* laptops */
+@media only screen and (min-width:720px) and (max-width: 1024px){
+  .letterSmall {
+    font-size: 0.6em;
+  }
+  .letterMedium {
+    font-size: 0.7em;
+  }
+  .letterBig {
+    font-size: 0.9em;
+  }
+  .letterSubtittle {
+    font-size: 1.4em
+  }
+  .letterTittle {
+    font-size: 2.4em;
+  }
+}
+@media only screen and (min-width:1024px) {
+  .letterSmall {
+    font-size: 0.7em;
+  }
+  .letterMedium {
+    font-size: 0.8em;
+  }
+  .letterBig {
+    font-size: 1em;
+  }
+  .letterSubtittle {
+    font-size: 1.4em
+  }
+  .letterTittle {
+    font-size: 2.7em;
+  }
+}
+
+
 body,html
 {
-  min-width: 1024px;
   height: 100%;
   margin: 0;
-
   color: rgb(255, 255, 255);
   background-attachment: fixed;
 }
 
 #header
 {
-  height: 80px;
   padding-right: 3%;
   padding-left: 3%;
-  min-width: 600px;
   background-color: rgba(0,0,0,.6);
 }
 #header .logoPicbit
 {
-  height: 50px;
-
   cursor: pointer;
+  padding: 0;
+  margin: 1%;
 }
-#name
-{
+#name {
   font-family: archistico;
-  font-size: 60px;
-
   margin: 0;
-
   color: #cbc7c7;
 }
-#name:hover
-{
-  cursor: pointer;
-}
-#language
-{
-  margin-right: 2%;
-  padding-top: 25px;
-}
 
-#language /deep/ paper-menu
-{
-  color: black;
-}
-
-#language /deep/ iron-dropdown
-{
-  margin-top: 65px;
-  margin-left: 20px;
-}
+#name:hover,
 .loginButton
 {
-  margin-top: 18px;
-  padding-right: 10px;
-  cursor:pointer;
-  border-radius: 3px;
+  cursor: pointer;
 }
 
-#language span
-{
-  vertical-align: middle;
-}
-
-#userButton
-{
+paper-menu-button{
   padding: 0;
-  padding-bottom: 5px;
-
-  cursor: pointer;
+  margin: auto 1%;
 }
-#userButton /deep/ span
-{
-  vertical-align: middle;
+paper-menu-button > paper-button {
+  text-transform: none;
+  margin:0;
+  padding: 0;
 }
-#userButton /deep/ .dropdown-trigger {
+paper-menu-button /deep/ iron-dropdown {
+  margin-top: 30px;
+}
+paper-menu{
   padding:0;
-}
-#userButton /deep/ iron-dropdown
-{
-  margin-top: 38px;
-  min-width: 117px;
-}
-paper-item
-{
-  font-size: 14px !important;
-
-  cursor: pointer;
-
   color: black;
-  border-bottom: 1px solid #aaa;
-  outline: none;
-  background-color: #eee;
 }
-
-footer paper-button
-{
-  font-size: 12px;
+paper-item {
+  cursor: pointer;
 }
-
-footer paper-button:hover {
-  background-color: #b71c1c;
-}
-#header .loginButton:hover
-{
-  background-color: #b71c1c;
-}
-paper-item:hover
-{
-  background-color: #aaa;
-}
-
-footer
-{
-  position: fixed;
-  z-index: 10;
-  bottom: 0;
-
-  width: 100%;
-  padding: 7px;
-
-  background-color: rgba(0,0,0,.6);
-}
-paper-dialog {
-  max-width: 500px;
-}
-
-paper-button.blue:hover {
-  background-color: #64b5f6;
-  color:white;
-}
-
-#loginModal {
-  min-width: 350px;
-  background-color: rgba(206, 206, 206, 0.83);
-  color:white;
-}
-#loginModal .content {
-  padding: 20px;
-  margin-bottom: 0;
-}
-#loginModal .tittle{
-  text-align: center;
-}
-#loginModal .tittle paper-icon-button{
-  position:absolute;
-  top:15px;
-  right: 5px;
+paper-item:hover {
+  background-color: #a3a3a3;
 }
 
 .view
 {
-  height: 83%;
-  margin: 0 150px;
-  padding-top: 5%;
+/*  position:absolute;
+  top:0;right: 0;bottom:0;left:0;*/
+  margin: 63px 15% 0% 15%;
+  min-height: 100%;
+
+}
+.view[data-popupOpen=true] {
+  opacity: 0;
+}
+
+
+#loginModal {
+  background-color: rgba(206, 206, 206, 0.83);
+  color:white;
+  border-radius:3%;
+}
+
+#loginModal .tittle{
+  text-align: center;
+}
+paper-icon-button[icon="close"]{
+  position:absolute;
+  top:2px;
+  right: 2px;
+}
+paper-dialog {
+  max-width: 500px;
+}
+paper-icon-button[icon="close"]:hover {
+  color:black;
+}
+p {
+  margin:0;
+}
+
+#wrapper{ 
+  min-height: 100%;
+  position:relative;
+}
+.button-login {
+  margin:8px;
 }
