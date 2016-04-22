@@ -179,14 +179,15 @@ html {
   .userForm{
   padding-left: 15px;
   height: auto;
-  width: 500px;
+  width: 460px;
+  position: relative;
+  float: right;
   padding-bottom: 15px;
   background-color: white;
   color: black;
 }
 
 .userForm p{
-  
   font-weight: bold;
   margin-bottom: 0px;
 }
@@ -196,16 +197,16 @@ html {
 }
 
 .submitButton{
-  background-color: var(--paper-indigo-500);
-  color: black !important;
+  background-color: #3F51B5; /*var(--paper-indigo-500)*/
+  color: white !important;
 }
 
 #yesButton{
-  background-color: var(--paper-green-500);
-  color: black !important;
+  background-color: #4CAF50; /*var(--paper-green-500);*/
+  color: white !important;
 }
 
 #noButton{
-  background-color: var(--paper-red-500); 
-  color: black !important;
+  background-color: #F44336; /*var(--paper-red-500); */
+  color: white !important;
 }

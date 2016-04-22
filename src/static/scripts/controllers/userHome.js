@@ -216,4 +216,51 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       dialog.open();
     }
   };
+
+  $scope._submitRating = function(event){
+    var answer = document.getElementById("initialQuestion").selected;
+    if (answer!= undefined){
+      //We send an event to Mixpanel
+      var properties = {"selection": answer};
+      mixpanel.track("pregunta1", properties);
+      document.getElementById("initialQuestionaire").hidden = true;
+      document.getElementById("continueMenu").removeAttribute("hidden");
+    }
+  }
+
+  $scope._action = function(action){
+    if (action=='yes'){
+      document.getElementById("continueMenu").hidden = true;
+      document.getElementById("aditionalForm").removeAttribute("hidden");
+    }else
+      document.getElementById("continueMenu").hidden = true;
+  }
+
+  $scope._submitExtendedQuestionaire = function(){
+    // We get the responses for every question
+    var aditional_questions = document.getElementsByClassName("aditionalQuestion");
+    var mixpanel_event_list = [];
+    Array.prototype.forEach.call(aditional_questions, function(question){
+      answer = document.getElementById(question.id).selected;
+      if (answer!= undefined){
+        console.log(answer);
+        mixpanel_event = {"event_name": question.id
+        ,"selection": answer};
+        mixpanel_event_list.push(mixpanel_event);
+      }
+    });
+
+    // We check if the user has anwered all questions     
+    var mixpanel_properties = {};
+    if (mixpanel_event_list.length == aditional_questions.length){
+      for (var i = 0; i< mixpanel_event_list.length; i++) {
+        // We send the responses to Mixpanel
+        mixpanel_event = mixpanel_event_list[i]
+        mixpanel_properties = {"selection": mixpanel_event.selection};
+        mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
+        console.log("Envio evento");
+      } 
+    }
+  }  
+
 }]);

@@ -97,7 +97,79 @@
         <span ng-show="showElement" style="padding-left: 10px;">{{language.user_action.help}}</span>
       </div>
     </div>
-  </div>
+
+  <div class="userFormContainer">
+    <paper-material elevation="2" class="userForm" id="initialQuestionaire">
+      <form is="iron-form">
+        <p> Componente Random </p>
+        <p> ¿Te parece la plataforma sencilla de utilizar?</p>
+        
+        <paper-radio-group id="initialQuestion">
+          <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
+          <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
+          <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
+          <paper-radio-button name="4"> 4. De acuerdo </paper-radio-button><br>
+          <paper-radio-button name="5"> 5. Completamente de acuerdo </paper-radio-button><br>
+          <paper-button raised class="submitButton" ng-click="_submitRating($event)">Enviar</paper-button>
+        </paper-radio-group>
+      </form>
+    </paper-material>
+
+    <!-- Confirmation to take an aditional questionaire about the component-->
+    <paper-material elevation="2" id="continueMenu" class="userForm" hidden>
+      <paper-radio-group>
+        <p> ¿Te gustaría realizar un pequeños cuestionario sobre el uso de la plataforma?</p>
+        <paper-button raised id="yesButton" ng-click="_action('yes')"> Si </paper-button>
+        <paper-button raised id="noButton" ng-click="_action('no')"> No </paper-button>
+      </paper-radio-group>
+    </paper-material>
+
+    <!-- Aditional questionaire -->
+    <paper-material id="aditionalForm" elevation="2" class="userForm" hidden>
+      <form is="iron-form">
+        <p> Componente Random </p>
+        <p> El componente me ha parecido fácil de utilizar. </p>
+        
+        <paper-radio-group id="question2" class="aditionalQuestion" >
+          <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
+          <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
+          <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
+          <paper-radio-button name="4"> 4. De acuerdo </paper-radio-button><br>
+          <paper-radio-button name="5"> 5. Completamente de acuerdo </paper-radio-button><br>
+        </paper-radio-group>
+      </form>
+
+      <form is="iron-form">
+        <p> El diseño del componente me parece agradable / apropiado. </p>
+        
+        <paper-radio-group id="question3" class="aditionalQuestion">
+          <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
+          <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
+          <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
+          <paper-radio-button name="4"> 4. De acuerdo </paper-radio-button><br>
+          <paper-radio-button name="5"> 5. Completamente de acuerdo </paper-radio-button><br>
+        </paper-radio-group>
+      </form>
+
+      <form is="iron-form">
+        <p> La información del componente se muestra de manera concisa y clara.</p>     
+        <paper-radio-group id="question4" class="aditionalQuestion">
+          <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
+          <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
+          <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
+          <paper-radio-button name="4"> 4. De acuerdo </paper-radio-button><br>
+          <paper-radio-button name="5"> 5. Completamente de acuerdo </paper-radio-button><br>
+        </paper-radio-group>
+      </form>
+
+    <paper-button raised class="submitButton" ng-click="_submitExtendedQuestionaire()">Enviar</paper-button>
+
+  </paper-material>
+
+</div>
+  </div> <!-- End ng-container -->
+
+
   <paper-dialog id="helpModal" modal>
     <h2 >{{language.user_action.help}}</h2>
     <div class="help-text vertical center-justified layout">
@@ -115,4 +187,4 @@
       <paper-button dialog-confirm autofocus class="blue">{{language.close}}</paper-button>
     </div>
   </paper-dialog>
-</div>
+
