@@ -9,7 +9,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.facebookData = {};
 
   $scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
-  $scope.twitterData.token = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf';
+  $scope.twitterData.token = 'GITHUB-TOKEN';
   $scope.githubData.username = 'ailopera';
 
   $scope.listComponents = [
@@ -218,11 +218,15 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   };
 
   $scope._submitRating = function(event){
-    var answer = document.getElementById("initialQuestion").selected;
-    if (answer!= undefined){
+    var question_id = "initialQuestion";
+    var answer = document.getElementById(question_id).selected;
+    var question_text = document.getElementById(question_id).getElementsByClassName("questionText")[0].innerHTML || "";
+    if (answer!= undefined && question_text != ""){
       //We send an event to Mixpanel
-      var properties = {"selection": answer};
-      mixpanel.track("pregunta1", properties);
+      var properties = {"selection": answer, 
+      "question_type": "obligatory",
+      "question": question_text};
+      mixpanel.track(question_id, properties);
       document.getElementById("initialQuestionaire").hidden = true;
       document.getElementById("continueMenu").removeAttribute("hidden");
     }
@@ -240,12 +244,16 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // We get the responses for every question
     var aditional_questions = document.getElementsByClassName("aditionalQuestion");
     var mixpanel_event_list = [];
+    var mixpanel_event = {};
+    var answer = "";
+    var question_text = "";
     Array.prototype.forEach.call(aditional_questions, function(question){
-      answer = document.getElementById(question.id).selected;
-      if (answer!= undefined){
-        console.log(answer);
-        mixpanel_event = {"event_name": question.id
-        ,"selection": answer};
+      answer = document.getElementById(question.id).selected || "";
+      question_text = document.getElementById(question.id).getElementsByClassName("questionText")[0].innerHTML || "";
+      if (answer!= "" && question_text != ""){
+        mixpanel_event = {"event_name": question.id,
+        "selection": answer,
+        "question": question_text };
         mixpanel_event_list.push(mixpanel_event);
       }
     });
@@ -256,11 +264,14 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       for (var i = 0; i< mixpanel_event_list.length; i++) {
         // We send the responses to Mixpanel
         mixpanel_event = mixpanel_event_list[i]
-        mixpanel_properties = {"selection": mixpanel_event.selection};
+        mixpanel_properties = {"selection": mixpanel_event.selection,
+        "question": mixpanel_event.question,
+        "question_type": "optional"};
         mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
-        console.log("Envio evento");
+        // We hide the user form
+        document.getElementById("aditionalForm").hidden = true;     
       } 
     }
-  }  
+  }
 
 }]);

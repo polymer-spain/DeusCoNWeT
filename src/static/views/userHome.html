@@ -11,9 +11,8 @@
       <paper-material elevation="2" class="userForm" id="initialQuestionaire">
         <form is="iron-form">
           <p> Componente Random </p>
-          <p> ¿Te parece la plataforma sencilla de utilizar?</p>
-          
           <paper-radio-group id="initialQuestion">
+            <p class="questionText"> ¿Te parece la plataforma sencilla de utilizar?</p>
             <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
             <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
             <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
@@ -27,7 +26,7 @@
       <!-- Confirmation to take an aditional questionaire about the component-->
       <paper-material elevation="2" id="continueMenu" class="userForm" hidden>
         <paper-radio-group>
-          <p> ¿Te gustaría realizar un pequeño cuestionario sobre el uso de la plataforma?</p>
+          <p> ¿Te gustaría realizar un pequeño cuestionario sobre los componentes que has utilizado?</p>
           <paper-button raised id="yesButton" ng-click="_action('yes')"> Si </paper-button>
           <paper-button raised id="noButton" ng-click="_action('no')"> No </paper-button>
         </paper-radio-group>
@@ -35,11 +34,10 @@
 
       <!-- Aditional questionaire -->
       <paper-material id="aditionalForm" elevation="2" class="userForm" hidden>
-        <form is="iron-form">
+        <form is="iron-form" >
           <p> Componente Random </p>
-          <p> El componente me ha parecido fácil de utilizar. </p>
-          
           <paper-radio-group id="question2" class="aditionalQuestion" >
+            <p class="questionText"> El componente me ha parecido fácil de utilizar. </p>
             <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
             <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
             <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
@@ -49,9 +47,8 @@
         </form>
 
         <form is="iron-form">
-          <p> El diseño del componente me parece agradable / apropiado. </p>
-          
           <paper-radio-group id="question3" class="aditionalQuestion">
+            <p class="questionText"> El diseño del componente me parece agradable / apropiado. </p>
             <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
             <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
             <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
@@ -61,8 +58,8 @@
         </form>
 
         <form is="iron-form">
-          <p> La información del componente se muestra de manera concisa y clara.</p>     
           <paper-radio-group id="question4" class="aditionalQuestion">
+            <p class="questionText"> La información del componente se muestra de manera concisa y clara.</p>     
             <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
             <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
             <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
@@ -73,6 +70,10 @@
 
       <paper-button raised class="submitButton" ng-click="_submitExtendedQuestionaire()">Enviar</paper-button>
 
+    </paper-material>
+
+    <paper-material elevation="2" hidden>
+      <p> Gracias por tu tiempo. </p>
     </paper-material>
 
   </div>

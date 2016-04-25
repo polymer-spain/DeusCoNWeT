@@ -165,20 +165,20 @@ html {
 
 .facebook-wall {
   position:absolute;
-  top: 10%;
+  top: 15%;
   left: 45%;
 }
 
 .instagram-timeline {
   position:absolute;
-  top:15%;
+  top: 15%;
   left: 25%;
 }
 
 /* User form styles */
   .userForm{
   padding: 15px;
-  top: 10%;
+  top: 15%;
   right: 5%;
   height: auto;
   position: absolute;
