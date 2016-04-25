@@ -55,7 +55,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
     }
   ];
-  $scope.listComponentAdded = ['facebook-wall']; // added on dragdrop.js
+  $scope.listComponentAdded = ['facebook-wall', 'instagram-timelinexs']; // added on dragdrop.js
   $scope.modifySelected = $scope.modifySelected || '';
   /* Authentication */
 

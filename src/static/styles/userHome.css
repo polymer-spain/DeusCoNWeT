@@ -165,24 +165,24 @@ html {
 
 .facebook-wall {
   position:absolute;
-  top:20%;
+  top: 10%;
   left: 45%;
 }
 
 .instagram-timeline {
   position:absolute;
-  top:10%;
+  top:15%;
   left: 25%;
 }
 
 /* User form styles */
   .userForm{
-  padding-left: 15px;
+  padding: 15px;
+  top: 10%;
+  right: 5%;
   height: auto;
-  width: 460px;
-  position: relative;
+  position: absolute;
   float: right;
-  padding-bottom: 15px;
   background-color: white;
   color: black;
 }
@@ -195,8 +195,11 @@ html {
 .userForm paper-radio-group{
   padding: 5px; 
 }
-
+.userForm paper-radio-button {
+  padding: 5px; 
+}
 .submitButton{
+  margin-top: 5px;
   background-color: #3F51B5; /*var(--paper-indigo-500)*/
   color: white !important;
 }
