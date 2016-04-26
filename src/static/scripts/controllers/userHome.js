@@ -1,4 +1,4 @@
-angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope', function ($scope, $timeout, $rootScope) {
+angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope', '$interval', function ($scope, $timeout, $rootScope, $interval) {
   'use strict';
 
   /* Network infomation */
@@ -217,6 +217,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     }
   };
 
+  // ng-click functions of user forms
   $scope._submitRating = function(event){
     var question_id = "initialQuestion";
     var answer = document.getElementById(question_id).selected;
@@ -257,7 +258,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         mixpanel_event_list.push(mixpanel_event);
       }
     });
-
     // We check if the user has anwered all questions     
     var mixpanel_properties = {};
     if (mixpanel_event_list.length == aditional_questions.length){
@@ -273,5 +273,22 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       } 
     }
   }
+
+  // Watcher that controls whether the form should be showed to the user or not
+  $scope.platformUsedTime = 0;
+  $scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
+  $scope.formLoadTime = 60000; // Indicates when we'll show to the user the form
+  $scope.$watch("platformUsedTime", function(newValue, oldValue){
+     if (newValue!==oldValue && newValue >= $scope.formLoadTime ) {
+      document.getElementById("initialQuestionaire").removeAttribute("hidden");
+      $interval.cancel(platformTimeHandler);
+    }
+  });
+
+  var platformTimeHandler = $interval(function(){
+    if(document.visibilityState === "visible" ){
+      $scope.platformUsedTime += $scope.intervalTime;
+    }
+  }, $scope.intervalTime);
 
 }]);
