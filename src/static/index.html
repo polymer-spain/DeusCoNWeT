@@ -34,14 +34,17 @@
       <paper-icon-button src="images/logo.png"></paper-icon-button>
       <span class="title">Picbit</span>
       <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Language
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+          {{language.language}}
           <span class="caret"></span></button>
         <ul class="dropdown-menu">
           <li><a>{{language.lang.es}}</a></li>
           <li><a>{{language.lang.en}}</a></li>
         </ul>
       </div>
-  <button type="button" class="btn btn-success btn-md" id="myBtn" data-toggle="modal" data-target="#myModal" data-keyboard="true">Sign In</button>
+  <button type="button" class="btn btn-success btn-md" id="myBtn" data-toggle="modal" data-target="#myModal" data-keyboard="true">
+    {{language.login}}
+      </button>
 
     </paper-toolbar>
     <div class="flex layout horizontal">
@@ -52,9 +55,9 @@
     
     <!--FOOTER -->
     <paper-toolbar class="footer layout horizontal center-justified">
-      <paper-button>Test 1</paper-button>
-      <paper-button>Test 2</paper-button>
-      <paper-button>Test 3</paper-button>
+      <paper-button>{{language.contact}}</paper-button>
+      <paper-button>{{language.about}}</paper-button>
+      <paper-button>{{language.privacy}}</paper-button>
     </paper-toolbar>
     
     <!-- Login modal -->
