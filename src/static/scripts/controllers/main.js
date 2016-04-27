@@ -16,5 +16,22 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
     });
   };
   $scope.setLanguage($scope.idioma);
+
   
-}]);
+  // Login callback function
+  var loginCallback = function(e){
+    
+  }
+  // Binding login callback
+  (function(){
+    document.querySelector('body').addEventListener('google-logged', loginCallback);
+    document.querySelector('body').addEventListener('linkedin-logged', loginCallback);
+    document.querySelector('body').addEventListener('github-logged', loginCallback);
+    document.querySelector('body').addEventListener('instagram-logged', loginCallback);
+    document.querySelector('body').addEventListener('twitter-logged', loginCallback);
+    document.querySelector('body').addEventListener('facebook-logged', loginCallback);
+    document.querySelector('body').addEventListener('sof-logged', loginCallback);
+  })();
+
+
+}]);// end angular.module
