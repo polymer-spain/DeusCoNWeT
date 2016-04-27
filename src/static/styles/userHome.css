@@ -198,6 +198,7 @@ html {
 .userForm paper-radio-button {
   padding: 5px; 
 }
+
 .submitButton{
   margin-top: 5px;
   background-color: #3F51B5; /*var(--paper-indigo-500)*/
@@ -207,9 +208,11 @@ html {
 #yesButton{
   background-color: #4CAF50; /*var(--paper-green-500);*/
   color: white !important;
+  margin-top: 10px;
 }
 
 #noButton{
   background-color: #F44336; /*var(--paper-red-500); */
   color: white !important;
+  margin-top: 10px;
 }

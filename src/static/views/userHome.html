@@ -71,8 +71,9 @@
 
     </paper-material>
 
-    <paper-material elevation="2" hidden>
-      <p> Gracias por tu tiempo. </p>
+    <paper-material elevation="2" class="userForm" id="ThanksDialog" hidden>
+      <p> El cuestionario ha terminado. Gracias por tu tiempo. </p>
+      <paper-button raised id="yesButton" ng-click="_hideEndDialog()"> Ok </paper-button>
     </paper-material>
 
   </div>

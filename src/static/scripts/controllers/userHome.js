@@ -269,9 +269,14 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         "question_type": "optional"};
         mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
         // We hide the user form
-        document.getElementById("aditionalForm").hidden = true;     
+        document.getElementById("aditionalForm").hidden = true;
+        document.getElementById("ThanksDialog").removeAttribute("hidden");    
       } 
     }
+  }
+
+  $scope._hideEndDialog = function() {
+    document.getElementById("ThanksDialog").hidden = true;
   }
 
   // Watcher that controls whether the form should be showed to the user or not
