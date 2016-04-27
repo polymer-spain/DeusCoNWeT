@@ -184,6 +184,8 @@ class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
   version = ndb.StringProperty() # Version of the component rated
   rating_value = ndb.FloatProperty()
+  # In the future, this field it could be a reference to an entity that would hold the evaluation resuls
+  optional_evaluation = ndb.BooleanProperty(default=False) 
 
 class Group(ndb.Model):
   group_name = ndb.StringProperty(required=True)
