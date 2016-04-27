@@ -35,54 +35,53 @@
       <span class="title">Picbit</span>
       <div class="dropdown">
         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-          {{language.language}}
+          {{language.lang[idioma] || language.language}}
           <span class="caret"></span></button>
         <ul class="dropdown-menu">
-          <li><a>{{language.lang.es}}</a></li>
-          <li><a>{{language.lang.en}}</a></li>
+          <li><a ng-click="setLanguage('es')">{{language.lang.es}}</a></li>
+          <li><a ng-click="setLanguage('en')">{{language.lang.en}}</a></li>
         </ul>
       </div>
-  <button type="button" class="btn btn-success btn-md" id="myBtn" data-toggle="modal" data-target="#myModal" data-keyboard="true">
-    {{language.login}}
+      <button type="button" class="btn btn-success btn-md" id="myBtn" data-toggle="modal" data-target="#myModal" data-keyboard="true">
+        {{language.login}}
       </button>
 
     </paper-toolbar>
     <div class="flex layout horizontal">
       <div ng-view="" id="view" class="flex" ng-hide="popupOpened"></div>
     </div>
-    
-    
-    
+
     <!--FOOTER -->
     <paper-toolbar class="footer layout horizontal center-justified">
       <paper-button>{{language.contact}}</paper-button>
       <paper-button>{{language.about}}</paper-button>
       <paper-button>{{language.privacy}}</paper-button>
     </paper-toolbar>
-    
+
+
     <!-- Login modal -->
-      <!-- Modal -->
-  <div id="myModal" class="modal fade " role="dialog" tabindex="-1">
-    <div class="modal-dialog modal-sm">
+    <!-- Modal -->
+    <div id="myModal" class="modal fade " role="dialog" tabindex="-1">
+      <div class="modal-dialog modal-sm">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">{{language.entry}}</h4>
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{language.entry}}</h4>
+          </div>
+          <div class="modal-body vertical layout center-center">
+            <!-- Modal login -->
+            <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
+            <br>
+            <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+            <br>
+            <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+          </div>
         </div>
-        <div class="modal-body vertical layout center-center">
-          <!-- Modal login -->
-          <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-          <br>
-          <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
-          <br>
-          <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
-        </div>
+
       </div>
-
     </div>
-  </div>
     <!-- build:js scripts/min/dependencies.min.js -->
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>

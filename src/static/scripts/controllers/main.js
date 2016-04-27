@@ -7,13 +7,14 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 
   // Language control
   $scope.idioma = $cookies.get('language') || $window.navigator.language;
-  $scope.languageRequest = function(lang){
+  $scope.setLanguage = function(lang){
     var file = lang + "_"+ lang + ".json";
+    $scope.idioma = lang;
     RequestLanguage.language(file).success(function (data){
       $scope.language = data;
       $scope.languageSelected = data.lang[$scope.idioma];
     });
   };
-  $scope.languageRequest($scope.idioma);
-
+  $scope.setLanguage($scope.idioma);
+  
 }]);
