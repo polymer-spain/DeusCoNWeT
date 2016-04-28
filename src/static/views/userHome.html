@@ -23,6 +23,15 @@
       </paper-material>
 
       <!-- Confirmation to take an aditional questionaire about the component-->
+      <paper-material elevation="2" id="shareQuestion" class="userForm" hidden>
+        <paper-radio-group>
+          <p> ¿Compartirías este componente?</p>
+          <paper-button raised id="yesButton" ng-click="_submitShareResult('yes')"> Si </paper-button>
+          <paper-button raised id="noButton" ng-click="_submitShareResult('no')"> No </paper-button>
+        </paper-radio-group>
+      </paper-material>
+
+      <!-- Confirmation to take an aditional questionaire about the component-->
       <paper-material elevation="2" id="continueMenu" class="userForm" hidden>
         <paper-radio-group>
           <p> ¿Te gustaría realizar un pequeño cuestionario sobre los componentes que has utilizado?</p>

@@ -59,6 +59,7 @@ class ComponentRatingHandler(SessionHandler):
         # Param Methods
         version = self.request.get("version", default_value="none")
         rate = self.request.get("rate", default_value="none")
+        optional_form_completed = self.request.get("optional_form_completed", default_value="false")
         if not cookie_value == None:
             # Checks whether the cookie belongs to an active user and the request has provided at least one param
             user_id = self.getUserInfo(cookie_value)
@@ -68,6 +69,7 @@ class ComponentRatingHandler(SessionHandler):
                 data = []
                 data["comp_name"] = component_id
                 data["rate"] = rate
+                data["optional_evaluation"] = True if optional_form_completed == "true" else False 
                 # We update the user info
                 updated_data = ndb_pb.updateUser(user_id, data)
                 if not updated_data == None:

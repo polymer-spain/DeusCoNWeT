@@ -185,6 +185,7 @@ class UserRating(ndb.Model):
   version = ndb.StringProperty() # Version of the component rated
   rating_value = ndb.FloatProperty()
   # In the future, this field it could be a reference to an entity that would hold the evaluation resuls
+  # Optional_evaluation indicates whether a user has completed the optional form or not.
   optional_evaluation = ndb.BooleanProperty(default=False) 
 
 class Group(ndb.Model):
@@ -564,8 +565,12 @@ def updateUser(entity_key, data): #FUNCIONA
     # We add a Rating entity that represents the component rating
     rating = UserRating(component_id=comp_name, rating_value=rate)
     user.rates.append(rating)
-    updated_data += ["rate"]    
+    updated_data += ["rate"]
 
+  # We update the optional_evaluation field     
+  if data.has_key("optional_evaluation"):
+    user.optional_evaluation = data['optional_evaluation']
+    
   # Updates the user data
   user.put()
   # Returns the list that represents the data that was updated
