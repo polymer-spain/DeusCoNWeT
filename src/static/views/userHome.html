@@ -22,14 +22,7 @@
         </form>
       </paper-material>
 
-      <!-- Confirmation to take an aditional questionaire about the component-->
-      <paper-material elevation="2" id="shareQuestion" class="userForm" hidden>
-        <paper-radio-group>
-          <p> ¿Compartirías este componente?</p>
-          <paper-button raised id="yesButton" ng-click="_submitShareResult('yes')"> Si </paper-button>
-          <paper-button raised id="noButton" ng-click="_submitShareResult('no')"> No </paper-button>
-        </paper-radio-group>
-      </paper-material>
+      
 
       <!-- Confirmation to take an aditional questionaire about the component-->
       <paper-material elevation="2" id="continueMenu" class="userForm" hidden>
@@ -79,6 +72,23 @@
             <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
             <paper-radio-button name="4"> 4. De acuerdo </paper-radio-button><br>
             <paper-radio-button name="5"> 5. Completamente de acuerdo </paper-radio-button><br>
+          </paper-radio-group>
+        </form>
+
+        <!-- Confirmation to take an aditional questionaire about the component-->
+        <form is="iron-form">
+          <paper-radio-group id="question5" class="aditionalQuestion">
+            <p class="questionText"> ¿Compartirías este componente?</p>
+            <paper-radio-button name="Si"> Sí </paper-radio-button>
+            <paper-radio-button name="No"> No </paper-radio-button>
+          </paper-radio-group>
+        </form>
+
+        <form is="iron-form">
+          <paper-radio-group id="question6" class="aditionalQuestion">
+            <p class="questionText"> ¿Recomendarías este componente?</p>
+            <paper-radio-button name="Si"> Sí </paper-radio-button>
+            <paper-radio-button name="No"> No </paper-radio-button>
           </paper-radio-group>
         </form>
 
