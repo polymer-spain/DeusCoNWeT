@@ -5,19 +5,19 @@
   <div class="componentContainer horizontal layout wrap">
     <facebook-wall component_directory="bower_components/facebook-wall/" language="{{idioma}}" ng-drag access_token="{{user.tokens.facebook}}" class="facebook-wall"></facebook-wall>
 
-    <instagram-timeline id="componentTested" endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" component_directory="bower_components/instagram-timeline/static/"></instagram-timeline>
+    <instagram-timeline id="componentTested" ng-drag endpoint="http://instagram-timeline.appspot.com/request/instagram" access-token="2062815740.34af286.169a9c42e1404ae58591d066c00cb979" component_directory="bower_components/instagram-timeline/static/" ></instagram-timeline>
 
     <div class="userFormContainer">
       <paper-material elevation="2" class="userForm" id="initialQuestionaire" hidden>
         <form is="iron-form">
           <paper-radio-group id="initialQuestion">
-            <p class="questionText"> ¿Qué nota le darías al componente?</p>
-            <paper-radio-button name="1"> 1. Muy malo </paper-radio-button><br>
-            <paper-radio-button name="2"> 2. Malo </paper-radio-button><br>
-            <paper-radio-button name="3"> 3. En la media</paper-radio-button><br>
-            <paper-radio-button name="4"> 4. Bueno </paper-radio-button><br>
-            <paper-radio-button name="5"> 5. Muy bueno </paper-radio-button><br>
-            <paper-button raised class="submitButton" ng-click="_submitRating($event)">Enviar</paper-button>
+            <p class="questionText">{{language.questionary.define}}</p>
+            <paper-radio-button name="1">{{language.questionary.component.verybad}} </paper-radio-button><br>
+            <paper-radio-button name="2">{{language.questionary.component.bad}}</paper-radio-button><br>
+            <paper-radio-button name="3">{{language.questionary.component.neutral}}</paper-radio-button><br>
+            <paper-radio-button name="4">{{language.questionary.component.good}}</paper-radio-button><br>
+            <paper-radio-button name="5">{{language.questionary.component.verygood}} </paper-radio-button><br>
+            <paper-button raised class="submitButton" ng-click="_submitRating($event)">{{language.send}}</paper-button>
           </paper-radio-group>
         </form>
       </paper-material>
@@ -27,9 +27,9 @@
       <!-- Confirmation to take an aditional questionaire about the component-->
       <paper-material elevation="2" id="continueMenu" class="userForm" hidden>
         <paper-radio-group>
-          <p> ¿Te gustaría realizar un pequeño cuestionario sobre los componentes que has utilizado?</p>
-          <paper-button raised id="yesButton" ng-click="_action('yes')"> Si </paper-button>
-          <paper-button raised id="noButton" ng-click="_action('no')"> No </paper-button>
+          <p> {{language.questionary.help}}</p>
+          <paper-button raised id="yesButton" ng-click="_action('yes')">{{language.questionary.yes}} </paper-button>
+          <paper-button raised id="noButton" ng-click="_action('no')">{{language.questionary.no}} </paper-button>
         </paper-radio-group>
       </paper-material>
 
@@ -38,66 +38,66 @@
           - Añadir un form (dentro del aditionalForm), con un paper-radio-group, con el id que identificará a la pregunta (se utilizará como el nombre de evento que se envía a Mixpanel).
           - El p dentro del paper-radio-group, la pregunta que se le muestra al usuario, se manda también tal cual a Mixpanel (p tiene que ser de la clase questionText).
           - La pregunta obligatoria de momento está orientada a la plataforma.
-          - De momento las respuestas tienen todas la misma ponderación (1. completamente en desacuerdo, 5. Completamente de acuerdo). Si se quiere cambiar esta escala en alguna pregunta, sería necesario cambiar los name="..." de todos los formularios, para que enviasen también la respuesta completa y no sólo el número.
+          - De momento las respuestas tienen todas la misma ponderación ({{language.questionary.amplied.verybad}}, 5. Completamente de acuerdo). Si se quiere cambiar esta escala en alguna pregunta, sería necesario cambiar los name="..." de todos los formularios, para que enviabaden también la respuesta completa y no sólo el número.
       -->
       <paper-material id="aditionalForm" elevation="2" class="userForm" hidden>
         <form is="iron-form" >
           <p> Componente Random </p>
           <paper-radio-group id="question2" class="aditionalQuestion" >
-            <p class="questionText"> El componente me ha parecido fácil de utilizar. </p>
-            <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
-            <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
-            <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
-            <paper-radio-button name="4"> 4. De acuerdo </paper-radio-button><br>
-            <paper-radio-button name="5"> 5. Completamente de acuerdo </paper-radio-button><br>
+            <p class="questionText">{{language.questionary.difficulty}} </p>
+            <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+            <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+            <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+            <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+            <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
           </paper-radio-group>
         </form>
 
         <form is="iron-form">
           <paper-radio-group id="question3" class="aditionalQuestion">
-            <p class="questionText"> El diseño del componente me parece agradable / apropiado. </p>
-            <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
-            <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
-            <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
-            <paper-radio-button name="4"> 4. De acuerdo </paper-radio-button><br>
-            <paper-radio-button name="5"> 5. Completamente de acuerdo </paper-radio-button><br>
+            <p class="questionText">{{language.questionary.design}}</p>
+            <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+            <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+            <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+            <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+            <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
           </paper-radio-group>
         </form>
 
         <form is="iron-form">
           <paper-radio-group id="question4" class="aditionalQuestion">
-            <p class="questionText"> La información del componente se muestra de manera concisa y clara.</p>     
-            <paper-radio-button name="1"> 1. Completamente en desacuerdo </paper-radio-button><br>
-            <paper-radio-button name="2"> 2. En desacuerdo </paper-radio-button><br>
-            <paper-radio-button name="3"> 3. Ni de acuerdo ni en desacuerdo</paper-radio-button><br>
-            <paper-radio-button name="4"> 4. De acuerdo </paper-radio-button><br>
-            <paper-radio-button name="5"> 5. Completamente de acuerdo </paper-radio-button><br>
+            <p class="questionText">{{language.questionary.information}}</p>     
+            <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+            <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+            <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+            <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+            <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
           </paper-radio-group>
         </form>
 
         <!-- Confirmation to take an aditional questionaire about the component-->
         <form is="iron-form">
           <paper-radio-group id="question5" class="aditionalQuestion">
-            <p class="questionText"> ¿Compartirías este componente?</p>
-            <paper-radio-button name="Si"> Sí </paper-radio-button>
-            <paper-radio-button name="No"> No </paper-radio-button>
+            <p class="questionText">{{language.questionary.share}}</p>
+            <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
+            <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
           </paper-radio-group>
         </form>
 
         <form is="iron-form">
           <paper-radio-group id="question6" class="aditionalQuestion">
-            <p class="questionText"> ¿Recomendarías este componente?</p>
-            <paper-radio-button name="Si"> Sí </paper-radio-button>
-            <paper-radio-button name="No"> No </paper-radio-button>
+            <p class="questionText">{{language.questionary.recommend}}</p>
+            <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
+            <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
           </paper-radio-group>
         </form>
 
-      <paper-button raised class="submitButton" ng-click="_submitExtendedQuestionaire()">Enviar</paper-button>
+      <paper-button raised class="submitButton" ng-click="_submitExtendedQuestionaire()">{{language.send}}</paper-button>
 
     </paper-material>
 
     <paper-material elevation="2" class="userForm" id="ThanksDialog" hidden>
-      <p> El cuestionario ha terminado. Gracias por tu tiempo. </p>
+      <p>{{language.questionary.end}}</p>
       <paper-button raised id="yesButton" ng-click="_hideEndDialog()"> Ok </paper-button>
     </paper-material>
 
@@ -164,8 +164,7 @@
       </div>
 
       <!-- modifica un elemento -->
-      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
-        <!-- HEADER -->
+<!--      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
         <div class="horizontal layout" ng-class="{corto: !isMenuHidden('modify')}">
           <div class="div_button" ng-click="ocultar('modify'); setSelected('modify'); sort=[false, false, false]" ng-class="{sort: sort[2]}">
             <iron-icon icon="create"></iron-icon>
@@ -175,19 +174,19 @@
             <iron-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" class="dropdown" icon="arrow-drop-down">
             </iron-icon>
           </div>
-        </div>
+        </div>-->
 
         <!-- Options -->
-        <div class="animate-show list" ng-show="showlist('modify')" >
+<!--        <div class="animate-show list" ng-show="showlist('modify')" >
           <div class="horizontal layout center deleteOption" ng-repeat="element in listComponentAdded" ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">
             <p class="flex elementList">{{element}}</p>
-          </div>
+          </div>-->
           <!-- Default -->
-          <div ng-if="listComponentAdded.length == 0">
+<!--          <div ng-if="listComponentAdded.length == 0">
             <p class="elementList">{{language.componentAddedEmpty}}</p>
           </div>
         </div>
-      </div>
+      </div>-->
 
       <!-- help and popup -->
       <div id="help" ng-class="{hidden: isMenuHidden('help')}" data-dialog="helpModal" ng-click="showToggleHelp($event)" style="max-width:170px">

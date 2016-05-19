@@ -92,12 +92,13 @@ picbit.directive("ngDrag", function () {
     element.on("drag", scope.dragging);
     element.on("dragstart", scope.deleteShadow);
     element.on("dragend", scope.deleteMove);
-    if (!element.attr("draggable")) {
+		element.attr('draggable',true);
+/*    if (!element.attr("draggable")) {
       element.attr("draggable", "{{modifySelected === '" + element[0].tagName.toLowerCase() + "'}}");
       var injector = element.injector();
       var $compile = injector.get("$compile");
       $compile(element)(element.scope());
-    }
+    }*/
   }
   /* creamos un scope propio */
   return {link: link, scope: true};
