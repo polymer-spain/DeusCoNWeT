@@ -1,12 +1,12 @@
 /*global angular, document, console*/
-angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguage', '$location', '$cookies', function ($scope, RequestLanguage, $location, $cookies) {
+angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguage', '$location', '$cookies', '$backend', '$http', '$rootScope', function ($scope, RequestLanguage, $location, $cookies, $backend, $http, $rScope) {
 
   'use strict';
 
   $scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
 
   // Language control
-  $scope.idioma = $cookies.get('language') || $window.navigator.language;
+  $scope.idioma = $cookies.get('language') || window.navigator.language;
   $scope.setLanguage = function(lang){
     var file = lang + "_"+ lang + ".json";
     $scope.idioma = lang;
@@ -17,11 +17,61 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
   };
   $scope.setLanguage($scope.idioma);
 
-  
+
   // Login callback function
-  var loginCallback = function(e){
-    
-  }
+  $scope.loginProcess = function(userData){
+    /* Cogemos el identificador del usuario */
+    function newUser(userData) {
+      $rScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
+      $scope.changeView('/selectId');
+    }
+    $rScope.token = userData.token;
+    if ($location.$$path.indexOf('profile') === -1) {
+      $backend.getUserId(userData.userId, userData.redSocial)
+        .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
+        /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
+        $rScope.user = responseUserId.data;
+        $backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
+          .then(function() {
+          $scope.changeView('/user/' + $rScope.user.user_id);
+        }, function(responseLogin) {
+          console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login'); 
+        });
+      }, function(){newUser(userData)});
+    } else {
+      $backend.sendData(userData.token, $rScope.user.user_id, userData.redSocial);
+    }
+  };
+  $scope.pathname = window.location.pathname;
+  
+  var loginCallback = function (e) {
+    //$scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
+    $('#login-popup').modal('toogle');
+    var socialNetwork = e.detail.redSocial;
+    var uri;
+    switch(socialNetwork) {
+      case 'googleplus':
+        uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
+        $http.get(uri).success(function (responseData) {
+          e.detail.userId = responseData.id;
+          $scope.loginProcess(e.detail);
+        });
+        break;
+      case 'twitter':
+        uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+        $http.get(uri).success(function (responseData) {
+          e.detail.userId = responseData.token_id;
+          $scope.loginProcess(e.detail);
+        }).error(function() {
+          console.log('Problemas al intentar obtener el token_id de un usuario' );
+        });
+        break;
+      default:
+        $scope.loginProcess(e.detail);
+        break;
+    }
+  };
+
   // Binding login callback
   (function(){
     document.querySelector('body').addEventListener('google-logged', loginCallback);
@@ -32,6 +82,6 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
     document.querySelector('body').addEventListener('facebook-logged', loginCallback);
     document.querySelector('body').addEventListener('sof-logged', loginCallback);
   })();
-
+  
 
 }]);// end angular.module

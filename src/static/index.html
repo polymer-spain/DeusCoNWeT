@@ -42,17 +42,17 @@
           <li><a ng-click="setLanguage('en')">{{language.lang.en}}</a></li>
         </ul>
       </div>
-      <button type="button" class="btn btn-success btn-md" id="myBtn" data-toggle="modal" data-target="#myModal" data-keyboard="true">
+      <button type="button" class="btn btn-success btn-md" id="myBtn" data-toggle="modal" data-target="#login-popup" data-keyboard="true">
         {{language.login}}
       </button>
 
     </paper-toolbar>
     <div class="flex layout horizontal">
-      <div ng-view="" id="view" class="flex" ng-hide="popupOpened"></div>
+      <div ng-view="" id="view" class="flex"></div>
     </div>
 
     <!--FOOTER -->
-    <paper-toolbar class="footer layout horizontal center-justified">
+    <paper-toolbar class="footer layout horizontal center-justified" ng-show="{{pathname == '/'}}">
       <paper-button>{{language.contact}}</paper-button>
       <paper-button>{{language.about}}</paper-button>
       <paper-button>{{language.privacy}}</paper-button>
@@ -61,7 +61,7 @@
 
     <!-- Login modal -->
     <!-- Modal -->
-    <div id="myModal" class="modal fade " role="dialog" tabindex="-1">
+    <div id="login-popup" class="modal fade " role="dialog" tabindex="-1">
       <div class="modal-dialog modal-sm">
 
         <!-- Modal content-->

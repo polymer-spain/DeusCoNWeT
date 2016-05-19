@@ -1,116 +1,17 @@
-<link rel="stylesheet" href="styles/userHome.css">
-
-<div ng-container id="container">
-  
-  <facebook-wall component_directory="bower_components/facebook-wall/" language="{{idioma}}" ng-drag access_token="{{user.tokens.facebook}}" class="facebook-wall"></facebook-wall>
-  <div class="horizontal around-justified layout">
-    <div class="vertical layout end" id="listOption" style="z-index:1">
-      <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
-        <iron-icon id="menu-icon" icon="arrow-back"></iron-icon>
-      </div>
-
-      <!-- Añadir un elemento -->
-      <div id="add" ng-class="{hidden: isMenuHidden('add')}">
-        <!-- HEADER -->
-        <div class="horizontal layout" ng-class="{corto: !isMenuHidden('add')}">
-          <div class="div_button" ng-click="ocultar('add'); setSelected('add')" ng-class="{sort: !sort[0]}">
-            <iron-icon icon="add-box"></iron-icon>
-          </div>
-          <div class="flex horizontal layout dropdown" ng-click="setList('add'); setSort('add')" ng-class="{sort: sort[0]}">
-            <p ng-show="showElement?true:showSingle=='add'" class="flex"> {{language.user_action.add}}</p>
-            <iron-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" class="dropdown" icon="arrow-drop-down">
-            </iron-icon>
-          </div>
-        </div>
-
-        <!-- Options -->
-        <div class="animate-show list" ng-show="showlist('add')" >
-          <div ng-repeat="element in listComponents | arrayFilter:listComponentAdded">
-            <p  class="elementList" ng-create-element id-element="{{element.name}}" list-attributes="{{element.attributes}}">{{element.name}}</p>
-          </div>
-          <!-- Default -->
-          <div ng-if="listComponents.length == 0">
-            <p class="elementList">{{language.componentListEmpty}}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Borrar un elemento -->
-      <div id="delete" ng-class="{hidden: isMenuHidden('delete')}">
-        <!-- HEADER -->
-        <div class="horizontal layout" ng-class="{corto: !isMenuHidden('delete')}">
-          <div class="div_button" ng-click="ocultar('delete'); setSelected('delete'); sort=[false, false, false]" ng-class="{sort: sort[1]}">
-            <iron-icon icon="delete"></iron-icon>
-          </div>
-          <div class="flex horizontal layout dropdown" ng-click="setList('delete'); setSort('delete')" class="dropdown" ng-class="{sort: sort[1]}">
-            <p ng-show="showElement?true:showSingle=='delete'" class="flex" style=""> {{language.user_action.delete}}</p>
-            <iron-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" class="dropdown" icon="arrow-drop-down">
-            </iron-icon>
-          </div>
-        </div>
-
-        <!-- Options-->
-        <div class="animate-show list" ng-show="showlist('delete')">
-          <div class="horizontal layout center deleteOption" draggable="true" ng-repeat="element in listComponentAdded">
-            <p class="flex elementList">{{element}}</p>
-            <paper-icon-button class="icon" ng-click="deleteTimeline(element)" icon="cancel"></paper-icon-button>
-          </div>
-          <!-- Default -->
-          <div ng-if="listComponentAdded.length == 0">
-            <p class="elementList">{{language.componentAddedEmpty}}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- modifica un elemento -->
-      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
-        <!-- HEADER -->
-        <div class="horizontal layout" ng-class="{corto: !isMenuHidden('modify')}">
-          <div class="div_button" ng-click="ocultar('modify'); setSelected('modify'); sort=[false, false, false]" ng-class="{sort: sort[2]}">
-            <iron-icon icon="create"></iron-icon>
-          </div>
-          <div class="flex horizontal layout dropdown" ng-click="setList('modify'); setSort('modify')" ng-class="{sort: sort[2]}">
-            <p ng-show="showElement?true:showSingle=='modify'" class="dropdown flex">  {{language.user_action.modify}}</p>
-            <iron-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" class="dropdown" icon="arrow-drop-down">
-            </iron-icon>
-          </div>
-        </div>
-
-        <!-- Options -->
-        <div class="animate-show list" ng-show="showlist('modify')" >
-          <div class="horizontal layout center deleteOption" ng-repeat="element in listComponentAdded" ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">
-            <p class="flex elementList">{{element}}</p>
-          </div>
-          <!-- Default -->
-          <div ng-if="listComponentAdded.length == 0">
-            <p class="elementList">{{language.componentAddedEmpty}}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- help and popup -->
-      <div id="help" ng-class="{hidden: isMenuHidden('help')}" data-dialog="helpModal" ng-click="showToggleHelp($event)" style="max-width:170px">
-        <iron-icon icon="help"></iron-icon>
-        <span ng-show="showElement" style="padding-left: 10px;">{{language.user_action.help}}</span>
-      </div>
+<div id="userHome">
+  <!-- Left bar -->
+  <div class="" role="group">
+    <div class="btn btn-default">
+      <span class="glyphicon glyphicon-plus"></span>
+    </div>
+    <div class="btn btn-default">
+      <span class="glyphicon glyphicon-trash"></span>
+    </div>
+    <div class="btn btn-default">
+      <span class="glyphicon glyphicon-pencil"></span>
+    </div>
+    <div class="btn btn-default">
+      <span class="glyphicon glyphicon-info-sign"></span>
     </div>
   </div>
-  <paper-dialog id="helpModal" modal>
-    <h2 >{{language.user_action.help}}</h2>
-    <div class="help-text vertical center-justified layout">
-      <p>
-        <strong>{{language.user_action.add}}</strong><span>: {{language.help.add}}</span>
-      </p>
-      <p>
-        <strong>{{language.user_action.delete}}</strong>: <span>{{language.help.delete}}</span>
-      </p>
-      <p>
-        <strong>{{language.user_action.modify}}</strong>: <span>{{language.help.modify}}</span>
-      </p>
-    </div>
-    <div class="buttons">
-      <paper-button dialog-confirm autofocus class="blue">{{language.close}}</paper-button>
-    </div>
-  </paper-dialog>
 </div>
-
