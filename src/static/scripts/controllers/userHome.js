@@ -1,4 +1,4 @@
-angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope', function ($scope, $timeout, $rootScope) {
+angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope', '$interval', function ($scope, $timeout, $rootScope, $interval) {
   'use strict';
 
   /* Network infomation */
@@ -9,8 +9,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.facebookData = {};
 
   $scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
-  $scope.twitterData.token = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf';
-  $scope.githubData.username = 'mortega5';
+  $scope.twitterData.token = 'GITHUB-TOKEN';
+  $scope.githubData.username = 'ailopera';
 
   $scope.listComponents = [
     {
@@ -18,7 +18,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       attributes: {
         language: '{{idioma}}',
         component_directory: 'bower_components/facebook-wall/',
-        access_token: $rootScope.user.tokens.facebook
+        access_token: 'CAACEdEose0cBACSYsWT7oP2MdCCGFAKpZAuFbDqm6M8sTGHuFXlRUI5EdRxRbigk4ZCd5Cy7Tsc9I8eclLlMmo6p0mPlZCmYziAzQldzE0TVjFgi1G3ZAYhrN32VjNooLhYopPMV4i0ZCaIwqAxXZAejYsQSjf0wZAAwXERs6rqx5kNAY9ImR059UvETxwIZBKEIkhCmlEKXuR20Q8SveKHZC'
       }
     },
     {
@@ -39,7 +39,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       name: 'github-events',
       attributes: {
         username: $scope.githubData.username,
-        token: $scope.githubData.token || '',
+        token: '15ba59338e31e26884bf261a7f535063131d63e9' || '',
         mostrar: '10',
         language: '{{idioma}}',
         component_directory: 'bower_components/github-events/'
@@ -55,7 +55,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
     }
   ];
-  $scope.listComponentAdded = ['facebook-wall']; // added on dragdrop.js
+  $scope.listComponentAdded = ['facebook-wall', 'instagram-timeline']; // added on dragdrop.js
   $scope.modifySelected = $scope.modifySelected || '';
   /* Authentication */
 
@@ -216,4 +216,84 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       dialog.open();
     }
   };
+
+  // ng-click functions of user forms
+  $scope._submitRating = function(event){
+    var question_id = "initialQuestion";
+    var answer = document.getElementById(question_id).selected;
+    var question_text = document.getElementById(question_id).getElementsByClassName("questionText")[0].innerHTML || "";
+    if (answer!= undefined && question_text != ""){
+      //We send an event to Mixpanel
+      var properties = {"selection": answer, 
+      "question_type": "obligatory",
+      "question": question_text};
+      mixpanel.track(question_id, properties);
+      document.getElementById("initialQuestionaire").hidden = true;
+      document.getElementById("continueMenu").removeAttribute("hidden");
+    }
+  }
+
+  $scope._action = function(action){
+    if (action=='yes'){
+      document.getElementById("continueMenu").hidden = true;
+      document.getElementById("aditionalForm").removeAttribute("hidden");
+    }else
+      document.getElementById("continueMenu").hidden = true;
+  }
+
+  $scope._submitExtendedQuestionaire = function(){
+    // We get the responses for every question
+    var aditional_questions = document.getElementsByClassName("aditionalQuestion");
+    var mixpanel_event_list = [];
+    var mixpanel_event = {};
+    var answer = "";
+    var question_text = "";
+    Array.prototype.forEach.call(aditional_questions, function(question){
+      answer = document.getElementById(question.id).selected || "";
+      question_text = document.getElementById(question.id).getElementsByClassName("questionText")[0].innerHTML || "";
+      if (answer!= "" && question_text != ""){
+        mixpanel_event = {"event_name": question.id,
+        "selection": answer,
+        "question": question_text };
+        mixpanel_event_list.push(mixpanel_event);
+      }
+    });
+    // We check if the user has anwered all questions     
+    var mixpanel_properties = {};
+    if (mixpanel_event_list.length == aditional_questions.length){
+      for (var i = 0; i< mixpanel_event_list.length; i++) {
+        // We send the responses to Mixpanel
+        mixpanel_event = mixpanel_event_list[i]
+        mixpanel_properties = {"selection": mixpanel_event.selection,
+        "question": mixpanel_event.question,
+        "question_type": "optional"};
+        mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
+        // We hide the user form
+        document.getElementById("aditionalForm").hidden = true;
+        document.getElementById("ThanksDialog").removeAttribute("hidden");    
+      } 
+    }
+  }
+
+  $scope._hideEndDialog = function() {
+    document.getElementById("ThanksDialog").hidden = true;
+  }
+
+  // Watcher that controls whether the form should be showed to the user or not
+  $scope.platformUsedTime = 0;
+  $scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
+  $scope.formLoadTime = 1000; // Indicates when we'll show to the user the form
+  $scope.$watch("platformUsedTime", function(newValue, oldValue){
+     if (newValue!==oldValue && newValue >= $scope.formLoadTime ) {
+      document.getElementById("initialQuestionaire").removeAttribute("hidden");
+      $interval.cancel(platformTimeHandler);
+    }
+  });
+
+  var platformTimeHandler = $interval(function(){
+    if(document.visibilityState === "visible" ){
+      $scope.platformUsedTime += $scope.intervalTime;
+    }
+  }, $scope.intervalTime);
+
 }]);

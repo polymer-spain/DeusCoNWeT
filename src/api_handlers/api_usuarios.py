@@ -32,7 +32,6 @@ with open(configFile, "r") as ymlfile:
 
 domain = cfg["domain"]
 
-
 class UserListHandler(SessionHandler):
 
   """

@@ -1,170 +1,226 @@
 html {
-  background: url('http://www.pack4send.nl/wp-content/uploads/2014/03/PACK4SEND-achtergrond.jpg') no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
+	background: url('http://www.pack4send.nl/wp-content/uploads/2014/03/PACK4SEND-achtergrond.jpg') no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
 }
 
 #view {
-  margin:0px 60px 0 5px;
-  padding-top:0;
+	margin:0px 60px 0 5px;
+	padding-top:0;
+	position:absolute;
+	top:64px;right:0;left:0;bottom:40px;
 }
-
+footer{
+	display:none !important;
+}
 #picture {
-  width: 150px;
-  height: 150px;
-  border-radius: 100%;
+	width: 150px;
+	height: 150px;
+	border-radius: 100%;
 }
 #container {
-  height: 100%;
+	height: calc(100% - 104px);
 }
 .div_button{
-  padding: 35px 0px !important;
+	padding: 35px 0px !important;
 }
 
 .dropdown{
-  margin: auto;
+	margin: auto;
 }
 .dropdown p {
-  padding-left:10px
+	padding-left:10px
 
 }
 .hidden{
-  background: yellow;
+	background: yellow;
 
 }
 
 #listOption {
-  position:fixed;
-  right: 0;
-  vertical-align: middle;
-  /*width: 250px;*/
-  /*width: 57px;*/
-  /*padding-left: 0px;*/
+	position:fixed;
+	right: 0;
+	vertical-align: middle;
+	/*width: 250px;*/
+	/*width: 57px;*/
+	/*padding-left: 0px;*/
 }
 
 #listOption > div.hidden {
-  width: 25px;
-  padding: 0px 15px 0px;
-  background-color: rgba(0,0,0,0.4);
+	width: 25px;
+	padding: 0px 15px 0px;
+	background-color: rgba(0,0,0,0.4);
 }
 
 #listOption > div {
-  border: 1px solid rgba(255,255,255,0.3);
-  background-color:#444;
-  color:white;
-  transition: 0.3s linear all;
-  width: 200px;
+	border: 1px solid rgba(255,255,255,0.3);
+	background-color:#444;
+	color:white;
+	transition: 0.3s linear all;
+	width: 200px;
 }
 
 .corto{
-  padding: 0px 15px 0px;
+	padding: 0px 15px 0px;
 }
 .elementList {
-  padding: 20px 8px;
-  margin:0;
+	padding: 20px 8px;
+	margin:0;
 }
 #listOption > div:hover {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 #listOption > div#menuArrow {
-  background-color: #B71C1C;
-  padding:15px;
-  max-height: 54px;
-  max-width: 170px;
+	background-color: #B71C1C;
+	padding:15px;
+	max-height: 54px;
+	max-width: 170px;
 }
 
 .list {
-  border-top-color: whitesmoke;
-  background: #d0d0d0;
-  width:inherit;
-  color:black;
-  padding: 0px;
-  padding-left: 0px;
-  max-height: 200px;
-  overflow: auto;
-  transition: all 0.3s ease-out;
+	border-top-color: whitesmoke;
+	background: #d0d0d0;
+	width:inherit;
+	color:black;
+	padding: 0px;
+	padding-left: 0px;
+	max-height: 200px;
+	overflow: auto;
+	transition: all 0.3s ease-out;
 }
 
 .list :hover {
-  background-color: #8b8b8b;
-  color:white;
+	background-color: #8b8b8b;
+	color:white;
 }
 
 .list > icon{
-  color: black;
+	color: black;
 }
 
 .list .modifySelected{
-  background-color:#00a000;
-  color: white;
+	background-color:#00a000;
+	color: white;
 }
 
 .list .modifySelected :hover{
-  background-color: #00a000;
+	background-color: #00a000;
 }
 
 .list div > iron-icon {
-  width: 15px;
+	width: 15px;
 }
 
 .list.ng-hide {
-  max-height:0;
+	max-height:0;
 }
 
 
 .deleteOption{
-  height: 51px;
-  /*padding-left:10px;*/
-  padding-top:5px;
-  padding-bottom:5px;
+	height: 51px;
+	/*padding-left:10px;*/
+	padding-top:5px;
+	padding-bottom:5px;
 }
 
 #add div.list {
-  cursor:copy;
+	cursor:copy;
 }
 
 .list::-webkit-scrollbar {
-  width: 6px;
-  background: #b9b9b9;
+	width: 6px;
+	background: #b9b9b9;
 }
 
 .list::-webkit-scrollbar-thumb {
-  background-color: grey;
-  -webkit-border-radius: 2px;
+	background-color: grey;
+	-webkit-border-radius: 2px;
 }
 
 
 #delete .list > div > paper-icon-button /deep/ iron-icon {
-  width: 20px;
-  height: 20px;
-  transition: all ease 1s;
+	width: 20px;
+	height: 20px;
+	transition: all ease 1s;
 }
 
 
 #helpModal .help-text {
-  border-top: 2px solid #03A9F4;
+	border-top: 2px solid #03A9F4;
 }
 #helpModal {
-  background-color: #1976d2;
+	background-color: #1976d2;
 }
 #helpModal > h2 {
-  color: white;
+	color: white;
 }
 #helpModal div {
-  background-color: #e8eaf6;
+	background-color: #e8eaf6;
 }
 
 #help {
-  padding: 35px 15px !important;
+	padding: 35px 15px !important;
 }
 
 #help.hidden{
-  width: 400px;
+	width: 400px;
 }
 
 .facebook-wall {
-  position:absolute;
-  top:20%;
-  left: 45%;
+	position:absolute;
+	top: 15%;
+	left: 45%;
+}
+
+.instagram-timeline {
+	position:absolute;
+	top: 15%;
+	left: 25%;
+}
+
+/* User form styles */
+.userForm{
+	padding: 15px;
+	top: 15%;
+	right: 2%;
+	height: auto;
+	position: absolute;
+	float: right;
+	background-color: white;
+	color: black;
+}
+
+.userForm p{
+	font-weight: bold;
+	margin-bottom: 0px;
+}
+
+.userForm paper-radio-group{
+	padding: 5px; 
+}
+.userForm paper-radio-button {
+	padding: 5px; 
+}
+
+.submitButton{
+	margin-top: 5px;
+	background-color: #3F51B5; /*var(--paper-indigo-500)*/
+	color: white !important;
+}
+
+#yesButton{
+	background-color: #4CAF50; /*var(--paper-green-500);*/
+	color: white !important;
+	margin-top: 10px;
+}
+
+#noButton{
+	background-color: #F44336; /*var(--paper-red-500); */
+	color: white !important;
+	margin-top: 10px;
+}
+#aditionalForm {
+	max-height: 40%;
+	overflow-x: auto;
 }
