@@ -150,7 +150,7 @@ picbit.directive("ngContainer", function () {
             }
           }
         }
-        newTimeline.attr("draggable", "{{modifySelected === '" + id + "'}}");
+        newTimeline.attr("draggable", true);
         /* Caracteristicas del estilo para arrastrarlo */
 
         /* Enlazamos el elemento al contenedor*/
