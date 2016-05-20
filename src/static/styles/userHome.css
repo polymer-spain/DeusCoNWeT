@@ -8,7 +8,8 @@ html {
 	margin:0px 60px 0 5px;
 	padding-top:0;
 	position:absolute;
-	top:64px;right:0;left:0;bottom:40px;
+	top:64px;right:0;left:0;bottom:0px;
+	min-height: 0 !important;
 }
 footer{
 	display:none !important;
@@ -19,7 +20,7 @@ footer{
 	border-radius: 100%;
 }
 #container {
-	height: calc(100% - 104px);
+	height: 100%;
 }
 .div_button{
 	padding: 35px 0px !important;
@@ -223,4 +224,8 @@ footer{
 #aditionalForm {
 	max-height: 40%;
 	overflow-x: auto;
+}
+p.component {
+	margin:5px;
+	padding:0px 12px;
 }

@@ -11,6 +11,7 @@
       <paper-material elevation="2" class="userForm" id="initialQuestionaire" hidden>
         <form is="iron-form">
           <paper-radio-group id="initialQuestion">
+						<p class="component">{{getRandomComponent()}}</p>
             <p class="questionText">{{language.questionary.define}}</p>
             <paper-radio-button name="1">{{language.questionary.component.verybad}} </paper-radio-button><br>
             <paper-radio-button name="2">{{language.questionary.component.bad}}</paper-radio-button><br>
@@ -42,7 +43,7 @@
       -->
       <paper-material id="aditionalForm" elevation="2" class="userForm" hidden>
         <form is="iron-form" >
-          <p> Componente Random </p>
+					<p>{{getRandomComponent()}} </p>
           <paper-radio-group id="question2" class="aditionalQuestion" >
             <p class="questionText">{{language.questionary.difficulty}} </p>
             <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>

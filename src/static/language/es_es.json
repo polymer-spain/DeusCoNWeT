@@ -66,12 +66,12 @@
 		"amplied": {
 			"verybad": "Completamente en desacuerdo",
 			"bad": "En desacuerdo",
-			"neutral": "Ni deacuerdo ni desacuerdo",
+			"neutral": "Ni de acuerdo ni desacuerdo",
 			"good": "De acuerdo",
-			"verygood": "Completamente deacuerdo"
+			"verygood": "Completamente de acuerdo"
 		},
 		"define": "¿Qué nota le darías al componente?",
-		"help": "¿Te gustaría realizar un pequeño cuestionario sobre los componentes que has utilizado??",
+		"help": "¿Te gustaría realizar un pequeño cuestionario sobre los componentes que has utilizado?",
 		"difficulty": "El componente es difícil de usar" ,
 		"design": "El diseño del componente me parece agradable/apropiado",
 		"information": "La información del componente se muestra de manera concisa y clara.",
