@@ -11,6 +11,9 @@ angular.module('picbit').controller('MainController', ['$scope', '$location', '$
 
   $rootScope.isLogged = $rootScope.user ? true : false; // Registrar el estado de logueado
   $scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
+  if ($location.host() == 'localhost') {
+    $scope.domain = 'http://localhost:8080';
+  }
   $scope.sended = false; // popup de notificar
   $scope.idioma = $cookies.get('language') || $window.navigator.language;
   $scope.popupOpened = false;
@@ -54,6 +57,7 @@ angular.module('picbit').controller('MainController', ['$scope', '$location', '$
 
   $scope.loginProcess = function(userData){
     /* Cogemos el identificador del usuario */
+    $rootScope.registerToken = userData.token
     function newUser(userData) {
       $rootScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
       $scope.changeView('/selectId');

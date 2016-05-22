@@ -10,7 +10,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
 	$scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
 	$scope.twitterData.token = 'GITHUB-TOKEN';
-	$scope.githubData.username = 'ailopera';
+	$scope.githubData.username = 'mortega5';
 
 	$scope.listComponents = [
 		{
@@ -18,7 +18,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			attributes: {
 				language: '{{idioma}}',
 				component_directory: 'bower_components/facebook-wall/',
-				access_token: 'CAACEdEose0cBACSYsWT7oP2MdCCGFAKpZAuFbDqm6M8sTGHuFXlRUI5EdRxRbigk4ZCd5Cy7Tsc9I8eclLlMmo6p0mPlZCmYziAzQldzE0TVjFgi1G3ZAYhrN32VjNooLhYopPMV4i0ZCaIwqAxXZAejYsQSjf0wZAAwXERs6rqx5kNAY9ImR059UvETxwIZBKEIkhCmlEKXuR20Q8SveKHZC'
+				access_token: $rootScope.registerToken
 			}
 		},
 		{
@@ -39,7 +39,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			name: 'github-events',
 			attributes: {
 				username: $scope.githubData.username,
-				token: '15ba59338e31e26884bf261a7f535063131d63e9' || '',
+				token: '' || '',
 				mostrar: '10',
 				language: '{{idioma}}',
 				component_directory: 'bower_components/github-events/'
@@ -55,7 +55,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			}
 		}
 	];
-	$scope.listComponentAdded = ['facebook-wall', 'instagram-timeline']; // added on dragdrop.js
+	$scope.listComponentAdded = []; // added on dragdrop.js
 	$scope.modifySelected = $scope.modifySelected || '';
 	/* Authentication */
 
