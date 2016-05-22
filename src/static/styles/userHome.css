@@ -180,6 +180,9 @@ footer{
 	left: 25%;
 }
 
+.userFormContainer {
+  z-index:1000;
+}
 /* User form styles */
 .userForm{
 	padding: 15px;

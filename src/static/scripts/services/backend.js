@@ -3,8 +3,8 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
 
   'use strict';
   this.endpoint = 'https://' + $location.host();
-  if ($location.host() == 'localhost'){
-    this.endpoint = 'http://localhost:8080';
+  if ($location.port() != 80){
+    this.endpoint = 'http://' + $location.host() + ":" + $location.port();
   }
 
   /* Envia el token y el identificador del token correspondiente a una red social */

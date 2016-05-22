@@ -83,7 +83,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			// Develop has commented them
 			document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
 			document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
-			document.querySelector('#arrowModify').icon = 'arrow-drop-down';
+			//document.querySelector('#arrowModify').icon = 'arrow-drop-down';
 
 
 		}
@@ -94,11 +94,11 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		switch (event) {
 			case 'add':
 				document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
-				document.querySelector('#arrowModify').icon = 'arrow-drop-down';
+				//document.querySelector('#arrowModify').icon = 'arrow-drop-down';
 				break;
 			case 'delete':
 				document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
-				document.querySelector('#arrowModify').icon = 'arrow-drop-down';
+				//document.querySelector('#arrowModify').icon = 'arrow-drop-down';
 				break;
 			case 'modify':
 				document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
@@ -112,7 +112,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 				if (!$scope.listaOpciones[0]) {
 					document.querySelector('#arrowAdd').icon = 'arrow-drop-up';
 					document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
-					document.querySelector('#arrowModify').icon = 'arrow-drop-down';
+					//document.querySelector('#arrowModify').icon = 'arrow-drop-down';
 				}
 				else {
 					document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
@@ -123,7 +123,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 				if (!$scope.listaOpciones[1]){
 					document.querySelector('#arrowDelete').icon = 'arrow-drop-up';
 					document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
-					document.querySelector('#arrowModify').icon = 'arrow-drop-down';
+					//document.querySelector('#arrowModify').icon = 'arrow-drop-down';
 				}
 				else {
 					document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
@@ -132,12 +132,12 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			case 'modify':
 				$scope.listaOpciones = [false, false, !$scope.listaOpciones[2]];
 				if (!$scope.listaOpciones[2]){
-					document.querySelector('#arrowModify').icon = 'arrow-drop-up';
+					//document.querySelector('#arrowModify').icon = 'arrow-drop-up';
 					document.querySelector('#arrowAdd').icon = 'arrow-drop-down';
 					document.querySelector('#arrowDelete').icon = 'arrow-drop-down';
 				}
 				else {
-					document.querySelector('#arrowModify').icon = 'arrow-drop-down';
+					//document.querySelector('#arrowModify').icon = 'arrow-drop-down';
 				}
 				break;
 		}
