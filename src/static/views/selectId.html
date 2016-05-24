@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="styles/selectId.css">
 <style is="custom-style">
 
   paper-input {
@@ -12,6 +11,9 @@
     --paper-input-container-label-focus: {
       font-size: 18px;
       color: bisque;
+    };
+    --paper-input-container-label: {
+      color: #eee;
     }
   }
 </style>
@@ -27,7 +29,7 @@
     </paper-input>
 
     <div ng-show="showSendButton" id="sendUsernameButton" class="horizontal layout reverse">
-      <paper-button  ng-click="sendUsername($event, value)">
+      <paper-button  ng-click="sendUsername($event, value)" class="btn btn-success">
         {{language.send}}
       </paper-button>
     </div>

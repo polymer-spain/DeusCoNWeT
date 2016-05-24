@@ -1,17 +1,19 @@
 <div id="userHome">
   <!-- Left bar -->
-  <div class="" role="group">
-    <div class="btn btn-default">
-      <span class="glyphicon glyphicon-plus"></span>
+  <div class="left-bar">
+    <div class="nav-buttons vertical layout" role="group">
+      <div class="btn btn-primary" ng-click="selectListButton($event);activeAddCmpList()">
+        <span class="glyphicon glyphicon-plus"></span>
+      </div>
+      <div class="btn btn-primary" ng-click="selectListButton($event);activeDelCmpList()">
+        <span class="glyphicon glyphicon-trash"></span>
+      </div>
+      <div class="btn btn-primary">
+        <span class="glyphicon glyphicon-info-sign"></span>
+      </div>
     </div>
-    <div class="btn btn-default">
-      <span class="glyphicon glyphicon-trash"></span>
-    </div>
-    <div class="btn btn-default">
-      <span class="glyphicon glyphicon-pencil"></span>
-    </div>
-    <div class="btn btn-default">
-      <span class="glyphicon glyphicon-info-sign"></span>
+    <div class="component-list">
+      <p ng-repeat="item in selectedList">{{item}}</p>
     </div>
   </div>
 </div>

@@ -37,7 +37,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
         $rScope.user = responseUserId.data;
         $backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
           .then(function() {
-          $scope.changeView('/user/' + $rScope.user.user_id);
+          $location.path('/user/' + $rScope.user.user_id);
         }, function(responseLogin) {
           console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login'); 
         });

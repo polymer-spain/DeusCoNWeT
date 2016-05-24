@@ -28,19 +28,7 @@
   color: firebrick;
 }
 
-#selectId paper-button {
-  margin: 0 auto;
-  margin-top: 15px;
-  margin-right: 0;
-  background-color: #B72e2e;
-  font-size: 18px;
-  border-radius: 3px;
-}
-
 #sendUsernameButton {
   -webkit-transition:all linear 0.3s;
   transition:all linear 0.3s;
-}
-#sendUsernameButton.ng-hide {
-  opacity: 0;
 }
