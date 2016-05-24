@@ -2,8 +2,11 @@
 angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguage', '$location', '$cookies', '$backend', '$http', '$rootScope', function ($scope, RequestLanguage, $location, $cookies, $backend, $http, $rScope) {
 
   'use strict';
-
-  $scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
+  if ($location.host() == "localhost"){
+    $scope.domain = "http://" + $location.host() + ":" + $location.port();
+  }else {
+    $scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
+  }
 
   // Language control
   $scope.idioma = $cookies.get('language') || window.navigator.language;
@@ -23,7 +26,8 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
     /* Cogemos el identificador del usuario */
     function newUser(userData) {
       $rScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
-      $scope.changeView('/selectId');
+      //$scope.changeView('/selectId');
+      $location.path('/selectId');
     }
     $rScope.token = userData.token;
     if ($location.$$path.indexOf('profile') === -1) {
@@ -46,7 +50,8 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
   
   var loginCallback = function (e) {
     //$scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
-    $('#login-popup').modal('toogle');
+    $('#login-popup').modal('hide');
+    
     var socialNetwork = e.detail.redSocial;
     var uri;
     switch(socialNetwork) {
@@ -69,7 +74,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
       default:
         $scope.loginProcess(e.detail);
         break;
-    }
+    };
   };
 
   // Binding login callback

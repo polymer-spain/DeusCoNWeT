@@ -119,7 +119,7 @@
     })
       .when('/selectId', {
       templateUrl: 'views/selectId.html',
-      controller: 'SelectidController',
+      controller: 'SelectidController'/*,
       resolve: {
         auth: ['$q', '$rootScope', function ($q, $rootScope) {
 
@@ -131,7 +131,7 @@
             });
           }
         }]
-      }
+      }*/
     })
     /* Por defecto */
       .otherwise({

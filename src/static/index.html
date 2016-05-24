@@ -31,9 +31,9 @@
 
   <body ng-app="picbit" ng-controller="MainController" class="vertical fullbleed layout">
     <paper-toolbar class="header">
-      <paper-icon-button src="images/logo.png"></paper-icon-button>
+      <paper-icon-button class="logo" src="images/logo.png"></paper-icon-button>
       <span class="title">Picbit</span>
-      <div class="dropdown">
+      <div class="dropdown btn">
         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
           {{language.lang[idioma] || language.language}}
           <span class="caret"></span></button>
@@ -61,7 +61,7 @@
 
     <!-- Login modal -->
     <!-- Modal -->
-    <div id="login-popup" class="modal fade " role="dialog" tabindex="-1">
+    <div id="login-popup" class="modal fade" role="dialog" tabindex="-1">
       <div class="modal-dialog modal-sm">
 
         <!-- Modal content-->
@@ -97,6 +97,7 @@
     <script src="scripts/services/backend.js"></script>
     <script src="scripts/services/cookies.js"></script>
     <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/selectId.js"></script>
     <!-- endbuild -->
 
   </body>

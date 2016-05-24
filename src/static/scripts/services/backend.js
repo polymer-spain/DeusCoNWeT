@@ -2,7 +2,12 @@
 angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope', '$cookies', '$q', function ($http, $location, $rootScope, $cookies, $q) {
 
   'use strict';
-  this.endpoint = 'https://' + $location.host();
+  
+  if ($location.host() === "localhost"){
+    this.endpoint = "http://" + $location.host() + ":" + $location.port();
+  }else {
+    this.endpoint = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
+  }
 
   /* Envia el token y el identificador del token correspondiente a una red social */
   /* ¿¿ Control de errores ??*/
@@ -79,15 +84,15 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     $rootScope.promise = $http(request);
     return $rootScope.promise;
   };
-  
+
   this.syncGetUser = function (userId) {
     var request, uri;
     uri = this.endpoint + '/api/usuarios/' + userId;
     request = new XMLHttpRequest();
-    
+
     request.open('GET', uri, false);
     request.send();
-    
+
     return request;
   };
 
@@ -166,7 +171,7 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
       data = JSON.parse(request.response);
       access_tokens[item.social_network] = data.access_token;
     } 
-      return access_tokens;
+    return access_tokens;
   };
 
 }]);

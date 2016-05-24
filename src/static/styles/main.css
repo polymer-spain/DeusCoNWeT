@@ -14,11 +14,38 @@
 
 /* MAIN PAGE */
 
-#view {
-    background-image: url('../images/landingimage.jpg');
+body {
+    background-image: url('../images/landingimageTest.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;
+  background-color: black;
 }
-
+paper-toolbar.header {
+  background-color: transparent;
+}
+paper-toolbar.header paper-icon-button.logo {
+  margin-right: 5px;
+  padding:0px !important;
+}
+paper-toolbar.header .title {
+  color:white;
+  font-size: 40px !important;
+  line-height: 50px !important;
+}
+.footer {
+  background-color: transparent;
+}
+#landing-page{
+  padding-top:50px;
+}
+#landing-page h1,
+#landing-page h2 {
+  color:#eee;
+  max-width: 500px;
+  text-align: center;
+}
+#landing-page paper-button{
+  margin-top:50px;
+}
 /* USERHOME */
