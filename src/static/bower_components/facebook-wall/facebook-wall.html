@@ -12,15 +12,12 @@
     <style is="custom-style">
       :host {
         font-family: helvetica, arial, sans-serif;
-        --facebook-wall-color: black;
-        --facebook-wall-width: 420px;
-        --facebook-wall-height: 450px;
-        --iframe-video-height: 208px;
-        color: var(--facebook-wall-color);
+        color: black;
       }
       paper-header-panel {
-        width: var(--facebook-wall-width);
-        height: var(--facebook-wall-height);
+        min-width: 300px;
+        max-width: 350px;
+        height: 400px;
         @apply(--shadow-elevation-3dp);
         border-radius: 8px;
         background: #E9EAED;
@@ -56,15 +53,15 @@
       }
       #logo {
         margin:8px;
-        width: 40px;
-        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
       }
       .postHeader {
 
       }
 
       .postInfo{
-        font-size: 12px;
+        font-size: 10px;
         margin:8px;
 
       }
@@ -96,8 +93,8 @@
 
       }
       .photo-source {
-        width: 100%;
-        height: auto;
+        max-width: 300px;
+        /*max-height: 30px;*/
       }
       .postLikes > p {
         font-size: 12px;
@@ -118,7 +115,7 @@
         margin: 10px 5px;
       }
       .descriptionPostNested {
-        font-size: 12px;
+        font-size: 10px;
         margin: 10px 8px;
       }
       .authorPostNested {
@@ -134,7 +131,7 @@
       }
       .sharedStory {
         margin: 10px 5px;
-        font-size: 12px;
+        font-size: 10px;
 
       }
       .sharedDescription {
@@ -154,17 +151,23 @@
         height: 50%;
         margin:auto auto;
       }
-      iframe.video {
-        width: 100%;
-        height: var(--iframe-video-height);
-      }
     </style>
     <iron-ajax
                id="requestData"
                url="{{requestDataUrl}}"
+               headers="{'Timing-Allow-origin': '*'}"
                method="GET"
                handleAs="json"
                on-response="_dataResponse"
+               >
+    </iron-ajax>
+    <iron-ajax
+               id="refreshData"
+               url="{{requestDataUrl}}"
+               headers="{'Timing-Allow-origin': '*'}"
+               method="GET"
+               handleAs="json"
+               on-response="_refreshResponse"
                >
     </iron-ajax>
     <iron-ajax
@@ -175,11 +178,11 @@
                on-response="_language_response"
                >
     </iron-ajax>
-    <paper-header-panel id="header" mode="waterfall" class="blue">
+    <paper-header-panel mode="waterfall" class="blue">
       <div class="paper-header horizontal layout center-justified">
         <div><iron-icon src="images/facebook.svg"></iron-icon></div>
         <div class="flex" style="text-align:center"><span>Facebook wall</span></div>
-        <div><paper-icon-button icon="refresh"></paper-icon-button></div>
+        <div><paper-icon-button icon="refresh" on-click="refresh"></paper-icon-button></div>
 
       </div>
       <div class="content">
@@ -249,11 +252,11 @@
                         <!-- its a video -->
                         <template is="dom-if" if="{{_isType(item.linked.type, 'video')}}">
                           <!-- Youtube video -->
-                          <template is="dom-if" if="{{_isType(item.linked.caption,'youtube.com', 'youtu.be')}}">
-                            <iframe src="{{_getYoutubeVideo(item.linked.source)}}" allowfullscreen class="video" frameborder="0">
+                          <template is="dom-if" if="{{_isType(item.linked.caption,'youtube.com')}}">
+                            <iframe src="{{_getYoutubeVideo(item.linked.source)}}" allowfullscreen frameborder="0">
                             </iframe>
                           </template>
-                          <template is="dom-if" if="{{_isNoType(item.linked.caption, 'youtube.com', 'youtu.be')}}">
+                          <template is="dom-if" if="{{_isNoType(item.linked.caption, 'youtube.com')}}">
                             <!-- How do we parse instragam's videos -->
                             <video class="photo-source" controls>
                               We cant show this video yet.
@@ -342,11 +345,6 @@ access_token={{access_token}}&summary=true -->
           observer: "_languageUpdate",
           refrectToAttribute:true
         },
-        component_directory: {
-          type:String,
-          value: "",
-          reflectToAttribute: true
-        },
         languageUrl: {
           type:String,
           computed: "_getLanguageUrl(component_directory, idiom)"
@@ -359,42 +357,59 @@ access_token={{access_token}}&summary=true -->
           type: String,
           value:"",
           refrectToAttribute:true
+        },
+        component_directory: {
+          type:String,
+          value: "",
+          reflectToAttribute: true
+        },
+        refreshTime: {
+          type: Number,
+          value: 60000,
+          reflectToAttribute: true
         }
       },
       attached: function(){
         this.$.requestLanguage.generateRequest();
+        setInterval(function(){
+          this.refresh();
+        }.bind(this),this.refreshTime)
+      },
+
+      refresh: function(){
+        this.$.refreshData.generateRequest();
       },
       /* Observer and computed properties*/
       _languageUpdate: function(newValue){
         if(newValue === "en"){
           this.language = "en";
           this.idiom = "en_en.json"
-          this.locale = "en_GB";
         }
         else if(newValue === "es"){
           this.language = "es";
           this.idiom = "es_es.json"
-          this.locale = "es_ES";
 
         }
         if (this.component_directory || this.component_directory == "") {
           this.$.requestLanguage.generateRequest();
         }
       },
-      _getLanguageUrl:function(component_directory, idiom){
+      _getLanguageUrl: function(component_directory, idiom){
         return component_directory + "language/" + idiom;
       },
+
       _getRequestDataUrl: function(component_directory, access_token){
         /*return component_directory + "mockData/mockData.json";*/
-        return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&locale=" + this.locale + "&access_token=" + this.access_token;
+        return "https://graph.facebook.com/v2.3/me?fields=home&pretty=1&access_token=" + access_token;
       },
+
       _checkAccessToken: function(newValue) {
         if (newValue) {
           this.$.requestData.generateRequest();
         }
       },
       /* Auxiliar function for parse data */
-      _checkElement(element, bool) {
+      _checkElement: function(element, bool) {
         // XNOR comparation for booleans
         return element.linked && ((element.linked.story && bool=='true') || (!element.linked.story && bool=='false'));
       },
@@ -413,6 +428,7 @@ access_token={{access_token}}&summary=true -->
         }
         return url
       },
+
       _getYoutubeVideo: function(url){
         return url.replace(/\?[=A-z0-9]*/, "");
       },
@@ -424,8 +440,9 @@ access_token={{access_token}}&summary=true -->
       _getShareImg: function(item){
         var fullUrl = item.picture || item.linked.picture;
         var pattern = "url" + "=([^&]*)";
-        var exp = new RegExp(pattern);
-        var url = exp.exec(fullUrl)[1];
+        var exp = new RegExp(pattern);  
+        var result = exp.exec(fullUrl)
+        var url = result && result.lenght >1 ? result[1] : ""
         url = url.replace(/%2F/g,"/");
         url =  url.replace(/%3A/g,":");
         url =  url.replace(/%3F/g,"?");
@@ -439,12 +456,16 @@ access_token={{access_token}}&summary=true -->
       _noExist: function(item){
         return !item;
       },
+
       _getShared: function(item){ 
-        return item.linked && item.linked.shares;
+        return (item.linked && item.linked.shares) ? true : false;
       },
       _getShareInformation: function(item) {
-        tag = this._parserUser(item.from) + " " + item.story.replace(item.from.name+ " ", "");
-        return tag;
+        if (item.story && item.from){
+          tag = this._parserUser(item.from) + " " + item.story.replace(item.from.name+ " ", "");
+          return tag;
+        }
+        return '';
       },
       _getUserPicture: function(item) {
         var link = "https://graph.facebook.com/";
@@ -459,12 +480,17 @@ access_token={{access_token}}&summary=true -->
       _isType: function(item, type, type2) {
         return item === type || item === type2;
       },
-      _isNoType: function(item, type, type2) {
-        return item !== type && item !== type2;
+      _isNoType: function(item, type) {
+        return item !== type;
       },
       _getFullPhoto: function(item) {
-        return "https://graph.facebook.com/" + item.linked.object_id + "/picture?access_token=" + this.access_token;
+        if (item.linked && item.linked.object_id) {
+          return "https://graph.facebook.com/" + item.linked.object_id + "/picture?access_token=" + this.access_token;
+        } else {
+          console.log('error con alguna mierda en getFullFoto', item);
+        }
       },
+
       _getWith: function(item) {
         var html = "";
         if (item && item.with_tags && item.with_tags.data.length > 0) {
@@ -489,22 +515,33 @@ access_token={{access_token}}&summary=true -->
         if (detail.response) {
           // Support mocked data
           if (detail.response.home) {
-            if (this.events) {
-              this.set("events", detail.response.home.data);  
-            } else {
-              this.set("events", []);
-              this.set("events", detail.response.home.data);
-            }
+            this.set("events", detail.response.home.data);  
           } else {
-            if (this.events) {
-              this.set("events", detail.response.data);
-            } else {
-              this.set("events", []);
-              this.set("events", detail.response.home);
-            }
+            this.set("events", detail.response.data);
           }
           this._reParserLinked(this.events);
           this._changeTime(this.events);
+        }
+      },
+      _refreshResponse: function(event, detail){
+        var firstId = this.events[0].id;
+        var newEvents = detail.response.home.data;
+        var finded = false;
+        var i = 0;
+        var realNew = [];
+        for(i;i<newEvents.length && !finded;i++){
+          if (newEvents[i].id == firstId){
+            finded = true;
+          }
+        }
+        if (--i){
+          realNew = newEvents.slice(0,i);
+          realNew = this._reparseRefresh(realNew);
+          for (var j=0;j<realNew.length;j++){
+            //this.events.unshift(realNew[j]);
+            this.unshift('events',realNew[j]);
+          }
+          this._changeTime(this.events);        
         }
       },
       _changeTime: function(list){
@@ -556,9 +593,22 @@ access_token={{access_token}}&summary=true -->
 
         }
       },
+      _reparseRefresh : function(list){
+        for (i=0;i<list.length-1;i++){
+          if (list[i].name == list[i+1].from.name) {
+            list[i].linked =  list[i+1];
+            list.splice(i+1, 1);
+          } 
+          if (list[i].message) {
+            list[i].message = list[i].message.replace(/(?:\r\n|\r|\n)/g, "<br>");
+            list[i].message = this._parseText(list[i].message);
+          }
+        }
+        return list;
+      },
       _reParserLinked: function(list) {
         for (i=0;i<list.length-1;i++){
-          if (list[i].story && !list[i].caption) {
+          if (list[i].name == list[i+1].from.name) {
             this.set("events." + i + ".linked", list[i+1])
             this.splice("events", i+1, 1);
           } 
@@ -566,9 +616,6 @@ access_token={{access_token}}&summary=true -->
             this.set("events." + i + ".message", list[i].message.replace(/(?:\r\n|\r|\n)/g, "<br>"));
             this.set("events." + i + ".message", this._parseText(list[i].message));
           }
-        }
-        if (list[list.length-1].story && !list[list.length-1].caption){
-          this.splice("events", list.length-1, 1);
         }
       },
       _parserUser: function(user) {
@@ -586,14 +633,14 @@ access_token={{access_token}}&summary=true -->
         }
         return text? text : "";
       },
-      _parseURL: function(tweet) {
-        return tweet.replace(/(?:http|https)+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=#]+/g, function(url) {
+      _parseURL: function(text) {
+        return text.replace(/(?:http|https)+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=#]+/g, function(url) {
           url = url.replace("#", "%23");
           return '<a style="color:rgb(59, 89, 152);overflow-wrap:break-word" href='+url+' target="_blank">'+url+'</a>'
         })
       },
-      _parseHashtag: function(tweet) {
-        return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
+      _parseHashtag: function(text) {
+        return text.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
           var tag = t.replace("#","")
           return '<a style="color:rgb(59, 89, 152);overflow-wrap:break-word" href="https://www.facebook.com/hashtag/'+tag+' "target="_blank"><span>#'+tag+'</span></a>'
         });
@@ -601,3 +648,4 @@ access_token={{access_token}}&summary=true -->
     });
   </script>
 </dom-module>
+

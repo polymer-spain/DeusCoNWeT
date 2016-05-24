@@ -186,10 +186,10 @@ footer{
 /* User form styles */
 .userForm{
 	padding: 15px;
-	top: 15%;
-	right: 2%;
+	top: 15px;
+	right: 5%;
 	height: auto;
-	position: absolute;
+	position : absolute;
 	float: right;
 	background-color: white;
 	color: black;
@@ -225,7 +225,7 @@ footer{
 	margin-top: 10px;
 }
 #aditionalForm {
-	max-height: 40%;
+	max-height: 65%;
 	overflow-x: auto;
 }
 p.component {
