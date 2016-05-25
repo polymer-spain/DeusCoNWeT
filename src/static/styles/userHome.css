@@ -37,11 +37,14 @@
   border-bottom-left-radius: 5px;
 }
 #userHome .component-list {
-  background-color:lightblue;
   width: 150px;
   float:left;
   border-radius: 7px;
   display:none;
+  border: 2px solid;
+  padding: 5px;
+  background-color: #286090;
+  border-color: #204d74;
 }
 #userHome .component-list.active {
   display: inline-block;

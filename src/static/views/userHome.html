@@ -12,8 +12,11 @@
         <span class="glyphicon glyphicon-info-sign"></span>
       </div>
     </div>
-    <div class="component-list">
+    <div class="component-list bg-primary">
       <p ng-repeat="item in selectedList">{{item}}</p>
+      <p ng-if="selectedList.length == 0">
+        {{language.componentAddedEmpty}}
+      </div>
     </div>
   </div>
 </div>
