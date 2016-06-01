@@ -225,9 +225,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		if (answer!= undefined && question_text != ""){
 			//We send an event to Mixpanel
 			var properties = {"selection": answer, 
-												"question_type": "obligatory",
-												"question": question_text,
-												"component": $scope.randomComponent
+								"question_type": "obligatory",
+								"question": question_text,
+								"component": $scope.randomComponent,
+								"timestamp": Date.now()
 											 };
 			mixpanel.track(question_id, properties);
 			document.getElementById("initialQuestionaire").hidden = true;
@@ -255,8 +256,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			question_text = document.getElementById(question.id).getElementsByClassName("questionText")[0].innerHTML || "";
 			if (answer!= "" && question_text != ""){
 				mixpanel_event = {"event_name": question.id,
-													"selection": answer,
-													"question": question_text };
+									"selection": answer,
+									"question": question_text,
+									"timestamp": Date.now() };
 				mixpanel_event_list.push(mixpanel_event);
 			}
 		});
