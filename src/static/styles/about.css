@@ -1,42 +1,44 @@
-html {
-  background-image: url('../images/landingimage.jpg');
-  background-size: cover;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-}
-#about {
-  color: whitesmoke;
-  margin:auto;
-  margin-top:10%;  
-  border-radius: 15px;
-  background-color:rgba(46, 45, 45, 0.2);
-  min-height: 300px;
-  max-width: 1024px;
-}
-.information {
-  padding:15px;
+#view {
+  margin: 0px 5%;
+  padding-top: 0;
+  position: absolute;
+  top: 64px;
+  right: 0;
+  left: 0;
+  bottom: 40px;
+  min-height: 0px !important;
 }
 
-#social{
-  padding:1% 3%;
+#about {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: auto;
 }
-#social  paper-icon-button {
-  border-radius:5px;
-  margin:5px 10px;
+
+#about .members{
+  width: 350px;
+  min-height: 100px;
+  background-color: rgba(56, 56, 56, 0.82);
+  margin:10px 90px;
+  border-radius: 7px;
+  border:2px solid black;
+
 }
-paper-icon-button /deep/ iron-icon div {
-  background-repeat: no-repeat;
+#about .members > .image {
+  border-radius: 30%;
+  margin:0px 5px;
+  padding:5px;
 }
-#social .facebook {
-  background-color:#3B5998;
-}
-#social .twitter {
-  background-color: #5DD7FC; 
-}
-#social .github {
-  background-color: #fff;
+#about .members > .image > img {
+  max-width: 75px;
+  max-height: 85px;
   border-radius: 100%;
+  border: 2px solid #333;
+  margin: auto;
+  background-color:rgba(238, 238, 238, 0.71);
 }
-#social .googleplus {
-  background-color: #DC4A38;
+
+#about .members > .info {
+  margin:auto 5px;
 }
