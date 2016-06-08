@@ -55,7 +55,7 @@ request_token_url = \
     "https://api.twitter.com/oauth/request_token"
 base_authorization_url = \
     "https://api.twitter.com/oauth/authorize"
-callback_uri = "https://" + domain \
+callback_uri = "http://" + domain \
     + "/api/oauth/twitter/authorization"
 # Request to Twitter the request_token and authorization URL
 client = oauth.TwitterClient(consumer_key, consumer_secret,
