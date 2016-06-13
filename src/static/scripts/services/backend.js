@@ -2,8 +2,8 @@
 angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope', '$cookies', '$q', function ($http, $location, $rootScope, $cookies, $q) {
 
   'use strict';
-  this.endpoint = 'http://' + $location.host();
-  if ($location.port() != 80){
+  this.endpoint = 'https://' + $location.host();
+  if ($location.port() != 443){
     this.endpoint = 'http://' + $location.host() + ":" + $location.port();
   }
 
