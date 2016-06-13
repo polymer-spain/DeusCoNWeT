@@ -257,8 +257,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			if (answer!= "" && question_text != ""){
 				mixpanel_event = {"event_name": question.id,
 									"selection": answer,
-									"question": question_text,
-									"timestamp": Date.now() };
+									"question": question_text
+									};
 				mixpanel_event_list.push(mixpanel_event);
 			}
 		});
@@ -269,8 +269,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 				// We send the responses to Mixpanel
 				mixpanel_event = mixpanel_event_list[i]
 				mixpanel_properties = {"selection": mixpanel_event.selection,
-															 "question": mixpanel_event.question,
-															 "question_type": "optional"};
+															"question": mixpanel_event.question,
+															"question_type": "optional",
+															"timestamp": Date.now() };
 				mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
 				// We hide the user form
 				document.getElementById("aditionalForm").hidden = true;
@@ -306,6 +307,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
 	var platformTimeHandler = $interval(function(){
 		if(document.visibilityState === "visible" ){
+			console.log($scope.listComponentAdded.length);
 			$scope.platformUsedTime += $scope.intervalTime;
 		}
 	}, $scope.intervalTime);
