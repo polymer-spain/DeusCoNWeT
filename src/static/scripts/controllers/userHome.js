@@ -9,7 +9,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 	$scope.facebookData = {};
 
 	$scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
-	$scope.twitterData.token = 'GITHUB-TOKEN';
+	$scope.twitterData.token = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf';
 	$scope.githubData.username = 'mortega5';
 
 	$scope.listComponents = [
@@ -287,7 +287,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 	// Watcher that controls whether the form should be showed to the user or not
 	$scope.platformUsedTime = 0;
 	$scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
-	$scope.formLoadTime = 30000; // Indicates when we'll show to the user the form
+	$scope.formLoadTime = 60000; // Indicates when we'll show to the user the form
 	$scope.$watch("platformUsedTime", function(newValue, oldValue){
 		if (newValue!==oldValue && newValue >= $scope.formLoadTime && $scope.listComponentAdded.length > 0) {
 			document.getElementById("initialQuestionaire").removeAttribute("hidden");
