@@ -306,7 +306,7 @@ def assignPredeterminedComponentsToUser(entity_key):
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
-def activateComponentToUser(component_id, entity_key):
+def activateComponentToUser(component_id, entity_key): #No entiendo lo que pretende hacer
   user = entity_key.get()
   general_component = Component.query(Component.component_id == component_id).get()
   user_component = None
@@ -494,7 +494,7 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
     if data.has_key("private_email"):
       user.private_email = data["private_email"]
     if data.has_key("phone"):
-      user.phone = datos["phone"]
+      user.phone = data["phone"]
     if data.has_key("private_phone"):
       user.private_phone = data["private_phone"]
     if data.has_key("description"):
@@ -605,7 +605,7 @@ def insertGroup(entity_key, name, data=None): #FUNCIONA
   if not data == None:
     if data.has_key("description"): group.description = data["description"]
     if data.has_key("usuarios"):
-      for user in datos["usuarios"]:
+      for user in data["usuarios"]:
         users = users + user + ", "
 
   group.user_list = users
@@ -645,7 +645,7 @@ def searchGroups(entity_key): #FUNCIONA
 def insertNetwork(entity_key, name, data=None): # FUNCIONA
   user = entity_key.get()
   user_social = SocialUser(social_name=name)
-  if not datos == None:
+  if not data == None:
     if data.has_key("following"):
       user_social.following = data["following"]
     if data.has_key("followers"):
