@@ -1,8 +1,8 @@
-<div id="userHome">
+<div id="userHome" id="container" ng-container>
 	<!-- Left bar -->
 	<div class="left-bar">
 		<div class="nav-buttons vertical layout menu-buttons" data-button role="group">
-			<div class="btn btn-primary menu-button" data-button ng-click="selectListButton($event);activeAddCmpList()">
+			<div class="btn btn-primary" data-button ng-click="selectListButton($event);activeAddCmpList()">
 				<span class="glyphicon glyphicon-plus"></span>
 			</div>
 			<div class="btn btn-primary" data-button ng-click="selectListButton($event);activeDelCmpList($event)">
@@ -13,10 +13,9 @@
 			</div>
 		</div>
 		<div class="component-list  bg-primary vertical layaout" data-list>
-			<p class="add-item" data-list ng-repeat="item in showList">{{item.name}}</p>
-			<p data-list ng-if="showList.length == 0">
+			<p class="add-item" data-index="{{$index}}"ng-create-element id-element="{{item.name}}" list-attributes="{{item.attributes}}" data-list ng-repeat="item in showList" title="{{itemDescription}}" ng-click="clicked($event)">{{item.name}}</p>
+			<p data-list  ng-if="showList.length == 0" >
 				{{language.componentAddedEmpty}}
 		</div>
 	</div>
-</div>
 </div>

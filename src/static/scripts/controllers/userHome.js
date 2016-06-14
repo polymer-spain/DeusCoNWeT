@@ -17,8 +17,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name: "github-events",
 			attributes: {
-				username: "TODO",
-				token: "TODO" || "",
+				username: "mortega5",
+				token: "" || "",
 				mostrar: "10",
 				language: "{{idioma}}"
 			}
@@ -32,8 +32,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			}
 		}
 	];
-	$scope.addedList = [];
-
+	$scope.listComponentAdded = [];
+	$scope.itemDescription = "";
 	$scope.selectListButton = function(e){
 		e.stopPropagation();
 		var $target = $(e.currentTarget);
@@ -54,6 +54,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			$list.removeClass('active');
 		}
 		$scope.showList = $scope.componentList;
+		$scope.itemDescription = "Arrastra el elemento para añadirlo al dashboard";
 	};
 
 	$scope.activeDelCmpList = function(){
@@ -63,12 +64,24 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		} else if($scope.showList == $scope.addedList) {
 			$list.removeClass('active');
 		}
-		$scope.showList = $scope.addedList;
+		$scope.showList = $scope.listComponentAdded;
+		$scope.itemDescription = "";
 	}
-
+	$scope.clicked = function(e){
+		if ($scope.itemDescription = $scope.listComponentAdded){
+			// del activated
+			var index = $(e.currentTarget).attr('data-index');
+			var id = $scope.listComponentAdded.splice(index,1);
+			$scope.showList = $scope.listComponentAdded;
+			$(id[0].name).remove();
+		} else {
+			// add activated
+		}
+	}
 	$('#userHome').click(function(event){
 		if (!event.target.hasAttribute('data-button') && !event.target.hasAttribute('data-list')){
 			$('.component-list').removeClass('active');
+			$('.menu-buttons').children().removeClass('active');
 		}
 	})
 
