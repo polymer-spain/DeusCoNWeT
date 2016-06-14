@@ -2,50 +2,64 @@
 
 }
 #userHome.footer{
-  display:none !important;
+	display:none !important;
 }
 
 
 #userHome .left-bar {
-  position:absolute;
-  top:8%;
-  bottom:0;
-  left: 0;
+	position:absolute;
+	top:23%;
+	bottom:0;
+	left: 0;
 }
 #userHome .nav-buttons {
-  float: left;
-  border:2px  solid #2e6da4;
-  border-radius: 7px;
+	float: left;
+	border:2px  solid #2e6da4;
+	border-radius: 7px;
 }
 #userHome .nav-buttons .btn {
-  display: inline-block;
-  line-height: 45px;
-  font-size: 18px;
-  border-radius: 0px;
+	display: inline-block;
+	line-height: 45px;
+	font-size: 18px;
+	border-radius: 0px;
 }
 #userHome .nav-buttons .btn.active {
-  color: #fff;
-  background-color: #286090;
-  border-color: #204d74;
+	color: #fff;
+	background-color: #286090;
+	border-color: #204d74;
 }
 #userHome .nav-buttons .btn:first-child{
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 #userHome .nav-buttons .btn:last-child{
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
 }
 #userHome .component-list {
-  width: 150px;
-  float:left;
-  border-radius: 7px;
-  display:none;
-  border: 2px solid;
-  padding: 5px;
-  background-color: #286090;
-  border-color: #204d74;
+	width: 150px;
+	float:left;
+	border-radius: 7px;
+	display:none;
+	border: 2px solid;
+	padding: 8px 5px;
+	background-color: #286090;
+	border-color: #204d74;
+	text-align: center;
+
 }
 #userHome .component-list.active {
-  display: inline-block;
+	display: inline-block;
+}
+#userHome .add-item {
+	width: 100%;
+	min-height: 30px;
+	margin:auto;
+	line-height: 28px;
+	cursor:pointer;
+}
+#userHome .add-item:hover {
+	background-color:rgba(255, 255, 255, 0.7);
+	border-radius: 5px;
+	color:black;
 }

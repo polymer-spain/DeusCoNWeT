@@ -1,22 +1,22 @@
 <div id="userHome">
-  <!-- Left bar -->
-  <div class="left-bar">
-    <div class="nav-buttons vertical layout" role="group">
-      <div class="btn btn-primary" ng-click="selectListButton($event);activeAddCmpList()">
-        <span class="glyphicon glyphicon-plus"></span>
-      </div>
-      <div class="btn btn-primary" ng-click="selectListButton($event);activeDelCmpList()">
-        <span class="glyphicon glyphicon-trash"></span>
-      </div>
-      <div class="btn btn-primary">
-        <span class="glyphicon glyphicon-info-sign"></span>
-      </div>
-    </div>
-    <div class="component-list bg-primary">
-      <p ng-repeat="item in selectedList">{{item}}</p>
-      <p ng-if="selectedList.length == 0">
-        {{language.componentAddedEmpty}}
-      </div>
-    </div>
-  </div>
+	<!-- Left bar -->
+	<div class="left-bar">
+		<div class="nav-buttons vertical layout menu-buttons" data-button role="group">
+			<div class="btn btn-primary menu-button" data-button ng-click="selectListButton($event);activeAddCmpList()">
+				<span class="glyphicon glyphicon-plus"></span>
+			</div>
+			<div class="btn btn-primary" data-button ng-click="selectListButton($event);activeDelCmpList($event)">
+				<span class="glyphicon glyphicon-trash"></span>
+			</div>
+			<div class="btn btn-primary">
+				<span class="glyphicon glyphicon-info-sign"></span>
+			</div>
+		</div>
+		<div class="component-list  bg-primary vertical layaout" data-list>
+			<p class="add-item" data-list ng-repeat="item in showList">{{item.name}}</p>
+			<p data-list ng-if="showList.length == 0">
+				{{language.componentAddedEmpty}}
+		</div>
+	</div>
+</div>
 </div>

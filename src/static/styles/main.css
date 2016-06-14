@@ -1,51 +1,59 @@
 @font-face {
-  font-family: archistico;
+	font-family: archistico;
+	src: url('../fonts/ArchisticoBold.ttf');
+}
 
-  src: url('../fonts/ArchisticoBold.ttf');
+@font-face {
+	font-family: fortune;
+	src: url(../fonts/FortuneCity.ttf);
 }
 #view {
-  position:relative;
+	position:relative;
 }
 #view > div {
-  position: absolute;
-  min-height: 100%;
-  min-width: 100%;
+	position: absolute;
+	min-height: 100%;
+	min-width: 100%;
 }
 
 /* MAIN PAGE */
 
 body {
-    background-image: url('../images/landingimageTest.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
-  background-color: black;
+	background-image: url('../images/landingimageTest.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: 100% 100%;
+	background-color: black;
+	background-color:(0,0,0,0.7);
 }
 paper-toolbar.header {
-  background-color: transparent;
+	background-color: transparent;
 }
 paper-toolbar.header paper-icon-button.logo {
-  margin-right: 5px;
-  padding:0px !important;
+	margin-right: 5px;
+	padding:0px !important;
 }
 paper-toolbar.header .title {
-  color:white;
-  font-size: 40px !important;
-  line-height: 50px !important;
+	color:white;
+	font-size: 40px !important;
+	line-height: 50px !important;
+	font-family: fortune;
+	letter-spacing: 3px;
+	text-transform: capitalize;
 }
 .footer {
-  background-color: transparent;
+	background-color: transparent;
 }
 #landing-page{
-  padding-top:50px;
+	padding-top:10%;
 }
 #landing-page h1,
 #landing-page h3 {
-  color:#eee;
-  max-width: 500px;
-  text-align: center;
+	color:#eee;
+	max-width: 500px;
+	text-align: center;
 }
 #landing-page paper-button{
-  margin-top:50px;
+	margin-top:50px;
 }
 /* USERHOME */
