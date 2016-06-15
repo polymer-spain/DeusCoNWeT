@@ -1,20 +1,19 @@
-#userHome {
-
-}
 #userHome.footer{
 	display:none !important;
 }
-
+#userHome {
+	padding:0px 10px 10px 0px;
+}
 
 #userHome .left-bar {
 	position:absolute;
 	top:23%;
 	bottom:0;
-	left: 0;
+	right: 0;
 	z-index:10000;
 }
 #userHome .nav-buttons {
-	float: left;
+	float: right;
 	border:2px  solid #2e6da4;
 	border-radius: 7px;
 }

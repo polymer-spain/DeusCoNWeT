@@ -80,12 +80,16 @@ picbit.directive("ngContainer", function () {
 				}
 				/* Caracteristicas del estilo para arrastrarlo */
 				/* Enlazamos el elemento al contenedor*/
-				newTimeline.draggable({
+				var divContainer = $('<div>').css('display','inline-block');
+				divContainer.css('padding','0px 10px 10px 0');
+				//divContainer.css({height:'300px'});
+				divContainer.draggable({
 					appendTo:'[ng-container]',
 					containment: "parent"
 				});
-				$(newTimeline[0]).resizable();
+				divContainer.resizable();
 				$(newTimeline[0]).addClass('context-menu');
+				newTimeline.css({width:'100%',height:'100%'});
 				$.contextMenu({
 					selector: '.context-menu', 
 					callback: function(key, options) {
@@ -96,9 +100,9 @@ picbit.directive("ngContainer", function () {
 						"delete": {name: "Delete", icon: "delete"},
 					}
 				});
-				element.append(newTimeline[0]);
+				divContainer.append(newTimeline[0]);
+				element.append(divContainer);
 				element.scope().listComponentAdded.push({name:id});
-
 				/* Forzamos la fase de compile de angular para que cargue las directivas del
          * nuevo elemento
          */
@@ -108,11 +112,23 @@ picbit.directive("ngContainer", function () {
 				$compile(newTimeline)(newTimeline.scope());
 
 				var position = newTimeline.scope()
-				.calculatePosition(newTimeline[0], evento.pageX ,evento.pageY - $('[ng-container]').offset().top);
-				newTimeline.css({
+				.calculatePosition(divContainer[0], evento.pageX ,evento.pageY - $('[ng-container]').offset().top);
+				var minHeight = newTimeline.css('minHeight');
+				var minWidth = newTimeline.css('minWidth');
+				minHeight = minHeight !== 'none'? parseInt(minHeight.split('px')[0]) : 0;
+				minWidth = minWidth !== 'none'? parseInt(minWidth.split('px')[0]) : 0;
+				var height = newTimeline.css('heigth');
+				var width = newTimeline.css('width')
+				divContainer.resizable('option', 'minHeight',minHeight+10);
+				divContainer.resizable('option', 'minWidth',minWidth+10);
+				divContainer.css({
 					"position": "absolute",
 					"top": position.top + "px",
-					"left": position.left + "px"
+					"left": position.left + "px",
+					'minWidth':minWidth,
+					'minHeight':minHeight,
+					'height':minHeight || height,
+					'width':minWidth || width
 				});
 			}
 		};

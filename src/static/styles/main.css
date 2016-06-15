@@ -41,6 +41,31 @@ paper-toolbar.header .title {
 	letter-spacing: 3px;
 	text-transform: capitalize;
 }
+.dropdown {
+	padding: 0px;
+}
+.dropdown-menu {
+	min-width: inherit;
+	width: 100%;
+}
+.dropdown-menu li {
+	text-align: center;
+}
+.dropdown-menu li a {
+	padding: 3px 5px;
+}
+.user-button .dropdown-toggle{
+	max-width: 150px;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
+	background-color:transparent;
+	color:white;
+	text-shadow: none;
+	font-weight: bold;
+	text-transform: uppercase;
+	border:0px;
+	box-shadow: none;
+}
 .footer {
 	background-color: transparent;
 }

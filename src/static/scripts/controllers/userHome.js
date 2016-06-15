@@ -20,7 +20,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 				username: "mortega5",
 				token: "" || "",
 				mostrar: "10",
-				language: "{{idioma}}"
+				language: "{{idioma}}",
+				component_directory: 'bower_components/github-events/'
 			}
 		},
 		{
