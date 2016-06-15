@@ -19,7 +19,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		});
 	};
 	$scope.setLanguage($scope.idioma);
-	$scope.user = {user_id:'miguel'};
+
 	$scope.logout = function (parent) {
 		$backend.logout().then(function() {
 			if (parent){
