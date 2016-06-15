@@ -1,63 +1,59 @@
 <style>
-	body {
-		background-image:url('../images/userhome.jpg');
-	}
-	paper-toolbar {
-		/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#499bea+0,207ce5+100;Blue+3d+%237 */
-		background: #499bea; /* Old browsers */
-		background: -moz-radial-gradient(center, ellipse cover,  #499bea 0%, #207ce5 100%); /* FF3.6-15 */
-		background: -webkit-radial-gradient(center, ellipse cover,  #499bea 0%,#207ce5 100%); /* Chrome10-25,Safari5.1-6 */
-		background: radial-gradient(ellipse at center,  #499bea 0%,#207ce5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#499bea', endColorstr='#207ce5',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
-
-	}
+  body {
+    background-image:url('../images/userhome.jpg');
+  }
+  paper-toolbar.header {
+    background: -moz-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%, rgba(14,14,14,0.7) 100%);
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
+    background: radial-gradient(ellipse at center,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b37d7e7d', endColorstr='#b30e0e0e',GradientType=1 );
+  }
 </style>
 <div id="userHome" id="container" ng-container>
-	<!-- Left bar -->
-	<div class="left-bar">
-		<div class="nav-buttons vertical layout menu-buttons" data-button role="group">
-			<div class="btn btn-primary" data-button ng-click="selectListButton($event);activeAddCmpList()" title="Añadir un nuevo componente">
-				<span class="glyphicon glyphicon-plus"></span>
-			</div>
-			<div class="btn btn-primary" data-button ng-click="selectListButton($event);activeDelCmpList($event)" title="Eliminar un nuevo componente">
-				<span class="glyphicon glyphicon-trash"></span>
-			</div>
-			<div class="btn btn-primary" data-toggle="modal" data-target="#help-popup" data-keyboard="true" title="Abrir el menu de ayuda">
-				<span class="glyphicon glyphicon-info-sign"></span>
-			</div>
-		</div>
-		<div class="component-list  bg-primary vertical layaout" data-list>
-			<p class="add-item" data-index="{{$index}}"ng-create-element id-element="{{item.name}}" list-attributes="{{item.attributes}}" data-list ng-repeat="item in showList" title="{{itemDescription}}" ng-click="clicked($event)">{{item.name}}</p>
-			<p data-list  ng-if="showList.length == 0" >
-				{{language.componentAddedEmpty}}
-		</div>
-	</div>
+  <!-- Left bar -->
+  <div class="left-bar">
+    <div class="nav-buttons vertical layout menu-buttons" data-button role="group">
+      <div class="btn btn-default" data-button ng-click="selectListButton($event);activeAddCmpList()" title="Añadir un nuevo componente">
+        <span class="glyphicon glyphicon-plus"></span>
+      </div>
+      <div class="btn btn-default" data-button ng-click="selectListButton($event);activeDelCmpList($event)" title="Eliminar un nuevo componente">
+        <span class="glyphicon glyphicon-trash"></span>
+      </div>
+      <div class="btn btn-default" data-toggle="modal" data-target="#help-popup" data-keyboard="true" title="Abrir el menu de ayuda">
+        <span class="glyphicon glyphicon-info-sign"></span>
+      </div>
+    </div>
+    <div class="component-list  bg-primary vertical layaout" data-list>
+      <p class="add-item" data-index="{{$index}}"ng-create-element id-element="{{item.name}}" list-attributes="{{item.attributes}}" data-list ng-repeat="item in showList" title="{{itemDescription}}" ng-click="clicked($event)">{{item.name}}</p>
+      <p data-list  ng-if="showList.length == 0" >
+        {{language.componentAddedEmpty}}
+    </div>
+  </div>
 
-	<div id="help-popup" class="modal fade" role="dialog" tabindex="-1">
-		<div class="modal-dialog modal-sm">
+  <div id="help-popup" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-sm">
 
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">{{language.user_action.help}}</h4>
-				</div>
-				<div class="modal-body vertical layout center-center">
-					<!-- Modal login -->
-					<p>
-						<strong>{{language.user_action.add}} ( <span class="glyphicon glyphicon-plus"></span>
-							)</strong><span>: {{language.help.add}}</span>
-					</p>
-					<br>
-					<p>
-						<strong>{{language.user_action.delete}}(				<span class="glyphicon glyphicon-trash"></span>
-							)</strong>: <span>{{language.help.delete}}</span>
-					</p>
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{language.user_action.help}}</h4>
+        </div>
+        <div class="modal-body vertical layout center-center">
+          <!-- Modal login -->
+          <p>
+            <strong>{{language.user_action.add}} ( <span class="glyphicon glyphicon-plus"></span>
+              )</strong><span>: {{language.help.add}}</span>
+          </p>
+          <br>
+          <p>
+            <strong>{{language.user_action.delete}}(				<span class="glyphicon glyphicon-trash"></span>
+              )</strong>: <span>{{language.help.delete}}</span>
+          </p>
 
-				</div>
-			</div>
+        </div>
+      </div>
 
-		</div>
-	</div>
+    </div>
+  </div>
 </div>

@@ -42,7 +42,7 @@
 					<li><a ng-click="setLanguage('en')">{{language.lang.en}}</a></li>
 				</ul>
 			</div>
-			<div ng-show="isLogged">
+			<div ng-show="isLogged" class="log-button">
 				<div class="dropdown btn user-button">
 					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
 						<span class="glyphicon glyphicon-user"></span> {{user.user_id}}
@@ -54,7 +54,7 @@
 				</div>
 			</div>
 
-			<button ng-hide="isLogged" type="button" class="btn btn-success btn-md" id="myBtn" data-toggle="modal" data-target="#login-popup" data-keyboard="true">
+			<button ng-hide="isLogged" type="button" class="btn btn-primary btn-md log-button" id="myBtn" data-toggle="modal" data-target="#login-popup" data-keyboard="true">
 				{{language.login}}
 			</button>
 

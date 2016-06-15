@@ -69,6 +69,10 @@ paper-toolbar.header .title {
 .footer {
 	background-color: transparent;
 }
+
+.log-button {
+  margin:auto 15px;
+}
 #landing-page{
 	padding-top:10%;
 }

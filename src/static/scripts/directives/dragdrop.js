@@ -81,7 +81,7 @@ picbit.directive("ngContainer", function () {
 				/* Caracteristicas del estilo para arrastrarlo */
 				/* Enlazamos el elemento al contenedor*/
 				var divContainer = $('<div>').css('display','inline-block');
-				divContainer.css('padding','0px 10px 10px 0');
+				//divContainer.css('padding','0px 10px 10px 0');
 				//divContainer.css({height:'300px'});
 				divContainer.draggable({
 					appendTo:'[ng-container]',
@@ -94,7 +94,7 @@ picbit.directive("ngContainer", function () {
 					selector: '.context-menu', 
 					callback: function(key, options) {
 						console.log(options);
-						options.$trigger.remove();
+						options.$trigger.parent().remove();
 					},
 					items: {
 						"delete": {name: "Delete", icon: "delete"},
