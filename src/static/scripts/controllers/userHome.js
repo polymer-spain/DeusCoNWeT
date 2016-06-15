@@ -57,7 +57,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		$scope.showList = $scope.componentList;
 		$scope.itemDescription = "Arrastra el elemento para añadirlo al dashboard";
 	};
-
 	$scope.activeDelCmpList = function(){
 		var $list = $('.component-list');
 		if (!$list.hasClass('active')){
