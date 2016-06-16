@@ -270,6 +270,9 @@ class ComponentHandler(SessionHandler):
                     format_flag = True if format == "complete" else False
                     component = ndb_pb.getComponent(user_id, component_id, format_flag)
                     if not component == None:
+                        comp_aux = json.load(component)
+                        comp_aux["ref"] = "centauro.ls.fi.upm.es/bower_components/" + comp_aux["component_id"] + "-" + comp_aux["version"]
+                        component = json.dumps(comp_aux)
                         self.response.content_type = "application/json"
                         self.response.write(component)
                         self.response.set_status(200)

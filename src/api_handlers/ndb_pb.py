@@ -341,7 +341,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
         user.put()
 
         # We increase the counters that represents the times that a given component has been tested (general and versioned)
-        general_component.test_count = general_component.test_count + 1
+        general_component.test_count += 1
         general_component.put()
         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
         # versionedComponent.version == version)).get()
@@ -396,6 +396,15 @@ def getToken(id_rs, social_net):  # FUNCIONA
     ans = {"token": decodeAES(cipher, token.token),
           "user_id": user.user_id}
   return ans
+
+def getUserTokens(entity_key):
+  ans = []
+  user = entity_key.get()
+  for token in user.tokens:
+    token_aux = {}
+    cipher = getCipher(token.key.id())
+    token_aux["token"] = decodeAES(cipher, token.token)
+    
 
 def searchToken(token_id, rs): #FUNCIONA
   tokens = Token.query()
