@@ -44,8 +44,35 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			$target.parent().children().removeClass('active')
 			$target.addClass('active');
 		}
-		
+
 	};
+
+	$scope.catalogList = [
+		{name:'Twitter-timeline',rate:5, image:'', description:''},
+		{name:'Twitter-timeline',rate:4, image:'', description:''},
+		{name:'Twitter-timeline',rate:4.5, image:'', description:''},
+		{name:'Twitter-timeline',rate:3, image:'', description:''},
+		{name:'Twitter-timeline',rate:2.5, image:'', description:''},
+		{name:'Twitter-timeline',rate:2, image:'', description:''},
+		{name:'Twitter-timeline',rate:5, image:'', description:''},
+		{name:'Twitter-timeline',rate:4, image:'', description:''},
+		{name:'Twitter-timeline',rate:4.5, image:'', description:''},
+		{name:'Twitter-timeline',rate:3, image:'', description:''},
+		{name:'Twitter-timeline',rate:2.5, image:'', description:''},
+		{name:'Twitter-timeline',rate:2, image:'', description:''},
+		{name:'Twitter-timeline',rate:5, image:'', description:''},
+		{name:'Twitter-timeline',rate:4, image:'', description:''},
+		{name:'Twitter-timeline',rate:4.5, image:'', description:''},
+		{name:'Twitter-timeline',rate:3, image:'', description:''},
+		{name:'Twitter-timeline',rate:2.5, image:'', description:''},
+		{name:'Twitter-timeline',rate:2, image:'', description:''},
+		{name:'Twitter-timeline',rate:5, image:'', description:''},
+		{name:'Twitter-timeline',rate:4, image:'', description:''},
+		{name:'Twitter-timeline',rate:4.5, image:'', description:''},
+		{name:'Twitter-timeline',rate:3, image:'', description:''},
+		{name:'Twitter-timeline',rate:2.5, image:'', description:''},
+		{name:'Twitter-timeline',rate:2, image:'', description:''}
+	];
 
 	$scope.activeAddCmpList = function(e){
 		var $list = $('.component-list');
@@ -56,6 +83,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		}
 		$scope.showList = $scope.componentList;
 		$scope.itemDescription = "Arrastra el elemento para añadirlo al dashboard";
+		$scope.catalog = true;
 	};
 	$scope.activeDelCmpList = function(){
 		var $list = $('.component-list');
@@ -66,6 +94,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		}
 		$scope.showList = $scope.listComponentAdded;
 		$scope.itemDescription = "";
+		$scope.catalog = false;
 	}
 	$scope.clicked = function(e){
 		if ($scope.itemDescription = $scope.listComponentAdded){

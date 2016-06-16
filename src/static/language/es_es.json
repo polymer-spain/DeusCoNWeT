@@ -52,5 +52,9 @@
     "invalid_username": "Solo letras, numeros, '-', o '_'"
   },
   "componentAddedEmpty": "No hay componentes añadidos",
-  "componentListEmpty": "No tenemos más componentes"
+  "componentListEmpty": "No tenemos más componentes",
+	"catalog": {
+		"show": "Mostrar Catalogo",
+		"componentList": "Lista de Componentes"
+	}
 }

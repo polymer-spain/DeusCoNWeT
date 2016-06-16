@@ -1,107 +1,172 @@
 #userHome.footer{
-  display:none !important;
+	display:none !important;
 }
 
 .ui-resizable-se {
-  bottom: -10px !important;
-  right:-10px !important;
+	bottom: -10px !important;
+	right:-10px !important;
 }
 #userHome {
-  padding:0px 10px 10px 0px;
+	padding:0px 10px 10px 0px;
 }
-
+#userHome hr {
+	margin:5px 0px
+}
 #userHome .left-bar {
-  position:absolute;
-  top:23%;
-  bottom:0;
-  right: 0;
-  z-index:10000;
+	position:absolute;
+	top:23%;
+	bottom:0;
+	right: 0;
+	z-index:10000;
 }
 #userHome .nav-buttons {
-  float: right;
-  border:2px  solid #333;
-  border-radius: 7px;
+	float: right;
+	border:2px  solid #333;
+	border-radius: 7px;
 }
 #userHome .nav-buttons .btn {
-  display: inline-block;
-  line-height: 45px;
-  font-size: 18px;
-  border-radius: 0px;
-  background-color: #6f6f6f;
-  border-color: #2b0808;
-  color: #f5f5f5;
-  text-shadow: none;
+	display: inline-block;
+	line-height: 45px;
+	font-size: 18px;
+	border-radius: 0px;
+	background-color: #6f6f6f;
+	border-color: #2b0808;
+	color: #f5f5f5;
+	text-shadow: none;
 }
 #userHome .nav-buttons .btn:hover {
-  /*background-color: #5f0909;
-  border-color:#0c0202;*/
+	/*background-color: #5f0909;
+	border-color:#0c0202;*/
 }
 #userHome .nav-buttons .btn.active {
-  color: #fff;
-  background-color: #2970af;
-  border-color: #204d74;
+	color: #fff;
+	background-color: #2970af;
+	border-color: #204d74;
 }
 #userHome .nav-buttons .btn:first-child{
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 #userHome .nav-buttons .btn:last-child{
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
 }
 #userHome .component-list {
-  width: 150px;
-  float:left;
-  border-radius: 7px;
-  display:none;
-  border: 2px solid;
-  padding: 8px 5px;
-  background-color: #286090;
-  border-color: #204d74;
-  text-align: center;
+	width: 150px;
+	float:left;
+	border-radius: 7px;
+	display:none;
+	border: 2px solid;
+	padding: 8px 5px;
+	background-color: #286090;
+	border-color: #204d74;
+	text-align: center;
 
 }
 #userHome .component-list.active {
-  display: inline-block;
+	display: inline-block;
 }
 #userHome .add-item {
-  width: 100%;
-  min-height: 30px;
-  margin:auto;
-  line-height: 28px;
-  cursor:pointer;
+	width: 100%;
+	min-height: 30px;
+	margin:auto;
+	line-height: 28px;
+	cursor:pointer;
 }
 #userHome .add-item:hover {
-  background-color:rgba(255, 255, 255, 0.7);
-  border-radius: 5px;
-  color:black;
+	background-color:rgba(255, 255, 255, 0.7);
+	border-radius: 5px;
+	color:black;
 }
 #userHome .elementbox-div {
-  height: 20px;
-  text-align: right;
+	height: 20px;
+	text-align: right;
 }
 #userHome .elementbox:hover .elementbox-remove{
-  display: inline-block;
+	display: inline-block;
 }
 #userHome .elementbox-remove {
-  color:red;
-  font-size:16px;
-  text-align: right;
-  display:none;
+	color:red;
+	font-size:16px;
+	text-align: right;
+	display:none;
 }
 
 .context-menu-list {
-  background-color:#fefefe !important;
-  border-radius: 5px !important;
+	background-color:#fefefe !important;
+	border-radius: 5px !important;
 }
 .context-menu-item {
-  height: 25px !important;
-  background-color:#fefefe !important;
-  font-size: 14px;
-  line-height: 20px;
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	height: 25px !important;
+	background-color:#fefefe !important;
+	font-size: 14px;
+	line-height: 20px;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 .context-menu-item:hover{
-  background-color:#888 !important;
-  color:white;
+	background-color:#888 !important;
+	color:white;
+}
+
+#store-modal .modal-content{
+	margin-top:40px;
+	height: 80%;
+}
+
+#store-modal .modal-dialog{
+	height: 70%;
+}
+#store-modal .modal-body{
+	overflow: auto;
+	background-color:#eaeaea;
+	padding:0px;
+	border:2px solid #c1c1c1;
+	border-radius:3px;
+}
+#store-modal .modal-body > div {
+	padding:35px 25px;
+
+}
+#userHome #listCatalog {
+	overflow-y: auto;
+}
+#userHome #listCatalog > div {
+	margin:2% 3.5%;
+	padding:0px;
+	border:2px solid #c1c1c1;
+	background-color: white;
+	border-radius: 5px;
+}
+#userHome #listCatalog > div .componentData{
+	padding:5px;
+}
+#userHome #listCatalog > div .componentInfo {
+	padding:0px 5px;
+}
+#userHome #searchCatalog {
+	width: 150px;
+	padding:35px 3px;
+	text-align: center;
+	border-right: 2px solid #c1c1c1;
+}
+#userHome #store-modal star-rate {
+	text-align: center;
+}
+#userHome #store-modal star-rate /deep/ iron-icon {
+	width:16px;
+	color:firebrick;
+}
+.description {
+	width: 100%;
+	height:100%;
+	position:absolute;
+	color:white;
+	font-size:14px;
+	display:none;
+	background-color:rgba(0,0,0,0.7);
+	border-radius: 3px;
+}
+
+#userHome #listCatalog > div:hover .description{
+	display: inline-block;
 }
