@@ -33,7 +33,7 @@ def openConnection(remote=True):
     if remote:
         connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
     else:
-        connection = httplib.HTTPConnection("localhost:8080")
+        connection = httplib.HTTPConnection("centauro.ls.fi.upm.es")
         remoteConnection = False
 
 def closeConnection():

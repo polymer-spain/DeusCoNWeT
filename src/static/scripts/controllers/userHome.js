@@ -259,7 +259,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 									"selection": answer,
 									"question": question_text
 									};
-				mixpanel_event_list.push(mixpanel_event);
+				mixpanel_event_list.push(mixpanel_event); // qué hace exactamente el push?
 			}
 		});
 		// We check if the user has anwered all questions     
@@ -271,6 +271,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 				mixpanel_properties = {"selection": mixpanel_event.selection,
 															"question": mixpanel_event.question,
 															"question_type": "optional",
+															"component": $scope.randomComponent, // Se manda la versión?
 															"timestamp": Date.now() };
 				mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
 				// We hide the user form
