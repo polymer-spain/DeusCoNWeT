@@ -87,7 +87,9 @@ picbit.directive("ngContainer", function () {
 					appendTo:'[ng-container]',
 					containment: "parent"
 				});
-				divContainer.resizable();
+				divContainer.resizable({
+				  containement: "parent"
+				});
 				$(newTimeline[0]).addClass('context-menu');
 				newTimeline.css({width:'100%',height:'100%'});
 				$.contextMenu({

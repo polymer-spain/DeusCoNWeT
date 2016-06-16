@@ -5,7 +5,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name: "twitter-timeline",
 			attributes: {
-				accessToken: "TODO",
+				accessToken: "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
 				secretToken: "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
 				consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
 				consumerSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
