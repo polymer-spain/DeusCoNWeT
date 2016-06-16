@@ -10,8 +10,8 @@ angular.module('picbit').controller('MainController', ['$scope', '$location', '$
   }*/
 
   $rootScope.isLogged = $rootScope.user ? true : false; // Registrar el estado de logueado
-  $scope.domain = 'http://' + $location.host(); // Dominio bajo el que ejecutamos
-  if ($location.port() != 80) {
+  $scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
+  if ($location.port() != 443) {
     $scope.domain = 'http://' + $location.host() + ":" + $location.port();
   }
   $scope.sended = false; // popup de notificar
@@ -185,3 +185,4 @@ angular.module('picbit').controller('MainController', ['$scope', '$location', '$
     document.querySelector('body').addEventListener('sof-logged', $scope.logged);
   })();
 }]);
+
