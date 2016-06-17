@@ -7,7 +7,7 @@
 	right:-10px !important;
 }
 #userHome {
-	padding:0px 10px 10px 0px;
+	padding:0px 10px 20px 0px;
 }
 #userHome hr {
 	margin:5px 0px
@@ -18,6 +18,11 @@
 	bottom:0;
 	right: 0;
 	z-index:10000;
+}
+#userHome .left-bar .menu-buttons > div:hover {
+	color: #fff;
+	background-color: #2970af;
+	border-color: #204d74;
 }
 #userHome .nav-buttons {
 	float: right;
@@ -107,8 +112,11 @@
 	background-color:#888 !important;
 	color:white;
 }
-
-#store-modal .modal-content{
+#help-popup .modal-content {
+	margin-top:15%;
+}
+#store-modal .modal-content,
+{
 	margin-top:40px;
 	height: 80%;
 }

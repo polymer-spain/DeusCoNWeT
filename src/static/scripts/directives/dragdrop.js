@@ -111,7 +111,7 @@ picbit.directive("ngContainer", function () {
 
 				injector = element.injector();
 				$compile = injector.get("$compile");
-				$compile(newTimeline)(newTimeline.scope());
+				$compile(divContainer)(divContainer.scope());
 
 				var position = newTimeline.scope()
 				.calculatePosition(divContainer[0], evento.pageX ,evento.pageY - $('[ng-container]').offset().top);

@@ -73,8 +73,8 @@ paper-toolbar.header .title {
 .log-button {
   margin:auto 15px;
 }
-.modal-content {
-	margin-top:60%;
+#login-popup .modal-content {
+margin-top:60%;
 }
 #landing-page{
 	padding-top:10%;

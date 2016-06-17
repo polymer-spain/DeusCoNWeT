@@ -16,7 +16,7 @@
 	<!-- Left bar -->
 	<div class="left-bar">
 		<div class="nav-buttons vertical layout menu-buttons" data-button role="group">
-			<div class="btn btn-default" data-button ng-click="selectListButton($event);activeAddCmpList()" title="Añadir un nuevo componente">
+			<div class="btn btn-default" data-button data-toggle="modal" data-target="#store-modal" data-keyboard="true" title="Añadir un nuevo componente">
 				<span class="glyphicon glyphicon-plus"></span>
 			</div>
 			<div class="btn btn-default" data-button ng-click="selectListButton($event);activeDelCmpList($event)" title="Eliminar un nuevo componente">
@@ -27,21 +27,15 @@
 			</div>
 		</div>
 		<div class="component-list  bg-primary vertical layaout" data-list>
-			<p class="add-item" data-index="{{$index}}" ng-create-element id-element="{{item.name}}" list-attributes="{{item.attributes}}" data-list ng-repeat="item in showList" title="{{itemDescription}}" ng-click="clicked($event)">{{item.name}}</p>
-			<p data-list  ng-if="showList.length == 0" >
+			<p class="add-item" data-index="{{$index}}" data-list ng-repeat="item in listComponentAdded" title="{{itemDescription}}" ng-click="clicked($event)">{{item.name}}</p>
+			<p data-list  ng-if="listComponentAdded.length == 0" >
 				{{language.componentAddedEmpty}}
 			</p>
-			<div  ng-if="showList.length != 0 && catalog">
-				<hr>
-				<p data-list class="add-item" data-toggle="modal" data-target="#store-modal" data-keyboard="true">
-					{{language.catalog.show}}
-				</p>
-			</div>
 		</div>
 	</div>
 
 	<div id="help-popup" class="modal fade" role="dialog" tabindex="-1">
-		<div class="modal-dialog modal-sm">
+		<div class="modal-dialog modal-lg">
 
 			<!-- Modal content-->
 			<div class="modal-content">
@@ -78,7 +72,7 @@
 				</div>
 				<div class="modal-body flex horizontal layout">
 					<div id="searchCatalog">
-							<input type="text" ng-model="filterText" class="form-control" placeholder="Search" aria-describedby="basic-addon1">
+						<input type="text" ng-model="filterText" class="form-control" placeholder="Search" aria-describedby="basic-addon1">
 					</div>
 					<div id="listCatalog" class="flex" >
 						<div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | filter:filterText">
