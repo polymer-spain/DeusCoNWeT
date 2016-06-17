@@ -7,7 +7,7 @@
 	right:-10px !important;
 }
 #userHome {
-	padding:0px 10px 20px 0px;
+	padding:0px 50px 20px 0px;
 }
 #userHome hr {
 	margin:5px 0px
@@ -153,17 +153,35 @@
 	text-align: center;
 }
 #userHome #searchCatalog {
-	width: 150px;
 	padding:35px 3px;
-	text-align: center;
 	border-right: 2px solid #c1c1c1;
 }
-#userHome #store-modal star-rate {
+#userHome #searchCatalog .title {
+	text-transform: uppercase;
+	color: #9b9b9b;
+	font-size: 14px;
+	margin-bottom: 5px;
+	margin-top:15px;
+	font-family: "Open Sans", arial, sans-serif;
+}
+#userHome #searchCatalog div.radio{
+	margin-top: 0px;
+}
+#userHome #searchCatalog input[type="radio"]{
+	cursor:pointer;
+}
+#userHome star-rate{
+	cursor:auto;
+}
+#userHome #store-modal #listCatalog star-rate {
 	text-align: center;
 }
-#userHome #store-modal star-rate /deep/ iron-icon {
+#userHome #store-modal #listCatalog  star-rate /deep/ iron-icon {
 	width:16px;
 	color:firebrick;
+}
+#userHome #store-modal #searchCatalog  star-rate /deep/ iron-icon {
+	width:16px;
 }
 #userHome #listCatalog > div .description {
 	width: 100%;

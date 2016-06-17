@@ -62,8 +62,11 @@
 	"componentAddedEmpty" : "There are no components added",
 	"componentListEmpty": "There are no more components.",
 	"catalog": {
-		"show": 'Mostrar Catalogo',
-		"componentList": 'Lista de Componentes'
+		"show":"Mostrar Catalogo",
+		"componentList": "Lista de Componentes",
+		"search": "Search",
+		"rate": "Ratings",
+		"rateUp": "& up"
 	}
 
 }

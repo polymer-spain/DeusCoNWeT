@@ -55,6 +55,9 @@
   "componentListEmpty": "No tenemos más componentes",
 	"catalog": {
 		"show": "Mostrar Catalogo",
-		"componentList": "Lista de Componentes"
+		"componentList": "Lista de Componentes",
+		"search": "Buscar",
+		"rate": "Valoración",
+		"rateUp": "y más"
 	}
 }
