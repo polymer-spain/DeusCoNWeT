@@ -80,14 +80,14 @@
 					<div id="searchCatalog">
 							<input type="text" ng-model="filterText" class="form-control" placeholder="Search" aria-describedby="basic-addon1">
 					</div>
-					<div id="listCatalog" class="flex">
-						<div class="col-md-3 vertical layout" ng-repeat="item in catalogList | filter:filterText">
-							<div class="description">
-								holaaaa
+					<div id="listCatalog" class="flex" >
+						<div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | filter:filterText">
+							<div class="description" title="{{item.description}}">
+								{{item.description}}
 							</div>
 							<div class="componentData horizontal layout">
-								<img src="http://www.coetail.com/seriously/files/2016/04/twitter-logo.png" style="width:50px;height:50px"/>
-								<div class="flex vertical layout componentInfo">
+								<img ng-src="{{item.img}}" style="width:45px;height:45px"/>
+								<div class="flex vertical center-center layout componentInfo">
 									<p>{{item.name}}</p>
 								</div>
 							</div>

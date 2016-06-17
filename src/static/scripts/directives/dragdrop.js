@@ -151,18 +151,17 @@ picbit.directive("ngCreateElement", function () {
 
 		scope.comienzo = function (evento) {
 
+			$('#store-modal').modal('toggle');
 			evento.originalEvent.dataTransfer.setData("element", scope.idElement);
-
 			/* Pasamos los atributos del timeline */
 			if (scope.attributes) {
 				evento.originalEvent.dataTransfer.setData("attributes", scope.attributes);
 			}
 
 			var image;
-			image = document.createElement("img");
-
-			image.src = scope.imagesrc || "";
-			evento.originalEvent.dataTransfer.setDragImage(image, 0, 0);
+			//image = document.createElement("img");
+			//image.src = scope.imagesrc || "";
+			//evento.originalEvent.dataTransfer.setDragImage(imgage, 0, 0);
 		};
 
 		element.attr("draggable", "true");

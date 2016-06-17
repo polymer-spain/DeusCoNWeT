@@ -48,30 +48,30 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 	};
 
 	$scope.catalogList = [
-		{name:'Twitter-timeline',rate:5, image:'', description:''},
-		{name:'Twitter-timeline',rate:4, image:'', description:''},
-		{name:'Twitter-timeline',rate:4.5, image:'', description:''},
-		{name:'Twitter-timeline',rate:3, image:'', description:''},
-		{name:'Twitter-timeline',rate:2.5, image:'', description:''},
-		{name:'Twitter-timeline',rate:2, image:'', description:''},
-		{name:'Twitter-timeline',rate:5, image:'', description:''},
-		{name:'Twitter-timeline',rate:4, image:'', description:''},
-		{name:'Twitter-timeline',rate:4.5, image:'', description:''},
-		{name:'Twitter-timeline',rate:3, image:'', description:''},
-		{name:'Twitter-timeline',rate:2.5, image:'', description:''},
-		{name:'Twitter-timeline',rate:2, image:'', description:''},
-		{name:'Twitter-timeline',rate:5, image:'', description:''},
-		{name:'Twitter-timeline',rate:4, image:'', description:''},
-		{name:'Twitter-timeline',rate:4.5, image:'', description:''},
-		{name:'Twitter-timeline',rate:3, image:'', description:''},
-		{name:'Twitter-timeline',rate:2.5, image:'', description:''},
-		{name:'Twitter-timeline',rate:2, image:'', description:''},
-		{name:'Twitter-timeline',rate:5, image:'', description:''},
-		{name:'Twitter-timeline',rate:4, image:'', description:''},
-		{name:'Twitter-timeline',rate:4.5, image:'', description:''},
-		{name:'Twitter-timeline',rate:3, image:'', description:''},
-		{name:'Twitter-timeline',rate:2.5, image:'', description:''},
-		{name:'Twitter-timeline',rate:2, image:'', description:''}
+		{name:'Twitter-timeline',rate:5, img:'http://www.coetail.com/seriously/files/2016/04/twitter-logo.png', description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa',			attributes: {
+			accessToken: "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
+			secretToken: "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
+			consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
+			consumerSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+			endpoint: $scope.domain + "/api/aux/twitterTimeline",
+			language: "{{idioma}}",
+			count: "200"
+		}},
+		{name:'Gihub-events',rate:5, img:'https://wasin.io/wp-content/uploads/2015/05/showimage.png', description:'Muestra los eventos sucedidos en github',			attributes: {
+			attributes: {
+				username: "mortega5",
+				token: "" || "",
+				mostrar: "10",
+				language: "{{idioma}}",
+				component_directory: 'bower_components/github-events/'
+			}}
+		},
+		{name:'Instagram-timeline',rate:5, img:'http://www.seawolfkayak.com/wp-content/uploads/2015/12/instaicon2.png', description:'Muestra las fotos de Instagram',			attributes: {
+			accessToken: "TODO",
+			endpoint: "TODO" + "/api/aux/instagramTimeline",
+			language: "{{idioma}}"
+		}
+		},
 	];
 
 	$scope.activeAddCmpList = function(e){
