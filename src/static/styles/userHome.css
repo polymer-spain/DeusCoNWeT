@@ -5,6 +5,7 @@
 .ui-resizable-se {
 	bottom: -10px !important;
 	right:-10px !important;
+	z-index: auto !important;
 }
 #userHome {
 	padding:0px 50px 20px 0px;
@@ -153,7 +154,7 @@
 	text-align: center;
 }
 #userHome #searchCatalog {
-	padding:35px 3px;
+	padding:35px 15px;
 	border-right: 2px solid #c1c1c1;
 }
 #userHome #searchCatalog .title {
@@ -163,6 +164,17 @@
 	margin-bottom: 5px;
 	margin-top:15px;
 	font-family: "Open Sans", arial, sans-serif;
+}
+#userHome #searchCatalog .clear {
+	font-size: 11px;
+	color: #03A9F4;
+	line-height: 23px;
+	margin-bottom:0px;
+	cursor:pointer;
+	text-transform: capitalize;
+}
+#userHome #searchCatalog .clear:hover {
+	color:#204d74;
 }
 #userHome #searchCatalog div.radio{
 	margin-top: 0px;
@@ -204,4 +216,20 @@
 #userHome #listCatalog > div:hover .description{
 	display: -webkit-box;
 	cursor:pointer;
+}
+
+#userHome #searchclear {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    height: 14px;
+    margin: auto;
+    font-size: 14px;
+    cursor: pointer;
+    color: #ccc;
+}
+
+#userHome #searchclear:hover {
+	color: firebrick;
 }

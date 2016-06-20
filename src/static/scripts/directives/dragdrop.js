@@ -47,21 +47,12 @@ picbit.directive("ngContainer", function () {
 			/* Evitamos la accion por defecto y la propagacion a los hijos*/
 			evento.preventDefault();
 			evento.stopPropagation();
-
-
-
-
 			var id, attributes, newTimeline, injector, $compile, key;
 			/* Cogemos el objeto que tuvo lugar en el intercambio de datos */
 			id = evento.originalEvent.dataTransfer.getData("element");
 
 			/* Si no esta repetido, lo añadimos al dashboard */
 			if (id && document.getElementsByTagName(id).length === 0) {
-
-				/* Lo eliminamos de la lista */
-				/* TODO: si se elimina existe un problema con añadirlo de nuevo
-         * habría que hacer un AND entre dos listas (idk como )
-         */
 
 				/* Creamos el nuevo objeto en funcion del identificador intercambiado */
 				newTimeline = angular.element("<" + id + "/>");
@@ -88,16 +79,16 @@ picbit.directive("ngContainer", function () {
 					containment: "parent"
 				});
 				divContainer.resizable({
-				  containement: "parent"
+					containement: "parent"
 				});
 				$(newTimeline[0]).addClass('context-menu');
 				newTimeline.css({width:'100%',height:'100%'});
 				$.contextMenu({
 					selector: '.context-menu', 
 					callback: function(key, options) {
-						console.log(options);
 						options.$trigger.parent().remove();
-					},
+						element.scope().removeElement(id);
+					}.bind(this),
 					items: {
 						"delete": {name: "Delete", icon: "delete"},
 					}
@@ -119,8 +110,8 @@ picbit.directive("ngContainer", function () {
 				var minWidth = newTimeline.css('minWidth');
 				minHeight = minHeight !== 'none'? parseInt(minHeight.split('px')[0]) : 0;
 				minWidth = minWidth !== 'none'? parseInt(minWidth.split('px')[0]) : 0;
-				var height = newTimeline.css('heigth');
-				var width = newTimeline.css('width')
+				var height = newTimeline.css('heigth') || '400px';
+				var width = newTimeline.css('width') || '400px';
 				divContainer.resizable('option', 'minHeight',minHeight+10);
 				divContainer.resizable('option', 'minWidth',minWidth+10);
 				divContainer.css({
@@ -129,8 +120,8 @@ picbit.directive("ngContainer", function () {
 					"left": position.left + "px",
 					'minWidth':minWidth,
 					'minHeight':minHeight,
-					'height':minHeight || height,
-					'width':minWidth || width
+					'height': height,
+					'width':width
 				});
 			}
 		};
@@ -159,13 +150,92 @@ picbit.directive("ngCreateElement", function () {
 			}
 
 			var image;
-			//image = document.createElement("img");
-			//image.src = scope.imagesrc || "";
-			//evento.originalEvent.dataTransfer.setDragImage(imgage, 0, 0);
 		};
+		scope.click = function(e){
+			/* Evitamos la accion por defecto y la propagacion a los hijos*/
+			e.preventDefault();
+			e.stopPropagation();
+			var attributes, newTimeline, injector, $compile, key;
+			/* Cogemos el objeto que tuvo lugar en el intercambio de datos */
 
+			/* Si no esta repetido, lo añadimos al dashboard */
+			if (scope.idElement && document.getElementsByTagName(scope.idElement).length === 0) {
+
+				/* Lo eliminamos de la lista */
+				/* TODO: si se elimina existe un problema con añadirlo de nuevo
+         * habría que hacer un AND entre dos listas (idk como )
+         */
+
+				/* Creamos el nuevo objeto en funcion del identificador intercambiado */
+				newTimeline = angular.element("<" + scope.idElement + "/>");
+				/* Añadimos los atributos necesarios para su funcionamiento */
+
+
+				/* Añadimos todos los attributos necesarios */
+				if (scope.attributes) {
+					scope.attributes = JSON.parse(scope.attributes);
+					for (key in scope.attributes) {
+						if (scope.attributes.hasOwnProperty(key)) {
+							newTimeline.attr(key, scope.attributes[key]);
+						}
+					}
+				}
+				/* Caracteristicas del estilo para arrastrarlo */
+				/* Enlazamos el elemento al contenedor*/
+				var divContainer = $('<div>').css('display','inline-block');
+				divContainer.draggable({
+					appendTo:'[ng-container]',
+					containment: "parent"
+				});
+				divContainer.resizable({
+					containement: "parent"
+				});
+				$(newTimeline[0]).addClass('context-menu');
+				newTimeline.css({width:'100%',height:'100%'});
+				$.contextMenu({
+					selector: '.context-menu', 
+					callback: function(key, options) {
+						options.$trigger.parent().remove();
+					},
+					items: {
+						"delete": {name: "Delete", icon: "delete"},
+					}
+				});
+				divContainer.append(newTimeline[0]);
+				var container = $('[ng-container]');
+				container.append(divContainer);
+				container.scope().listComponentAdded.push({name:scope.idElement});
+				/* Forzamos la fase de compile de angular para que cargue las directivas del
+         * nuevo elemento
+         */
+
+				injector = container.injector();
+				$compile = injector.get("$compile");
+				$compile(divContainer)(divContainer.scope());
+
+
+				var minHeight = newTimeline.css('minHeight');
+				var minWidth = newTimeline.css('minWidth');
+				minHeight = minHeight !== 'none'? parseInt(minHeight.split('px')[0]) : 0;
+				minWidth = minWidth !== 'none'? parseInt(minWidth.split('px')[0]) : 0;
+				var height = newTimeline.css('heigth') || '400px';
+				var width = newTimeline.css('width') || '400px';
+				divContainer.resizable('option', 'minHeight',minHeight+10);
+				divContainer.resizable('option', 'minWidth',minWidth+10);
+				divContainer.css({
+					"position": "absolute",
+					"top": "0 px",
+					"left": "0 px",
+					'minWidth':minWidth,
+					'minHeight':minHeight,
+					'height':height,
+					'width':width
+				});
+			}
+		};
 		element.attr("draggable", "true");
 		element.on("dragstart", scope.comienzo);
+		element.on('dblclick', scope.click);
 	}
 	return {scope: {imagesrc: "@imagesrc", attributes: "@listAttributes", idElement: "@idElement"}, link: link};
 });

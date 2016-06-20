@@ -63,10 +63,11 @@
 	"componentListEmpty": "There are no more components.",
 	"catalog": {
 		"show":"Mostrar Catalogo",
-		"componentList": "Lista de Componentes",
+		"componentList": "Components list",
 		"search": "Search",
 		"rate": "Ratings",
-		"rateUp": "& up"
+		"rateUp": "& up",
+		"clear":"clear"
 	}
 
 }

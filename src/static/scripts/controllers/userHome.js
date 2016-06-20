@@ -24,7 +24,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			language: "{{idioma}}",
 			count: "200"
 		}},
-		{name:'github-events',rate:5, img:'https://wasin.io/wp-content/uploads/2015/05/showimage.png', description:'Muestra los eventos sucedidos en github',	attributes: {
+		{name:'github-events',rate:4, img:'https://wasin.io/wp-content/uploads/2015/05/showimage.png', description:'Muestra los eventos sucedidos en github',	attributes: {
 			username: "mortega5",
 			token: "" || "",
 			mostrar: "10",
@@ -32,13 +32,18 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			component_directory: 'bower_components/github-events/'
 		}
 		},
-		{name:'instagram-timeline',rate:5, img:'http://www.seawolfkayak.com/wp-content/uploads/2015/12/instaicon2.png', description:'Muestra las fotos de Instagram',	accessToken: "TODO",
+		{name:'instagram-timeline',rate:1, img:'http://www.seawolfkayak.com/wp-content/uploads/2015/12/instaicon2.png', description:'Muestra las fotos de Instagram',	accessToken: "TODO",
 		 endpoint: "TODO" + "/api/aux/instagramTimeline",
 		 language: "{{idioma}}"
 
 		},
 	];
-
+	$scope.removeStarFilter = function(){
+		$scope.starFilter = '';
+	}
+	$scope.removeTextFilter = function(){
+		$scope.textFilter = '';
+	}
 	$scope.activeDelCmpList = function(){
 		var $list = $('.component-list');
 		if (!$list.hasClass('active')){
@@ -47,13 +52,23 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			$list.removeClass('active');
 		}
 	}
-	$scope.clicked = function(e){
+	$scope.removeElement = function(id){
+		var finded = false;
+		
+		for (var i = 0;i< $scope.listComponentAdded.length && !finded;i++){
+			if ($scope.listComponentAdded[i][id]){
+				finded = true;
+				$scope.listComponentAdded.slice(i,1);
+			}
+		}
+	}
+	$scope.blurList = function(e){
 		if ($scope.itemDescription = $scope.listComponentAdded){
 			// del activated
 			var index = $(e.currentTarget).attr('data-index');
 			var id = $scope.listComponentAdded.splice(index,1);
 			$scope.showList = $scope.listComponentAdded;
-			$(id[0].name).remove();
+			$(id[0].name).parent().remove();
 		}
 	}
 	$('#userHome').click(function(event){
