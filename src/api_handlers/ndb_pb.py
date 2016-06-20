@@ -184,6 +184,9 @@ class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
   version = ndb.StringProperty() # Version of the component rated
   rating_value = ndb.FloatProperty()
+  # In the future, this field it could be a reference to an entity that would hold the evaluation resuls
+  # Optional_evaluation indicates whether a user has completed the optional form or not.
+  optional_evaluation = ndb.BooleanProperty(default=False) 
 
 class Group(ndb.Model):
   group_name = ndb.StringProperty(required=True)
@@ -303,7 +306,7 @@ def assignPredeterminedComponentsToUser(entity_key):
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
-def activateComponentToUser(component_id, entity_key):
+def activateComponentToUser(component_id, entity_key): #No entiendo lo que pretende hacer
   user = entity_key.get()
   general_component = Component.query(Component.component_id == component_id).get()
   user_component = None
@@ -338,7 +341,7 @@ def activateComponentToUser(component_id, entity_key):
         user.put()
 
         # We increase the counters that represents the times that a given component has been tested (general and versioned)
-        general_component.test_count = general_component.test_count + 1
+        general_component.test_count += 1
         general_component.put()
         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
         # versionedComponent.version == version)).get()
@@ -393,6 +396,15 @@ def getToken(id_rs, social_net):  # FUNCIONA
     ans = {"token": decodeAES(cipher, token.token),
           "user_id": user.user_id}
   return ans
+
+def getUserTokens(entity_key):
+  ans = []
+  user = entity_key.get()
+  for token in user.tokens:
+    token_aux = {}
+    cipher = getCipher(token.key.id())
+    token_aux["token"] = decodeAES(cipher, token.token)
+    
 
 def searchToken(token_id, rs): #FUNCIONA
   tokens = Token.query()
@@ -491,7 +503,7 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
     if data.has_key("private_email"):
       user.private_email = data["private_email"]
     if data.has_key("phone"):
-      user.phone = datos["phone"]
+      user.phone = data["phone"]
     if data.has_key("private_phone"):
       user.private_phone = data["private_phone"]
     if data.has_key("description"):
@@ -562,8 +574,12 @@ def updateUser(entity_key, data): #FUNCIONA
     # We add a Rating entity that represents the component rating
     rating = UserRating(component_id=comp_name, rating_value=rate)
     user.rates.append(rating)
-    updated_data += ["rate"]    
+    updated_data += ["rate"]
 
+  # We update the optional_evaluation field     
+  if data.has_key("optional_evaluation"):
+    user.optional_evaluation = data['optional_evaluation']
+    
   # Updates the user data
   user.put()
   # Returns the list that represents the data that was updated
@@ -598,7 +614,7 @@ def insertGroup(entity_key, name, data=None): #FUNCIONA
   if not data == None:
     if data.has_key("description"): group.description = data["description"]
     if data.has_key("usuarios"):
-      for user in datos["usuarios"]:
+      for user in data["usuarios"]:
         users = users + user + ", "
 
   group.user_list = users
@@ -638,7 +654,7 @@ def searchGroups(entity_key): #FUNCIONA
 def insertNetwork(entity_key, name, data=None): # FUNCIONA
   user = entity_key.get()
   user_social = SocialUser(social_name=name)
-  if not datos == None:
+  if not data == None:
     if data.has_key("following"):
       user_social.following = data["following"]
     if data.has_key("followers"):

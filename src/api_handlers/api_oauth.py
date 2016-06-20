@@ -113,7 +113,7 @@ class OauthSignUpHandler(SessionHandler):
             user_identifier = self.request.POST["user_identifier"]
             # Checks if the username was stored previously
             stored_credentials = ndb_pb.searchToken(token_id, social_network)
-            if stored_credentials == None:
+            if stored_credentials == None: # Not found
                 user_data = {}
                 user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
                 if not user_id_repeated:

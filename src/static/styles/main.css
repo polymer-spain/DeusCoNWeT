@@ -40,6 +40,7 @@ paper-toolbar.header .title {
 	font-family: fortune;
 	letter-spacing: 3px;
 	text-transform: capitalize;
+	cursor: pointer;
 }
 .dropdown {
 	padding: 0px;

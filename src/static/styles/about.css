@@ -1,0 +1,44 @@
+#view {
+	margin: 0px 5%;
+	padding-top: 0;
+	position: absolute;
+	top: 64px;
+	right: 0;
+	left: 0;
+	bottom: 40px;
+	min-height: 0px !important;
+}
+
+#about {
+	width: 100%;
+	height: auto !important;
+	min-height: auto !important;
+	max-height: 100%;
+	overflow: auto;
+}
+
+#about .members{
+	width: 350px;
+	height: 100px;
+	background-color: #ccc;
+	margin: 3% 90px;
+	border-radius: 7px;
+	border: 2px solid black;
+}
+#about .members > .image {
+	border-radius: 30%;
+	margin:0px 5px;
+	padding:5px;
+}
+#about .members > .image > img {
+	max-width: 75px;
+	max-height: 85px;
+	border-radius: 100%;
+	border: 2px solid #333;
+	margin: auto;
+	background-color:rgba(238, 238, 238, 0.71);
+}
+
+#about .members > .info {
+	margin:auto 5px;
+}

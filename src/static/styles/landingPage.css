@@ -1,0 +1,48 @@
+
+/* Añadir Responsive para margin y texto*/
+
+html
+{
+	background-image: url('../images/landingimage.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: 100% 100%;
+}
+
+#landing .content {
+  text-align: center;
+  margin-top:15%;
+}
+
+#landing  .slogan
+{
+	margin:5% auto;
+	max-width: 400px;
+}
+
+
+#landing .content paper-button
+{
+	margin:auto;
+	background-color: #b71c1c;
+}
+a
+{
+	text-decoration: none;
+
+	color: inherit;
+}
+a:visited
+{
+	color: inherit;
+}
+
+footer{
+	max-height: 5%;
+	min-height: 40px;
+  position:absolute;
+  bottom:0;left: 0;right: 0;
+}
+footer paper-button {
+	margin:auto 10px;
+}

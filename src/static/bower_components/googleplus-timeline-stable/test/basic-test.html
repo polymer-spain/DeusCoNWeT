@@ -1,0 +1,645 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../googleplus-timeline.html">
+
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <test-fixture id='timeline'>
+      <template>
+        <googleplus-timeline token="ya29.CjXXAkfWqIjWnI9B-T9V-XE-MH5AFTY0cEBIX4eV81H051zSyemeS4zbha05GA5vWzsz4Hj6Rw" language="es">
+        </googleplus-timeline>
+      </template>
+    </test-fixture>
+    <script>
+
+      describe('timeline component', function(){
+
+        describe('_responseFollowings function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._responseFollowings);
+            done();
+          });
+          it("adds 'me' to 'user_followings'", function(done){
+            var events; var espia = sinon.spy(myEl, 'push');
+            var detail = {
+              "response" : {
+                "items" : {
+                  "id" : "114562083342340135920"
+                }
+              }
+            }
+            myEl._responseFollowings(event, detail);
+            sinon.assert.calledWith(espia, 'user_followings', 'me');
+            espia.reset();
+            done();
+          });
+          it("makes a request ", function(done){
+            var event; myEl.$.requestPosts.generateRequest = sinon.stub();
+            var detail = {
+              "response" : {
+                "items" : {
+                  "id" : "114562083342340135920"
+                }
+              }
+            }
+            myEl._responseFollowings(event, detail);
+            sinon.assert.called(myEl.$.requestPosts.generateRequest);
+            sinon.restore();
+            done();
+          })
+        });
+
+        describe('_responseFollowings function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._getRequestPostsURL);
+            done();
+          });
+          it('returns the url to which make requests', function(done){
+            var id = "114562083342340135920"
+            var response = myEl._getRequestPostsURL(id);
+            var check = "https://www.googleapis.com/plus/v1/people/114562083342340135920/activities/public"
+            assert.equal(response, check);
+            done();
+          });
+        });
+
+        describe('_updateLastRetrievedPage function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._updateLastRetrievedPage);
+            done();
+          });
+          it("calls to splice when 'author' in 'last_retrieved_page' is the same that the 'author' of the parameter and type of nextPageToken is undefined", function(done){
+            var espia = sinon.spy(myEl, "splice")
+            myEl.last_retrieved_page = [{
+              "author" : "Juan Francisco Salamanca"
+            }]
+            var current_user_page = {
+              "author" : "Juan Francisco Salamanca",
+            }
+            myEl._updateLastRetrievedPage(current_user_page);
+            sinon.assert.called(espia);
+            espia.reset();
+            done();
+          });
+          it("calls to set when 'author' in 'last_retrieved_page' is the same that the 'author' of the parameter and nextPageToken is defined", function(done){
+            var espia = sinon.spy(myEl, "set")
+            myEl.last_retrieved_page = [{
+              "author" : "Juan Francisco Salamanca"
+            }]
+            var current_user_page = {
+              "author" : "Juan Francisco Salamanca",
+              "nextPageToken" : "1231571823"
+            }
+            myEl._updateLastRetrievedPage(current_user_page);
+            sinon.assert.called(espia);
+            espia.reset();
+            done();
+          });
+          it("calls to push when the authors in 'last_retrieved_page' and in the parameter are diferent and nextPageToken is defined", function(done){
+            var espia = sinon.spy(myEl, "push")
+            myEl.last_retrieved_page = [{
+              "author" : "Juan Francisco"
+            }]
+            var current_user_page = {
+              "author" : "Juan Francisco Salamanca",
+              "nextPageToken" : "1231571823"
+            }
+            myEl._updateLastRetrievedPage(current_user_page);
+            sinon.assert.called(espia);
+            espia.reset();
+            done();
+          });
+
+
+        });
+
+        describe('_obtainNextPagePost function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._obtainNextPagePost);
+            done();
+          });
+          it("makes a request when 'last_post_timestamp' is greater than 'page_timestamp' and 'last_post_nextPageToken' is defined ", function(done){
+            myEl.$.requestPosts.generateRequest = sinon.stub();
+            myEl.page_timestamp = 1424991341399; var last_post_timestamp = 1461664126252;
+            var user_id = "106462273671317506871";
+            var last_post_nextPageToken= "Cg0Q9ejBn9C9zAIgACgBEhQIABCI9ODB97jMAhi4x_SPh4nMAhgCIBQo-tOl_qm-zeflAQ"
+            myEl._obtainNextPagePost(user_id, last_post_timestamp, last_post_nextPageToken);
+            sinon.assert.called(myEl.$.requestPosts.generateRequest);
+            sinon.restore();
+            done();
+          });
+          it("makes nothing when 'last_post_nextPageToken' is not defined", function(done){
+            myEl.$.requestPosts.generateRequest = sinon.stub();
+            myEl.page_timestamp = 1424991341399; var last_post_timestamp = 1461664126252;
+            var user_id = "106462273671317506871";
+            myEl._obtainNextPagePost(user_id, last_post_timestamp);
+            sinon.assert.notCalled(myEl.$.requestPosts.generateRequest);
+            sinon.restore();
+            done();
+          });
+
+
+        });
+
+        describe('_updateTimelinePosts function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._updateTimelinePosts);
+            done();
+          });
+          it("pushes the user_post to timeline_posts when 'user_post.published' is greater than 'page_timestamp'", function(done){
+            var espia = sinon.spy(myEl, "push");
+            var user_post = {
+              "published" : 1461664566823
+            };
+            myEl.page_timestamp = 1379442502903;
+            myEl._updateTimelinePosts(user_post);
+            sinon.assert.calledWith(espia, 'timeline_posts', user_post)
+            done();
+          });
+          it('pushes the user_post to next_timeline_posts', function(done){
+            var espia = sinon.spy(myEl, "push");
+            var user_post = {
+              "published" :  1379442502903 
+            };
+            myEl.page_timestamp = 1461664566823;
+            myEl._updateTimelinePosts(user_post);
+            sinon.assert.calledWith(espia, 'next_timeline_posts', user_post)
+            done();
+          })
+
+        });
+
+        describe('_responsePosts function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._responsePosts);
+            done();
+          });
+          it('does not go into the if when the number of posts is zero', function(done){
+            var espia = sinon.spy(myEl, "_changeTime");
+            var event;
+            var detail = {
+              "response" : {
+                "items" : []
+              }
+            };
+            myEl._responsePosts(event, detail);
+            sinon.assert.notCalled(espia);
+            done();
+          });
+          it('goes into the if when the number of posts greater than zero', function(done){
+            var espia = sinon.spy(myEl, "_changeTime");
+            var event;
+            var detail = {
+              "response" : {
+                "items" : [{
+                  "actor" : {}
+                }]
+              }
+            };
+            myEl._responsePosts(event, detail);
+            sinon.assert.called(espia);
+            done();
+          });
+
+
+
+        });
+
+        describe('attached function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl.attached);
+            done();
+          });
+          it('does nothing when there arent a token defined', function(done){
+            myEl.$.requestFollowing.generateRequest = sinon.stub();
+            myEl.token = "";
+            myEl.attached()
+            sinon.assert.notCalled(myEl.$.requestFollowing.generateRequest);
+            sinon.restore();
+            done();
+          });
+          it('sets language_data with the english data', function(done){
+            var espia = sinon.spy(myEl, "set");
+            myEl.token = "test_token"; myEl.language = "en";
+            myEl.attached();
+            sinon.assert.calledWith(espia, 'language_data', myEl.language_en);
+            espia.reset();
+            done();
+          });
+          it('sets language_data with the spanish data', function(done){
+            var espia = sinon.spy(myEl, "set");
+            myEl.token = "test_token"; myEl.language = "es";
+            myEl.attached();
+            sinon.assert.calledWith(espia, 'language_data', myEl.language_es);
+            espia.reset();
+            done();
+          });
+          it('makes a request when there are a token defined', function(done){
+            myEl.$.requestFollowing.generateRequest = sinon.stub();
+            myEl.token = "test_token";
+            myEl.attached()
+            sinon.assert.called(myEl.$.requestFollowing.generateRequest);
+            sinon.restore();
+            done();
+          });
+
+        });
+
+        describe('_refresh_posts function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._refresh_posts);
+            done();
+          });
+          it('sets the timestamp to s specified range of time', function(done){
+            myEl.millis_range_timestamp = 604800000;
+            myEl._refresh_posts();
+            assert.notEqual(myEl.page_timestamp, "");
+            done();
+          });
+          it('makes a request when the lengh of user_followings it greater than zero', function(done){
+            myEl.$.requestPosts.generateRequest = sinon.stub();
+            myEl.user_followings = [{}];
+            myEl._refresh_posts();
+            sinon.assert.called(myEl.$.requestPosts.generateRequest);
+            sinon.restore();
+            done();
+          });
+        });
+
+        /* Falta probar que sentra en el ultimo if.. bucle infinito. */
+        describe('_loadMorePosts function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._loadMorePosts);
+            done();
+          });
+          it("pushes the 'user_post' to 'timeline_posts' when the value of 'published' is greater than the value of 'page_timestamp'", function(done){
+            var espia = sinon.spy(myEl, "push");
+            myEl.next_timeline_posts = [{
+              "published" : 1461066224192
+            }];
+            myEl.page_timestamp = 1;
+            myEl._loadMorePosts();
+            sinon.assert.calledWith(espia, "timeline_posts");
+            espia.reset();
+            done();
+          });
+          it("does not go into the if, so it does not call to push function", function(done){
+            var espia2 = sinon.spy(myEl, "push");
+            myEl._loadMorePosts();
+            sinon.assert.notCalled(espia2);
+            espia2.reset();
+            done();
+          });
+          it("calls to '_obtainNextPagePost' when the lenght of 'last_retrieved_page' is greater than zero", function(done){
+            var espia = sinon.spy(myEl, "_obtainNextPagePost");
+            /*Se crean 5 eventos para que aumente el contador, si no se queda en bucle infinito llamandose a si misma constantemente*/
+            myEl.next_timeline_posts = [
+              {"published" : 1461066224192},
+              {"published" : 1461066224193},
+              {"published" : 1461066224194},
+              {"published" : 1461066224195},
+              {"published" : 1461066224197}
+            ];
+            myEl.page_timestamp = 1;
+            myEl.last_retrieved_page = [{
+              "author" : "108654697301404301234",
+              "displayName" : "Juan Francisco",
+              "nextPageToken" : "Cg0Qg_jDxo2-zAIgACgBEhQIABCI9ODB97jMAhi4x_SPh4nMAhgCIBQopf-p7eGQiqvdAQ",
+              "timestamp" : 1460462591747
+            }];
+            myEl._loadMorePosts();
+            sinon.assert.called(espia);
+            espia.reset();
+            done();
+          });
+        });
+
+        describe('_changeTime function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._changeTime);
+            done();
+          });
+          it('returns the post with the date updated', function(done){
+            var post = {
+              "published" : "2015-04-09T09:15:49.158Z",
+              "updated" : "2015-04-09T09:15:49.158Z"
+            };
+            var resultado = myEl._changeTime(post);
+            assert.equal(resultado.published_pretty, "9 abril 2015")
+            done();
+          });
+
+        });
+
+        describe('_sortPosts function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._sortPosts);
+            done();
+          });
+          it('returns 0 when the the published field is the same in both posts', function(done){
+            var post1 = {"published" : 1428570949158};
+            var post2 = {"published" : 1428570949158};
+            var result = myEl._sortPosts(post1, post2);
+            assert.equal(result, 0);
+            done();
+          });
+          it('returns -1 when the the published field in the first post is greater than in the second one', function(done){
+            var post1 = {"published" : 2428570949159};
+            var post2 = {"published" : 1428570948121};
+            var result = myEl._sortPosts(post1, post2);
+            assert.equal(result, -1);
+            done();
+          });
+          it('returns 1 when the the published field in the second post is greater than in the first one', function(done){
+            var post1 = {"published" : 1428570949157};
+            var post2 = {"published" : 2428570949158};
+            var result = myEl._sortPosts(post1, post2);
+            assert.equal(result, 1);
+            done();
+          });
+
+        });
+
+        describe('_hasAttachment function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._hasAttachment);
+            done();
+          });
+          it("returns true when 'objectType' of 'item.object.attachments' is equal to 'attachmentType'", function(done){
+            var item = {
+              "object" : {
+                "attachments" : [{
+                  "objectType" : "video"
+                }]
+              }
+            };
+            var aattachmentType = "video";
+            var result = myEl._hasAttachment(item, aattachmentType);
+            assert.isTrue(result);
+            done();
+          });
+          it("returns false when 'objectType' of 'item.object.attachments' is different to 'attachmentType'", function(done){
+            var item = {
+              "object" : {
+                "attachments" : [{
+                  "objectType" : "video"
+                }]
+              }
+            };
+            var aattachmentType = "photo";
+            var result = myEl._hasAttachment(item, aattachmentType);
+            assert.isFalse(result);
+            done();
+          });
+
+        });
+
+        describe('_hasVideoAttachment function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._hasVideoAttachment);
+            done();
+          });
+          it("returns true when the field 'objectType' is equal to 'video' and has the property 'embed' ", function(done){
+            var item = {
+              "object" : {
+                "attachments" : [{
+                  "objectType" : "video",
+                  "embed" : {}
+                }]
+              }
+            };
+            var result = myEl._hasVideoAttachment(item);
+            assert.isTrue(result);
+            done();
+          });
+          it("returns false when the field 'objectType' is different to 'video'", function(done){
+            var item = {
+              "object" : {
+                "attachments" : [{
+                  "objectType" : "photo",
+                  "embed" : {}
+                }]
+              }
+            };
+            var result = myEl._hasVideoAttachment(item);
+            assert.isFalse(result);
+            done();
+          });
+          it("returns false when the doesnt have the 'embed' field", function(done){
+            var item = {
+              "object" : {
+                "attachments" : [{
+                  "objectType" : "video"
+                }]
+              }
+            };
+            var result = myEl._hasVideoAttachment(item);
+            assert.isFalse(result);
+            done();
+          });
+        });
+
+        describe('_hasArticleCaption function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._hasArticleCaption);
+            done();
+          });
+          it("returns true when the url of the image is not defined and its width greater than 360", function(done){
+            var item = {
+              "object" : {
+                "attachments" : [{
+                  "image" : {
+                    "width" : 720
+                  }
+                }]
+              }
+            };
+            var result = myEl._hasArticleCaption(item);
+            assert.isTrue(result);
+            done();
+          });
+          it("returns false when the url of the image is defined", function(done){
+            var item = {
+              "object" : {
+                "attachments" : [{
+                  "image" : {
+                    "url" : "https://lh3.googleusercontent.com/proxy/H0Q5EicX_vm2qElcZvD909MN6SkV5ebnbNy7YnJT46eB0DaIvzLpRgk4YXZBY2BTeuUnkiHA6zO7wlfyc46zTQ=w506-h284-n",
+                    "width" : 720
+                  }
+                }]
+              }
+            };
+            var result = myEl._hasArticleCaption(item);
+            assert.isFalse(result);
+            done();
+          });
+          it("returns false when the width of the image is smaller than 360", function(done){
+            var item = {
+              "object" : {
+                "attachments" : [{
+                  "image" : {
+                    "width" : 128
+                  }
+                }]
+              }
+            };
+            var result = myEl._hasArticleCaption(item);
+            assert.isFalse(result);
+            done();
+          });
+        });
+
+        describe('_isSharedPost function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._isSharedPost);
+            done();
+          });
+          it("returns true when the field verb is equal to 'share'", function(done){
+            var item = {
+              "verb" : "share"
+            };
+            var result = myEl._isSharedPost(item);
+            assert.isTrue(result);
+            done();
+          });
+          it("returns false when the field verb is different to 'share'", function(done){
+            var item = {
+              "verb" : "post"
+            };
+            var result = myEl._isSharedPost(item);
+            assert.isFalse(result);
+            done();
+          });
+        });
+
+        /* Terminar test */
+        describe('_getCaptionDimensions function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._getCaptionDimensions);
+            done();
+          });
+          /*it("", function(done){
+            done();
+          });*/
+        });
+
+        describe('_languageChanged function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._languageChanged);
+            done();            
+          });
+          it('entries in the first if', function(done){
+            var newValue = "en";
+            myEl._languageChanged(newValue);
+            assert.equal(myEl.language, "en")
+            done();
+          });
+          it('entries in the esle if sentence', function(done){
+            var espia = sinon.spy(myEl, "set");
+            var newValue = "es";
+            myEl._languageChanged(newValue);
+            sinon.assert.calledWith(espia, 'language_data', myEl.language_es);
+            espia.reset();
+            done();
+          });
+          it("calls to '_refresh_posts' function to re-render the component", function(done){
+            var espia = sinon.spy(myEl, "_refresh_posts");
+            myEl._languageChanged("es");
+            sinon.assert.called(espia);
+            espia.reset();
+            done();
+          });
+        });
+      });
+
+    </script>
+  </body>
+</html>

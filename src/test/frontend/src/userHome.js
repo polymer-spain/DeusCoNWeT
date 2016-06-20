@@ -205,7 +205,7 @@ angular.module("picbit",[]).controller("UserHomeController", ["$scope", "$timeou
 
 	$scope.deleteTimelineLeaveHover = function () {
 		$scope.hovered = "";
-	};
+	};u
 
 	$scope.showToggleHelp = function (event){
 		$scope.toggleHelp = true;

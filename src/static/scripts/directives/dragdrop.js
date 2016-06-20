@@ -1,7 +1,5 @@
 /*global angular, document*/
 var picbit = angular.module("picbit");
-
-
 picbit.directive("ngContainer", function () {
 	"use strict";
 	function link(scope, element) {

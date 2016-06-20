@@ -92,5 +92,4 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			$('.menu-buttons').children().removeClass('active');
 		}
 	})
-
 }]);

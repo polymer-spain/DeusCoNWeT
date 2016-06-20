@@ -40,6 +40,70 @@ domain = cfg["domain"]
 
 social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github"]
 
+class ComponentRatingHandler(SessionHandler):
+    """
+    Class that defines the method related to user rating about a certain component 
+    in the system (componentes/:idComponente/componenteValorado)
+    Methods:
+        post - 
+    """
+    # POST Method
+    def post(self, component_id):
+        """ - Modifies the info about a component
+        Keyword arguments: 
+        self -- info about the request build by webapp2
+        component_id -- path url directory corresponding to the component id
+        """
+        # Get the cookie in the request
+        cookie_value = self.request.cookies.get("session")
+        # Param Methods
+        version = self.request.get("version", default_value="none")
+        rate = self.request.get("rate", default_value="none")
+        optional_form_completed = self.request.get("optional_form_completed", default_value="false")
+        if not cookie_value == None:
+            # Checks whether the cookie belongs to an active user and the request has provided at least one param
+            user_id = self.getUserInfo(cookie_value)
+            if not user_id == None:
+                # TODO: Data params validation
+                # We compose the data to be updated
+                data = []
+                data["comp_name"] = component_id
+                data["rate"] = rate
+                data["optional_evaluation"] = True if optional_form_completed == "true" else False 
+                # We update the user info
+                updated_data = ndb_pb.updateUser(user_id, data)
+                if not updated_data == None:
+                    self.response.set_status(200)
+                else:
+                    self.response.set_status(304) 
+            else:
+                # We invalidate the session cookie received
+                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                self.response.set_cookie("session", "",
+                    path="/", domain=domain, secure=True, expires=expire_date)
+                # We delete and invalidate other cookies received, like the user logged nickname
+                # and social network in which the user performed the login
+                if not self.request.cookies.get("social_network") == None:
+                    self.response.set_cookie("social_network", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                if not self.request.cookies.get("user") == None:
+                    self.response.set_cookie("user", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                
+                # We write in the response details about the error
+                response = \
+                    {"error": "The cookie session provided does not belongs to any active user"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(400)
+        else:
+            response = {"error": "You must provide a session cookie"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(401)
+
+
+
 class ComponentListHandler(SessionHandler):
 
     """
@@ -115,7 +179,7 @@ class ComponentListHandler(SessionHandler):
             self.response.set_status(401)
         
 
-    # POST Method
+    # PUT Method
     def put(self):
         """ Uploads a component. The component is stored in the Datastore of the application
         This request does not need to be made along with a cookie identifying the session
@@ -206,6 +270,9 @@ class ComponentHandler(SessionHandler):
                     format_flag = True if format == "complete" else False
                     component = ndb_pb.getComponent(user_id, component_id, format_flag)
                     if not component == None:
+                        comp_aux = json.load(component)
+                        comp_aux["ref"] = "centauro.ls.fi.upm.es/bower_components/" + comp_aux["component_id"] + "-" + comp_aux["version"]
+                        component = json.dumps(comp_aux)
                         self.response.content_type = "application/json"
                         self.response.write(component)
                         self.response.set_status(200)

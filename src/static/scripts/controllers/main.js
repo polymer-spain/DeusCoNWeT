@@ -36,7 +36,6 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		/* Cogemos el identificador del usuario */
 		function newUser(userData) {
 			$rScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
-			//$scope.changeView('/selectId');
 			$location.path('/selectId');
 		}
 		$rScope.token = userData.token;
@@ -57,7 +56,10 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		}
 	};
 	$scope.pathname = window.location.pathname;
+	$scope.goto = function(view){
+		$location.path(view); // path not hash
 
+	}
 	var loginCallback = function (e) {
 		//$scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
 		$('#login-popup').modal('hide');
