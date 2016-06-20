@@ -196,6 +196,7 @@ picbit.directive("ngCreateElement", function () {
 					selector: '.context-menu', 
 					callback: function(key, options) {
 						options.$trigger.parent().remove();
+						element.scope().removeElement(id);
 					},
 					items: {
 						"delete": {name: "Delete", icon: "delete"},
@@ -220,6 +221,8 @@ picbit.directive("ngCreateElement", function () {
 				minWidth = minWidth !== 'none'? parseInt(minWidth.split('px')[0]) : 0;
 				var height = newTimeline.css('heigth') || '400px';
 				var width = newTimeline.css('width') || '400px';
+				height = height.split('px') < 400 ? '400px': height;
+				width = width.split('px') < 400 ? '400px': width;
 				divContainer.resizable('option', 'minHeight',minHeight+10);
 				divContainer.resizable('option', 'minWidth',minWidth+10);
 				divContainer.css({
@@ -234,8 +237,32 @@ picbit.directive("ngCreateElement", function () {
 			}
 		};
 		element.attr("draggable", "true");
-		element.on("dragstart", scope.comienzo);
-		element.on('dblclick', scope.click);
+		element.on("dragstart", function(e){
+			var canExecute = false;
+			if (scope.pre == undefined){
+				canExecute = true;
+			}else if (typeof scope.pre == 'function' ){
+				canExecute = scope.pre();
+			} else {
+				canExecute = scope.pre ? true: false;
+			}
+			if (canExecute){
+				scope.comienzo(e);
+			}
+		});
+		element.on('dblclick', function(e){
+			var canExecute = false;
+			if (scope.pre == undefined){
+				canExecute = true;
+			}else if (typeof scope.pre == 'function' ){
+				canExecute = scope.pre();
+			} else {
+				canExecute = scope.pre ? true: false;
+			}
+			if (canExecute){
+				scope.click(e);
+			}
+		});
 	}
-	return {scope: {imagesrc: "@imagesrc", attributes: "@listAttributes", idElement: "@idElement"}, link: link};
+	return {scope: {imagesrc: "@imagesrc", attributes: "@listAttributes", idElement: "@idElement", condition: "@pre"}, link: link};
 });

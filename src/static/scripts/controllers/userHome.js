@@ -38,6 +38,20 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		 language: "{{idioma}}"
 
 		},
+		{
+			name: 'googleplus-timeline', rate:4, img:'http://www.studiotomasi.org/images/gplusicon.svg', description:'Muestra las entradas en google+', attributes: {
+				'token':'ya29.CjMHAzmtu3cGQaJ77v0nq0xoJ9F_VTNkJWx-mUmQQlyDU4nn8KlTBO3mWyqFw32XTAQofVc','language':'{{idioma}}'}
+		},
+		{
+			name: 'facebook-wall',
+			rate: 3,
+			img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/1024px-F_icon.svg.png',
+			attributes: {
+				language: '{{idioma}}',
+				component_directory: 'bower_components/facebook-wall/',
+				access_token: 'hola' || $rootScope.user.tokens.facebook
+			}
+		}
 	];
 	$scope.removeStarFilter = function(){
 		$scope.starFilter = '';
@@ -55,7 +69,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 	}
 	$scope.removeElement = function(id){
 		var finded = false;
-		
+
 		for (var i = 0;i< $scope.listComponentAdded.length && !finded;i++){
 			if ($scope.listComponentAdded[i][id]){
 				finded = true;
