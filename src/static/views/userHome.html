@@ -22,6 +22,7 @@
 			<div class="btn btn-default" data-button ng-click="selectListButton($event);activeDelCmpList($event)" title="Eliminar un nuevo componente">
 				<span class="glyphicon glyphicon-trash"></span>
 			</div>
+			<!--<div class="btn btn-default" data-toggle="modal" data-target="#help-popup" data-keyboard="true" title="Abrir el menu de ayuda">-->
 			<div class="btn btn-default" data-toggle="modal" data-target="#help-popup" data-keyboard="true" title="Abrir el menu de ayuda">
 				<span class="glyphicon glyphicon-info-sign"></span>
 			</div>
@@ -121,19 +122,18 @@
 					<h4 class="modal-title">{{language.user_action.help}}</h4>
 				</div>
 				<div class="modal-body vertical layout center-center">
-					<!-- Modal login -->
-					<p>
-						<strong>{{language.user_action.add}} ( <span class="glyphicon glyphicon-plus"></span>
-							)</strong><span>: {{language.help.add}}</span>
-					</p>
-					<br>
-					<p>
-						<strong>{{language.user_action.delete}}(				<span class="glyphicon glyphicon-trash"></span>
-							)</strong>: <span>{{language.help.delete}}</span>
-					</p>
+					<paper-radio-group id="initialQuestion">
+						<p class="component">TESTING</p>
+						<p class="questionText">{{language.questionary.define}}</p>
+						<paper-radio-button name="1">{{language.questionary.component.verybad}} </paper-radio-button><br>
+						<paper-radio-button name="2">{{language.questionary.component.bad}}</paper-radio-button><br>
+						<paper-radio-button name="3">{{language.questionary.component.neutral}}</paper-radio-button><br>
+						<paper-radio-button name="4">{{language.questionary.component.good}}</paper-radio-button><br>
+						<paper-radio-button name="5">{{language.questionary.component.verygood}} </paper-radio-button><br>
+						<paper-button raised class="submitButton" ng-click="_submitRating($event)">{{language.send}}</paper-button>
 
+						</div>
 				</div>
-			</div>
 
+			</div>
 		</div>
-	</div>

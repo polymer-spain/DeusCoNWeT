@@ -68,6 +68,32 @@
 		"rate": "Ratings",
 		"rateUp": "& up",
 		"clear":"clear"
+	},
+	"questionary": {
+		"component": {
+			"verybad": "So bad",
+			"bad": "Bad",
+			"neutral": "At the average",
+			"good": "Good",
+			"verygood": "So good"
+		},
+		"yes":"Yes",
+		"no": "No",
+		"amplied": {
+			"verybad": "Strongly disagree",
+			"bad": "Disagree",
+			"neutral": "Neither agree nor disagree",
+			"good": "Agree",
+			"verygood": "Strongly agree"
+		},
+		"define": "How do you define the component?",
+		"help": "Would you help us fulfilling a survey about the components you have used?",
+		"difficulty": "The component is difficult to be used" ,
+		"design": "The component design is pleasant",
+		"information": "The component information is shown concise and clearly",
+		"share": "Would you share this component?",
+		"recommend": "Would you recommend this component?",
+		"end": "The survey has finished. Thanks for your time"
 	}
 }
 
