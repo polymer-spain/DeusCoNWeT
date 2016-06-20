@@ -54,7 +54,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		}
 	];
 	$scope.removeStarFilter = function(){
-		$scope.starFilter = '';
+		$scope.starFilter = undefined;
 	}
 	$scope.removeTextFilter = function(){
 		$scope.textFilter = '';
