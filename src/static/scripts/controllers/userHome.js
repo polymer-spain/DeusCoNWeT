@@ -15,12 +15,13 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 	};
 
 	$scope.catalogList = [
-		{name:'twitter-timeline',rate:5, img:'http://www.coetail.com/seriously/files/2016/04/twitter-logo.png', description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa',			attributes: {
-			accessToken: "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
-			secretToken: "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-			consumerKey: "J4bjMZmJ6hh7r0wlG9H90cgEe",
-			consumerSecret: "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+		{name:'twitter-timeline',rate:5, img:'http://www.coetail.com/seriously/files/2016/04/twitter-logo.png', description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa', attributes: {
+			"access-token": "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
+			"secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
+			"consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
+			"consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
 			endpoint: $scope.domain + "/api/aux/twitterTimeline",
+			component_base: "bower_components/twitter-timeline/static/",
 			language: "{{idioma}}",
 			count: "200"
 		}},
