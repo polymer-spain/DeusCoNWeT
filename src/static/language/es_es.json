@@ -58,6 +58,7 @@
 		"componentList": "Lista de Componentes",
 		"search": "Buscar",
 		"rate": "Valoración",
-		"rateUp": "y más"
+		"rateUp": "y más",
+		"clear":"Borrar"
 	}
 }
