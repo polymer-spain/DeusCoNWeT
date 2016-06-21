@@ -102,6 +102,10 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		document.querySelector('body').addEventListener('facebook-logged', loginCallback);
 		document.querySelector('body').addEventListener('sof-logged', loginCallback);
 	})();
-
+	
+	// avoid language errors
+	$scope.$watch('language.delete', function(newValue, oldValue) {
+  $('.icon-delete > span').html(newValue);
+});
 
 }]);// end angular.module

@@ -86,5 +86,6 @@
 		"share": "¿Recomendarías este componente?",
 		"recommend": "¿Compartirías este componente?",
 		"end": "El cuestionario ha terminado. Gracias por tu tiempo."
-	}
+	},
+	"delete":"Borrar"
 }

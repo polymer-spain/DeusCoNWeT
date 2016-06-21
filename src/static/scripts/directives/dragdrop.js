@@ -89,7 +89,7 @@ picbit.directive("ngContainer", function () {
 						element[0].setAttribute('disabled',false);
 					}.bind(this),
 					items: {
-						"delete": {name: "Delete", icon: "delete"},
+						"delete": {name: element.scope().language.delete, icon: "delete"},
 					}
 				});
 
@@ -198,7 +198,7 @@ picbit.directive("ngCreateElement", function () {
 						element[0].setAttribute('disabled',false);
 					}.bind(this),
 					items: {
-						"delete": {name: "Delete", icon: "delete"},
+						"delete": {name: element.scope().language.delete, icon: "delete"},
 					}
 				});
 				divContainer.append(newTimeline[0]);

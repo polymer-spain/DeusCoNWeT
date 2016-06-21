@@ -94,6 +94,7 @@
 		"share": "Would you share this component?",
 		"recommend": "Would you recommend this component?",
 		"end": "The survey has finished. Thanks for your time"
-	}
+	},
+	"delete":"Delete"
 }
 
