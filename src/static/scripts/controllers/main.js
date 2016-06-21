@@ -21,15 +21,11 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 	$scope.setLanguage($scope.idioma);
 
 	$scope.logout = function (parent) {
-		$backend.logout().then(function() {
-			if (parent){
-				document.getElementById(parent).close();
-			}
-			$location.path('/')
-		}, function(response){
-			$location.path('/')
-			//console.error('Error ' + response.status + ': Fallo al intentar realizar un logout del usurio ' + $rScope.user.name);
-		});
+		if (parent){
+			document.getElementById(parent).close();
+		}
+		$location.path('/')
+		$backend.logout();
 	};
 	// Login callback function
 	$scope.loginProcess = function(userData){
