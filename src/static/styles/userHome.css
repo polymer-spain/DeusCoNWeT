@@ -183,6 +183,16 @@
 #userHome #searchCatalog input[type="radio"]{
 	cursor:pointer;
 }
+#userHome #listCatalog .catalogItem[disabled="true"] {
+	cursor:not-allowed;
+}
+#userHome #listCatalog .catalogItem[disabled="true"]:after {
+	content:'';
+	z-index: 1000;
+	background-color:rgba(198, 198, 198, 0.76);
+	top:0;left:0;bottom:0;right:0;
+	position: absolute;
+}
 #userHome star-rate{
 	cursor:auto;
 }

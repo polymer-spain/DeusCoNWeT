@@ -86,18 +86,19 @@ picbit.directive("ngContainer", function () {
 					callback: function(key, options) {
 						options.$trigger.parent().remove();
 						element.scope().removeElement(id);
+						element[0].setAttribute('disabled',false);
 					}.bind(this),
 					items: {
 						"delete": {name: "Delete", icon: "delete"},
 					}
 				});
+
 				divContainer.append(newTimeline[0]);
 				element.append(divContainer);
 				element.scope().listComponentAdded.push({name:id});
 				/* Forzamos la fase de compile de angular para que cargue las directivas del
          * nuevo elemento
          */
-
 				injector = element.injector();
 				$compile = injector.get("$compile");
 				$compile(divContainer)(divContainer.scope());
@@ -146,8 +147,7 @@ picbit.directive("ngCreateElement", function () {
 			if (scope.attributes) {
 				evento.originalEvent.dataTransfer.setData("attributes", scope.attributes);
 			}
-
-			var image;
+			element[0].setAttribute('disabled', true);
 		};
 		scope.click = function(e){
 			/* Evitamos la accion por defecto y la propagacion a los hijos*/
@@ -171,10 +171,10 @@ picbit.directive("ngCreateElement", function () {
 
 				/* Añadimos todos los attributos necesarios */
 				if (scope.attributes) {
-					scope.attributes = JSON.parse(scope.attributes);
-					for (key in scope.attributes) {
-						if (scope.attributes.hasOwnProperty(key)) {
-							newTimeline.attr(key, scope.attributes[key]);
+					var _attributes = JSON.parse(scope.attributes);
+					for (key in _attributes) {
+						if (_attributes.hasOwnProperty(key)) {
+							newTimeline.attr(key, _attributes[key]);
 						}
 					}
 				}
@@ -194,8 +194,9 @@ picbit.directive("ngCreateElement", function () {
 					selector: '.context-menu', 
 					callback: function(key, options) {
 						options.$trigger.parent().remove();
-						element.scope().removeElement(id);
-					},
+						element.scope().removeElement(scope.idElement);
+						element[0].setAttribute('disabled',false);
+					}.bind(this),
 					items: {
 						"delete": {name: "Delete", icon: "delete"},
 					}
@@ -207,7 +208,8 @@ picbit.directive("ngCreateElement", function () {
 				/* Forzamos la fase de compile de angular para que cargue las directivas del
          * nuevo elemento
          */
-
+				
+				element[0].setAttribute('disabled', true);
 				injector = container.injector();
 				$compile = injector.get("$compile");
 				$compile(divContainer)(divContainer.scope());
@@ -236,27 +238,13 @@ picbit.directive("ngCreateElement", function () {
 		};
 		element.attr("draggable", "true");
 		element.on("dragstart", function(e){
-			var canExecute = false;
-			if (scope.pre == undefined){
-				canExecute = true;
-			}else if (typeof scope.pre == 'function' ){
-				canExecute = scope.pre();
-			} else {
-				canExecute = scope.pre ? true: false;
-			}
+			var canExecute = $(element)[0].getAttribute('disabled') == "false" || !element.attr('disabled');
 			if (canExecute){
 				scope.comienzo(e);
 			}
 		});
 		element.on('dblclick', function(e){
-			var canExecute = false;
-			if (scope.pre == undefined){
-				canExecute = true;
-			}else if (typeof scope.pre == 'function' ){
-				canExecute = scope.pre();
-			} else {
-				canExecute = scope.pre ? true: false;
-			}
+			var canExecute = $(element)[0].getAttribute('disabled') == "false" || !element.attr('disabled');
 			if (canExecute){
 				scope.click(e);
 			}

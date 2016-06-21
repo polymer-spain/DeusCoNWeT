@@ -71,9 +71,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		var finded = false;
 
 		for (var i = 0;i< $scope.listComponentAdded.length && !finded;i++){
-			if ($scope.listComponentAdded[i][id]){
+			if ($scope.listComponentAdded[i].name == id){
 				finded = true;
-				$scope.listComponentAdded.slice(i,1);
+				$scope.listComponentAdded.splice(i,1);
+
 			}
 		}
 	}
@@ -81,9 +82,11 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		if ($scope.itemDescription = $scope.listComponentAdded){
 			// del activated
 			var index = $(e.currentTarget).attr('data-index');
-			var id = $scope.listComponentAdded.splice(index,1);
+			var id = $scope.listComponentAdded.splice(index,1)[0];
 			$scope.showList = $scope.listComponentAdded;
-			$(id[0].name).parent().remove();
+			var element = '[id-element="' + id.name + '"]';
+			$(element)[0].setAttribute('disabled',false);
+			$(id.name).parent().remove();
 		}
 	}
 	$('#userHome').click(function(event){
