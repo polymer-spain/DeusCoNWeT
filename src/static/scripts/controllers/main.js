@@ -24,7 +24,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		if (parent){
 			document.getElementById(parent).close();
 		}
-		$rootScope.isLogged = false;
+		$rScope.isLogged = false;
 		$location.path('/')
 		$backend.logout();
 	};
