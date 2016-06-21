@@ -21,12 +21,18 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 	$scope.setLanguage($scope.idioma);
 
 	$scope.logout = function (parent) {
-		if (parent){
-			document.getElementById(parent).close();
-		}
-		$rScope.isLogged = false;
-		$location.path('/')
-		$backend.logout();
+		$('html').css('cursor','wait');
+		$backend.logout().then(function() {
+			$('html').css('cursor','');
+			if (parent){
+				document.getElementById(parent).close();
+			}
+			$location.path('/')
+		}, function(response){
+			$('html').css('cursor','');
+			$location.path('/')
+			//console.error('Error ' + response.status + ': Fallo al intentar realizar un logout del usurio ' + $rScope.user.name);
+		});
 	};
 	// Login callback function
 	$scope.loginProcess = function(userData){
