@@ -25,7 +25,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			language: "{{idioma}}",
 			count: "200"
 		}},
-		{name:'github-events',rate:4, img:'https://wasin.io/wp-content/uploads/2015/05/showimage.png', description:'Muestra los eventos sucedidos en github',	attributes: {
+		{name:'github-events',rate:4, img:'images/components/github-icon.png', description:'Muestra los eventos sucedidos en github',	attributes: {
 			username: "mortega5",
 			token: "" || "",
 			mostrar: "10",
@@ -33,19 +33,19 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			component_directory: 'bower_components/github-events/'
 		}
 		},
-		{name:'instagram-timeline',rate:1, img:'http://www.seawolfkayak.com/wp-content/uploads/2015/12/instaicon2.png', description:'Muestra las fotos de Instagram',	accessToken: "TODO",
+		{name:'instagram-timeline',rate:1, img:'images/components/instagram-icon.png', description:'Muestra las fotos de Instagram',	accessToken: "TODO",
 		 endpoint: "TODO" + "/api/aux/instagramTimeline",
 		 language: "{{idioma}}"
 
 		},
 		{
-			name: 'googleplus-timeline', rate:4, img:'http://www.studiotomasi.org/images/gplusicon.svg', description:'Muestra las entradas en google+', attributes: {
+			name: 'googleplus-timeline', rate:4, img:'images/components/google-icon.svg', description:'Muestra las entradas en google+', attributes: {
 				'token':'ya29.CjMHAzmtu3cGQaJ77v0nq0xoJ9F_VTNkJWx-mUmQQlyDU4nn8KlTBO3mWyqFw32XTAQofVc','language':'{{idioma}}'}
 		},
 		{
 			name: 'facebook-wall',
 			rate: 3,
-			img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/1024px-F_icon.svg.png',
+			img: 'images/components/facebook-icon.png',
 			attributes: {
 				language: '{{idioma}}',
 				component_directory: 'bower_components/facebook-wall/',
