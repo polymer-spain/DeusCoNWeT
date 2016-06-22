@@ -46,16 +46,16 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 			$backend.getUserId(userData.userId, userData.redSocial)
 				.then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
 				/* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-				$rScope.user = responseUserId.data;
+				var user = responseUserId.data;
 				$backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
 					.then(function() {
-					$location.path('/user/' + $rScope.user.user_id);
+					$location.path('/user/' + user.user_id);
 				}, function(responseLogin) {
 					console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login'); 
 				});
 			}, function(){newUser(userData)});
 		} else {
-			$backend.sendData(userData.token, $rScope.user.user_id, userData.redSocial);
+			$backend.sendData(userData.token, user.user_id, userData.redSocial);
 		}
 	};
 	$scope.pathname = window.location.pathname;
