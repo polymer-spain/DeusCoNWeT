@@ -149,6 +149,8 @@ class Component(ndb.Model):
   test_count = ndb.IntegerProperty(default=0)
   # Represents if the component will served in a predetermined way to every new user in the system
   predetermined = ndb.BooleanProperty(default=False)
+  # Preasigned version to load the component. It needs to be confirmed
+  preasigned_version = ndb.StringProperty()
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
@@ -157,7 +159,7 @@ class UserComponent(ndb.Model):
   height = ndb.StringProperty()
   width = ndb.StringProperty()
   listening = ndb.StringProperty()
-  # Actual cersion of the component that is being tested
+  # Actual version of the component that is being tested
   version = ndb.StringProperty()
   # Represents if the component is placed in the dashboard
   active = ndb.BooleanProperty(default=True)
@@ -303,6 +305,13 @@ def assignPredeterminedComponentsToUser(entity_key):
   for comp in predetermined_comps:
     activateComponentToUser(comp.component_id, entity_key)
 
+# Set the version for the component in the case it will be added to the user dashboard
+def setPreasignedVersion(component_id):
+  comp = Component.query(Component.component_id == component_id).get()
+  version = setComponentVersion(comp)
+  comp["preasigned_version"] = version
+  comp.put()
+  return version
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
@@ -315,7 +324,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
   for social_network in user.net_list:
     if general_component.rs == social_network.social_name:
       #We check if the component provided is in the user component list
-      # If not, we create a new UserComponent Entity, setting the component version that will use the user
+      # If not, we create a new UserComponent Entity, setting the component version the user will use
       for comp in user.components:
         if comp.component_id == component_id:
           user_component = comp
@@ -333,7 +342,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
       else:
         # We set the version of the component
         general_component = getComponentEntity(component_id)
-        version = setComponentVersion(general_component)
+        version = general_component["preasigned_version"]
         # We create a new UserComponent entity
         user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
         # We add the component to the component_list of the user
