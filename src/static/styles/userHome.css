@@ -148,7 +148,7 @@
 	border-radius: 5px;
 }
 #userHome #listCatalog > div .componentData{
-	padding:5px;
+	padding:8px 5px;
 }
 #userHome #listCatalog > div .componentInfo {
 	padding:0px 5px;
@@ -220,7 +220,7 @@
 	text-overflow: ellipsis;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical; 
-	border:13px solid transparent;
+	border:16px solid transparent;
 	background-color:rgba(0,0,0,0.8);
 	border-radius: 3px;
 }
@@ -244,24 +244,32 @@
 #userHome #searchclear:hover {
 	color: firebrick;
 }
-
+#userHome #listCatalog > div .warning {
+	position: absolute;
+	right:2px;
+	top:2px;
+	color:gold;
+	z-index:1001;
+} 
 #userHome #listCatalog > div .tokenDisabled {
 	width: 100%;
 	height:100%;
 	position:absolute;
-	color:white;
+	color:#111;
 	z-index: 1000;
 	font-size:13px;
 	display:none;
-	text-shadow: 0px 0px 3px black;
 	overflow:hidden;
+	cursor:pointer;
 	font-family: 'helvetica neue';
 	text-overflow: ellipsis;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical; 
-	border:13px solid transparent;
-	background-color:rgba(255,255,255,0.8);
+	border:16px solid transparent;
+	background-color:rgba(191, 190, 190, 0.95);
 	border-radius: 3px;
+	z-index: 1000;
+	
 }
 #userHome #listCatalog > div:hover .tokenDisabled{
 	display: inline-block;

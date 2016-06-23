@@ -986,7 +986,8 @@ def getEmails(): #FUNCIONA
 
 def updateProfile(user_id, data):
   user = User.query(User.user_id == user_id).get()
-  [user[key] = data[key] for key in data.keys()]
+  for key in data.keys():
+    user[key] = data[key] 
 
 def subscribedUser(email):
   emails = getEmails()

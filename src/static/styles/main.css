@@ -67,7 +67,7 @@ paper-toolbar.header .title {
 	border:0px;
 	box-shadow: none;
 }
-.footer {
+paper-toolbar.footer {
 	background-color: transparent;
 }
 

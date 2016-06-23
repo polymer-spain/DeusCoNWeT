@@ -95,6 +95,8 @@
 		"recommend": "Would you recommend this component?",
 		"end": "The survey has finished. Thanks for your time"
 	},
-	"delete":"Delete"
+	"delete":"Delete",
+	"noToken": "Unauthorized",
+	"noTokenDescription":"Click to log in this social network before use it"
 }
 

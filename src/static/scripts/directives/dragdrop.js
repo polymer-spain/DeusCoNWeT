@@ -239,13 +239,13 @@ picbit.directive("ngCreateElement", function () {
 		element.attr("draggable", "true");
 		element.on("dragstart", function(e){
 			var canExecute = $(element)[0].getAttribute('disabled') == "false" || !element.attr('disabled');
-			if (canExecute){
+			if (canExecute && Boolean(scope.condition)){
 				scope.comienzo(e);
 			}
 		});
 		element.on('dblclick', function(e){
 			var canExecute = $(element)[0].getAttribute('disabled') == "false" || !element.attr('disabled');
-			console.log(scope.condition);
+			canExecute &= scope.condition === 'true';
 			if (canExecute){
 				scope.click(e);
 			}

@@ -87,5 +87,8 @@
 		"recommend": "¿Compartirías este componente?",
 		"end": "El cuestionario ha terminado. Gracias por tu tiempo."
 	},
-	"delete":"Borrar"
+	"delete":"Borrar",
+	"noToken": "Sin permisos",
+	"noTokenDescription": "Haz click para loguearte con esta red social antes de usarlo."
+	
 }
