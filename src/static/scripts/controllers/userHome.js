@@ -120,15 +120,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			$('.menu-buttons').children().removeClass('active');
 		}
 	})
-	
-	$scope.login = function(name){
-		console.log('buscando login en : ');
-		for(var i=0;i<$scope.catalogList.length;i++){
-			if ($scope.catalogList[i].name == name){
-				$scope.catalogList[i].hasToken = true;
-				console.log($scope.catalogList[i]);
-			}
-		}
-		
+
+	$scope.login = function(name, e){
+		e.stopPropagation();
+		console.log('Todo hacer login');
+
 	}
 }]);
