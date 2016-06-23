@@ -9,7 +9,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 	}
 
 	// Language control
-	$scope.idioma = $cookies.get('language') || window.navigator.language;
+	$scope.idioma = $cookies.get('language') || window.navigator.language.toLowerCase().split('-')[0];
 	$scope.setLanguage = function(lang){
 		var file = lang + "_"+ lang + ".json";
 		$scope.idioma = lang;

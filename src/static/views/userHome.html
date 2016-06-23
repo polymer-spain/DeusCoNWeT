@@ -94,10 +94,11 @@
 					</div>
 					<div id="listCatalog" class="flex" >
 						<div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{item.hasToken.toString()}}">
+							<span class="label label-warning warning" ng-hide="item.hasToken">Sin permisos</span>
 							<div ng-hide="item.hasToken" class="tokenDisabled" ng-click="login(item.name, $event)">
-								Necesitas loguear con la red social
+								Haz click para loguearte con esta red social antes de usarlo.
 							</div>
-							<div class="description" title="{{item.description}}" data-test="{{item.hasToken}}">
+							<div ng-show="item.hasToken" class="description" title="{{item.description}}" data-test="{{item.hasToken}}">
 								{{item.description}}
 							</div>
 							<div class="componentData horizontal layout">
