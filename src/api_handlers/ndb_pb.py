@@ -221,6 +221,12 @@ class User(ndb.Model):
   group_list = ndb.StructuredProperty(Group, repeated=True)
   rates = ndb.StructuredProperty(UserRating, repeated=True)
   components = ndb.StructuredProperty(UserComponent, repeated=True)
+  # The next info is related to the user profile
+  age = ndb.IntegerProperty()
+  studies = ndb.StringProperty() # This field is set through the cuestionaire
+  tech_exp = ndb.StringProperty() # This field is set through the cuestionaire
+  social_nets_use = ndb.nbd.StringProperty() # This field is set through the cuestionaire
+  gender = ndb.StringProperty() # This field is set through the cuestionaire
 
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
@@ -977,6 +983,9 @@ def getEmails(): #FUNCIONA
 
   return email_list
 
+def updateProfile(user_id, data):
+  user = User.query(User.user_id == user_id).get()
+  [user[key] = data[key] for key in data.keys()]
 
 def subscribedUser(email):
   emails = getEmails()
