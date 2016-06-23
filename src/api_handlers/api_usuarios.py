@@ -323,3 +323,13 @@ class UserHandler(SessionHandler):
       self.response.content_type = "application/json"
       self.response.write(json.dumps({"error": "The user is not authenticated"}))
       self.response.set_status(401)
+
+class ProfileHandler(SessionHandler):
+
+  """
+      Class that defines the user resource
+  It acts as the handler of the /usuarios/{user_id} resource
+  Methods:
+  get -- Gets the info about a user
+  post -- Modifies the info related to an user
+  """
