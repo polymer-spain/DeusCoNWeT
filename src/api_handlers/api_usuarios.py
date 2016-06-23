@@ -108,7 +108,7 @@ class UserHandler(SessionHandler):
           # Depending on the user making the request, the info returned will be one or another
           if user_id == user_logged_id:
             refs_list = []
-            for comp in user_info.components:
+            for comp in user_info["components"]:
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               ref = "centauro.ls.fi.upm.es/bower_components/" + \
                     comp["component_id"] + preversion + "/" + \
