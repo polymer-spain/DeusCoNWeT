@@ -93,8 +93,11 @@
 						</div>
 					</div>
 					<div id="listCatalog" class="flex" >
-						<div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter">
-							<div class="description" title="{{item.description}}">
+						<div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{item.hasToken.toString()}}">
+							<div ng-hide="item.hasToken" class="tokenDisabled" ng-click="login(item.name, $event)">
+								Necesitas loguear con la red social
+							</div>
+							<div class="description" title="{{item.description}}" data-test="{{item.hasToken}}">
 								{{item.description}}
 							</div>
 							<div class="componentData horizontal layout">

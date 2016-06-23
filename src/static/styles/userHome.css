@@ -244,3 +244,17 @@
 #userHome #searchclear:hover {
 	color: firebrick;
 }
+
+#userHome #listCatalog > div .tokenDisabled {
+	position:absolute;
+	top:0;left;0;
+	height: 100%;
+	width:100%;
+	background-color:red;
+	color:white;
+	display:none;
+	z-index:10000;
+}
+#userHome #listCatalog > div:hover .tokenDisabled{
+	display: inline-block;
+}

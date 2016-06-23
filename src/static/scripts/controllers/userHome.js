@@ -15,31 +15,53 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 	};
 
 	$scope.catalogList = [
-		{name:'twitter-timeline',rate:5, img:'images/components/twitter-logo.png', description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa', attributes: {
-			"access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
-			"secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-			"consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
-			"consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
-			endpoint: $scope.domain + "/api/aux/twitterTimeline",
-			component_base: "bower_components/twitter-timeline/static/",
-			language: "{{idioma}}",
-			count: "200"
-		}},
-		{name:'github-events',rate:4, img:'images/components/github-icon.png', description:'Muestra los eventos sucedidos en github',	attributes: {
-			username: "mortega5",
-			token: $rootScope.user ? $rootScope.user.tokens.github:'',
-			mostrar: "10",
-			language: "{{idioma}}",
-			component_directory: 'bower_components/github-events/'
-		}
+		{name:'twitter-timeline',
+		 rate:5,
+		 img:'images/components/twitter-logo.png',
+		 description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa',
+		 hasToken:true,
+		 attributes: {
+			 "access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
+			 "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
+			 "consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
+			 "consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+			 endpoint: $scope.domain + "/api/aux/twitterTimeline",
+			 component_base: "bower_components/twitter-timeline/static/",
+			 language: "{{idioma}}",
+			 count: "200"
+		 }
 		},
-		{name:'instagram-timeline',rate:1, img:'images/components/instagram-icon.png', description:'Muestra las fotos de Instagram',	accessToken: "TODO",
-		 endpoint: "TODO" + "/api/aux/instagramTimeline",
-		 language: "{{idioma}}"
+		{name:'github-events',
+		 rate:4,
+		 img:'images/components/github-icon.png',
+		 hasToken:false,
+		 description:'Muestra los eventos sucedidos en github',
+		 attributes: {
+			 username: "mortega5",
+			 token: $rootScope.user ? $rootScope.user.tokens.github:'',
+			 mostrar: "10",
+			 language: "{{idioma}}",
+			 component_directory: 'bower_components/github-events/'
+		 }
+		},
+		{
+			name:'instagram-timeline',
+			rate:1,
+			hasToken:true,
+			img:'images/components/instagram-icon.png',
+			description:'Muestra las fotos de Instagram',
+			accessToken: "TODO",
+			endpoint: "TODO" + "/api/aux/instagramTimeline",
+			language: "{{idioma}}"
 
 		},
 		{
-			name: 'googleplus-timeline', rate:4, img:'images/components/google-icon.svg', description:'Muestra las entradas en google+', attributes: {
+			name: 'googleplus-timeline',
+			rate:4,
+			hasToken:true,
+			img:'images/components/google-icon.svg',
+			description:'Muestra las entradas en google+',
+			attributes: {
 				'token': $rootScope.user ? $rootScope.user.tokens.google:'ya29.CjMHAzmtu3cGQaJ77v0nq0xoJ9F_VTNkJWx-mUmQQlyDU4nn8KlTBO3mWyqFw32XTAQofVc',
 				'language':'{{idioma}}'
 			}
@@ -47,6 +69,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name: 'facebook-wall',
 			rate: 3,
+			hasToken:true,
 			img: 'images/components/facebook-icon.png',
 			attributes: {
 				language: '{{idioma}}',
@@ -97,4 +120,15 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			$('.menu-buttons').children().removeClass('active');
 		}
 	})
+	
+	$scope.login = function(name){
+		console.log('buscando login en : ');
+		for(var i=0;i<$scope.catalogList.length;i++){
+			if ($scope.catalogList[i].name == name){
+				$scope.catalogList[i].hasToken = true;
+				console.log($scope.catalogList[i]);
+			}
+		}
+		
+	}
 }]);

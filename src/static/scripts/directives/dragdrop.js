@@ -245,6 +245,7 @@ picbit.directive("ngCreateElement", function () {
 		});
 		element.on('dblclick', function(e){
 			var canExecute = $(element)[0].getAttribute('disabled') == "false" || !element.attr('disabled');
+			console.log(scope.condition);
 			if (canExecute){
 				scope.click(e);
 			}
