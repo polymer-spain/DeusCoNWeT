@@ -950,6 +950,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["url"] = component.url
           general_comp["social_network"] = component.rs
           general_comp["description"] = component.description
+          general_comp["preversion"] = component.preasigned_version
           if not rate == None: 
             general_comp["rate"] = rate.rating_value
           else:
@@ -985,7 +986,8 @@ def getEmails(): #FUNCIONA
 
 def updateProfile(user_id, data):
   user = User.query(User.user_id == user_id).get()
-  [user[key] = data[key] for key in data.keys()]
+  for key in data.keys():
+    user[key] = data[key] 
 
 def subscribedUser(email):
   emails = getEmails()
