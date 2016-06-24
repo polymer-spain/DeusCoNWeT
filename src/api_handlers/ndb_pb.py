@@ -989,6 +989,14 @@ def updateProfile(user_id, data):
   for key in data.keys():
     user[key] = data[key] 
 
+def getProfile(user_id):
+  user_info = {}
+  user = User.query(User.user_id == user_id).get()
+  user_info["age"] = user["age"]
+  user_info["studies"] = user["studies"]
+  user_info["tech_exp"] = user["tech_exp"]
+  user_info["social_nets_use"] = 
+
 def subscribedUser(email):
   emails = getEmails()
   if email in emails:
