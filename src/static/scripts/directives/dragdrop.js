@@ -239,7 +239,8 @@ picbit.directive("ngCreateElement", function () {
 		element.attr("draggable", "true");
 		element.on("dragstart", function(e){
 			var canExecute = $(element)[0].getAttribute('disabled') == "false" || !element.attr('disabled');
-			if (canExecute && Boolean(scope.condition)){
+			canExecute &= scope.condition === 'true';
+			if (canExecute){
 				scope.comienzo(e);
 			}
 		});
