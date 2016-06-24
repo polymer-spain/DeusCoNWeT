@@ -7,11 +7,11 @@
 		<link rel="shortcut icon" href="images/logo.png" />
 		<meta name="description" content="">
 		<base href="/#">
-		<!--		<script>
-if (window.location.protocol == "http:"){
-window.location.protocol = "https:";
-}
-</script>-->
+		<script>
+			if (window.location.protocol == "http:"){
+				window.location.protocol = "https:";
+			}
+		</script>
 		<title>PicBit</title>
 
 		<!-- Polymer -->
@@ -30,7 +30,6 @@ window.location.protocol = "https:";
 		<link rel="stylesheet" href="styles/userHome.css">
 		<link rel="stylesheet" href="vendor/jquery-ui.min.css">
 		<link rel="stylesheet" href="vendor/jquery.contextmenu.css">
-
 	</head>
 
 	<body ng-app="picbit" ng-controller="MainController" class="vertical fullbleed layout">

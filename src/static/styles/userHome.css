@@ -117,23 +117,23 @@
 #help-popup .modal-content {
 	margin-top:15%;
 }
-#store-modal .modal-content,
+#store-modal .modal-content.store,
 {
 	margin-top:40px;
 	height: 80%;
 }
 
-#store-modal .modal-dialog{
+#store-modal .modal-dialog.store{
 	height: 70%;
 }
-#store-modal .modal-body{
+#store-modal .modal-body.store{
 	overflow: auto;
 	background-color:#eaeaea;
 	padding:0px;
 	border:2px solid #c1c1c1;
 	border-radius:3px;
 }
-#store-modal .modal-body > div {
+#store-modal .modal-body.store > div {
 	padding:35px 25px;
 
 }
@@ -148,11 +148,12 @@
 	border-radius: 5px;
 }
 #userHome #listCatalog > div .componentData{
-	padding:8px 5px;
+	padding:18px 5px 8px 5px;
 }
 #userHome #listCatalog > div .componentInfo {
 	padding:0px 5px;
 	text-align: center;
+	height: 50px;
 }
 #userHome #searchCatalog {
 	padding:35px 15px;
@@ -269,8 +270,17 @@
 	background-color:rgba(191, 190, 190, 0.95);
 	border-radius: 3px;
 	z-index: 1000;
-	
+
 }
 #userHome #listCatalog > div:hover .tokenDisabled{
 	display: inline-block;
+}
+
+#login-modal {
+	background-color: rgba(0,0,0,0.5);
+}
+#login-modal .login-body{
+	text-align: center;
+	font-size:14px;
+	
 }

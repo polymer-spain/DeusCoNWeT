@@ -19,7 +19,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		 rate:5,
 		 img:'images/components/twitter-logo.png',
 		 description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa',
-		 hasToken:true,
+		 hasToken: $rootScope.user && $rootScope.user.tokens[this.name.split('-')[0]],
 		 attributes: {
 			 "access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
 			 "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
@@ -34,7 +34,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{name:'github-events',
 		 rate:4,
 		 img:'images/components/github-icon.png',
-		 hasToken:false,
+		 hasToken:$rootScope.user && $rootScope.user.tokens[this.name.split('-')[0]],
 		 description:'Muestra los eventos sucedidos en github',
 		 attributes: {
 			 username: "mortega5",
@@ -47,7 +47,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name:'instagram-timeline',
 			rate:1,
-			hasToken:true,
+			hasToken:$rootScope.user && $rootScope.user.tokens[this.name.split('-')[0]],
 			img:'images/components/instagram-icon.png',
 			description:'Muestra las fotos de Instagram',
 			accessToken: "TODO",
@@ -58,7 +58,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name: 'googleplus-timeline',
 			rate:4,
-			hasToken:true,
+			hasToken:$rootScope.user && $rootScope.user.tokens[this.name.split('-')[0]],
 			img:'images/components/google-icon.svg',
 			description:'Muestra las entradas en google+',
 			attributes: {
@@ -69,7 +69,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name: 'facebook-wall',
 			rate: 3,
-			hasToken:true,
+			hasToken:$rootScope.user && $rootScope.user.tokens[this.name.split('-')[0]],
 			img: 'images/components/facebook-icon.png',
 			attributes: {
 				language: '{{idioma}}',
@@ -121,9 +121,31 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		}
 	})
 
-	$scope.login = function(name, e){
+	$(document).on('keydown', function(e){
 		e.stopPropagation();
-		console.log('Todo hacer login');
-
+		if (e.keyCode === 27 && $('#login-modal').is(':visible')){
+			$('#login-modal').modal('toggle');	
+		} else if (e.keyCode === 27 && $('#store-modal').is(':visible')){
+			$('#store-modal').modal('toggle');	
+		}
+	})
+	$('#store-modal').on('hidden.bs.modal',function(){
+		if ($('#login-modal').is(':visible')){
+			$('#login-modal').modal('toggle');
+		}
+	})
+	$scope.toggleCatalog = function(){
+		if ($('#login-modal').is(':visible')){
+			$('#login-modal').modal('toggle');
+		}
+		$('#store-modal').modal('toggle');
 	}
+	
+	$scope.closeModal = function(selector){
+		$(selector).modal('toggle');
+	}
+	$scope.login = function(name, e){
+		$scope.loginSelected = name.split('-')[0];
+		$('#login-modal').modal('toggle');
+	};
 }]);
