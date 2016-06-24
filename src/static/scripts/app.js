@@ -46,7 +46,6 @@
 			templateUrl: 'views/userHome.html',
 			controller: 'UserHomeController',
 			resolve: {
-
 				auth: ['$q', '$cookies', '$backend', '$rootScope', '$route', function ($q, $cookies, $backend, $rootScope, $route) {
 
 					var session = $cookies.get('session');
@@ -69,7 +68,6 @@
 							$backend.logout();
 							return $q.reject({authenticated: false});
 						}
-
 					} else {
 						return $q.reject({authenticated: false});
 					}
@@ -89,7 +87,6 @@
 			controller: 'ProfileController',
 			resolve: {
 				auth: ['$q', '$cookies', '$backend', '$rootScope', function ($q, $cookies, $backend, $rootScope) {
-
 					var session = $cookies.get('session');
 					var userId = $cookies.get('user');
 					if (session && userId) {
