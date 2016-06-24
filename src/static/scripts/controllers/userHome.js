@@ -2,6 +2,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 	'use strict';
 	$scope.listComponentAdded = [];
 	$scope.itemDescription = "";
+	$scope.a = 'hola';
+	$scope.b = $scope.a;
 	$scope.selectListButton = function(e){
 		e.stopPropagation();
 		var $target = $(e.currentTarget);
@@ -13,13 +15,14 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		}
 
 	};
-
+	$rootScope.user = $rootScope.user || {tokens:{}};
 	$scope.catalogList = [
 		{name:'twitter-timeline',
 		 rate:5,
 		 img:'images/components/twitter-logo.png',
+		 tokenAttr: 'access-token',
 		 description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa',
-		 hasToken: $rootScope.user && $rootScope.user.tokens['twitter']  ? true:false,
+		 socialNetwork: 'twitter',
 		 attributes: {
 			 "access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
 			 "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
@@ -34,7 +37,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{name:'github-events',
 		 rate:4,
 		 img:'images/components/github-icon.png',
-		 hasToken:$rootScope.user && $rootScope.user.tokens['github'] ? true:false,
+		 socialNetwork:'github',
+		 tokenAttr: 'token',
 		 description:'Muestra los eventos sucedidos en github',
 		 attributes: {
 			 username: "mortega5",
@@ -47,7 +51,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name:'instagram-timeline',
 			rate:1,
-			hasToken:$rootScope.user && $rootScope.user.tokens['instagram'] ? true:false,
+			socialNetwork:'instagram',
 			img:'images/components/instagram-icon.png',
 			description:'Muestra las fotos de Instagram',
 			accessToken: "TODO",
@@ -58,7 +62,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name: 'googleplus-timeline',
 			rate:4,
-			hasToken:$rootScope.user && $rootScope.user.tokens['googleplus'] ? true:false,
+			socialNetwork:'googleplus',
+			tokenAttr: 'token',
 			img:'images/components/google-icon.svg',
 			description:'Muestra las entradas en google+',
 			attributes: {
@@ -69,8 +74,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		{
 			name: 'facebook-wall',
 			rate: 3,
-			hasToken:$rootScope.user && $rootScope.user.tokens['facebook'] ? true:false,
+			socialNetwork:'facebook',
 			img: 'images/components/facebook-icon.png',
+			tokenAttr: 'access_token',
 			attributes: {
 				language: '{{idioma}}',
 				component_directory: 'bower_components/facebook-wall/',
@@ -141,6 +147,15 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		$('#store-modal').modal('toggle');
 	}
 	
+	
+	$scope.setToken = function(socialNetwork, value){
+		for(var i = 0; i< $scope.catalogList.length;i++){
+			var element = $scope.catalogList[i];
+			if (element.socialNetwork == socialNetwork){
+				element.attributes[element.tokenAttr] = value;
+			}
+		}
+	}
 	$scope.closeModal = function(selector){
 		$(selector).modal('toggle');
 	}
@@ -148,4 +163,21 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		$scope.loginSelected = name.split('-')[0];
 		$('#login-modal').modal('toggle');
 	};
+
+	function loginCallback(e){
+		//falta registralo
+		$scope.$apply(function(){
+			$scope.a = 'adios';
+			$rootScope.user.tokens[e.detail.redSocial] = e.detail.token;
+			$scope.setToken(e.detail.redSocial, e.detail.token);
+			$('#login-modal').modal('toggle');
+		})
+	}
+	(function(){
+		$('#login-modal google-login')[0].addEventListener('google-logged', loginCallback);
+		$('#login-modal github-login')[0].addEventListener('github-logged', loginCallback);
+		$('#login-modal instagram-login')[0].addEventListener('instagram-logged', loginCallback);
+		$('#login-modal twitter-login')[0].addEventListener('twitter-logged', loginCallback);
+		$('#login-modal login-facebook')[0].addEventListener('facebook-logged', loginCallback);
+	})()
 }]);

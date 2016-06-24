@@ -93,12 +93,12 @@
 						</div>
 					</div>
 					<div id="listCatalog" class="flex" >
-						<div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{item.hasToken.toString()}}">
-							<span class="label label-warning warning" ng-hide="item.hasToken">{{language.noToken}}</span>
-							<button ng-hide="item.hasToken" ng-click="login(item.name, $event)" class="tokenDisabled">
+						<div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{user.tokens[item.socialNetwork]}}">
+							<span class="label label-warning warning" ng-hide="user.tokens[item.socialNetwork]">{{language.noToken}}</span>
+							<button ng-hide="user.tokens[item.socialNetwork]" ng-click="login(item.name, $event)" class="tokenDisabled">
 								{{language.noTokenDescription}}
 							</button>
-							<div ng-show="item.hasToken" class="description" title="{{item.description}}" data-test="{{item.hasToken}}">
+							<div ng-show="user.tokens[item.socialNetwork]" class="description" title="{{item.description}}" data-test="{{user.tokens[item.socialNetwork]}}">
 								{{item.description}}
 							</div>
 							<div class="componentData horizontal layout">
@@ -125,11 +125,11 @@
 					</div>
 					<div class="modal-body login-body">
 						<p>El componente necesita permisos en {{loginSelected}} para funcionar correctamente. Logueate para poder usarlos</p>
-						<google-login ng-if="loginSelected == 'googleplus'"></google-login>
-						<github-login ng-if="loginSelected == 'github'"></github-login>
-						<login-facebook ng-if="loginSelected == 'facebook'"></login-facebook>
-						<twitter-login ng-if="loginSelected == 'twitter'"></twitter-login>
-						<instagram-login ng-if="loginSelected == 'instagram'"></instagram-login>
+						<google-login data-role="login" ng-show="loginSelected == 'googleplus'" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" 	callback="{{domain}}" static="true"></google-login>
+						<github-login data-role="login" ng-show="loginSelected == 'github'" scope="https://www.googleapis.com/auth/plus.login" client_id="1f21e4d820abd2cb5a7a"></github-login>
+						<login-facebook data-role="login" ng-show="loginSelected == 'facebook'" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+						<twitter-login data-role="login" ng-show="loginSelected == 'twitter'" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+						<instagram-login data-role="login" ng-show="loginSelected == 'instagram'" clientId="9e21b27d7f60498dae9a7f8853c20026" redirectUri="{{domain}}/app/instagram-login/redirect.html"></instagram-login>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" ng-click='closeModal("#login-modal")'>Close</button>
