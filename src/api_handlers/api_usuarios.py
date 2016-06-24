@@ -329,8 +329,8 @@ class ProfileHandler(SessionHandler):
 
   """
       Class that defines the user resource
-  It acts as the handler of the /usuarios/{user_id} resource
-  Methods:
-  get -- Gets the info about a user
-  post -- Modifies the info related to an user
+      It acts as the handler of the /usuarios/{user_id}/profile resource
+      Methods:
+      get -- Gets the info about a user profile
+      post -- Modifies the info related to an user profile
   """
