@@ -1,0 +1,30 @@
+<div id="userProfile" class="horizontal  center-justified layout">
+	<div class="tabs vertical layout">
+		<div class="header">Personal Setting</div>
+		<div class="active"><a ng-click="selectSection($event)" data-target="#userInformation">User information</a></div>
+		<div><a ng-click="selectSection($event)" data-target="#socialNetwork">Social Networks</a></div>
+	</div>
+	<div class="information  vertical center-center layout">
+		<div id="userInformation" class="active">
+			<div class="form-group">
+				<label for="email">Email address</label>
+				<input type="email" class="form-control" id="email" placeholder="Email">
+				<input type="checkbox">Marcar como privado
+			</div>
+			<div class="form-group">
+				<label for="age">Edad</label>
+				<input type="text" class="form-control" id="age" placeholder="Edad">
+				<input type="checkbox">Marcar como privado
+			</div>
+			<div class="form-group">
+				<label for="profession">Profesion</label>
+				<input type="text" class="form-control" id="profession" placeholder="Profesion">
+				<input type="checkbox">Marcar como privado
+			</div>
+			<button type="submit">Enviar</button>
+		</div>
+		<div id="socialNetwork">
+			Activo social network
+		</div>
+	</div>
+</div>

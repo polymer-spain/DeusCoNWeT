@@ -1,0 +1,50 @@
+div#userProfile {
+	margin-top:60px;
+	position: absolute;
+	min-width: 100%;
+	min-height: 0px;
+	height: 50%;
+}
+
+#userProfile > div {
+	background-color: #fff;
+	border: 1px solid rgba(0,0,0,.2);
+	box-shadow: 0 5px 15px rgba(0,0,0,.5);
+	border-radius: 6px;
+	background-clip: padding-box;
+}
+#userProfile .tabs {
+	width: 200px;
+	margin:0px 15px;
+	min-height: 400px;
+}
+
+#userProfile .tabs > .header {
+	background-color: #F7F7F7;
+	text-align: center;
+	border-radius: 6px;
+}
+#userProfile .tabs > div {
+	padding: 8px 10px;
+	border-bottom: 1px solid #eee;
+}
+#userProfile .tabs > div.active {
+	border-left: 3px solid orange;
+}
+
+#userProfile .tabs > div a{
+	cursor:pointer;
+}
+
+
+#userProfile .information {
+	min-height: 400px;
+	width: 40%;
+}
+#userProfile .information > div  {
+	display: none;
+}
+
+#userProfile .information > div.active {
+	display: inline-block;
+}
