@@ -351,5 +351,3 @@ class ProfileHandler(SessionHandler):
       self.response.content_type = "application/json"
       self.response.write({"error": "The requested user does not exist"})
       self.response.set_status(404)
-
-  def post(self, user_id):
