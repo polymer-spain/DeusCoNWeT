@@ -67,7 +67,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 			img:'images/components/google-icon.svg',
 			description:'Muestra las entradas en google+',
 			attributes: {
-				'token': $rootScope.user ? $rootScope.user.tokens.google:'ya29.CjMHAzmtu3cGQaJ77v0nq0xoJ9F_VTNkJWx-mUmQQlyDU4nn8KlTBO3mWyqFw32XTAQofVc',
+				'token': $rootScope.user ? $rootScope.user.tokens.googleplus:'ya29.CjMHAzmtu3cGQaJ77v0nq0xoJ9F_VTNkJWx-mUmQQlyDU4nn8KlTBO3mWyqFw32XTAQofVc',
 				'language':'{{idioma}}'
 			}
 		},
