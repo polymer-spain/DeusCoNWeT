@@ -7,11 +7,11 @@
 		<link rel="shortcut icon" href="images/logo.png" />
 		<meta name="description" content="">
 		<base href="/#">
-		<script>
+<!--		<script>
 			if (window.location.protocol == "http:"){
 				window.location.protocol = "https:";
 			}
-		</script>
+		</script>-->
 		<title>PicBit</title>
 
 		<!-- Polymer -->
@@ -28,6 +28,8 @@
 		<link rel="stylesheet" href="styles/main.css">
 		<link rel="stylesheet" href="styles/selectId.css">
 		<link rel="stylesheet" href="styles/userHome.css">
+		<link rel="stylesheet" href="styles/userProfile.css">
+		
 		<link rel="stylesheet" href="vendor/jquery-ui.min.css">
 		<link rel="stylesheet" href="vendor/jquery.contextmenu.css">
 	</head>
@@ -87,7 +89,7 @@
 					</div>
 					<div class="modal-body vertical layout center-center">
 						<!-- Modal login -->
-						<google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
+						<google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" callback="{{domain}}" static="true"></google-login>
 						<br>
 						<twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
 						<br>
@@ -131,6 +133,7 @@
 		<script src="scripts/controllers/main.js"></script>
 		<script src="scripts/controllers/selectId.js"></script>
 		<script src="scripts/controllers/userHome.js"></script>
+		<script src="scripts/controllers/userProfile.js"></script>
 		<script src="scripts/controllers/about.js"></script>
 		<script src="scripts/directives/dragdrop.js"></script>
 		<!-- endbuild -->

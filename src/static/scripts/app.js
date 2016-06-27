@@ -73,23 +73,18 @@
 					}
 				}]
 			}
-		})
-			.when('/about', {
-			templateUrl: 'views/about.html',
-			controller: 'AboutController'
-		})
-			.when('/contact', {
-			templateUrl: 'views/contact.html',
-			controller: 'ContactController'
-		})
-			.when('/user/:userId/profile', {
-			templateUrl: 'views/profile.html',
-			controller: 'ProfileController',
+		}).when('/user/:user_id/profile', {
+			templateUrl: 'views/userProfile.html',
+			controller: 'UserProfileController'/*,
 			resolve: {
-				auth: ['$q', '$cookies', '$backend', '$rootScope', function ($q, $cookies, $backend, $rootScope) {
+				auth: ['$q', '$cookies', '$backend', '$rootScope', '$route', function ($q, $cookies, $backend, $rootScope, $route) {
+
 					var session = $cookies.get('session');
 					var userId = $cookies.get('user');
-					if (session && userId) {
+					if ($route.current.params.user_id !== userId) {
+						return $q.reject({authorized: false});
+					}
+					else if (session && userId) {
 						var responseUser = $backend.syncGetUser(userId);
 
 						if (responseUser.status === 200) {
@@ -108,7 +103,15 @@
 						return $q.reject({authenticated: false});
 					}
 				}]
-			}
+			}*/
+		})
+			.when('/about', {
+			templateUrl: 'views/about.html',
+			controller: 'AboutController'
+		})
+			.when('/contact', {
+			templateUrl: 'views/contact.html',
+			controller: 'ContactController'
 		})
 			.when('/privacy', {
 			templateUrl: 'views/privacy.html',
