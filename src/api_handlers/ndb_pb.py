@@ -987,16 +987,20 @@ def getEmails(): #FUNCIONA
 def updateProfile(user_id, data):
   user = User.query(User.user_id == user_id).get()
   for key in data.keys():
-    user[key] = data[key] 
+    user[key] = data[key]
+  user.put()
 
 def getProfile(user_id):
-  user_info = {}
+  ans = None
   user = User.query(User.user_id == user_id).get()
-  user_info["age"] = user["age"]
-  user_info["studies"] = user["studies"]
-  user_info["tech_exp"] = user["tech_exp"]
-  user_info["social_nets_use"] = 
-
+  if not user == None:
+    user_info = {"age": user["age"],
+                  "studies": user["studies"],
+                  "tech_exp": user["tech_exp"],
+                  "social_nets_use": user["social_nets_use"],
+                  "gender": user["gender"]}
+    ans = json.dumps(user_info)
+  return ans
 def subscribedUser(email):
   emails = getEmails()
   if email in emails:

@@ -332,5 +332,23 @@ class ProfileHandler(SessionHandler):
       It acts as the handler of the /usuarios/{user_id}/profile resource
       Methods:
       get -- Gets the info about a user profile
-      post -- Modifies the info related to an user profile
+      put -- Modifies the info related to an user profile
   """
+
+  def get(self):
+    user_id = self.request.get("user_id")
+    if not user_id == None:
+      # We return the user profile
+      user_profile = ndb_pb.getProfile(user_id)
+      if not user_profile == None:
+        self.response.content_type = "application/json"
+        self.response.write(user_profile)
+        self.response.set_status(200)
+      else:
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps({"error": "The user profile is not fulfilled"}))
+        self.response.set_status(404)
+    else:
+      self.response.content_type = "application/json"
+      self.response.write("error": "The requested user does not exist")
+      self.response.set_status(404)
