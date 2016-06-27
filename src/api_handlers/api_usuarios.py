@@ -408,7 +408,8 @@ class ProfileHandler(SessionHandler):
             updated_data["tech_exp"] = values.get("tech_exp")
           if values.hasKey("social_nets_use"):
             updated_data["social_nets_use"] = values.get("social_nets_use")
-          if values.hasKey("gender") = values.get("gender")
+          if values.hasKey("gender"):
+            updated_data["gender"] = values.get("gender")
 
           if not len(updated_data) == 0:
             updated_info = ndb_pb.updateProfile(user_id, updated_data)
