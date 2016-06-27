@@ -986,9 +986,24 @@ def getEmails(): #FUNCIONA
 
 def updateProfile(user_id, data):
   user = User.query(User.user_id == user_id).get()
-  for key in data.keys():
-    user[key] = data[key]
+  updated_data = []
+  if data.hasKey("age"):
+    user["age"] = data.age
+    updated_data.append("age")
+  if data.hasKey("studies"):
+    user["studies"] = data.studies
+    updated_data.append("studies")
+  if data.hasKey("tech_exp"):
+    user["tech_exp"] = data.tech.exp
+    updated_data.append("tech_exp")
+  if data.hasKey("social_nets_use"):
+    user["social_nets_use"] = data.social_nets_use
+    updated_data.append("social_nets_use")
+  if data.hasKey("gender"):
+    user["gender"] = data.gender
+    updated_data.append("gender")
   user.put()
+  return updated_data
 
 def getProfile(user_id):
   ans = None

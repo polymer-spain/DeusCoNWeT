@@ -332,24 +332,118 @@ class ProfileHandler(SessionHandler):
       It acts as the handler of the /usuarios/{user_id}/profile resource
       Methods:
       get -- Gets the info about a user profile
-      put -- Modifies the info related to an user profile
+      post -- Modifies the info related to an user profile
   """
 
   def get(self, user_id):
-    if not user_id == None:
-      # We return the user profile
-      user_profile = ndb_pb.getProfile(user_id)
-      if not user_profile == None:
-        self.response.content_type = "application/json"
-        self.response.write(user_profile)
-        self.response.set_status(200)
+    cookie_value = self.request.cookies.get("session")
+    if not cookie_value == None:
+      user_logged_key = self.getUserInfo(cookie_value)
+      if not user_logged_key == None:
+        users_logged_id = ndb_pb.getUserId(user_logged_key)
+        user_info = ndb_pb.getUser(user_id)
+        if user_info == None:
+          self.response.content_type = "application/json"
+          self.response.write({"error": "The requested user does not exist"})
+          self.response.set_status(404)
+        elif not user_info == None and user_info == user_id:
+          user_profile = ndb_pb.getProfile(user_id)
+          if not user_profile == None:
+            self.response.content_type = "application/json"
+            self.response.write(user_profile)
+            self.response.set_status(200)
+          else:
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps({"error": "The user profile is not fulfilled"}))
+            self.response.set_status(404)
+        else:
+          self.response.content_type = "application/json"
+          self.response.write(json.dumps({"error": "You don\"t have the proper rights to modify this resource" +
+            " (The cookie session header does not match with the resource requested)"}))
+          self.response.set_status(401)
       else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", "",
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+
+        # Builds the response
         self.response.content_type = "application/json"
-        self.response.write(json.dumps({"error": "The user profile is not fulfilled"}))
-        self.response.set_status(404)
+        self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
+        self.response.set_status(400)
     else:
       self.response.content_type = "application/json"
-      self.response.write({"error": "The requested user does not exist"})
-      self.response.set_status(404)
+      self.response.write(json.dumps({"error": "The user is not authenticated"}))
+      self.response.set_status(401)
 
   def post(self, user_id):
+    cookie_value = self.request.cookies.get("session")
+    if not cookie_value == None:
+      user_logged_key = self.getUserInfo(cookie_value)
+      if not user_logged_key == None:
+        users_logged_id = ndb_pb.getUserId(user_logged_key)
+        user_info = ndb_pb.getUser(user_id)
+        if user_info == None:
+          self.response.content_type = "application/json"
+          self.response.write({"error": "The requested user does not exist"})
+          self.response.set_status(404)
+        elif not user_info == None and user_info == user_id:
+          values = self.request.POST
+          # Dictionary in which the updated data will be stored
+          updated_data = {}
+
+          if values.hasKey("age"):
+            updated_data["age"] = int(values.get("age"))
+          if values.hasKey("studies"):
+            updated_data["studies"] = values.get("studies")
+          if values.hasKey("tech_exp"):
+            updated_data["tech_exp"] = values.get("tech_exp")
+          if values.hasKey("social_nets_use"):
+            updated_data["social_nets_use"] = values.get("social_nets_use")
+          if values.hasKey("gender") = values.get("gender")
+
+          if not len(updated_data) == 0:
+            updated_info = ndb_pb.updateProfile(user_id, updated_data)
+            if not len(updated_info) == 0:
+              self.response.content_type = "application/json"
+              self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
+              self.response.set_status(200)
+            else:
+              self.response.content_type = "application/json"
+              self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
+              self.set_status(304)
+        else:
+          self.response.content_type = "application/json"
+          self.response.write(json.dumps({"error": "You don\"t have the proper rights to modify this resource" +
+            " (The cookie session header does not match with the resource requested)"}))
+          self.response.set_status(401)
+      else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", "",
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+
+        # Builds the response
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
+        self.response.set_status(400)
+      else:
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps({"error": "The user is not authenticated"}))
+        self.response.set_status(401)
