@@ -194,7 +194,6 @@ angular.module("picbit",[]).controller("UserHomeController", ["$scope", "$timeou
 	};
 
 	$scope.deleteTimeline = function(elementName) {
-		//angular.element(document.querySelector("#container")).find(elementName).remove();
 		var index = $scope.listComponentAdded.indexOf(elementName);
 		$scope.listComponentAdded.splice(index, 1);
 	};

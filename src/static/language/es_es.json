@@ -32,7 +32,16 @@
 		"surname" : "Apellidos",
 		"email" : "Email",
 		"save" : "Guardar",
-		"social" : "Redes sociales conectadas"
+		"email_label": "Email",
+		"social" : "Redes sociales conectadas",
+		"profile_settings":"Configuración de usuario",
+		"user_information": "Información de usuario",
+		"picture": "Imagen",
+		"upload": "Subir una nueva imagen",
+		"profession": "Profesión",
+		"phone": "Teléfono",
+		"age": "Edad",
+		"permission": "Pulse el botón para otorgar permisos"
 	},
 	"twitter_timeline": {
 		"title" : "Tu Timeline",
@@ -90,5 +99,5 @@
 	"delete":"Borrar",
 	"noToken": "Sin permisos",
 	"noTokenDescription": "Haz click para loguearte con esta red social antes de usarlo."
-	
+
 }

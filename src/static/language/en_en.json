@@ -33,18 +33,16 @@
 		"email" : "Email",
 		"save" : "Save",
 		"social" : "Your Social Networks",
-		"Login_Facebook" : "Log in Facebook",
-		"Logout_Facebook" : "Log out Facebook",
-		"Login_Google+" : "Log in Google+",
-		"Logout_Google+" : "Log out Google+",
-		"Login_Twitter" : "Log in Twitter",
-		"Logout_Twitter" : "Log out Twitter",
-		"Login_Github" : "Log in Github",
-		"Logout_Github" : "Log out Github",
-		"Login_Linkedin" : "Log in Linkedin",
-		"Logout_Linkedin" : "Log out Linkedin",
-		"Login_Instagram" : "Log in Instagram",
-		"Logout_Instagram" : "Log out Instagram"
+		"email_label": "Email address",
+		"profile_settings":"User settings",
+		"user_information": "User information",
+		"picture": "Picture",
+		"upload": "Upload new image",
+		"profession": "Profession",
+		"phone": "Phone",
+		"age": "Age",
+		"permission": "Click to give permissions "
+		
 	},
 
 	"help": {

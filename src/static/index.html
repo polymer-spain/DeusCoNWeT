@@ -7,11 +7,11 @@
 		<link rel="shortcut icon" href="images/logo.png" />
 		<meta name="description" content="">
 		<base href="/#">
-<!--		<script>
+		<script>
 			if (window.location.protocol == "http:"){
 				window.location.protocol = "https:";
 			}
-		</script>-->
+		</script>
 		<title>PicBit</title>
 
 		<!-- Polymer -->
@@ -29,7 +29,7 @@
 		<link rel="stylesheet" href="styles/selectId.css">
 		<link rel="stylesheet" href="styles/userHome.css">
 		<link rel="stylesheet" href="styles/userProfile.css">
-		
+
 		<link rel="stylesheet" href="vendor/jquery-ui.min.css">
 		<link rel="stylesheet" href="vendor/jquery.contextmenu.css">
 	</head>
@@ -53,7 +53,7 @@
 						<span class="glyphicon glyphicon-user"></span> {{user.user_id}}
 					</button>
 					<ul class="dropdown-menu">
-						<li><a>{{language.profile}}</a></li>
+						<li><a href="goto('profile')">{{language.profile}}</a></li>
 						<li><a ng-click="logout()">{{language.logout}}</a></li>
 					</ul>
 				</div>
