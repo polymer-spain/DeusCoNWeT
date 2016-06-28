@@ -49,7 +49,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 				var user = responseUserId.data;
 				$backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
 					.then(function() {
-					$location.path('/user/' + user.user_id);
+					$location.path('/user/' + user.user_id + '/profile');
 				}, function(responseLogin) {
 					console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login'); 
 				});
