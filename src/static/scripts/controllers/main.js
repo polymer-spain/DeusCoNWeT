@@ -49,7 +49,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 				var user = responseUserId.data;
 				$backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
 					.then(function() {
-					$location.path('/user/' + user.user_id + '/profile');
+					$location.path('/user/' + user.user_id);
 				}, function(responseLogin) {
 					console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login'); 
 				});
@@ -61,7 +61,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 	$scope.pathname = window.location.pathname;
 	$scope.goto = function(view){
 		if (view === 'profile'){
-			$location.path('user/' + $rScope.user.user_id);
+			$location.path('user/' + $rScope.user.user_id + '/profile');
 		}
 		$location.path(view); // path not hash
 
