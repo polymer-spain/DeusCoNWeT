@@ -53,7 +53,7 @@
 						<span class="glyphicon glyphicon-user"></span> {{user.user_id}}
 					</button>
 					<ul class="dropdown-menu">
-						<li><a href="goto('profile')">{{language.profile}}</a></li>
+						<li><a ng-click="goto('profile')">{{language.profile}}</a></li>
 						<li><a ng-click="logout()">{{language.logout}}</a></li>
 					</ul>
 				</div>
