@@ -60,9 +60,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 	};
 	$scope.pathname = window.location.pathname;
 	$scope.goto = function(view){
-		if (view === 'profile'){
-			view = 'user/' + $rScope.user.user_id + '/profile';
-		}
+		view = view.replace(/:user/g,$rScope.user.user_id);
 		$location.path(view); // path not hash
 
 	}
