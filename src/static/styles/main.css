@@ -57,6 +57,7 @@ paper-toolbar.header .title {
 }
 .user-button .dropdown-toggle{
 	max-width: 150px;
+	min-width: 100px;
 	overflow-x: hidden;
 	text-overflow: ellipsis;
 	background-color:transparent;
