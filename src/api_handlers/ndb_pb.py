@@ -412,13 +412,14 @@ def getToken(id_rs, social_net):  # FUNCIONA
           "user_id": user.user_id}
   return ans
 
-def getUserTokens(entity_key):
-  ans = []
-  user = entity_key.get()
+def getUserTokens(user_id):
+  token_aux = {}
+  user = User.query(User.user_id == user_id).get()
   for token in user.tokens:
-    token_aux = {}
     cipher = getCipher(token.key.id())
-    token_aux["token"] = decodeAES(cipher, token.token)
+    token_aux[token.social_name] = decodeAES(cipher, token.token)
+  
+  return json.dumps(token_aux)
     
 
 def searchToken(token_id, rs): #FUNCIONA
