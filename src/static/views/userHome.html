@@ -140,26 +140,88 @@
 	</div>
 
 	<div id="rate-modal" class="modal fade" role="dialog" tabindex="-1">
-		<div class="modal-dialog modal-sm">
+		<div class="modal-dialog modal-md">
 			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">{{language.user_action.help}}</h4>
+					<h4 class="modal-title">Encuesta sobre "componente"</h4>
 				</div>
-				<div class="modal-body vertical layout center-center">
-					<paper-radio-group id="initialQuestion">
-						<p class="component">TESTING</p>
+				<div class="modal-body vertical layout" >
+					<div id="initialQuestion">
 						<p class="questionText">{{language.questionary.define}}</p>
-						<paper-radio-button name="1">{{language.questionary.component.verybad}} </paper-radio-button><br>
-						<paper-radio-button name="2">{{language.questionary.component.bad}}</paper-radio-button><br>
-						<paper-radio-button name="3">{{language.questionary.component.neutral}}</paper-radio-button><br>
-						<paper-radio-button name="4">{{language.questionary.component.good}}</paper-radio-button><br>
-						<paper-radio-button name="5">{{language.questionary.component.verygood}} </paper-radio-button><br>
-						<paper-button raised class="submitButton" ng-click="_submitRating($event)">{{language.send}}</paper-button>
-					</paper-radio-group>
+						<paper-radio-group>
+							<paper-radio-button name="1">{{language.questionary.component.verybad}} </paper-radio-button><br>
+							<paper-radio-button name="2">{{language.questionary.component.bad}}</paper-radio-button><br>
+							<paper-radio-button name="3">{{language.questionary.component.neutral}}</paper-radio-button><br>
+							<paper-radio-button name="4">{{language.questionary.component.good}}</paper-radio-button><br>
+							<paper-radio-button name="5">{{language.questionary.component.verygood}} </paper-radio-button><br>
+						</paper-radio-group>
+					</div>
+					<div id="aditionalForm" elevation="2" class="userForm" style="display:none">
+						<p>{{getRandomComponent()}} </p>
+						<form is="iron-form" >
+							<p class="questionText">{{language.questionary.difficulty}} </p>
+							<paper-radio-group id="question2" class="aditionalQuestion" >
+								<paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+								<paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+								<paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+								<paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+								<paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+							</paper-radio-group>
+						</form>
+
+						<form is="iron-form">
+							<p class="questionText">{{language.questionary.design}}</p>
+							<paper-radio-group id="question3" class="aditionalQuestion">
+								<paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+								<paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+								<paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+								<paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+								<paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+							</paper-radio-group>
+						</form>
+
+						<form is="iron-form">
+							<p class="questionText">{{language.questionary.information}}</p>     
+							<paper-radio-group id="question4" class="aditionalQuestion">
+								<paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+								<paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+								<paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+								<paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+								<paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+							</paper-radio-group>
+						</form>
+
+						<!-- Confirmation to take an aditional questionaire about the component-->
+						<form is="iron-form">
+							<p class="questionText">{{language.questionary.share}}</p>
+							<paper-radio-group id="question5" class="aditionalQuestion">
+								<paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
+								<paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
+							</paper-radio-group>
+						</form>
+
+						<form is="iron-form">
+							<p class="questionText">{{language.questionary.recommend}}</p>
+							<paper-radio-group id="question6" class="aditionalQuestion">
+								<paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
+								<paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
+							</paper-radio-group>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer horizontal">
+					
+					<button class="btn btn-danger" ng-click="submitRating()">{{language.close}}</button>
+					<button class="btn btn-primary" ng-click="submitRating()">{{language.send}}</button>
 				</div>
 			</div>
 
 		</div>
 	</div>
+
+
+
+
+

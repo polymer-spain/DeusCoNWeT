@@ -1,9 +1,7 @@
-angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope', function ($scope, $timeout, $rootScope) {
+angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope','$interval', function ($scope, $timeout, $rootScope, $interval) {
 	'use strict';
 	$scope.listComponentAdded = [];
 	$scope.itemDescription = "";
-	$scope.a = 'hola';
-	$scope.b = $scope.a;
 	$scope.selectListButton = function(e){
 		e.stopPropagation();
 		var $target = $(e.currentTarget);
@@ -146,8 +144,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		}
 		$('#store-modal').modal('toggle');
 	}
-	
-	
+
+
 	$scope.setToken = function(socialNetwork, value){
 		for(var i = 0; i< $scope.catalogList.length;i++){
 			var element = $scope.catalogList[i];
@@ -164,16 +162,59 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 		$('#login-modal').modal('toggle');
 	};
 
-	function loginCallback(e){
-		//falta registralo
-		$scope.$apply(function(){
-			$scope.a = 'adios';
-			$rootScope.user.tokens[e.detail.redSocial] = e.detail.token;
-			$scope.setToken(e.detail.redSocial, e.detail.token);
-			$('#login-modal').modal('toggle');
-		})
+	// Watcher that controls whether the form should be showed to the user or not
+	$scope.platformUsedTime = 0;
+	$scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
+	$scope.formLoadTime = 1000; // Indicates when we'll show to the user the form
+
+	$scope.$watch("platformUsedTime", function(newValue, oldValue){
+		if (newValue!==oldValue && newValue >= $scope.formLoadTime) {
+			$('#rate-modal').modal({
+				backdrop: 'static',
+				keyboard: false
+			});
+			$interval.cancel(platformTimeHandler);
+		}
+	});
+	$scope.getRandomComponent = function(){
+		if (!$scope.randomComponent){
+			var random = Math.round(Math.random()*100);
+			if ($scope.listComponentAdded.length > 0){
+				var position = random % $scope.listComponentAdded.length;
+				$scope.randomComponent = $scope.listComponentAdded[position];
+			}
+		}
+		return $scope.randomComponent;
 	}
+	$scope.submitRating = function(){
+		if ($('#initialQuestion paper-radio-group')[0].selected){
+			$('#initialQuestion').fadeOut( "easing", function() {
+				$('#aditionalForm').fadeIn('easing', function(){
+				})
+			});
+
+			console.log('TODO registrar datos en algun lado')
+		} else {
+			console.log('TODO enseñar mensaje de error');
+		}
+	}
+	var platformTimeHandler = $interval(function(){
+		if(document.visibilityState === "visible" ){
+			$scope.platformUsedTime += $scope.intervalTime;
+		}
+	}, $scope.intervalTime);
+
+
+	// Callback when login finish
 	(function(){
+		function loginCallback(e){
+			//falta registralo
+			$scope.$apply(function(){
+				$rootScope.user.tokens[e.detail.redSocial] = e.detail.token;
+				$scope.setToken(e.detail.redSocial, e.detail.token);
+				$('#login-modal').modal('toggle');
+			})
+		}
 		$('#login-modal google-login')[0].addEventListener('google-logged', loginCallback);
 		$('#login-modal github-login')[0].addEventListener('github-logged', loginCallback);
 		$('#login-modal instagram-login')[0].addEventListener('instagram-logged', loginCallback);

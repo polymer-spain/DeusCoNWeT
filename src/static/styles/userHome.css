@@ -87,7 +87,7 @@
 #userHome .elementbox-div {
 	height: 20px;
 	text-align: right;
-}
+}15px
 #userHome .elementbox:hover .elementbox-remove{
 	display: inline-block;
 }
@@ -282,4 +282,16 @@
 	text-align: center;
 	font-size:14px;
 	
+}
+
+#rate-modal .questionText{
+	margin:5px;
+	font-size:16px;
+	font-weight: 700;
+}
+#rate-modal paper-radio-group {
+	padding: 3px 15px;
+}
+.modal {
+	z-index:10000;
 }
