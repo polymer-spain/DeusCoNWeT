@@ -30,7 +30,7 @@ angular.module("picbit")
 
 			for (var i =0;i<$inputs.length;i++){
 				var $target = $($inputs[i]);
-				values[$target.attr('data-value')] = $target.val();
+				values[$target.attr('data-field')] = $target.val();
 			}
 			console.log('TODO send to server: ', values);
 		}

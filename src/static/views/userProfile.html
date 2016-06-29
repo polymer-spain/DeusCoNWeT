@@ -21,6 +21,7 @@
 		<div><a ng-click="selectSection($event)" data-target="#socialNetwork">{{language.user_profile.social}}</a></div>
 	</div>
 	<div class="information  vertical layout">
+		<span class="glyphicon glyphicon-remove" ng-click="goto('user/:user')"></span>
 		<div id="userInformation" class="active">
 			<div class="header">{{language.user_profile.user_information}}</div>
 			<div class="content">
@@ -29,30 +30,30 @@
 					<div class="">
 						<img id="userPicture" src="http://www.eluniversal.com.co/sites/default/files/201506/minions.jpg" class="user-picture">
 						<span class="btn btn-default btn-file">
-							{{language.user_profile.upload}} <input type="file" data-value="image" accept="image/*" onchange="angular.element(this).scope().changePicture(this)">
+							{{language.user_profile.upload}} <input type="file" data-field="image" accept="image/*" onchange="angular.element(this).scope().changePicture(this)">
 						</span>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="name">{{language.user_profile.name}}</label>
-					<input type="text" class="form-control" id="name" data-value="name" placeholder="{{language.user_profile.name}}">
-					<input type="text" class="form-control" id="surname" data-value="surname" placeholder="{{language.user_profile.surname}}">
+					<input type="text" class="form-control" id="name" data-field="name" placeholder="{{language.user_profile.name}}" value="{{user.name}}">
+					<input type="text" class="form-control" id="surname" data-field="surname" placeholder="{{language.user_profile.surname}}" value="{{user.surname}}">
 				</div>
 				<div class="form-group">
 					<label for="email">{{language.user_profile.email_label}}</label>
-					<input type="email" class="form-control" id="email" data-value="email" placeholder="{{language.user_profile.email}}">
+					<input type="email" class="form-control" id="email" data-field="email" placeholder="{{language.user_profile.email}}" value="{{user.email}}">
 				</div>
 				<div class="form-group">
 					<label for="age">{{language.user_profile.age}}</label>
-					<input type="text" class="form-control" id="age" data-value="age" placeholder="{{language.user_profile.age}}">
+					<input type="text" class="form-control" id="age" data-field="age" placeholder="{{language.user_profile.age}}" value="{{user.age}}">
 				</div>
 				<div class="form-group">
 					<label for="profession">{{language.user_profile.profession}}</label>
-					<input type="text" class="form-control" id="profession" data-value="{{language.user_profile.profession}}" placeholder="Profesion">
+					<input type="text" class="form-control" id="profession" data-field="profession" placeholder="{{language.user_profile.profession}}" value="{{user.profession}}">
 				</div>
 				<div class="form-group">
 					<label for="profession">{{language.user_profile.phone}}</label>
-					<input type="text" class="form-control" id="telefono" data-value="{{language.user_profile.phone}}" placeholder="Teléfono">
+					<input type="text" class="form-control" id="telefono" data-field="phone" placeholder="{{language.user_profile.phone}}" value="{{user.phone}}">
 				</div>
 				<button type="submit" ng-click="submitForm()" class="btn btn-primary">{{language.send}}</button>
 			</div>

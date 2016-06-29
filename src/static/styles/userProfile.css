@@ -40,6 +40,7 @@ div#userProfile {
 #userProfile .information {
 	min-height: 400px;
 	width: 40%;
+	position: relative;
 }
 #userProfile .information > div  {
 	display: none;
@@ -48,7 +49,15 @@ div#userProfile {
 #userProfile .information > div.active {
 	display: inline-block;
 }
-
+#userProfile .information span.glyphicon-remove {
+	position: absolute;
+	right: 10px;
+	line-height: 33px;
+}
+#userProfile .information span.glyphicon-remove:hover {
+	color:firebrick;
+	cursor: pointer;
+}
 #userProfile #userInformation .header,
 #userProfile #socialNetwork .header{
 	background-color: #F7F7F7;
