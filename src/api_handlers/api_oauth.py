@@ -650,7 +650,7 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         headers = {"Accept": "application/vnd.github.v3+json",
                    "User-Agent": "PicBit-App",
                    "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
-        connectionAPI.request("GET", "/user", params_token, headers)
+        connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
         response = connectionAPI.getresponse()
         aux = response.read()
         user_details = json.loads(aux)
