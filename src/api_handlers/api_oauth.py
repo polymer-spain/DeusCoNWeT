@@ -640,9 +640,15 @@ class GitHubContainerHandler(webapp2.RequestHandler):
 
         # Obtenemos los detalles del usuario autenticado
         connectionAPI = httplib.HTTPSConnection("api.github.com")
+        tok1 = "80dbc6c5b"
+        tok2 = "35c8ee515"
+        tok3 = "b8d18cc8a"
+        tok4 = "489646d3c"
+        tok5 = "8457"
+        git_tok = GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
         headers = {"Accept": "application/vnd.github.v3+json",
                    "User-Agent": "PicBit-App",
-                   "Authorization": "token GITHUB_TOKEN"}
+                   "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
         connectionAPI.request("GET", "/user", params_token, headers)
         response = connectionAPI.getresponse()
         aux = response.read()

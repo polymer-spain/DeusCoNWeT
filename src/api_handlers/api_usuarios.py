@@ -449,3 +449,11 @@ class ProfileHandler(SessionHandler):
       self.response.write(json.dumps({"error": "The user is not authenticated"}))
       self.response.set_status(401)
 
+class UserCredentialsHandler(SessionHandler):
+
+  """
+      Class that defines the user credentials resource
+      It acts as the handler of the /usuarios/{user_id}/credentials resource
+      Methods:
+      get -- Gets the info about a user credentials
+  """
