@@ -53,7 +53,7 @@
   <template>
     <iron-ajax 
                id="githubcode" url="{{endpoint}}"
-               method="GET"
+               method="POST"
                params='{
                        "action": "request_token",
                        "code": "{{code}}"
