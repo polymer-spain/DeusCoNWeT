@@ -604,7 +604,7 @@ class GitHubContainerHandler(webapp2.RequestHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
-    def post(self):
+    def get(self):
         url = "github.com"
         # authorize_url = \
         # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
