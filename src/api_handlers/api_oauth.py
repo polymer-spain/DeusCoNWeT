@@ -605,13 +605,13 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
     def post(self):
-        tok1 = "80dbc6c5b"
-        tok2 = "35c8ee515"
-        tok3 = "b8d18cc8a"
-        tok4 = "489646d3c"
-        tok5 = "8457"
-        git_tok = ndb_pb.GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
-        git_tok.put()
+        # tok1 = "80dbc6c5b"
+        # tok2 = "35c8ee515"
+        # tok3 = "b8d18cc8a"
+        # tok4 = "489646d3c"
+        # tok5 = "8457"
+        # git_tok = ndb_pb.GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
+        # git_tok.put()
         url = "github.com"
         # authorize_url = \
         # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
