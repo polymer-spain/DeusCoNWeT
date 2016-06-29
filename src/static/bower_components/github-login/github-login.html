@@ -166,7 +166,7 @@
               // Ponemos en valor en una variable de la ventana principal
               back.code = exp.exec(url)[1];
               // Llamamos a backend para que obtenga el token
-              back.$.githubcode.go();
+              back.$.githubcode.generateRequest();
               back.logged = true;
               win.close();
             }
