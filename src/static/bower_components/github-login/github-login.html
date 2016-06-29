@@ -52,8 +52,8 @@
 
   <template>
     <iron-ajax 
-               id="githubcode" url="http://github-login-lab.appspot.com/oauth/github"
-               method="GET"
+               id="githubcode" url="{{endpoint}}"
+               method="POST"
                params='{
                        "action": "request_token",
                        "code": "{{code}}"
@@ -145,7 +145,7 @@
         var url = 'https://github.com/login/oauth/authorize?';
         url += 'scope='+this.scope;
         url+='&client_id='+this.client_id;
-        url+='&redirect_uri='+this.endpoint;
+        // url+='&redirect_uri='+this.endpoint;
         // Guardamos en una variable el scope de la ventana principal
         var back = this;
         // Abrimos la ventana para que se realice la autenticacion
