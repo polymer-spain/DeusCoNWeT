@@ -55,6 +55,7 @@
 					<label for="profession">{{language.user_profile.phone}}</label>
 					<input type="text" class="form-control" id="telefono" data-field="phone" placeholder="{{language.user_profile.phone}}" value="{{user.phone}}">
 				</div>
+				<button ng-click="goto('user/:user')" class="btn btn-secundary">{{language.close}}</button>
 				<button type="submit" ng-click="submitForm()" class="btn btn-primary">{{language.send}}</button>
 			</div>
 		</div>
