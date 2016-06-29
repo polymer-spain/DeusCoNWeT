@@ -1,92 +1,93 @@
 <style>
-	body {
-		background-image:url('../images/userhome.jpg');
-	}
-	paper-toolbar.header {
-		background: -moz-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%, rgba(14,14,14,0.7) 100%);
-		background: -webkit-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
-		background: radial-gradient(ellipse at center,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b37d7e7d', endColorstr='#b30e0e0e',GradientType=1 );
-	}
-	.footer {
-		display:none !important;
-	}
+  body {
+    background-image:url('../images/userhome.jpg');
+  }
+  paper-toolbar.header {
+    background: -moz-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%, rgba(14,14,14,0.7) 100%);
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
+    background: radial-gradient(ellipse at center,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b37d7e7d', endColorstr='#b30e0e0e',GradientType=1 );
+  }
+  .footer {
+    display:none !important;
+  }
 </style>
 
 <div id="userProfile" class="horizontal  center-justified layout">
-	<div class="tabs vertical layout">
-		<div class="header">{{language.user_profile.profile_settings}}</div>
-		<div class="active"><a ng-click="selectSection($event)" data-target="#userInformation">
-			{{language.user_profile.user_information}}</a></div>
-		<div><a ng-click="selectSection($event)" data-target="#socialNetwork">{{language.user_profile.social}}</a></div>
-	</div>
-	<div class="information  vertical layout">
-		<span class="glyphicon glyphicon-remove" ng-click="goto('user/:user')"></span>
-		<div id="userInformation" class="active">
-			<div class="header">{{language.user_profile.user_information}}</div>
-			<div class="content">
-				<div class="form-group">
-					<label for="picture">{{language.user_profile.picture}}</label>
-					<div class="">
-						<img id="userPicture" src="http://www.eluniversal.com.co/sites/default/files/201506/minions.jpg" class="user-picture">
-						<span class="btn btn-default btn-file">
-							{{language.user_profile.upload}} <input type="file" data-field="image" accept="image/*" onchange="angular.element(this).scope().changePicture(this)">
-						</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="name">{{language.user_profile.name}}</label>
-					<input type="text" class="form-control" id="name" data-field="name" placeholder="{{language.user_profile.name}}" value="{{user.name}}">
-					<input type="text" class="form-control" id="surname" data-field="surname" placeholder="{{language.user_profile.surname}}" value="{{user.surname}}">
-				</div>
-				<div class="form-group">
-					<label for="email">{{language.user_profile.email_label}}</label>
-					<input type="email" class="form-control" id="email" data-field="email" placeholder="{{language.user_profile.email}}" value="{{user.email}}">
-				</div>
-				<div class="form-group">
-					<label for="age">{{language.user_profile.age}}</label>
-					<input type="text" class="form-control" id="age" data-field="age" placeholder="{{language.user_profile.age}}" value="{{user.age}}">
-				</div>
-				<div class="form-group">
-					<label for="profession">{{language.user_profile.profession}}</label>
-					<input type="text" class="form-control" id="profession" data-field="profession" placeholder="{{language.user_profile.profession}}" value="{{user.profession}}">
-				</div>
-				<div class="form-group">
-					<label for="profession">{{language.user_profile.phone}}</label>
-					<input type="text" class="form-control" id="telefono" data-field="phone" placeholder="{{language.user_profile.phone}}" value="{{user.phone}}">
-				</div>
-				<button ng-click="goto('user/:user')" class="btn btn-secundary">{{language.close}}</button>
-				<button type="submit" ng-click="submitForm()" class="btn btn-primary">{{language.send}}</button>
-			</div>
-		</div>
-		<div id="socialNetwork">
-			<div class="header">{{language.user_profile.social}}</div>
-			<div class="content">
-				<div class="horizontal center layout loginSection" ng-class="{logged: existToken('googleplus')}">
-					<p>{{language.user_profile.permission}}</p>
-					<google-login data-role="login" sort  client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" 	callback="{{domain}}" static="true"></google-login>
-					<hr>
-				</div>
-				<div class="horizontal center layout loginSection" ng-class="{logged: existToken('github')}">
-					<p>{{language.user_profile.permission}}</p>
-					<github-login data-role="login" sort scope="user:email" endpoint="{{domain}}/api/oauth/github/credenciales" client_id="ae271d42c068cae023b9"></github-login>
-					<hr>
-				</div>
-				<div class="horizontal center layout loginSection" ng-class="{logged: existToken('facebook')}">
-					<p>{{language.user_profile.permission}}</p>
-					<login-facebook data-role="login" sort key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
-					<hr>
-				</div>
-				<div class="horizontal center layout loginSection" ng-class="{logged: existToken('instagram')}">
-					<p>{{language.user_profile.permission}}</p>
-					<instagram-login data-role="login" sort clientId="9e21b27d7f60498dae9a7f8853c20026" redirectUri="{{domain}}/app/instagram-login/redirect.html"></instagram-login>
-				</div>
-				<div class="horizontal center layout loginSection" ng-class="{logged: existToken('twitter')}">
-					<p>{{language.user_profile.permission}}</p>
-					<twitter-login data-role="login" sort endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
-					<hr>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="tabs vertical layout">
+    <div class="header">{{language.user_profile.profile_settings}}</div>
+    <div class="active"><a ng-click="selectSection($event)" data-target="#userInformation">
+      {{language.user_profile.user_information}}</a></div>
+    <div><a ng-click="selectSection($event)" data-target="#socialNetwork">{{language.user_profile.social}}</a></div>
+  </div>
+  <div class="information  vertical layout">
+    <span class="glyphicon glyphicon-remove" ng-click="goto('user/:user')"></span>
+    <div id="userInformation" class="active">
+      <div class="header">{{language.user_profile.user_information}}</div>
+      <div class="content">
+        <div class="form-group">
+          <label for="picture">{{language.user_profile.picture}}</label>
+          <div class="">
+            <img id="userPicture" src="http://www.eluniversal.com.co/sites/default/files/201506/minions.jpg" class="user-picture">
+            <span class="btn btn-default btn-file">
+              {{language.user_profile.upload}} <input type="file" data-field="image" accept="image/*" onchange="angular.element(this).scope().changePicture(this)">
+            </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="name">{{language.user_profile.name}}</label>
+          <input type="text" class="form-control" id="name" data-field="name" placeholder="{{language.user_profile.name}}" value="{{user.name}}">
+          <input type="text" class="form-control" id="surname" data-field="surname" placeholder="{{language.user_profile.surname}}" value="{{user.surname}}">
+        </div>
+        <div class="form-group">
+          <label for="email">{{language.user_profile.email_label}}</label>
+          <input type="email" class="form-control" id="email" data-field="email" placeholder="{{language.user_profile.email}}" value="{{user.email}}">
+        </div>
+        <div class="form-group">
+          <label for="age">{{language.user_profile.age}}</label>
+          <input type="text" class="form-control" id="age" data-field="age" placeholder="{{language.user_profile.age}}" value="{{user.age}}">
+        </div>
+        <div class="form-group">
+          <label for="profession">{{language.user_profile.profession}}</label>
+          <input type="text" class="form-control" id="profession" data-field="profession" placeholder="{{language.user_profile.profession}}" value="{{user.profession}}">
+        </div>
+        <div class="form-group">
+          <label for="profession">{{language.user_profile.phone}}</label>
+          <input type="text" class="form-control" id="telefono" data-field="phone" placeholder="{{language.user_profile.phone}}" value="{{user.phone}}">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" ng-click="submitForm()" class="btn btn-primary">{{language.send}}</button>
+      </div>
+    </div>
+    <div id="socialNetwork">
+      <div class="header">{{language.user_profile.social}}</div>
+      <div class="content">
+        <div class="horizontal center layout loginSection" ng-class="{logged: existToken('googleplus')}">
+          <p>{{language.user_profile.permission}}</p>
+          <google-login data-role="login" sort  client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" 	callback="{{domain}}" static="true"></google-login>
+          <hr>
+        </div>
+        <div class="horizontal center layout loginSection" ng-class="{logged: existToken('github')}">
+          <p>{{language.user_profile.permission}}</p>
+          <github-login data-role="login" sort scope="user:email" endpoint="{{domain}}/api/oauth/github/credenciales" client_id="ae271d42c068cae023b9"></github-login>
+          <hr>
+        </div>
+        <div class="horizontal center layout loginSection" ng-class="{logged: existToken('facebook')}">
+          <p>{{language.user_profile.permission}}</p>
+          <login-facebook data-role="login" sort key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+          <hr>
+        </div>
+        <div class="horizontal center layout loginSection" ng-class="{logged: existToken('instagram')}">
+          <p>{{language.user_profile.permission}}</p>
+          <instagram-login data-role="login" sort clientId="9e21b27d7f60498dae9a7f8853c20026" redirectUri="{{domain}}/app/instagram-login/redirect.html"></instagram-login>
+        </div>
+        <div class="horizontal center layout loginSection" ng-class="{logged: existToken('twitter')}">
+          <p>{{language.user_profile.permission}}</p>
+          <twitter-login data-role="login" sort endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
