@@ -165,7 +165,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 	// Watcher that controls whether the form should be showed to the user or not
 	$scope.platformUsedTime = 0;
 	$scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
-	$scope.formLoadTime = 1000; // Indicates when we'll show to the user the form
+	$scope.formLoadTime = 600000; // Indicates when we'll show to the user the form
 
 	$scope.$watch("platformUsedTime", function(newValue, oldValue){
 		if (newValue!==oldValue && newValue >= $scope.formLoadTime) {
