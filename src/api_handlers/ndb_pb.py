@@ -414,12 +414,14 @@ def getToken(id_rs, social_net):  # FUNCIONA
 
 def getUserTokens(user_id):
   token_aux = {}
+  ans = None
   user = User.query(User.user_id == user_id).get()
-  for token in user.tokens:
-    cipher = getCipher(token.key.id())
-    token_aux[token.social_name] = decodeAES(cipher, token.token)
-  
-  return json.dumps(token_aux)
+  if not user == None:
+    for token in user.tokens:
+      cipher = getCipher(token.key.id())
+      token_aux[token.social_name] = decodeAES(cipher, token.token)
+    ans = json.dumps(token_aux) 
+  return ans
     
 
 def searchToken(token_id, rs): #FUNCIONA

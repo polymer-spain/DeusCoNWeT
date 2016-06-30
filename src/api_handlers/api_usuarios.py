@@ -457,3 +457,53 @@ class UserCredentialsHandler(SessionHandler):
       Methods:
       get -- Gets the info about a user credentials
   """
+
+  def get(self, user_id):
+    cookie_value = self.request.cookies.get("session")
+    if not cookie_value == None:
+      user_logged_key = self.getUserInfo(cookie_value)
+      if not user_logged_key == None:
+        user_logged_id = ndb_pb.getUserId(user_logged_key)
+        user_info = ndb_pb.getUser(user_id)
+        # Checks if the user active is the owner of the resource (if exists)
+        if user_info == None:
+          self.response.content_type = "application/json"
+          self.response.write(json.dumps({"error": "The user requested does not exist"}))
+          self.response.set_status(404)
+        elif not user_info == None and user_logged_key == user_id:
+          cred_info = ndb_pb.getUserTokens(user_id)
+          if cred_info == None:
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps({"error": "The user has not credentials added to his profile"}))
+            self.response.set_status(404)
+          else:
+            self.response.content_type = "application/json"
+            self.response.write(cred_info)
+            self.response.set_status(200)
+        else:
+          self.response.content_type = "application/json"
+          self.response.write(json.dumps({"error": "You don\"t have the proper rights to modify this resource" +
+            " (The cookie session header does not match with the resource requested)"}))
+          self.response.set_status(401)
+      else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", "",
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+
+        # Builds the response
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
+        self.response.set_status(400)
+    else:
+      self.response.content_type = "application/json"
+      self.response.write(json.dumps({"error": "The user is not authenticated"}))
+      self.response.set_status(401)
