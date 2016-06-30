@@ -639,11 +639,11 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         access_token = access_token[0].split("=")[1]
 
         # Gestion de la respuesta de webapp
-        self.response.content_type = "application/json"
-        response = {"token": "" + access_token + ""}
-        self.response.write(json.dumps(response))
-        connection.close()
-        self.response.set_status(200)
+        # self.response.content_type = "application/json"
+        # response = {"token": "" + access_token + ""}
+        # self.response.write(json.dumps(response))
+        # connection.close()
+        # self.response.set_status(200)
 
         # Obtenemos los detalles del usuario autenticado
         connectionAPI = httplib.HTTPSConnection("api.github.com")
