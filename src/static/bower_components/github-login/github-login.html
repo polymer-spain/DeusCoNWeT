@@ -54,12 +54,12 @@
     <iron-ajax 
                id="githubcode" url="{{endpoint}}"
                method="POST"
-               params='{
+               body='{
                        "action": "request_token",
                        "code": "{{code}}"
                        }'
                handleAs="json"
-               on-response='response'>
+               on-response='_response'>
     </iron-ajax>
 
     <!-- large and disconnected -->
@@ -135,8 +135,8 @@
 				},
       },
 
-      _response: function(e, d, s){
-        this.accessToken = s.response;
+      _response: function(e){
+        this.accessToken = e.response;
         this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
       },
 
