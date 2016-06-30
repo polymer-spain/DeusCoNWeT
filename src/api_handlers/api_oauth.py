@@ -623,6 +623,7 @@ class GitHubContainerHandler(webapp2.RequestHandler):
 
         # Cogemos el codigo de la peticion
         code = self.request.get("code")
+        print "===========================================================" + code
 
         # Indicamos los parametros de la peticion a github
         params_token = urllib.urlencode({"client_id": client_id,
