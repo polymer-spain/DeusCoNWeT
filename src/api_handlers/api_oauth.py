@@ -635,6 +635,7 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         # para coger el valor del token
         response_token = connection.getresponse()
         data_token = response_token.read()
+        print data_token
         access_token = data_token.split("&")
         access_token = access_token[0].split("=")[1]
 
