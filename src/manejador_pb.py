@@ -38,6 +38,7 @@ app = webapp2.WSGIApplication([
     (r'/api/usuarios', api_usuarios.UserListHandler),
     (r'/api/usuarios/(.*)', api_usuarios.UserHandler),
     (r'/api/usuarios/(.*)/profile', api_usuarios.ProfileHandler),
+    (r'/api/usuarios/(.*)/credentials', api_usuarios.UserCredentialsHandler),
     
     (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
     (r'/api/aux/instagramTimeline', api_auxiliar.instagramRequest),
