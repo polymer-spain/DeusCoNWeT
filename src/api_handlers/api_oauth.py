@@ -660,6 +660,9 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         # Buscamos el par id usuario/token autenticado en la base
         stored_credentials = ndb_pb.searchToken(str(user_details["id"
                 ]), "github")
+        response = {"token": access_token}
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps(response))
         if stored_credentials == None:
 
             # Almacena las credenciales en una entidad Token

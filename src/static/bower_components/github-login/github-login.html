@@ -133,7 +133,7 @@
       },
 
       _response: function(e){
-        this.accessToken = e.response;
+        this.accessToken = e.detail.response.token;
         this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
       },
 
