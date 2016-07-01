@@ -76,6 +76,7 @@
 			"good": "Good",
 			"verygood": "So good"
 		},
+    "about": "Rate the component: ",
     "emptyQuestions": "* Must fill in all questions",
 		"yes":"Yes",
 		"no": "No",

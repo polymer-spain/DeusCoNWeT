@@ -79,6 +79,7 @@
 			"good": "Bueno",
 			"verygood": "Muy bueno"
 		},
+    "about": "Valore el componente: ",
     "emptyQuestions": "* Debe rellenar todas las preguntas",
 		"yes":"Si",
 		"no": "No",
