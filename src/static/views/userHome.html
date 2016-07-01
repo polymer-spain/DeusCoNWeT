@@ -139,7 +139,7 @@
     </div><!-- /.modal -->
   </div>
 
-  <div id="rate-modal" class="modal fade" role="dialog" tabindex="-1">
+  <div id="rate-modal" class="modal fade scrollbar-macosx scroll-content scroll-scrolly_visible" role="dialog" tabindex="-1">
     <div class="modal-dialog modal-md">
       <!-- Modal content-->
       <div class="modal-content">
@@ -210,11 +210,15 @@
               </paper-radio-group>
             </form>
           </div>
+          <div id="thanksInfo" style="display:none">
+            <p>{{language.questionary.end}}</p>
+          </div>
         </div>
         <div class="modal-footer horizontal">
-
+          <p>{{language.questionary.emptyQuestions}}</p>
           <button class="btn btn-danger" ng-click="submitRating()">{{language.close}}</button>
           <button class="btn btn-primary" ng-click="submitRating()">{{language.send}}</button>
+          <button class="btn btn-primary" id="closeRateModal" data-toggle="modal" data-target="#rate-modal" style="display:none">OK</button>
         </div>
       </div>
 

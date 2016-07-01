@@ -1,143 +1,149 @@
 <!DOCTYPE html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<link rel="shortcut icon" href="images/logo.png" />
-		<meta name="description" content="">
-		<base href="/#">
-		<script>
-			if (window.location.protocol == "http:"){
-				window.location.protocol = "https:";
-			}
-		</script>
-		<title>PicBit</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="images/logo.png" />
+    <meta name="description" content="">
+    <base href="/#">
+    <!--		<script>
+if (window.location.protocol == "http:"){
+window.location.protocol = "https:";
+}
+</script>-->
+    <title>PicBit</title>
 
-		<!-- Polymer -->
-		<script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-		<!-- active shadow DOM -->
-		<script>
-			window.Polymer = window.Polymer || {};
-			window.Polymer.dom = "shadow";
-		</script>
-		<link rel="import" href="elements/elements.html">
-		<!-- stylesheet -->
-		<link rel="stylesheet" href="vendor/bootstrap-theme.min.css">
-		<link rel="stylesheet" href="vendor/bootstrap.min.css">
-		<link rel="stylesheet" href="styles/main.css">
-		<link rel="stylesheet" href="styles/selectId.css">
-		<link rel="stylesheet" href="styles/userHome.css">
-		<link rel="stylesheet" href="styles/userProfile.css">
+    <!-- Polymer -->
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <!-- active shadow DOM -->
+    <script>
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = "shadow";
+    </script>
+    <link rel="import" href="elements/elements.html">
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="vendor/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/selectId.css">
+    <link rel="stylesheet" href="styles/userHome.css">
+    <link rel="stylesheet" href="styles/userProfile.css">
 
-		<link rel="stylesheet" href="vendor/jquery-ui.min.css">
-		<link rel="stylesheet" href="vendor/jquery.contextmenu.css">
-	</head>
+    <link rel="stylesheet" href="vendor/jquery-ui.min.css">
+    <link rel="stylesheet" href="vendor/jquery.contextmenu.css">
+    <!-- Mixpanel script (Used to send user form data - user questionaire results) -->
+    <script type="text/javascript">
+      (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+      for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f)}})(document,window.mixpanel||[]);
+      mixpanel.init("d3bef513d72a99cc1e8bd3ca133e0f69");
+    </script>
+  </head>
 
-	<body ng-app="picbit" ng-controller="MainController" class="vertical fullbleed layout">
-		<paper-toolbar class="header">
-			<paper-icon-button ng-click="goto('/')" class="logo" src="images/logo.png"></paper-icon-button>
-			<a  class="title"><p ng-click="goto('/')">Picbit</p></a>
-			<div class="dropdown btn">
-				<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-					{{language.lang[idioma] || language.language}}
-					<span class="caret"></span></button>
-				<ul class="dropdown-menu">
-					<li><a ng-click="setLanguage('es')">{{language.lang.es}}</a></li>
-					<li><a ng-click="setLanguage('en')">{{language.lang.en}}</a></li>
-				</ul>
-			</div>
-			<div ng-show="isLogged" class="log-button">
-				<div class="dropdown btn user-button">
-					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-						<span class="glyphicon glyphicon-user"></span> {{user.user_id}}
-					</button>
-					<ul class="dropdown-menu">
-						<li><a ng-click="goto('/user/:user')">{{language.home}}</a></li>
-						<li><a ng-click="goto('/user/:user/profile')">{{language.profile}}</a></li>
-						<li><a ng-click="logout()">{{language.logout}}</a></li>
-					</ul>
-				</div>
-			</div>
+  <body ng-app="picbit" ng-controller="MainController" class="vertical fullbleed layout">
+    <paper-toolbar class="header">
+      <paper-icon-button ng-click="goto('/')" class="logo" src="images/logo.png"></paper-icon-button>
+      <a  class="title"><p ng-click="goto('/')">Picbit</p></a>
+      <div class="dropdown btn">
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+          {{language.lang[idioma] || language.language}}
+          <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li><a ng-click="setLanguage('es')">{{language.lang.es}}</a></li>
+          <li><a ng-click="setLanguage('en')">{{language.lang.en}}</a></li>
+        </ul>
+      </div>
+      <div ng-show="isLogged" class="log-button">
+        <div class="dropdown btn user-button">
+          <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-user"></span> {{user.user_id}}
+          </button>
+          <ul class="dropdown-menu">
+            <li><a ng-click="goto('/user/:user')">{{language.home}}</a></li>
+            <li><a ng-click="goto('/user/:user/profile')">{{language.profile}}</a></li>
+            <li><a ng-click="logout()">{{language.logout}}</a></li>
+          </ul>
+        </div>
+      </div>
 
-			<button ng-hide="isLogged" type="button" class="btn btn-primary btn-md log-button" id="myBtn" data-toggle="modal" data-target="#login-popup" data-keyboard="true">
-				{{language.login}}
-			</button>
+      <button ng-hide="isLogged" type="button" class="btn btn-primary btn-md log-button" id="myBtn" data-toggle="modal" data-target="#login-popup" data-keyboard="true">
+        {{language.login}}
+      </button>
 
-		</paper-toolbar>
-		<div class="flex layout horizontal">
-			<div ng-view="" id="view" class="flex"></div>
-		</div>
+    </paper-toolbar>
+    <div class="flex layout horizontal">
+      <div ng-view="" id="view" class="flex"></div>
+    </div>
 
-		<!--FOOTER -->
-		<paper-toolbar class="footer layout horizontal center-justified" ng-show="{{pathname.indexOf('user') == -1}}">
-			<paper-button>{{language.contact}}</paper-button>
-			<paper-button ng-click="goto('/about')">{{language.about}}</paper-button>
-			<paper-button>{{language.privacy}}</paper-button>
-		</paper-toolbar>
-
-
-		<!-- Login modal -->
-		<!-- Modal -->
-		<div id="login-popup" class="modal fade" role="dialog" tabindex="-1">
-			<div class="modal-dialog modal-sm">
-
-				<!-- Modal content-->
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">{{language.entry}}</h4>
-					</div>
-					<div class="modal-body vertical layout center-center">
-						<!-- Modal login -->
-						<google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" callback="{{domain}}" static="true"></google-login>
-						<br>
-						<twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
-						<br>
-						<login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
-					</div>
-				</div>
-
-			</div>
-		</div>
-		<script>
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-															})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-			ga('create', 'UA-79737599-1', 'auto');
-			ga('send', 'pageview');
-
-		</script>
-		<!-- vendor -->
-		<script src="vendor/jquery-2.2.3.min.js"></script>
-		<script src="vendor/bootstrap.min.js"></script>
-		<script src="vendor/jquery-ui.min.js"></script>
-		<script src="vendor/jquery.contextmenu.js"></script>
-		<!-- build:js scripts/min/dependencies.min.js -->
-		<script src="bower_components/angular/angular.min.js"></script>
-		<script src="bower_components/angular-resource/angular-resource.min.js"></script>
-		<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-		<script src="bower_components/angular-animate/angular-animate.min.js"></script>
-		<script src="bower_components/angular-touch/angular-touch.min.js"></script>
-		<script src="bower_components/angular-route/angular-route.min.js"></script>
-		<!-- endbuild -->
+    <!--FOOTER -->
+    <paper-toolbar class="footer layout horizontal center-justified" ng-show="{{pathname.indexOf('user') == -1}}">
+      <paper-button>{{language.contact}}</paper-button>
+      <paper-button ng-click="goto('/about')">{{language.about}}</paper-button>
+      <paper-button>{{language.privacy}}</paper-button>
+    </paper-toolbar>
 
 
-		<!-- build:js scripts/min/logic.min.js -->
-		<script src="scripts/app.js"></script>
-		<script src="scripts/filter/catalogFilter.js"></script>
-		<script src="scripts/services/requestLanguage.js"></script>
-		<script src="scripts/services/backend.js"></script>
-		<script src="scripts/services/cookies.js"></script>
-		<script src="scripts/controllers/main.js"></script>
-		<script src="scripts/controllers/selectId.js"></script>
-		<script src="scripts/controllers/userHome.js"></script>
-		<script src="scripts/controllers/userProfile.js"></script>
-		<script src="scripts/controllers/about.js"></script>
-		<script src="scripts/directives/dragdrop.js"></script>
-		<!-- endbuild -->
+    <!-- Login modal -->
+    <!-- Modal -->
+    <div id="login-popup" class="modal fade" role="dialog" tabindex="-1">
+      <div class="modal-dialog modal-sm">
 
-	</body>
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{language.entry}}</h4>
+          </div>
+          <div class="modal-body vertical layout center-center">
+            <!-- Modal login -->
+            <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" callback="{{domain}}" static="true"></google-login>
+            <br>
+            <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+            <br>
+            <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-79737599-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <!-- vendor -->
+    <script src="vendor/jquery-2.2.3.min.js"></script>
+    <script src="vendor/bootstrap.min.js"></script>
+    <script src="vendor/jquery-ui.min.js"></script>
+    <script src="vendor/jquery.contextmenu.js"></script>
+    <!-- build:js scripts/min/dependencies.min.js -->
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <!-- endbuild -->
+
+
+    <!-- build:js scripts/min/logic.min.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/filter/catalogFilter.js"></script>
+    <script src="scripts/services/requestLanguage.js"></script>
+    <script src="scripts/services/backend.js"></script>
+    <script src="scripts/services/cookies.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/selectId.js"></script>
+    <script src="scripts/controllers/userHome.js"></script>
+    <script src="scripts/controllers/userProfile.js"></script>
+    <script src="scripts/controllers/about.js"></script>
+    <script src="scripts/directives/dragdrop.js"></script>
+    <!-- endbuild -->
+
+  </body>
 </html>

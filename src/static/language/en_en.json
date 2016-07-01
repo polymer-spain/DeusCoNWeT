@@ -76,6 +76,7 @@
 			"good": "Good",
 			"verygood": "So good"
 		},
+    "emptyQuestions": "* Must fill in all questions",
 		"yes":"Yes",
 		"no": "No",
 		"amplied": {
