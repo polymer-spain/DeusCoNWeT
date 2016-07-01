@@ -182,7 +182,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       var random = Math.round(Math.random()*100);
       if ($scope.listComponentAdded.length > 0){
         var position = random % $scope.listComponentAdded.length;
-        $scope.randomComponent = $scope.listComponentAdded[position];
+        $scope.randomComponent = $scope.listComponentAdded[position].name;
       }
     }
     return $scope.randomComponent;
