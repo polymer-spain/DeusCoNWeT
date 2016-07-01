@@ -613,63 +613,69 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         # tok5 = "8457"
         # git_tok = ndb_pb.GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
         # git_tok.put()
-        url = "github.com"
-        # authorize_url = \
-        # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
-        access_token_url = "/login/oauth/access_token"
-        client_id = "ae271d42c068cae023b9"
-        client_secret = "7834524345411e5b112c9715949ba33861db61a4"
-        access_token = ""
-        connection = httplib.HTTPSConnection(url)
+        try:
+            url = "github.com"
+            # authorize_url = \
+            # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
+            access_token_url = "/login/oauth/access_token"
+            client_id = "ae271d42c068cae023b9"
+            client_secret = "7834524345411e5b112c9715949ba33861db61a4"
+            access_token = ""
+            connection = httplib.HTTPSConnection(url)
 
-        # Cogemos el codigo de la peticion
-        code = self.request.get("code")
-        # Indicamos los parametros de la peticion a github
-        params_token = urllib.urlencode({"client_id": client_id,
-                "client_secret": client_secret, "code": code})
-        # Realizamos la peticion en la conexion
-        connection.request("POST", access_token_url, params_token)
+            # Cogemos el codigo de la peticion
+            code = self.request.POST["code"]
+            # Indicamos los parametros de la peticion a github
+            params_token = urllib.urlencode({"client_id": client_id,
+                    "client_secret": client_secret, "code": code})
+            # Realizamos la peticion en la conexion
+            connection.request("POST", access_token_url, params_token)
 
-        # Cogemos la respuesta de la peticion y realizamos un split
-        # para coger el valor del token
-        response_token = connection.getresponse()
-        data_token = response_token.read()
-        print "===========================================================" + data_token
-        access_token = data_token.split("&")
-        access_token = access_token[0].split("=")[1]
+            # Cogemos la respuesta de la peticion y realizamos un split
+            # para coger el valor del token
+            response_token = connection.getresponse()
+            data_token = response_token.read()
+            print "===========================================================" + data_token
+            access_token = data_token.split("&")
+            access_token = access_token[0].split("=")[1]
 
-        # Gestion de la respuesta de webapp
-        # self.response.content_type = "application/json"
-        # response = {"token": "" + access_token + ""}
-        # self.response.write(json.dumps(response))
-        # connection.close()
-        # self.response.set_status(200)
+            # Gestion de la respuesta de webapp
+            # self.response.content_type = "application/json"
+            # response = {"token": "" + access_token + ""}
+            # self.response.write(json.dumps(response))
+            # connection.close()
+            # self.response.set_status(200)
 
-        # Obtenemos los detalles del usuario autenticado
-        connectionAPI = httplib.HTTPSConnection("api.github.com")
-        headers = {"Accept": "application/vnd.github.v3+json",
-                   "User-Agent": "PicBit-App",
-                   "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
-        connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
-        response = connectionAPI.getresponse()
-        aux = response.read()
-        user_details = json.loads(aux)
+            # Obtenemos los detalles del usuario autenticado
+            connectionAPI = httplib.HTTPSConnection("api.github.com")
+            headers = {"Accept": "application/vnd.github.v3+json",
+                        "User-Agent": "PicBit-App",
+                        "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
+            connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
+            response = connectionAPI.getresponse()
+            aux = response.read()
+            user_details = json.loads(aux)
 
-        # Buscamos el par id usuario/token autenticado en la base
-        stored_credentials = ndb_pb.searchToken(str(user_details["id"
-                ]), "github")
-        if stored_credentials == None:
+            # Buscamos el par id usuario/token autenticado en la base
+            stored_credentials = ndb_pb.searchToken(str(user_details["id"
+                    ]), "github")
+            if stored_credentials == None:
 
-            # Almacena las credenciales en una entidad Token
-            user_credentials = ndb_pb.insertUser("github",
-                    str(user_details["id"]), access_token)
-            self.response.set_status(201)
-        else:
+                # Almacena las credenciales en una entidad Token
+                user_credentials = ndb_pb.insertUser("github",
+                        str(user_details["id"]), access_token)
+                self.response.set_status(201)
+            else:
 
-            # Almacenamos el access token recibido
-            user_id = ndb_pb.modifyToken(str(user_details["id"]),
-                    access_token, "github")
-            self.response.set_status(200)
+                # Almacenamos el access token recibido
+                user_id = ndb_pb.modifyToken(str(user_details["id"]),
+                        access_token, "github")
+                self.response.set_status(200)
+        except:
+            response = {"error": "Bad value for the social_network param"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
