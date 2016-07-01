@@ -70,7 +70,7 @@
         </div>
         <div class="horizontal center layout loginSection" ng-class="{logged: existToken('github')}">
           <p>{{language.user_profile.permission}}</p>
-          <github-login data-role="login" sort scope="user:email" endpoint="{{domain}}/api/oauth/github/credenciales" client_id="ae271d42c068cae023b9"></github-login>
+          <github-login data-role="login" sort scope="user:email" static endpoint="{{domain}}/api/oauth/github/credenciales" client_id="ae271d42c068cae023b9"></github-login>
           <hr>
         </div>
         <div class="horizontal center layout loginSection" ng-class="{logged: existToken('facebook')}">
