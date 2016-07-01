@@ -671,12 +671,6 @@ class GitHubContainerHandler(webapp2.RequestHandler):
                 user_id = ndb_pb.modifyToken(str(user_details["id"]),
                         access_token, "github")
                 self.response.set_status(200)
-        except:
-            response = {"error": "Bad value for the social_network param"}
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps(response))
-            self.response.set_status(400)
-
 
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):
