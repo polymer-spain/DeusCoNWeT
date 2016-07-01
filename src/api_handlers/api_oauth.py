@@ -32,6 +32,7 @@ import time
 import ndb_pb
 from ndb_pb import Token, User
 import datetime
+import logging
 
 # Imports for TwitterHandler
 import oauth
@@ -616,19 +617,16 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         # authorize_url = \
         # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
         access_token_url = "/login/oauth/access_token"
-        client_id = "1f21e4d820abd2cb5a7a"
-        client_secret = "b24d6b5f298e85514bebc70abcbf100a8ef8a5f4"
+        client_id = "ae271d42c068cae023b9"
+        client_secret = "7834524345411e5b112c9715949ba33861db61a4"
         access_token = ""
         connection = httplib.HTTPSConnection(url)
 
         # Cogemos el codigo de la peticion
         code = self.request.get("code")
-        print "===========================================================" + code
-
         # Indicamos los parametros de la peticion a github
         params_token = urllib.urlencode({"client_id": client_id,
                 "client_secret": client_secret, "code": code})
-
         # Realizamos la peticion en la conexion
         connection.request("POST", access_token_url, params_token)
 
