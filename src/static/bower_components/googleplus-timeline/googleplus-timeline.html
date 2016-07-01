@@ -7,30 +7,31 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-header-panel/paper-header-panel.html">
-<link rel="import" href="../paper-toolbar/paper-toolbar.html">
-<link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-icons/social-icons.html">
-<link rel="import" href="../iron-icons/av-icons.html">
-<link rel="import" href="../iron-icons/image-icons.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icons/social-icons.html">
+<link rel="import" href="bower_components/iron-icons/av-icons.html">
+<link rel="import" href="bower_components/iron-icons/image-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../paper-styles/paper-styles.html">
-<link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
 <!-- <link rel="import" href="bower_components/google-youtube/google-youtube.html"> -->
 
 <!--
-Polymer Web Component that obtains Google+ feed for an user.
+An element providing a solution to no problem in particular.
 
 Example:
 
 <googleplus-timeline></googleplus-timeline>
 
+@group Seed Elements
 @element googleplus-timeline
 @demo demo/index.html
 @hero hero.svg
@@ -41,18 +42,22 @@ Example:
   <style is="custom-style">
     :host {
       display: inline-block;
-      --google-events-width: 450px;
-      --google-events-height: 450px;
+      width:  --github-events-width: 450px;
+      height:  --github-events-height: 450px;
+      min-height: 200px;
+      min-width: 200px;
+
       font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       color:#2e2e2e;
     }
 
     /* Header styles */
     paper-header-panel {
-      width: var(--google-events-width);
-      height: var(--google-events-height);
+      width: 100%;
+      height: 100%;
       @apply(--shadow-elevation-3dp);
       border-radius: 8px;
+      background-color: #fff;
     }
     div.paper-header {
       height: 60px;
@@ -95,6 +100,7 @@ Example:
 
     .post .content {
       margin: 10px 3px;
+      background-color:red;
     }
     .postShadow{
       margin: 15px 8px;
@@ -143,19 +149,7 @@ Example:
 
     /* Post content styles */
     .text{
-      padding: 0px 15px 10px 15px;
-      /*width: 200px;*/
-      /* Careful, this breaks the word wherever it is without a hyphen */
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-      /* Adds a hyphen where the word breaks */
-      -webkit-hyphens: auto;
-      -ms-hyphens: auto;
-      -moz-hyphens: auto;
-      hyphens: auto;
-    }
-    .text a{
-      color: red;
+      padding: 0px 15px 15px 15px;
     }
     /* Attachment styles */
 
@@ -179,31 +173,31 @@ Example:
       height: auto;
     }
     #video_caption{
-      width: 113px;
-      height: 85px;
+      width: 100px;
+      height: 75px;
       border: 1px;
       border-color: #BDBDBD;
       padding: 3px 3px 0px 3px;
     }
     #video_title{
       font: normal 14px Roboto,arial,sans-serif;
-      margin: 0px 0px 8px 0px;
-      padding: 23px 10px 0px 0px;
+      margin-top: 0px;
+      margin-bottom: 8px;
+      padding-top: 23px;
       text-decoration: none;
       color: #404040;
       display: inline;
       float: right;
-      width: 64%;
+      width: 70%;
+      vertical-align: middle;
     }
     #video_title:hover{
       color: #1976D2;
     } 
     #article_title_container {
-      margin: 0px 15px 15px 13px;
-      border-style: solid;
-      border-width: 1px;
-      border-color: #BDBDBD;
-      padding: 7px 0px 0px 10px;
+      padding-left: 15px;
+      padding-top: 10px;
+      float: left;
     }
     .attached_photo{
       width: 348px;
@@ -215,19 +209,22 @@ Example:
       font: normal 14px Roboto, arial, sans-serif;
       text-decoration: none;
       color: #404040;
+      vertical-align: middle;
+      padding: 10px 0px 5px 15px;
     }
 
     #article_subtitle{
       font: normal 13px Roboto,arial,sans-serif;
       margin-top: 0px;
       margin-bottom: 10px;
-      padding-right: 10px;
+      padding-left: 15px;
       text-decoration: none;
       color: #757575; 
     }
 
     #article_title:hover{
       color: #1976D2;
+      text-decoration: underline;
     }
     #original_post_author{
       font-weight: bold;
@@ -317,6 +314,11 @@ Example:
       margin-left: -5px;
       margin-top: 20px;  
     }
+    #loadingGif{
+      margin-top:10%;
+      text-align: center;
+    }
+
   </style>
 
   <template id="template">
@@ -405,7 +407,7 @@ width="380px" height="285px" ><google-youtube> -->
 
                 <!-- Link/article attachment (if any) -->
                 <template is="dom-if" if="{{_hasAttachment(item,'article')}}">
-                  <div id="article_title_container">
+                  <div class="attachment_box_container">
                     <a id="article_title" class="post-link" target="_blank" href="{{item.object.attachments.0.url}}">
                       <iron-icon class="media_icon" icon="av:web"></iron-icon> {{item.object.attachments.0.displayName}}
                     </a>  
@@ -500,11 +502,14 @@ width="380px" height="285px" ><google-youtube> -->
         </template>
         <!-- "Load More" button -->
 
-        <!-- <template is="dom-if" if="{{_thereAreMorePosts(item)}}"> -->
-        <div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv">
+        <div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv" hidden>
           <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
         </div>
-        <!-- </template> -->
+
+        <div class="loading" id="loadingGif">
+          <img src="loading.gif">
+          <p>Loading...</p>
+        </div>
       </div>
     </paper-header-panel>
   </template>
@@ -530,7 +535,7 @@ width="380px" height="285px" ><google-youtube> -->
       },
       //Posts that will be displayed on the component
       timeline_posts: {
-        type: Object,
+        type: Array,
         value: []
       },
       //Represents the post retrieved for any user that cannot
@@ -555,7 +560,7 @@ width="380px" height="285px" ><google-youtube> -->
          Elements:
          - author: G+ user id, author of posts 
          - displayName: human readable identifier for the user
-         - timestamp: timestamp of the first post in the page
+         - timestamp: timestamp of the first post in the page-
          - nextPageToken: identifier for the next page of post list retrieved by the API
         */
       last_retrieved_page: {
@@ -592,7 +597,8 @@ width="380px" height="285px" ><google-youtube> -->
           "hour": "hour",
           "hours": "hours",
           "day": "day",
-          "days":"days" 
+          "days":"days",
+          "user": "User" 
         }
       },
       language_es: {
@@ -609,13 +615,42 @@ width="380px" height="285px" ><google-youtube> -->
           "hour": "hora",
           "hours": "horas",
           "day": "día",
-          "days":"días" 
+          "days":"días",
+          "user": "Usuario" 
         }
       },
       language_data: {
         type: Object,
         value: []
+      },
+      accuracyProbability: {
+        type: Number,
+        value: 15,
+        reflectToAttribute: true,
+        notify: true
       }
+    },
+
+    //Functions that add Accuracy defects (user testing purposes)
+    probability: function(probability){
+      if (probability > 100 || probability < 0 ) {
+        throw "Error: probability must be between 0 and 100"
+      }
+      var number = Math.random();
+      number = Math.trunc(number*100);
+      if (number < probability) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    _changeUserId: function(item) {
+      userId = item.actor.displayName;
+      console.log(this.accuracyProbability);
+      if(this.probability(this.accuracyProbability))
+        userId = this.language_data.user;
+      return userId;
     },
 
     _responseFollowings: function(event, detail){
@@ -676,6 +711,7 @@ width="380px" height="285px" ><google-youtube> -->
     _updateTimelinePosts: function(user_post){
       // If the post was published inside the period fixed for the page, we add it to the 
       // list of post that are being showed to the user
+      user_post.actor.displayName =  this._changeUserId(user_post);
       if(user_post.published >= this.page_timestamp){
         this.push('timeline_posts', user_post);
         //We increment the var that represents the posts displayed per page
@@ -691,6 +727,8 @@ width="380px" height="285px" ><google-youtube> -->
     _responsePosts: function(event, detail){
       // We reset the params field for the next request of requestPost iron-ajax 
       this.$.requestPosts.setAttribute("params", '{}');
+      this.$.loadMoreDiv.removeAttribute('hidden');
+      this.$.loadingGif.setAttribute('hidden',true);
 
       //Appends all user posts to the user timeline 
       user_posts = detail.response.items;
@@ -714,7 +752,8 @@ width="380px" height="285px" ><google-youtube> -->
 
         // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
 
-        this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken);  
+        this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken); 
+
       }
     },
 
@@ -887,10 +926,11 @@ width="380px" height="285px" ><google-youtube> -->
     // AUXILIAR FUNCTIONS FOR DOM-IF CONDITIONS 
 
 
-    // _thereAreMorePosts: function(item){
-    //   // Checks if there are remaining posts to be displayed
-    //   return (this.last_retrieved_page.length != 0) || (this.next_timeline_posts.length != 0);
-    // },
+    _thereArePosts: function(value){
+      // Checks if there are remaining posts to be displayed
+      var thereAre = this.timeline_posts && this.timeline_posts.length > 0
+      return value == 'true' ? thereAre :!thereAre;
+    },
 
     _hasAttachment: function(item, attachmentType){
       return item.object.attachments[0].objectType === attachmentType;
@@ -902,7 +942,7 @@ width="380px" height="285px" ><google-youtube> -->
     },
 
     _hasArticleCaption: function(item){
-      return (typeof item.object.attachments[0].image.url == 'undefined') && item.object.attachments[0].image.width > 360;
+      return item.object.attachments[0].image.url && item.object.attachments[0].image.width > 360;
     },
 
     _isSharedPost: function(item){
