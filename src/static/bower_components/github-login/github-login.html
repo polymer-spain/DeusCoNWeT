@@ -52,12 +52,9 @@
 
   <template>
     <iron-ajax 
-               id="githubcode" url="{{endpoint}}"
+               id="githubcode"
+	       url="{{endpoint}}"
                method="POST"
-               body='{
-                       "action": "request_token",
-                       "code": "{{code}}"
-                       }'
                handleAs="json"
                on-response='_response'>
     </iron-ajax>
@@ -163,9 +160,12 @@
               var url =   win.document.URL;
               var patron = "code"+"=([^&#]*)";
               var exp = new RegExp(patron);
+              var body; 
               // Ponemos en valor en una variable de la ventana principal
               back.code = exp.exec(url)[1];
+	      body = {code:back.code, action: "request_token"}
               // Llamamos a backend para que obtenga el token
+	      back.$.githubcode.body = JSON.stringify(body);
               back.$.githubcode.generateRequest();
               back.logged = true;
               win.close();
