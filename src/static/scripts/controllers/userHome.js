@@ -204,6 +204,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       var $aditionalQuestion = $('.aditionalQuestion')
       var selected = $aditionalQuestion.children('.iron-selected');
       if ( $aditionalQuestion.length === selected.length) {
+	$('#rate-modal .modal-footer p').hide();
         $('#rate-modal .modal-footer button').hide();
         $scope._submitExtendedQuestionaire();
         $('#aditionalForm').fadeOut('easing',function(){
