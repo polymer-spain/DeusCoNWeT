@@ -10,5 +10,4 @@
 
 angular.module('picbit')
   .controller('PrivacyController', ["$scope", "$routeParams", "$timeout", function($scope, $routeParams,$timeout) {
-  }
-}]);
+  }]);
