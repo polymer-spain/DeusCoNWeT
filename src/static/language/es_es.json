@@ -102,7 +102,7 @@
 	"delete":"Borrar",
 	"noToken": "Sin permisos",
 	"noTokenDescription": "Haz click para loguearte con esta red social antes de usarlo.",
-  "login-title": "Logueate antes de usar ",
-  "login-request": "El componente necesita permisospara funcionar correctamente. Logueate para poder usarlo"
+  "loginTitle": "Logueate antes de usar ",
+  "loginRequest": "El componente necesita permisospara funcionar correctamente. Logueate para poder usarlo"
 
 }

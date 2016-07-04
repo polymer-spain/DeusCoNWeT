@@ -99,8 +99,8 @@
   "delete":"Delete",
   "noToken": "Unauthorized",
   "noTokenDescription":"Click to log in this social network before use it",
-  "login-title": "Log in before use  ",
-  "login-request": "The component requires  permission for works correctly. In order to use it, log in"
+  "loginTitle": "Log in before use  ",
+  "loginRequest": "The component requires  permission for works correctly. In order to use it, log in"
 
 }
 
