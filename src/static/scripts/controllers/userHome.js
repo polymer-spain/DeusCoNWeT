@@ -52,10 +52,12 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       socialNetwork:'instagram',
       img:'images/components/instagram-icon.png',
       description:'Muestra las fotos de Instagram',
-      accessToken: "TODO",
-      endpoint: "TODO" + "/api/aux/instagramTimeline",
-      language: "{{idioma}}"
-
+      tokenAttr: 'accessToken',
+      attributes: {
+        accessToken: $rootScope.user? $rootScope.user.tokens.googleplus : '',
+        endpoint: "{{domain}}" + "/api/aux/instagramTimeline",
+        language: "{{idioma}}"
+      }
     },
     {
       name: 'googleplus-timeline',
@@ -205,7 +207,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $('#rate-modal .modal-footer p').hide();
       var selected = $aditionalQuestion.children('.iron-selected');
       if ( $aditionalQuestion.length === selected.length) {
-	$('#rate-modal .modal-footer p').hide();
+        $('#rate-modal .modal-footer p').hide();
         $('#rate-modal .modal-footer button').hide();
         $scope._submitExtendedQuestionaire();
         $('#aditionalForm').fadeOut('easing',function(){
