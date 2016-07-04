@@ -45,7 +45,7 @@
     })
       .when('/user/:user_id', {
       templateUrl: 'views/userHome.html',
-      controller: 'UserHomeController'/*,
+      controller: 'UserHomeController',
       resolve: {
         auth: ['$q', '$cookies', '$backend', '$rootScope', '$route', function ($q, $cookies, $backend, $rootScope, $route) {
 
@@ -73,7 +73,7 @@
             return $q.reject({authenticated: false});
           }
         }]
-      }*/
+      }
     }).when('/user/:user_id/profile', {
       templateUrl: 'views/userProfile.html',
       controller: 'UserProfileController',
