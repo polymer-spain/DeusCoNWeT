@@ -111,12 +111,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: false,
           refrectToAttrbiute: true
         },
-        clientId: {
+        client_id: {
           type: String,
           value: "",
           refrectToAttrbiute: true
         },
-        redirectUri: {
+        redirect_uri: {
           type: String,
           value: "",
           refrectToAttrbiute: true
@@ -126,15 +126,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: "",
           refrectToAttrbiute: true
         },
-        userId: {
+        user_id: {
           type: String,
           value: "",
           refrectToAttrbiute: true
         }
       },
       _login: function(event, detail, sender) {
-        var oauth_url = "https://instagram.com/oauth/authorize?client_id=" + this.clientId
-        + "&redirect_uri=" + this.redirectUri + "&response_type=token";
+        var oauth_url = "https://instagram.com/oauth/authorize?client_id=" + this.client_id
+        + "&redirect_uri=" + this.redirect_uri + "&response_type=token";
         var win = window.open(oauth_url, "Autoriza la aplicación",'width=800, height=600');
         var back = this;
         var polTimer = window.setInterval(function(){
@@ -146,9 +146,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               var exp = new RegExp(patron);
               back.access_token = exp.exec(url)[1];
               var splited = back.access_token.split('.');
-              back.userId = splited[0];
+              back.user_id = splited[0];
 
-              back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram',userId:back.userId});
+              back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram',userId:back.user_id});
               win.close();
               back.logged = true;
             }
