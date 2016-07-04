@@ -25,7 +25,8 @@ body {
 	background-size: 100% 100%;
 	background-color: black;
 	background-color:(0,0,0,0.7);
-  height: auto;
+	height: auto;
+	min-height: 100vh;
 }
 paper-toolbar.header {
 	background-color: transparent;
