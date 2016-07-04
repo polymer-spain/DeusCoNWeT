@@ -7,11 +7,11 @@
     <link rel="shortcut icon" href="images/logo.png" />
     <meta name="description" content="">
     <base href="/#">
-<!--    <script>
+    <script>
       if (window.location.protocol == "http:"){
         window.location.protocol = "https:";
       }
-    </script>-->
+    </script>
     <title>PicBit</title>
 
     <!-- Polymer -->
@@ -77,7 +77,7 @@
 
     <!--FOOTER -->
     <paper-toolbar class="footer layout horizontal center-justified" ng-show="{{pathname.indexOf('user') == -1}}">
-      <paper-button>{{language.contact}}</paper-button>
+      <paper-button><a href="mailto:deus@conwet.com">{{language.contact}}</a> </paper-button>
       <paper-button ng-click="goto('/about')">{{language.about}}</paper-button>
       <paper-button ng-click="goto('/privacy')">{{language.privacy}}</paper-button>
     </paper-toolbar>
