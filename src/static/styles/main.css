@@ -92,4 +92,13 @@ margin-top:60%;
 #landing-page paper-button{
 	margin-top:50px;
 }
+
+.footer > paper-button:hover{
+  color: cadetblue;
+}
+paper-button > a,
+paper-button >a:hover{
+  text-decoration: none;
+  color:inherit;
+}
 /* USERHOME */
