@@ -121,15 +121,16 @@
             <button type="button" class="close" ng-click='closeModal("#login-modal")' aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-            <h4 class="modal-title">Logueate antes de usar {{loginSelected}}</h4>
+            <h4 class="modal-title">{{language.login-title}} {{loginSelected}}</h4>
           </div>
           <div class="modal-body login-body">
-            <p>El componente necesita permisos en {{loginSelected}} para funcionar correctamente. Logueate para poder usarlos</p>
+            <p>{{language.login-request}}</p>
             <google-login data-role="login" ng-show="loginSelected == 'googleplus'" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" 	callback="{{domain}}" static="true"></google-login>
             <github-login data-role="login" sort scope="user:email" ng-show="loginSelected == 'github'" static endpoint="{{domain}}/api/oauth/github/credenciales" client_id="ae271d42c068cae023b9"></github-login>
             <login-facebook data-role="login" ng-show="loginSelected == 'facebook'" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
             <twitter-login data-role="login" ng-show="loginSelected == 'twitter'" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
-            <instagram-login data-role="login" ng-show="loginSelected == 'instagram'" clientId="9e21b27d7f60498dae9a7f8853c20026" redirectUri="{{domain}}/app/instagram-login/redirect.html"></instagram-login>
+            <instagram-login data-role="login" ng-show="loginSelected == 'instagram'" clientId="34af286560fc492cbabc62285f098047" redirectUri="{{domain}}/app/instagram-login/redirect.html"></instagram-login>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" ng-click='closeModal("#login-modal")'>Close</button>

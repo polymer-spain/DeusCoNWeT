@@ -1,8 +1,9 @@
 div#userProfile {
 	position: absolute;
 	min-width: 100%;
-	min-height: 500px;
-	height: 95%;
+	height: 565px;
+  max-height: 565px;
+  min-height: 565px;
 }
 
 #userProfile > div {

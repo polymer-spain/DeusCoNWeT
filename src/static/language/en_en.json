@@ -1,103 +1,106 @@
 {
-	"language":"Language",
-	"title": "Welcome to PicBit",
-	"login": "Log In",
-	"send": "Send",
-	"logout": "Log out",
-	"entry": "Sign In with your Social Network",
-	"select_network": "Select your social network",
-	"slogan": "Stay tuned on the activity of your friends in social networks",
-	"coming": "Coming Soon",
-	"sub": "Subscribe!",
-	"contact":"Contact",
-	"about":"about us",
-	"privacy":"privacy",
-	"home": "Dashboard",
-	"about_first" :"Deus is a work group who is mainly working with Google tecnologies, particularly those most innovative: GO! programming lenguage, web components Polymer, GoogleCloud (CloudSQL y Cloud Datastore), AppEngine or Google Analytics.",
-	"about_second" : "It arised as a platform to educate students in leading tecnologies, deal with investigation projects and, at the same time, give them a first contact with the work environment. Currently, it has several Final Dissertation and Practicum students working in differents areas.",
-	"lang": {
-		"es":"Español",
-		"en":"English"
-	},
-	"profile":"Profile",
-	"settings":"Settings",
-	"user_action": {
-		"add":"Add",
-		"delete": "Delete",
-		"modify": "Modify",
-		"help": "Help"
-	},
-	"user_profile": {
-		"title" : "User Information",
-		"name" : "First Name",
-		"surname" : "Last Name",
-		"email" : "Email",
-		"save" : "Save",
-		"social" : "Your Social Networks",
-		"email_label": "Email address",
-		"profile_settings":"User settings",
-		"user_information": "User information",
-		"picture": "Picture",
-		"upload": "Upload new image",
-		"profession": "Profession",
-		"phone": "Phone",
-		"age": "Age",
-		"permission": "Click to give permissions "
-		
-	},
+  "language":"Language",
+  "title": "Welcome to PicBit",
+  "login": "Log In",
+  "send": "Send",
+  "logout": "Log out",
+  "entry": "Sign In with your Social Network",
+  "select_network": "Select your social network",
+  "slogan": "Stay tuned on the activity of your friends in social networks",
+  "coming": "Coming Soon",
+  "sub": "Subscribe!",
+  "contact":"Contact",
+  "about":"about us",
+  "privacy":"privacy",
+  "home": "Dashboard",
+  "about_first" :"Deus is a work group who is mainly working with Google tecnologies, particularly those most innovative: GO! programming lenguage, web components Polymer, GoogleCloud (CloudSQL y Cloud Datastore), AppEngine or Google Analytics.",
+  "about_second" : "It arised as a platform to educate students in leading tecnologies, deal with investigation projects and, at the same time, give them a first contact with the work environment. Currently, it has several Final Dissertation and Practicum students working in differents areas.",
+  "lang": {
+    "es":"Español",
+    "en":"English"
+  },
+  "profile":"Profile",
+  "settings":"Settings",
+  "user_action": {
+    "add":"Add",
+    "delete": "Delete",
+    "modify": "Modify",
+    "help": "Help"
+  },
+  "user_profile": {
+    "title" : "User Information",
+    "name" : "First Name",
+    "surname" : "Last Name",
+    "email" : "Email",
+    "save" : "Save",
+    "social" : "Your Social Networks",
+    "email_label": "Email address",
+    "profile_settings":"User settings",
+    "user_information": "User information",
+    "picture": "Picture",
+    "upload": "Upload new image",
+    "profession": "Profession",
+    "phone": "Phone",
+    "age": "Age",
+    "permission": "Click to give permissions "
 
-	"help": {
-		"add": "Allow adding a new component in your timeline. You have to search the component that you want to add and drag it into any place.",
-		"delete": "Allow deleting the components already added in the timeline. You have to select the component that you want to delete and click on the button.",
-		"modify": "Allow modifying the component position. You have to select the component in the list that you want to modify and drag it. When you finish, deselect it."
-	},
-	"close": "Close",
-	"select_id": {
-		"title":"Select your username",
-		"input_title": "Username",
-		"userIdError": "* Username already used",
-		"invalid_username": "Only letters, numbers, '-', or '_'"
-	},
-	"componentAddedEmpty" : "There are no components added",
-	"componentListEmpty": "There are no more components.",
-	"catalog": {
-		"show":"Mostrar Catalogo",
-		"componentList": "Components list",
-		"search": "Search",
-		"rate": "Ratings",
-		"rateUp": "& up",
-		"clear":"clear"
-	},
-	"questionary": {
-		"component": {
-			"verybad": "So bad",
-			"bad": "Bad",
-			"neutral": "At the average",
-			"good": "Good",
-			"verygood": "So good"
-		},
+  },
+
+  "help": {
+    "add": "Allow adding a new component in your timeline. You have to search the component that you want to add and drag it into any place.",
+    "delete": "Allow deleting the components already added in the timeline. You have to select the component that you want to delete and click on the button.",
+    "modify": "Allow modifying the component position. You have to select the component in the list that you want to modify and drag it. When you finish, deselect it."
+  },
+  "close": "Close",
+  "select_id": {
+    "title":"Select your username",
+    "input_title": "Username",
+    "userIdError": "* Username already used",
+    "invalid_username": "Only letters, numbers, '-', or '_'"
+  },
+  "componentAddedEmpty" : "There are no components added",
+  "componentListEmpty": "There are no more components.",
+  "catalog": {
+    "show":"Mostrar Catalogo",
+    "componentList": "Components list",
+    "search": "Search",
+    "rate": "Ratings",
+    "rateUp": "& up",
+    "clear":"clear"
+  },
+  "questionary": {
+    "component": {
+      "verybad": "So bad",
+      "bad": "Bad",
+      "neutral": "At the average",
+      "good": "Good",
+      "verygood": "So good"
+    },
     "about": "Rate the component: ",
     "emptyQuestions": "* Must fill in all questions",
-		"yes":"Yes",
-		"no": "No",
-		"amplied": {
-			"verybad": "Strongly disagree",
-			"bad": "Disagree",
-			"neutral": "Neither agree nor disagree",
-			"good": "Agree",
-			"verygood": "Strongly agree"
-		},
-		"define": "How do you define the component?",
-		"help": "Would you help us fulfilling a survey about the components you have used?",
-		"difficulty": "The component is difficult to be used" ,
-		"design": "The component design is pleasant",
-		"information": "The component information is shown concise and clearly",
-		"share": "Would you share this component?",
-		"recommend": "Would you recommend this component?",
-		"end": "The survey has finished. Thanks for your time"
-	},
-	"delete":"Delete",
-	"noToken": "Unauthorized",
-	"noTokenDescription":"Click to log in this social network before use it"
+    "yes":"Yes",
+    "no": "No",
+    "amplied": {
+      "verybad": "Strongly disagree",
+      "bad": "Disagree",
+      "neutral": "Neither agree nor disagree",
+      "good": "Agree",
+      "verygood": "Strongly agree"
+    },
+    "define": "How do you define the component?",
+    "help": "Would you help us fulfilling a survey about the components you have used?",
+    "difficulty": "The component is difficult to be used" ,
+    "design": "The component design is pleasant",
+    "information": "The component information is shown concise and clearly",
+    "share": "Would you share this component?",
+    "recommend": "Would you recommend this component?",
+    "end": "The survey has finished. Thanks for your time"
+  },
+  "delete":"Delete",
+  "noToken": "Unauthorized",
+  "noTokenDescription":"Click to log in this social network before use it",
+  "login-title": "Log in before use  ",
+  "login-request": "The component requires  permission for works correctly. In order to use it, log in"
+
 }
 
