@@ -1,8 +1,8 @@
 /*global angular */
-angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope', '$cookies', '$q', function ($http, $location, $rootScope, $cookies, $q) {
+angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope', '$cookies', function ($http, $location, $rootScope, $cookies) {
 
   'use strict';
-  
+
   if ($location.host() === "localhost"){
     this.endpoint = "http://" + $location.host() + ":" + $location.port();
   }else {
@@ -155,23 +155,61 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     uri = this.endpoint + '/api/oauth/' + socialNetwork + '/credenciales/' + tokenid;
     request.open('GET', uri, false);
     request.send();
-    /*    request = {
-      methor: 'get',
-      url: uri,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    };*/
+
     return request;
   };
   this.getTokens = function(tokensId) {
     var access_tokens, item, request, data;
     access_tokens = {};
     while(tokensId.length > 0) {
-      item = tokensId.pop();      
+      item = tokensId.pop();
       request  = this.getSingleToken(item.social_network, item.token_id);
       data = JSON.parse(request.response);
       access_tokens[item.social_network] = data.access_token;
-    } 
+    }
     return access_tokens;
   };
 
+  this.addTokens = function(socialNetwork, token_id,access_token, user_id){
+    var uri,
+    params={
+      token_id:token_id,
+      access_token: access_token
+    },
+    request, verb;
+
+    switch (socialNetwork) {
+      case 'github':
+      uri = this.endpoint + '/api/oauth/github/credenciales';
+      verb = 'POST';
+      break;
+      case 'twitter':
+      uri = '/api/oauth/twitter/signup';
+      verb = 'POST';
+      params.user_id = user_id;
+      break;
+      case 'Instagram':
+      uri = '/api/instagram/credenciales';
+      verb = 'PUT';
+      break;
+      case 'googleplus':
+      uri = '/api/oauth/googleplus/signup';
+      verb = 'POST';
+      params.user_id = user_id;
+      break;
+      case 'facebook':
+      uri = '/api/oauth/facebook/signup';
+      verb = 'POST';
+      params.user_id = user_id;
+      break;
+    }
+
+    request = {
+      method: verb,
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    };
+
+    return $http(request);
+  };
 }]);
