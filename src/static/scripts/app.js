@@ -45,35 +45,35 @@
     })
       .when('/user/:user_id', {
       templateUrl: 'views/userHome.html',
-       controller: 'UserHomeController'//,
-      // resolve: {
-      //   auth: ['$q', '$cookies', '$backend', '$rootScope', '$route', function ($q, $cookies, $backend, $rootScope, $route) {
-      //
-      //     var session = $cookies.get('session');
-      //     var userId = $cookies.get('user');
-      //     if ($route.current.params.user_id !== userId) {
-      //       return $q.reject({authorized: false});
-      //     }
-      //     else if (session && userId) {
-      //       var responseUser = $backend.syncGetUser(userId);
-      //
-      //       if (responseUser.status === 200) {
-      //         $rootScope.user = JSON.parse(responseUser.response);
-      //         var tokens = $backend.getTokens($rootScope.user.token_ids);
-      //         $rootScope.user.tokens = tokens;
-      //         $rootScope.isLogged = true;
-      //         return $q.when(session);
-      //
-      //       } else {
-      //         console.error('Error ' + responseUser.status + ': al intentar coger los datos del usuario ' + userId);
-      //         $backend.logout();
-      //         return $q.reject({authenticated: false});
-      //       }
-      //     } else {
-      //       return $q.reject({authenticated: false});
-      //     }
-      //   }]
-      // }
+       controller: 'UserHomeController',
+      resolve: {
+        auth: ['$q', '$cookies', '$backend', '$rootScope', '$route', function ($q, $cookies, $backend, $rootScope, $route) {
+
+          var session = $cookies.get('session');
+          var userId = $cookies.get('user');
+          if ($route.current.params.user_id !== userId) {
+            return $q.reject({authorized: false});
+          }
+          else if (session && userId) {
+            var responseUser = $backend.syncGetUser(userId);
+
+            if (responseUser.status === 200) {
+              $rootScope.user = JSON.parse(responseUser.response);
+              var tokens = $backend.getTokens($rootScope.user.token_ids);
+              $rootScope.user.tokens = tokens;
+              $rootScope.isLogged = true;
+              return $q.when(session);
+
+            } else {
+              console.error('Error ' + responseUser.status + ': al intentar coger los datos del usuario ' + userId);
+              $backend.logout();
+              return $q.reject({authenticated: false});
+            }
+          } else {
+            return $q.reject({authenticated: false});
+          }
+        }]
+      }
     }).when('/user/:user_id/profile', {
       templateUrl: 'views/userProfile.html',
       controller: 'UserProfileController',
