@@ -9,7 +9,6 @@
   "indent": 2,
   "latedef": true,
   "noarg": true,
-  "quotmark": "single",
   "undef": true,
   "unused": true,
   "newcap": false,
@@ -22,6 +21,8 @@
     "app": true,
     "angular": true,
     "console": true,
-    "document": true
+    "document": true,
+    "$": true,
+    "mixpanel":true
   }
 }

@@ -1,4 +1,4 @@
-angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope','$interval', function ($scope, $timeout, $rootScope, $interval) {
+angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope','$interval', '$backend', function ($scope, $timeout, $rootScope, $interval, $backend) {
   'use strict';
   $scope.listComponentAdded = [];
   $scope.itemDescription = "";
@@ -8,43 +8,45 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     if ($target.hasClass('active')){
       $target.removeClass('active');
     } else {
-      $target.parent().children().removeClass('active')
+      $target.parent().children().removeClass('active');
       $target.addClass('active');
     }
 
   };
   $rootScope.user = $rootScope.user || {tokens:{}};
   $scope.catalogList = [
-    {name:'twitter-timeline',
-     rate:5,
-     img:'images/components/twitter-logo.png',
-     tokenAttr: 'access-token',
-     description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa',
-     socialNetwork: 'twitter',
-     attributes: {
-       "access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
-       "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-       "consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
-       "consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
-       endpoint: $scope.domain + "/api/aux/twitterTimeline",
-       component_base: "bower_components/twitter-timeline/static/",
-       language: "{{idioma}}",
-       count: "200"
-     }
+    {
+      name:'twitter-timeline',
+      rate:5,
+      img:'images/components/twitter-logo.png',
+      tokenAttr: 'access-token',
+      description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa',
+      socialNetwork: 'twitter',
+      attributes: {
+        "access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
+        "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
+        "consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
+        "consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+        endpoint: $scope.domain + "/api/aux/twitterTimeline",
+        component_base: "bower_components/twitter-timeline/static/",
+        language: "{{idioma}}",
+        count: "200"
+      }
     },
-    {name:'github-events',
-     rate:4,
-     img:'images/components/github-icon.png',
-     socialNetwork:'github',
-     tokenAttr: 'token',
-     description:'Muestra los eventos sucedidos en github',
-     attributes: {
-       username: "mortega5",
-       token: $rootScope.user ? $rootScope.user.tokens.github:'',
-       mostrar: "10",
-       language: "{{idioma}}",
-       component_directory: 'bower_components/github-events/'
-     }
+    {
+      name:'github-events',
+      rate:4,
+      img:'images/components/github-icon.png',
+      socialNetwork:'github',
+      tokenAttr: 'token',
+      description:'Muestra los eventos sucedidos en github',
+      attributes: {
+        username: "mortega5",
+        token: $rootScope.user ? $rootScope.user.tokens.github:'',
+        mostrar: "10",
+        language: "{{idioma}}",
+        component_directory: 'bower_components/github-events/'
+      }
     },
     {
       name:'instagram-timeline',
@@ -86,31 +88,31 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   ];
   $scope.removeStarFilter = function(){
     $scope.starFilter = undefined;
-  }
+  };
   $scope.removeTextFilter = function(){
     $scope.textFilter = '';
-  }
+  };
   $scope.activeDelCmpList = function(){
     var $list = $('.component-list');
     if (!$list.hasClass('active')){
       $list.addClass('active');
-    } else if($scope.showList == $scope.addedList) {
+    } else if($scope.showList === $scope.addedList) {
       $list.removeClass('active');
     }
-  }
+  };
   $scope.removeElement = function(id){
     var finded = false;
 
     for (var i = 0;i< $scope.listComponentAdded.length && !finded;i++){
-      if ($scope.listComponentAdded[i].name == id){
+      if ($scope.listComponentAdded[i].name === id){
         finded = true;
         $scope.listComponentAdded.splice(i,1);
 
       }
     }
-  }
+  };
   $scope.blurList = function(e){
-    if ($scope.itemDescription = $scope.listComponentAdded){
+    if ($scope.itemDescription === $scope.listComponentAdded) {
       // del activated
       var index = $(e.currentTarget).attr('data-index');
       var id = $scope.listComponentAdded.splice(index,1)[0];
@@ -119,47 +121,47 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $(element)[0].setAttribute('disabled',false);
       $(id.name).parent().remove();
     }
-  }
+  };
   $('#userHome').click(function(event){
     if (!event.target.hasAttribute('data-button') && !event.target.hasAttribute('data-list')){
       $('.component-list').removeClass('active');
       $('.menu-buttons').children().removeClass('active');
     }
-  })
+  });
 
   $(document).on('keydown', function(e){
     e.stopPropagation();
     if (e.keyCode === 27 && $('#login-modal').is(':visible')){
-      $('#login-modal').modal('toggle');	
+      $('#login-modal').modal('toggle');
     } else if (e.keyCode === 27 && $('#store-modal').is(':visible')){
-      $('#store-modal').modal('toggle');	
+      $('#store-modal').modal('toggle');
     }
-  })
+  });
   $('#store-modal').on('hidden.bs.modal',function(){
     if ($('#login-modal').is(':visible')){
       $('#login-modal').modal('toggle');
     }
-  })
+  });
   $scope.toggleCatalog = function(){
     if ($('#login-modal').is(':visible')){
       $('#login-modal').modal('toggle');
     }
     $('#store-modal').modal('toggle');
-  }
+  };
 
 
   $scope.setToken = function(socialNetwork, value){
     for(var i = 0; i< $scope.catalogList.length;i++){
       var element = $scope.catalogList[i];
-      if (element.socialNetwork == socialNetwork){
+      if (element.socialNetwork === socialNetwork){
         element.attributes[element.tokenAttr] = value;
       }
     }
-  }
+  };
   $scope.closeModal = function(selector){
     $(selector).modal('toggle');
-  }
-  $scope.login = function(name, e){
+  };
+  $scope.login = function(name){
     $scope.loginSelected = name.split('-')[0];
     $('#login-modal').modal('toggle');
   };
@@ -168,6 +170,13 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.platformUsedTime = 0;
   $scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
   $scope.formLoadTime = 60000; // Indicates when we'll show to the user the form
+
+
+  var platformTimeHandler = $interval(function(){
+    if(document.visibilityState === "visible" ){
+      $scope.platformUsedTime += $scope.intervalTime;
+    }
+  }, $scope.intervalTime);
 
   $scope.$watch("platformUsedTime", function(newValue, oldValue){
     if (newValue!==oldValue && newValue >= $scope.formLoadTime && $scope.listComponentAdded.length >0) {
@@ -188,7 +197,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
     }
     return $scope.randomComponent;
-  }
+  };
   $scope.submitRating = function(){
     if (!$('#aditionalForm').is(':visible')){
       if ($('#initialQuestion paper-radio-group')[0].selected){
@@ -196,9 +205,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $scope._submitQuestionaire();
         $('#initialQuestion').fadeOut( "easing", function() {
           $('#aditionalForm').fadeIn('easing', function(){
-          })
+          });
         });
-        console.log('TODO registrar datos en algun lado')
+        console.log('TODO registrar datos en algun lado');
       } else {
         $('#rate-modal .modal-footer p').show();
       }
@@ -214,29 +223,30 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           $('#thanksInfo').show();
           $('#rate-modal .modal-footer button').hide();
           $('#rate-modal .modal-footer #closeRateModal').show();
-        })
+        });
         console.log('TODO mandar mensaje de error a la base de datos');
       } else {
         $('#rate-modal .modal-footer p').show();
       }
     }
-  }
+  };
 
-  $scope._submitQuestionaire = function(event){
+  $scope._submitQuestionaire = function(){
     var question_id = "initialQuestion";
     var answer = $('#initialQuestion paper-radio-group')[0].selected;
     var question_text = $('#initialQuestion paper-radio-group').children('.iron-selected').html() || "";
     if (answer!== undefined && question_text !== ""){
       //We send an event to Mixpanel
-      var properties = {"selection": answer, 
-                        "question_type": "obligatory",
-                        "question": question_text,
-                        "component": $scope.randomComponent,
-                        "timestamp": Date.now()
-                       };
+      var properties = {
+        "selection": answer,
+        "question_type": "obligatory",
+        "question": question_text,
+        "component": $scope.randomComponent,
+        "timestamp": Date.now()
+      };
       mixpanel.track(question_id, properties);
     }
-  }
+  };
 
   $scope._submitExtendedQuestionaire = function(){
     // We get the responses for every question
@@ -248,35 +258,33 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     Array.prototype.forEach.call(aditional_questions, function(question){
       answer = question.selected || "";
       question_text = $(question).children('.iron-selected').html() || "";
-      if (answer!= "" && question_text != ""){
-        mixpanel_event = {"event_name": question.id,
-                          "selection": answer,
-                          "question": question_text
-                         };
+      if (answer !== "" && question_text !== ""){
+        mixpanel_event = {
+          "event_name": question.id,
+          "selection": answer,
+          "question": question_text
+        };
         mixpanel_event_list.push(mixpanel_event); // qué hace exactamente el push?
       }
     });
-    // We check if the user has anwered all questions     
+    // We check if the user has anwered all questions
     var mixpanel_properties = {};
-    if (mixpanel_event_list.length == aditional_questions.length){
+    if (mixpanel_event_list.length === aditional_questions.length){
       for (var i = 0; i< mixpanel_event_list.length; i++) {
         // We send the responses to Mixpanel
-        mixpanel_event = mixpanel_event_list[i]
-        mixpanel_properties = {"selection": mixpanel_event.selection,
-                               "question": mixpanel_event.question,
-                               "question_type": "optional",
-                               "component": $scope.randomComponent, // Se manda la versión?
-                               "timestamp": Date.now() };
+        mixpanel_event = mixpanel_event_list[i];
+        mixpanel_properties = {
+          "selection": mixpanel_event.selection,
+          "question": mixpanel_event.question,
+          "question_type": "optional",
+          "component": $scope.randomComponent, // Se manda la versión?
+          "timestamp": Date.now()
+        };
         mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
         // We hide the user form
-      } 
+      }
     }
-  }
-  var platformTimeHandler = $interval(function(){
-    if(document.visibilityState === "visible" ){
-      $scope.platformUsedTime += $scope.intervalTime;
-    }
-  }, $scope.intervalTime);
+  };
 
 
   // Callback when login finish
@@ -284,15 +292,21 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     function loginCallback(e){
       //falta registralo
       $scope.$apply(function(){
-        $rootScope.user.tokens[e.detail.redSocial] = e.detail.token;
-        $scope.setToken(e.detail.redSocial, e.detail.token);
+        var socialNetwork = e.detail.redSocial;
+        var token = e.detail.token;
+
+        $rootScope.user.tokens[socialNetwork] = token;
+        $scope.setToken(socialNetwork, token);
         $('#login-modal').modal('toggle');
-      })
+        $backend.addTokens(socialNetwork, token, $scope.user.user_id).error(function(){
+          console.error('Algo fue mal al intentar guardar los tokens de ' + socialNetwork);
+        });
+      });
     }
     $('#login-modal google-login')[0].addEventListener('google-logged', loginCallback);
     $('#login-modal github-login')[0].addEventListener('github-logged', loginCallback);
     $('#login-modal instagram-login')[0].addEventListener('instagram-logged', loginCallback);
     $('#login-modal twitter-login')[0].addEventListener('twitter-logged', loginCallback);
     $('#login-modal login-facebook')[0].addEventListener('facebook-logged', loginCallback);
-  })()
+  })();
 }]);
