@@ -1,13 +1,12 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-header-panel/paper-header-panel.html">
-<link rel="import" href="../paper-styles/paper-styles.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 <dom-module id="facebook-wall">
-
   <template>
     <style is="custom-style">
       :host {
@@ -15,8 +14,8 @@
         color: black;
         min-width: 300px;
         min-height: 350px;
-        width:  --facebook-wall-width: 450px;
-        height:  --facebook-wall-height: 450px;
+        width:  var(--facebook-wall-width, 450px);
+        height:  var(--facebook-wall-height, 450px);
       }
       paper-header-panel {
 
@@ -27,6 +26,7 @@
       div.paper-header {
         height: 60px;
         font-size: 16px;
+        width: var(--facebook-wall-width);
         line-height: 60px;
         padding: 0 10px;
         color: white;
@@ -94,8 +94,10 @@
 
       }
       .photo-source {
-        max-width: 300px;
-        /*max-height: 30px;*/
+        width: 80%;
+        margin:0 auto;
+        display: block
+          /*max-height: 30px;*/
       }
       .postLikes > p {
         font-size: 12px;
@@ -240,6 +242,13 @@
                     </template>
                   </template>
 
+                  <!-- added video-->
+                  <template is="dom-if" if="{{_isType(item.linked.status_type, 'added_video')}}">
+                    <p class="">{{item.message}}</p>
+                    <video class="photo-source" controls>
+                      <source src="{{item.source}}"/>
+                    </video>
+                  </template>
                   <!-- shared_story case -->
                   <template is="dom-if" if="{{_isType(item.linked.status_type, 'shared_story')}}">
                     <!-- Description -->
@@ -260,7 +269,7 @@
                           <template is="dom-if" if="{{_isNoType(item.linked.caption, 'youtube.com')}}">
                             <!-- How do we parse instragam's videos -->
                             <video class="photo-source" controls>
-                              We cant show this video yet.
+                              <source src="{{item.source}}"/>
                             </video>
 
                           </template>
@@ -295,8 +304,11 @@
                   <template is="dom-if" if="{{_isType(item.status_type, 'mobile_status_update')}}">
                     <p>{{item.story}}</p>
                   </template>
-
+                  <template is="dom-if" if="{{_isType(item.status_type, 'added_photos')}}">
+                    <img class="photo-source" src="{{item.picture}}">
+                  </template>
                 </template>
+
               </div>
 
               <!-- Likes, comments and shares -->
@@ -443,14 +455,26 @@ access_token={{access_token}}&summary=true -->
         var pattern = "url" + "=([^&]*)";
         var exp = new RegExp(pattern);  
         var result = exp.exec(fullUrl)
-        var url = result && result.lenght >1 ? result[1] : ""
+        var url = result && result.length >1 ? result[1] : ""
+        var id;
         url = url.replace(/%2F/g,"/");
         url =  url.replace(/%3A/g,":");
         url =  url.replace(/%3F/g,"?");
         url =  url.replace(/%3D/g,"=");
         url =  url.replace(/%26/g,"&");
+        if (url.indexOf('fbstaging')>-1){
+          url = fullUrl.replace(/w=[^&]*/,'w=500')
+          url = url.replace(/h=[^&]*/,'h=500')
+        }
         if (url.indexOf("www.facebook.com") > -1 ) {
           url += "&access_token=" + this.access_token;
+        }
+        if (item.linked && item.linked.id && item.linked.status_type === 'added_photos')  {
+          id = item.linked.id.split('_')[1];
+          url = 'https://graph.facebook.com/' + id + '/picture?access_token=' + this.access_token;
+        } else if (item.id && item.status_type === 'added_photos'){
+          id = item.id.split('_')[1];
+          url = 'https://graph.facebook.com/' + id + '/picture?access_token=' + this.access_token;
         }
         return url;
       },
@@ -612,7 +636,10 @@ access_token={{access_token}}&summary=true -->
           if (list[i].name == list[i+1].from.name) {
             this.set("events." + i + ".linked", list[i+1])
             this.splice("events", i+1, 1);
-          } 
+          } else if (list[i].picture === list[i+1].picture) {
+            this.set("events." + i + ".linked", list[i+1])
+            this.splice("events", i+1, 1);
+          }
           if (list[i].message) {
             this.set("events." + i + ".message", list[i].message.replace(/(?:\r\n|\r|\n)/g, "<br>"));
             this.set("events." + i + ".message", this._parseText(list[i].message));
@@ -649,4 +676,3 @@ access_token={{access_token}}&summary=true -->
     });
   </script>
 </dom-module>
-

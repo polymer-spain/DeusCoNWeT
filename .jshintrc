@@ -23,6 +23,5 @@
     "angular": true,
     "console": true,
     "document": true
-  },
-  "no-console": false
+  }
 }
