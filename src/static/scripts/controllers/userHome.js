@@ -1,4 +1,5 @@
-angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope','$interval', '$backend', function ($scope, $timeout, $rootScope, $interval, $backend) {
+angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope','$interval', '$backend','$http', function ($scope, $timeout, $rootScope, $interval,
+   $backend, $http) {
   'use strict';
   $scope.listComponentAdded = [];
   $scope.itemDescription = "";
@@ -298,6 +299,27 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $rootScope.user.tokens[socialNetwork] = token;
         $scope.setToken(socialNetwork, token);
         $('#login-modal').modal('toggle');
+
+        switch(socialNetwork) {
+          case 'googleplus':
+            var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
+            $http.get(uri).success(function (responseData) {
+              $backend.addTokens(socialNetowrk, responseData.id, token, user.user_id)
+            });
+            break;
+          case 'twitter':
+            uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+            $http.get(uri).success(function (responseData) {
+              e.detail.userId = responseData.token_id;
+              $scope.loginProcess(e.detail);
+            }).error(function() {
+              console.log('Problemas al intentar obtener el token_id de un usuario' );
+            });
+            break;
+          default:
+            $scope.loginProcess(e.detail);
+            break;
+        };
         $backend.addTokens(socialNetwork, token, $scope.user.user_id).error(function(){
           console.error('Algo fue mal al intentar guardar los tokens de ' + socialNetwork);
         });
