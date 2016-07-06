@@ -145,7 +145,7 @@ function ($http, $location, $rootScope, $cookies) {
   };
 
   // Añade un token de una recial al sistema
-  this.addTokens = function(socialNetwork, token_id, access_token, user_id){
+  this.addTokens = function(socialNetwork, token_id, access_token, user_id, oauth_verifier){
     var uri,
     data = 'token_id=' + token_id + '&access_token=' + access_token,
     request, verb;
@@ -158,7 +158,7 @@ function ($http, $location, $rootScope, $cookies) {
       case 'twitter':
       uri = '/api/oauth/twitter/signup';
       verb = 'POST';
-      data += '&user_identifier=' + user_id;
+      data += '&user_identifier=' + user_id + "&oauth_verifier=" + oauth_verifier;
       break;
       case 'Instagram':
       uri = '/api/instagram/credenciales';
@@ -175,7 +175,6 @@ function ($http, $location, $rootScope, $cookies) {
       data += '&user_identifier=' + user_id;
       break;
     }
-    data = 'token_id=' + token_id + '&access_token=' + access_token;
     request = {
       method: verb,
       url: uri,

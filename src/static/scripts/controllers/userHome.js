@@ -330,7 +330,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
               uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
               $http.get(uri).success(function (responseData) {
                 e.detail.userId = responseData.token_id;
-                $backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
+                $backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
               }).error(function() {
                 console.log('Problemas al intentar obtener el token_id de un usuario' );
               });
