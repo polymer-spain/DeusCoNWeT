@@ -145,7 +145,7 @@ function ($http, $location, $rootScope, $cookies) {
   };
 
   // Añade un token de una recial al sistema
-  this.addTokens = function(socialNetwork, token_id,access_token, user_id){
+  this.addTokens = function(socialNetwork, token_id, access_token, user_id){
     var uri,
     params={
       token_id:token_id,
@@ -170,7 +170,7 @@ function ($http, $location, $rootScope, $cookies) {
       case 'googleplus':
       uri = '/api/oauth/googleplus/signup';
       verb = 'POST';
-      params.user_id = user_id;
+      params.user_identifier = user_id;
       break;
       case 'facebook':
       uri = '/api/oauth/facebook/signup';
