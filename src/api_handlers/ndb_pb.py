@@ -128,13 +128,23 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
   #               ,description=self.description, nStars=self.stars,
   #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
+
 class ComponentAttributes(ndb.Model):
   access_token = ndb.StringProperty()
   secret_token = ndb.StringProperty()
   consumer_key = ndb.StringProperty()
   consumer_secret = ndb.StringProperty()
   endpoint = ndb.StringProperty()
-  component_base = ndb.StringProperty()
+  component_base = ndb.StringProperty(default="bower_components/twitter-timeline/static/")
+  language = ndb.StringProperty(default=":language")
+  count = ndb.IntegerProperty(default=200)
+  username = ndb.StringProperty(default=":user")
+  token = ndb.StringProperty(default="")
+  mostrar = ndb.IntegerProperty(default=10)
+  component_directory = ndb.StringProperty()
+  accessToken = ndb.StringProperty(default="")
+  endpoint = ndb.StringProperty(default=":domain/api/aux/instagramTimeline")
+  access_token = ndb.StringProperty(default="")
 
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
@@ -158,6 +168,7 @@ class Component(ndb.Model):
   predetermined = ndb.BooleanProperty(default=False)
   # Preasigned version to load the component. It needs to be confirmed
   preasigned_version = ndb.StringProperty()
+  attributes = ndb.StructuredProperty(ComponentAttributes)
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
