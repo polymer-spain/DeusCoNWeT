@@ -13,7 +13,7 @@
   app.config(['$locationProvider', '$routeProvider', '$httpProvider', function ($locationProvider, $routeProvider, $httpProvider) {
     $httpProvider.defaults.withCredentials = true;
     $routeProvider
-      .when('/', {
+    .when('/', {
       templateUrl: 'views/landingPage.html',
       controller: 'MainController',
       resolve: {
@@ -43,9 +43,9 @@
         }]
       }
     })
-      .when('/user/:user_id', {
+    .when('/user/:user_id', {
       templateUrl: 'views/userHome.html',
-        controller: 'UserHomeController',
+      controller: 'UserHomeController',
       resolve: {
         auth: ['$q', '$cookies', '$backend', '$rootScope', '$route', function ($q, $cookies, $backend, $rootScope, $route) {
 
@@ -106,19 +106,19 @@
         }]
       }
     })
-      .when('/about', {
+    .when('/about', {
       templateUrl: 'views/about.html',
       controller: 'AboutController'
     })
-      .when('/contact', {
+    .when('/contact', {
       templateUrl: 'views/contact.html',
       controller: 'ContactController'
     })
-      .when('/privacy', {
+    .when('/privacy', {
       templateUrl: 'views/privacy.html',
       controller: 'PrivacyController'
     })
-      .when('/selectId', {
+    .when('/selectId', {
       templateUrl: 'views/selectId.html',
       controller: 'SelectidController',
       resolve: {
@@ -135,7 +135,7 @@
       }
     })
     /* Por defecto */
-      .otherwise({
+    .otherwise({
       redirectTo: '/'
     });
     $locationProvider.html5Mode(true);
