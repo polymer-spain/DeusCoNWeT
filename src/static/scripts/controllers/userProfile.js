@@ -73,6 +73,7 @@ function ($scope, $rootScope, $backend, $http) {
 			var token = e.detail.token;
 			var registerTokenError = function(){
 				$scope.showToastr('error',$scope.language.add_token_error);
+				$rootScope.user.tokens[socialNetwork] = '';
 			};
 			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;
