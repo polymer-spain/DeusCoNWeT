@@ -128,7 +128,7 @@ class UserHandler(SessionHandler):
               component = ndb_pb.getComponentEntity(comp["component_id"])
               ref = "centauro.ls.fi.upm.es/bower_components/" + \
                     comp["component_id"] + component["preversion"] + "/" + \
-                    comp.["component_id"] + ".html"
+                    comp["component_id"] + ".html"
               refs_list.append(ref)
             user_info["references"] = refs_list
             self.response.content_type = "application/json"
