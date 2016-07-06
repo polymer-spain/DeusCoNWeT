@@ -161,7 +161,7 @@ function ($http, $location, $rootScope, $cookies) {
       data += '&user_identifier=' + user_id + "&oauth_verifier=" + oauth_verifier;
       break;
       case 'instagram':
-      uri = '/api/instagram/credenciales';
+      uri = '/api/oauth/instagram/credenciales';
       verb = 'PUT';
       break;
       case 'googleplus':
