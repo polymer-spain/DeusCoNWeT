@@ -102,3 +102,6 @@ paper-button >a:hover{
   color:inherit;
 }
 /* USERHOME */
+.toastr-error {
+opacity: 1 !important;
+}
