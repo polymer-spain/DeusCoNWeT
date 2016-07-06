@@ -1,16 +1,16 @@
 @font-face {
 	font-family: archistico;
-	src: url('../fonts/ArchisticoBold.ttf') format('truetype');
+	src: url('../fonts/ArchisticoBold.ttf');
 }
 
 @font-face {
 	font-family: fortune;
 	src: url(../fonts/FortuneCity.ttf);
 }
-.main-container-view {
+#view {
 	position:relative;
 }
-.main-container-view > div {
+#view > div {
 	position: absolute;
 	min-height: 100%;
 	min-width: 100%;
@@ -24,16 +24,16 @@ body {
 	background-attachment: fixed;
 	background-size: 100% 100%;
 	background-color: black;
-	background-color:rgba(0,0,0,0.7);
+	background-color:(0,0,0,0.7);
 	height: auto;
 	min-height: 100vh;
 }
 paper-toolbar.header {
 	background-color: transparent;
 }
-paper-toolbar.header .logo {
+paper-toolbar.header paper-icon-button.logo {
 	margin-right: 5px;
-	padding:0 !important;
+	padding:0px !important;
 }
 paper-toolbar.header .title {
 	color:white;
@@ -45,7 +45,7 @@ paper-toolbar.header .title {
 	cursor: pointer;
 }
 .dropdown {
-	padding: 0;
+	padding: 0px;
 }
 .dropdown-menu {
 	min-width: inherit;
@@ -67,7 +67,7 @@ paper-toolbar.header .title {
 	text-shadow: none;
 	font-weight: bold;
 	text-transform: uppercase;
-	border:0;
+	border:0px;
 	box-shadow: none;
 }
 paper-toolbar.footer {
@@ -77,19 +77,19 @@ paper-toolbar.footer {
 .log-button {
   margin:auto 15px;
 }
-.login-popup-frontpage .modal-content {
+#login-popup .modal-content {
 margin-top:60%;
 }
-.landing-page-view{
+#landing-page{
 	padding-top:10%;
 }
-.landing-page-view h1,
-.landing-page-view h3 {
+#landing-page h1,
+#landing-page h3 {
 	color:#eee;
 	max-width: 500px;
 	text-align: center;
 }
-.landing-page-view paper-button{
+#landing-page paper-button{
 	margin-top:50px;
 }
 
