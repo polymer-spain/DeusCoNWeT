@@ -314,7 +314,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           var registerTokenError = function(){
             console.error('Algo fue mal al intentar guardar los tokens de ' + socialNetwork);
           };
-
+          $rootScope.user = $rootScope.user || {tokens:{}};
           $rootScope.user.tokens[socialNetwork] = token;
           $scope.setToken(socialNetwork, token);
           $('#login-modal').modal('toggle');
@@ -326,7 +326,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
                 $backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
               });
               break;
-            case 'twitter':
+              case 'twitter':
               uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
               $http.get(uri).success(function (responseData) {
                 e.detail.userId = responseData.token_id;
@@ -336,7 +336,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
               });
               break;
             default:
-              $backend.addTokens(socialNetwork, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
+              $backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
               break;
           }
 

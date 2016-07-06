@@ -55,7 +55,7 @@ function ($scope, $rootScope, $backend, $http) {
 			var registerTokenError = function(){
 				console.error('Algo fue mal al intentar guardar los tokens de ' + socialNetwork);
 			};
-
+			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;
 
 			switch(socialNetwork) {
@@ -75,7 +75,7 @@ function ($scope, $rootScope, $backend, $http) {
 					});
 					break;
 				default:
-					$backend.addTokens(socialNetwork, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
+					$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
 					break;
 			}
 		});
