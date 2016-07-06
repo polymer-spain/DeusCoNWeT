@@ -128,6 +128,13 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
   #               ,description=self.description, nStars=self.stars,
   #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
+class ComponentAttributes(ndb.Model):
+  access_token = ndb.StringProperty()
+  secret_token = ndb.StringProperty()
+  consumer_key = ndb.StringProperty()
+  consumer_secret = ndb.StringProperty()
+  endpoint = ndb.StringProperty()
+  component_base = ndb.StringProperty()
 
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
