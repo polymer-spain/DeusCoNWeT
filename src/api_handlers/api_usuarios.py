@@ -124,7 +124,7 @@ class UserHandler(SessionHandler):
             refs_list = []
             components_list = ndb_pb.getComponents()
             for comp in components_list:
-              component = ndb_pb.getComponentEntity(comp["component_id"])
+              component = ndb_pb.getComponentEntity(comp.component_id)
               ref = "centauro.ls.fi.upm.es/bower_components/" + \
                     comp.component_id + component["preversion"] + "/" + \
                     comp.component_id + ".html"
