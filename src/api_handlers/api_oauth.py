@@ -625,8 +625,6 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         # Cogemos el codigo de la peticion
 	body = json.loads(self.request.body)
         code = body.get('code')
-	logging.info('Codigo: ' + code)
-        # Indicamos los parametros de la peticion a github
         params_token = urllib.urlencode({"client_id": client_id,
                 "client_secret": client_secret, "code": code})
         # Realizamos la peticion en la conexion
