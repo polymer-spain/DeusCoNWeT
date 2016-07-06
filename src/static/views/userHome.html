@@ -35,7 +35,7 @@
   </div>
 
   <div id="help-popup" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-md">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
@@ -65,14 +65,14 @@
       <!-- Modal content-->
       <div class="modal-content store vertical layout flex">
         <div class="modal-header">
-          <button type="button" class="close" ng-click='closeModal("#store-modal")'>&times;</button>
+          <button type="button" class="close" ng-click="closeModal('#store-modal')">&times;</button>
           <h4 class="modal-title">{{language.catalog.componentList}}</h4>
         </div>
         <div class="modal-body store flex horizontal layout">
           <div id="searchCatalog" class="vertical layout">
             <div class="btn-group">
               <input type="text" ng-model="textFilter" class="form-control" placeholder="{{language.catalog.search}}" aria-describedby="basic-addon1">
-              <span id="searchclear" ng-click="removeTextFilter()"class="glyphicon glyphicon-remove-circle"></span>
+              <span id="searchclear" ng-click="removeTextFilter()" class="glyphicon glyphicon-remove-circle"></span>
             </div>
             <hr>
             <div class="horizontal layout title">
@@ -118,7 +118,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content modal-md">
           <div class="modal-header">
-            <button type="button" class="close" ng-click='closeModal("#login-modal")' aria-label="Close">
+            <button type="button" class="close" ng-click="closeModal('#login-modal')" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
             <h4 class="modal-title">{{language.loginTitle}} {{loginSelected}}</h4>
@@ -133,7 +133,7 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click='closeModal("#login-modal")'>Close</button>
+            <button type="button" class="btn btn-primary" ng-click="closeModal('#login-modal')">Close</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -184,7 +184,7 @@
             </form>
 
             <form is="iron-form">
-              <p class="questionText">{{language.questionary.information}}</p>     
+              <p class="questionText">{{language.questionary.information}}</p>
               <paper-radio-group id="question4" class="aditionalQuestion">
                 <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
                 <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
@@ -225,8 +225,4 @@
 
     </div>
   </div>
-
-
-
-
-
+</div>
