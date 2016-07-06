@@ -72,8 +72,10 @@ function ($scope, $rootScope, $backend, $http) {
 			var socialNetwork = e.detail.redSocial;
 			var token = e.detail.token;
 			var registerTokenError = function(){
-				$scope.showToastr('error',$scope.language.add_token_error);
-				$rootScope.user.tokens[socialNetwork] = '';
+				$scope.$apply(function(){
+					$scope.showToastr('error',$scope.language.add_token_error);
+					$rootScope.user.tokens[socialNetwork] = token;
+				})
 			};
 			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;

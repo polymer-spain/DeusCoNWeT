@@ -75,10 +75,10 @@ paper-toolbar.footer {
 }
 
 .log-button {
-  margin:auto 15px;
+	margin:auto 15px;
 }
 #login-popup .modal-content {
-margin-top:60%;
+	margin-top:60%;
 }
 #landing-page{
 	padding-top:10%;
@@ -94,14 +94,14 @@ margin-top:60%;
 }
 
 .footer > paper-button:hover{
-  color: cadetblue;
+	color: cadetblue;
 }
 paper-button > a,
 paper-button >a:hover{
-  text-decoration: none;
-  color:inherit;
+	text-decoration: none;
+	color:inherit;
 }
 /* USERHOME */
-.toastr-error {
-opacity: 1 !important;
+.toast-error {
+	opacity: 1 !important;
 }
