@@ -46,45 +46,65 @@ function ($scope, $rootScope, $backend, $http) {
 	$scope.existToken = function(socialNetwork){
 		return $scope.user && $scope.user.tokens[socialNetwork];
 	};
-
+	$scope.showToastr = function(type, message, time){
+		toastr.options = {
+			"closeButton": false,
+			"debug": false,
+			"newestOnTop": false,
+			"progressBar": false,
+			"positionClass": "toast-top-right",
+			"preventDuplicates": false,
+			"onclick": null,
+			"showDuration": "300",
+			"hideDuration": "1000",
+			"timeOut": "5000",
+			"extendedTimeOut": time || "5000",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "fadeIn",
+			"hideMethod": "fadeOut"
+		};
+		toastr[type](message);
+	};
 	function loginCallback(e){
 		//falta registralo
 		$scope.$apply(function(){
 			var socialNetwork = e.detail.redSocial;
 			var token = e.detail.token;
 			var registerTokenError = function(){
-				console.error('Algo fue mal al intentar guardar los tokens de ' + socialNetwork);
+				$scope.showToastr('danger',$scope.language.add_token_error);
 			};
-
+			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;
 
 			switch(socialNetwork) {
 				case 'googleplus':
-					var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
-					$http.get(uri).success(function (responseData) {
-						$backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
-					});
-					break;
+				var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
+				$http.get(uri).success(function (responseData) {
+					$backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
+				});
+				break;
 				case 'twitter':
-					uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-					$http.get(uri).success(function (responseData) {
-						e.detail.userId = responseData.token_id;
-						$backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
+				uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+				$http.get(uri).success(function (responseData) {
+					e.detail.userId = responseData.token_id;
+					$backend.addTokens(socialNetwork, responseData.token_id, token,
+						$scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
 					}).error(function() {
 						console.log('Problemas al intentar obtener el token_id de un usuario' );
 					});
 					break;
-				default:
-					$backend.addTokens(socialNetwork, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
+					default:
+					$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
 					break;
-			}
-		});
-	}
-	(function(){
-		$('#socialNetwork google-login')[0].addEventListener('google-logged', loginCallback);
-		$('#socialNetwork github-login')[0].addEventListener('github-logged', loginCallback);
-		$('#socialNetwork instagram-login')[0].addEventListener('instagram-logged', loginCallback);
-		$('#socialNetwork twitter-login')[0].addEventListener('twitter-logged', loginCallback);
-		$('#socialNetwork login-facebook')[0].addEventListener('facebook-logged', loginCallback);
-	})();
-}]);
+				}
+			});
+		}
+		(function(){
+			$('#socialNetwork google-login')[0].addEventListener('google-logged', loginCallback);
+			$('#socialNetwork github-login')[0].addEventListener('github-logged', loginCallback);
+			$('#socialNetwork instagram-login')[0].addEventListener('instagram-logged', loginCallback);
+			$('#socialNetwork twitter-login')[0].addEventListener('twitter-logged', loginCallback);
+			$('#socialNetwork login-facebook')[0].addEventListener('facebook-logged', loginCallback);
+		})();
+	}]);

@@ -5,9 +5,26 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // TODO se deberan coger de la lista que se registra en usuario
     $scope.listComponentAdded = [];
 
-    // Descripcion de los botones, en principio es vacia
-    // TODO ¿se puede quitar ?
-    $scope.itemDescription = "";
+    $scope.showToastr = function(type, message, time){
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": time || "5000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      };
+      toastr[type](message);
+    };
     // Logica que dice que botones del a barra lateral estan activos y cuales
     // han de desactivarse
     $scope.selectListButton = function(e){
@@ -126,12 +143,12 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
     $scope.blurList = function(e){
       // del activated
-        var index = $(e.currentTarget).attr('data-index');
-        var id = $scope.listComponentAdded.splice(index,1)[0];
-        $scope.showList = $scope.listComponentAdded;
-        var element = '[id-element="' + id.name + '"]';
-        $(element)[0].setAttribute('disabled',false);
-        $(id.name).parent().remove();
+      var index = $(e.currentTarget).attr('data-index');
+      var id = $scope.listComponentAdded.splice(index,1)[0];
+      $scope.showList = $scope.listComponentAdded;
+      var element = '[id-element="' + id.name + '"]';
+      $(element)[0].setAttribute('disabled',false);
+      $(id.name).parent().remove();
     };
 
     // Cierra las listas cuando se pulsa sobro cualquier otro lado del dashboard
@@ -312,32 +329,32 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           var socialNetwork = e.detail.redSocial;
           var token = e.detail.token;
           var registerTokenError = function(){
-            console.error('Algo fue mal al intentar guardar los tokens de ' + socialNetwork);
+            $scope.showToastr('danger',$scope.language.add_token_error);
           };
-
+          $rootScope.user = $rootScope.user || {tokens:{}};
           $rootScope.user.tokens[socialNetwork] = token;
           $scope.setToken(socialNetwork, token);
           $('#login-modal').modal('toggle');
 
           switch(socialNetwork) {
             case 'googleplus':
-              var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
-              $http.get(uri).success(function (responseData) {
-                $backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
-              });
-              break;
+            var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
+            $http.get(uri).success(function (responseData) {
+              $backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
+            });
+            break;
             case 'twitter':
-              uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-              $http.get(uri).success(function (responseData) {
-                e.detail.userId = responseData.token_id;
-                $backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
-              }).error(function() {
-                console.log('Problemas al intentar obtener el token_id de un usuario' );
-              });
-              break;
+            uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+            $http.get(uri).success(function (responseData) {
+              e.detail.userId = responseData.token_id;
+              $backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
+            }).error(function() {
+              console.log('Problemas al intentar obtener el token_id de un usuario' );
+            });
+            break;
             default:
-              $backend.addTokens(socialNetwork, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
-              break;
+            $backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
+            break;
           }
 
         });

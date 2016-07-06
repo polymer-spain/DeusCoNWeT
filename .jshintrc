@@ -23,6 +23,7 @@
     "console": true,
     "document": true,
     "$": true,
-    "mixpanel":true
+    "mixpanel":true,
+    "toastr": true
   }
 }

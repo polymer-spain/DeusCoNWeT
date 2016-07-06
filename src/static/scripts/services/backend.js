@@ -145,12 +145,9 @@ function ($http, $location, $rootScope, $cookies) {
   };
 
   // Añade un token de una recial al sistema
-  this.addTokens = function(socialNetwork, token_id,access_token, user_id){
+  this.addTokens = function(socialNetwork, token_id, access_token, user_id, oauth_verifier){
     var uri,
-    params={
-      token_id:token_id,
-      access_token: access_token
-    },
+    data = 'token_id=' + token_id + '&access_token=' + access_token,
     request, verb;
 
     switch (socialNetwork) {
@@ -161,28 +158,27 @@ function ($http, $location, $rootScope, $cookies) {
       case 'twitter':
       uri = '/api/oauth/twitter/signup';
       verb = 'POST';
-      params.user_id = user_id;
+      data += '&user_identifier=' + user_id + "&oauth_verifier=" + oauth_verifier;
       break;
-      case 'Instagram':
-      uri = '/api/instagram/credenciales';
+      case 'instagram':
+      uri = '/api/oauth/instagram/credenciales';
       verb = 'PUT';
       break;
       case 'googleplus':
       uri = '/api/oauth/googleplus/signup';
       verb = 'POST';
-      params.user_id = user_id;
+      data += '&user_identifier=' + user_id;
       break;
       case 'facebook':
       uri = '/api/oauth/facebook/signup';
       verb = 'POST';
-      params.user_id = user_id;
+      data += '&user_identifier=' + user_id;
       break;
     }
-
     request = {
       method: verb,
       url: uri,
-      data: params,
+      data: data,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       }
