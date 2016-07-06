@@ -207,9 +207,11 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     request = {
       method: verb,
       url: uri,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    };
-
-    return $http(request);
+      headers: {'Content-Type': 'application/x-www-form-urlencoded',
+      params: params
+    }
   };
+
+  return $http(request);
+};
 }]);
