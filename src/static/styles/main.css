@@ -24,7 +24,7 @@ body {
 	background-attachment: fixed;
 	background-size: 100% 100%;
 	background-color: black;
-	background-color:(0,0,0,0.7);
+	background-color:rgba(0,0,0,0.7);
 	height: auto;
 	min-height: 100vh;
 }
