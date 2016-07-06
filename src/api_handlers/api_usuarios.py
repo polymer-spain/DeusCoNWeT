@@ -127,7 +127,7 @@ class UserHandler(SessionHandler):
               comp = json.loads(comp)
               ident = comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
-              version = component.preversion
+              version = component.preasigned_version
               ref = "centauro.ls.fi.upm.es/bower_components/" + \
                     ident + version + "/" + ident + ".html"
               refs_list.append(ref)
@@ -152,10 +152,12 @@ class UserHandler(SessionHandler):
             if user_info["private_phone"] == False:
               user_dict["phone"] = user_info["phone"]
             for comp in user_info.components:
+              comp = json.loads(comp)
+              ident = comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
+              version = preversion.preasigned_version
               ref = "centauro.ls.fi.upm.es/bower_components/" + \
-                    comp["component_id"] + preversion + "/" + \
-                    comp["component_id"] + ".html"
+                    ident + version + "/" + ident + ".html"
               refs_list.append(ref)
             user_dict["references"] = refs_list
             self.response.content_type = "application/json"
