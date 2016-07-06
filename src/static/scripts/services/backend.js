@@ -182,10 +182,7 @@ function ($http, $location, $rootScope, $cookies) {
     request = {
       method: verb,
       url: uri,
-      data: params,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }
+      data: params
     };
     return $http(request);
   };
