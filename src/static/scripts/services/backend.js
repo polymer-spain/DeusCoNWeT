@@ -160,7 +160,7 @@ function ($http, $location, $rootScope, $cookies) {
       verb = 'POST';
       data += '&user_identifier=' + user_id + "&oauth_verifier=" + oauth_verifier;
       break;
-      case 'Instagram':
+      case 'instagram':
       uri = '/api/instagram/credenciales';
       verb = 'PUT';
       break;
