@@ -1,4 +1,5 @@
 <!--
+@license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -15,8 +16,8 @@ The `iron-ajax` element exposes network request functionality.
 
     <iron-ajax
         auto
-        url="http://gdata.youtube.com/feeds/api/videos/"
-        params='{"alt":"json", "q":"chrome"}'
+        url="https://www.googleapis.com/youtube/v3/search"
+        params='{"part":"snippet", "q":"polymer", "key": "YOUTUBE_API_KEY", "type": "video"}'
         handle-as="json"
         on-response="handleResponse"
         debounce-duration="300"></iron-ajax>
@@ -119,6 +120,8 @@ element.
        * Content type to use when sending data. If the `contentType` property
        * is set and a `Content-Type` header is specified in the `headers`
        * property, the `headers` property value will take precedence.
+       *
+       * Varies the handling of the `body` param.
        */
       contentType: {
         type: String,
@@ -297,6 +300,16 @@ element.
         value: ''
       },
 
+      /**
+       * By default, these events do not bubble largely because the `error` event has special
+       * meaning in the window object. Setting this attribute will cause iron-ajax's request,
+       * response, and error events to bubble to the window object.
+       */
+      bubbles: {
+        type: Boolean,
+        value: false
+      },
+
       _boundHandleResponse: {
         type: Function,
         value: function() {
@@ -438,7 +451,7 @@ element.
       this.fire('request', {
         request: request,
         options: requestOptions
-      }, {bubbles: false});
+      }, {bubbles: this.bubbles});
 
       return request;
     },
@@ -449,18 +462,21 @@ element.
         this._setLastError(null);
         this._setLoading(false);
       }
-      this.fire('response', request, {bubbles: false});
+      this.fire('response', request, {bubbles: this.bubbles});
     },
 
     _handleError: function(request, error) {
       if (this.verbose) {
-        console.error(error);
+        Polymer.Base._error(error);
       }
 
       if (request === this.lastRequest) {
         this._setLastError({
           request: request,
-          error: error
+          error: error,
+          status: request.xhr.status,
+          statusText: request.xhr.statusText,
+          response: request.xhr.response
         });
         this._setLastResponse(null);
         this._setLoading(false);
@@ -468,7 +484,7 @@ element.
       this.fire('error', {
         request: request,
         error: error
-      }, {bubbles: false});
+      }, {bubbles: this.bubbles});
     },
 
     _discardRequest: function(request) {
