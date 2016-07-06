@@ -46,14 +46,33 @@ function ($scope, $rootScope, $backend, $http) {
 	$scope.existToken = function(socialNetwork){
 		return $scope.user && $scope.user.tokens[socialNetwork];
 	};
-
+	$scope.showToastr = function(type, message, time){
+		toastr.options = {
+			"closeButton": false,
+			"debug": false,
+			"newestOnTop": false,
+			"progressBar": false,
+			"positionClass": "toast-top-right",
+			"preventDuplicates": false,
+			"onclick": null,
+			"showDuration": "300",
+			"hideDuration": "1000",
+			"timeOut": "5000",
+			"extendedTimeOut": time || "5000",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "fadeIn",
+			"hideMethod": "fadeOut"
+		};
+		toastr[type](message);
+	};
 	function loginCallback(e){
 		//falta registralo
 		$scope.$apply(function(){
 			var socialNetwork = e.detail.redSocial;
 			var token = e.detail.token;
 			var registerTokenError = function(){
-				console.error('Algo fue mal al intentar guardar los tokens de ' + socialNetwork);
+				$scope.showToastr('danger',$scope.language.add_token_error)
 			};
 			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;
