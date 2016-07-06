@@ -1012,11 +1012,11 @@ def getProfile(user_id):
   ans = None
   user = User.query(User.user_id == user_id).get()
   if not user == None:
-    user_info = {"age": user["age"],
-                  "studies": user["studies"],
-                  "tech_exp": user["tech_exp"],
-                  "social_nets_use": user["social_nets_use"],
-                  "gender": user["gender"]}
+    user_info = {"age": user.age,
+                  "studies": user.studies,
+                  "tech_exp": user.tech_exp,
+                  "social_nets_use": user.social_nets_use,
+                  "gender": user.gender}
     ans = json.dumps(user_info)
   return ans
 def subscribedUser(email):
