@@ -130,10 +130,10 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
   #               componentId=self.full_name_id)
 
 class ComponentAttributes(ndb.Model):
-  access_token = ndb.StringProperty()
-  secret_token = ndb.StringProperty()
-  consumer_key = ndb.StringProperty()
-  consumer_secret = ndb.StringProperty()
+  access_token = ndb.StringProperty(default="")
+  secret_token = ndb.StringProperty(default="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock")
+  consumer_key = ndb.StringProperty(default="J4bjMZmJ6hh7r0wlG9H90cgEe")
+  consumer_secret = ndb.StringProperty(default="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf")
   endpoint = ndb.StringProperty()
   component_base = ndb.StringProperty(default="bower_components/twitter-timeline/static/")
   language = ndb.StringProperty(default=":language")
@@ -143,8 +143,6 @@ class ComponentAttributes(ndb.Model):
   mostrar = ndb.IntegerProperty(default=10)
   component_directory = ndb.StringProperty()
   accessToken = ndb.StringProperty(default="")
-  endpoint = ndb.StringProperty(default=":domain/api/aux/instagramTimeline")
-  access_token = ndb.StringProperty(default="")
 
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
@@ -716,12 +714,25 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False):
+def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
   # Generates a random initial value that represents the version of the component that will be 
   # served to the next user who adds it to his dashboard
+  # Depending on the social network, different attributes are needed
+  attributes = None
+  if rs == "twitter":
+    attributes = ComponentAttributes(endpoint=endpoint)
+  elif rs == "github":
+    attributes = ComponentAttributes(component_directory=component_directory)
+  elif rs == "instagram":
+    attributes = ComponentAttributes(endpoint=endpoint)
+  elif rs == "googleplus":
+    attributes = ComponentAttributes()
+  elif rs == "facebook":
+    attributes = ComponentAttributes(component_directory=component_directory)
   initial_index = random.randint(0, len(version_list)-1)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
-   rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined)
+   rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
+   attributes=attributes)
   # We create a new VersionedComponent Entity for each version_added to the version_list
   # for version in version_list:
   #   versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
