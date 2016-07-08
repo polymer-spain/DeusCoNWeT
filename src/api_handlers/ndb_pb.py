@@ -130,6 +130,7 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
   #               componentId=self.full_name_id)
 
 class ComponentAttributes(ndb.Model):
+  component_id = ndb.StringProperty(required=True)
   access_token = ndb.StringProperty(default="")
   secret_token = ndb.StringProperty(default="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock")
   consumer_key = ndb.StringProperty(default="J4bjMZmJ6hh7r0wlG9H90cgEe")
@@ -720,15 +721,20 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   # Depending on the social network, different attributes are needed
   attributes = None
   if rs == "twitter":
-    attributes = ComponentAttributes(endpoint=endpoint)
+    attributes = ComponentAttributes(component_id=name, endpoint=endpoint)
+    attributes.put()
   elif rs == "github":
-    attributes = ComponentAttributes(component_directory=component_directory)
+    attributes = ComponentAttributes(component_id=name, component_directory=component_directory)
+    attributes.put()
   elif rs == "instagram":
-    attributes = ComponentAttributes(endpoint=endpoint)
+    attributes = ComponentAttributes(component_id=name, endpoint=endpoint)
+    attributes.put()
   elif rs == "googleplus":
-    attributes = ComponentAttributes()
+    attributes = ComponentAttributes(component_id=name)
+    attributes.put()
   elif rs == "facebook":
-    attributes = ComponentAttributes(component_directory=component_directory)
+    attributes = ComponentAttributes(component_id=name, component_directory=component_directory)
+    attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
@@ -890,6 +896,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           if comp.active:
             info_comp = Component.query(Component.component_id == comp.component_id).get()
             rate = UserRating.query(UserRating.component_id == comp.component_id).get()
+            attributes = ComponentAttributes(ComponentAttributes.component_id == comp.component_id).get()
             general_comp["component_id"] = comp.component_id
             general_comp["url"] = info_comp.url
             general_comp["social_network"] = info_comp.rs
@@ -902,6 +909,33 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["height"] = comp.height
             general_comp["width"] = comp.width
             general_comp["version"] = comp.version
+            general_comp["attributes"] = {}
+            if general_comp["social_network"] == "twitter":
+              general_comp["attributes"]["access_token"] = attributes.access_token
+              general_comp["attributes"]["secret_token"] = attributes.secret_token
+              general_comp["attributes"]["consumer_key"] = attributes.consumer_key
+              general_comp["attributes"]["consumer_secret"] = attributes.consumer_secret
+              general_comp["attributes"]["endpoint"] = attributes.endpoint
+              general_comp["attributes"]["component_base"] = attributes.component_base
+              general_comp["attributes"]["language"] = attributes.language
+              general_comp["attributes"]["count"] = attributes.count
+            elif general_comp["social_network"] == "github":
+              general_comp["attributes"]["username"] = attributes.username
+              general_comp["attributes"]["token"] = attributes.token
+              general_comp["attributes"]["mostrar"] = attributes.mostrar
+              general_comp["attributes"]["language"] = attributes.language
+              general_comp["attributes"]["component_directory"] = attributes.component_directory
+            elif general_comp["social_network"] == "instagram":
+              general_comp["attributes"]["accessToken"] = attributes.accessToken
+              general_comp["attributes"]["endpoint"] = attributes.endpoint
+              general_comp["attributes"]["language"] = attributes.language
+            elif general_comp["social_network"] == "googleplus":
+              general_comp["attributes"]["token"] = attributes.token
+              general_comp["attributes"]["language"] = attributes.language
+            elif general_comp["social_network"] == "facebook":
+              general_comp["attributes"]["language"] = attributes.language
+              general_comp["attributes"]["component_directory"] = attributes.component_directory
+              general_comp["attributes"]["access_token"] = attributes.access_token
             if not rate == None: 
               general_comp["rate"] = rate.rating_value
             else:
