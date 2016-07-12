@@ -13,7 +13,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           $('body').append($link);
         });
       }
-    });
+    })();
     // Logica que dice que botones del a barra lateral estan activos y cuales
     // han de desactivarse
     $scope.selectListButton = function(e){
