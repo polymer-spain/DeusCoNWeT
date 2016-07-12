@@ -5,6 +5,15 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // TODO se deberan coger de la lista que se registra en usuario
     $scope.listComponentAdded = [];
 
+    // loads references for this
+    (function(){
+      if ($scope.user.references){
+        $scope.user.references.forEach(function(value,index){
+          var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
+          $('body').append($link);
+        });
+      }
+    });
     // Logica que dice que botones del a barra lateral estan activos y cuales
     // han de desactivarse
     $scope.selectListButton = function(e){
