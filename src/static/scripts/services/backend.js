@@ -186,16 +186,20 @@ function ($http, $location, $rootScope, $cookies) {
     return $http(request);
   };
 
-  this.uploadImage = function(image) {
+  this.uploadImage = function(image, callback) {
     var data = new FormData();
     data.append('image', image);
-    var request = {
-      method:'POST',
-      headers: {'Authorization': 'Client-ID 5bb1a6c31384b7a'},
-      data: data,
-      url:'https://api.imgur.com/3/upload'
-    };
 
-    return $http(request);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        if (callback){
+          callback(JSON.parse(xhr.responseText));
+        }
+      }
+    };
+    xhr.open('POST', 'https://api.imgur.com/3/upload', true);
+    xhr.setRequestHeader('Authorization', 'Client-ID 5bb1a6c31384b7a');
+    xhr.send(data);
   };
 }]);

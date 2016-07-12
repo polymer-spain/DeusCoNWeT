@@ -102,6 +102,10 @@ paper-button >a:hover{
 	color:inherit;
 }
 /* USERHOME */
-.toast-error {
+.toast-error,
+.toast-info,
+.toast-warn,
+.toast.success {
 	opacity: 1 !important;
 }
+.toast
