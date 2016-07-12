@@ -5,7 +5,7 @@
   Copyright 2015 Ana Isabel Lopera Martínez
   Copyright 2015 Miguel Ortega Moreno
   Copyright 2015 Juan Francisco Salamanca Carmona
-  
+
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -62,8 +62,8 @@ callback_uri = "https://" + domain \
 client = oauth.TwitterClient(consumer_key, consumer_secret,
         callback_uri)
 
-# Generic handlers for the session management, login, logout and actions 
-# related to user credentials 
+# Generic handlers for the session management, login, logout and actions
+# related to user credentials
 class SessionHandler(webapp2.RequestHandler):
     """
     Class that handles the session of the application
@@ -99,7 +99,7 @@ class SessionHandler(webapp2.RequestHandler):
 
 class OauthSignUpHandler(SessionHandler):
     """ Defines the logic for the signup action, in those social networks that
-        act as authentication services in PicBit, and have 
+        act as authentication services in PicBit, and have
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
             post_signup - Implements the signup action. Stores the pair of
@@ -113,6 +113,9 @@ class OauthSignUpHandler(SessionHandler):
             token_id = self.request.POST["token_id"]
             user_identifier = self.request.POST["user_identifier"]
             # Checks if the username was stored previously
+            logging.info('access_token: ' +access_token)
+            logging.info('token_id: ' +token_id)
+            logging.info('user_identifier: ' +user_identifier)
             stored_credentials = ndb_pb.searchToken(token_id, social_network)
             if stored_credentials == None: # Not found
                 user_data = {}
@@ -212,7 +215,7 @@ class OauthLoginHandler(SessionHandler):
 
 class OauthLogoutHandler(SessionHandler):
     """ Defines the logic for the logout action, in those social networks that
-        act as authentication services in PicBit, and have 
+        act as authentication services in PicBit, and have
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
             post_logout - Implements the logout action. Invalidates the
@@ -259,7 +262,7 @@ class OauthLogoutHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
-            
+
         else:
             response = \
                 {"error": "This request requires a secure_cookie with the session identifier"}
@@ -320,8 +323,8 @@ class OauthCredentialsHandler(SessionHandler):
                 {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)       
-        
+                self.response.set_status(400)
+
         # If we don't provide a cookie in the request, we search for the token in the system
         # and return a 200 o 404 status. It is a request included in the login flow of the system
         else:
@@ -330,14 +333,14 @@ class OauthCredentialsHandler(SessionHandler):
                 response = {"user_id": user_credentials["user_id"]}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(200)   
+                self.response.set_status(200)
             else:
                 response =  {"error": "Token not found in the system"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(404)
 
-    
+
     def delete_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
@@ -426,7 +429,7 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
                             # Builds the response
                             response = {"user_id": stored_credentials["user_id"]}
                             self.response.content_type = "application/json"
-                            self.response.write(json.dumps(response))    
+                            self.response.write(json.dumps(response))
                             self.response.set_status(200)
                         else:
                             response = \
@@ -439,7 +442,7 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
                         {"error": "Credentials not found in the system"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
-                        self.response.set_status(404)        
+                        self.response.set_status(404)
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
@@ -495,14 +498,14 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                         user_id = ndb_pb.getUserId(user)
                         response = {"user_id": user_id}
                         self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))    
+                        self.response.write(json.dumps(response))
                         self.response.set_status(201)
                     else:
                         response = \
                         {"error": "This set of credentials already exists in the system"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
-                        self.response.set_status(400)    
+                        self.response.set_status(400)
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
@@ -544,7 +547,7 @@ class OAuthCredentialsContainerHandler(SessionHandler):
 # HANDLERS FOR RESOURCES RELATED TO FACEBOOK
 class FacebookHandler(OauthCredentialsHandler):
     """
-    Class that represents the Facebook token resource. 
+    Class that represents the Facebook token resource.
     Methods:
         get -- Returns the Facebook access_token and token_id
                for a user authenticated
@@ -558,8 +561,8 @@ class FacebookHandler(OauthCredentialsHandler):
         self.delete_credentials("facebook", token_id)
 
 class FacebookLoginHandler(OauthLoginHandler):
-    """ This class is a resource that represents the login 
-    action using the Facebook credentials to autenticate in PicBit 
+    """ This class is a resource that represents the login
+    action using the Facebook credentials to autenticate in PicBit
     """
     def post(self):
         self.post_login("facebook")
@@ -572,8 +575,8 @@ class FacebookSignUpHandler(OauthSignUpHandler):
         self.post_signup("facebook")
 
 class FacebookLogoutHandler(OauthLogoutHandler):
-    """ This class is a resource that represents the logout 
-    action using the Facebook credentials to autenticate in PicBit 
+    """ This class is a resource that represents the logout
+    action using the Facebook credentials to autenticate in PicBit
     """
     def post(self):
         self.post_logout("facebook")
@@ -581,7 +584,7 @@ class FacebookLogoutHandler(OauthLogoutHandler):
 # HANDLERS FOR RESOURCES RELATED TO GITHUB
 class GitHubCredentialHandler(OAuthCredentialProviderHandler):
     """
-    Class that represents the GitHub token resource. 
+    Class that represents the GitHub token resource.
     Methods:
         get -- Returns the GitHub access_token and token_id
                for a user authenticated
@@ -601,7 +604,7 @@ class GitHubCredentialHandler(OAuthCredentialProviderHandler):
 
 class GitHubContainerHandler(webapp2.RequestHandler):
     """
-    Class that represents the List of Github credentials resource. 
+    Class that represents the List of Github credentials resource.
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
@@ -625,8 +628,6 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         # Cogemos el codigo de la peticion
 	body = json.loads(self.request.body)
         code = body.get('code')
-	logging.info('Codigo: ' + code)
-        # Indicamos los parametros de la peticion a github
         params_token = urllib.urlencode({"client_id": client_id,
                 "client_secret": client_secret, "code": code})
         # Realizamos la peticion en la conexion
@@ -678,7 +679,7 @@ class GitHubContainerHandler(webapp2.RequestHandler):
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):
     """
-    Class that represents the GooglePlus token resource. 
+    Class that represents the GooglePlus token resource.
     Methods:
         get -- Returns the GooglePlus access_token and token_id
                for a user authenticated
@@ -692,8 +693,8 @@ class GooglePlusHandler(OauthCredentialsHandler):
         self.delete_credentials("googleplus", token_id)
 
 class GooglePlusLoginHandler(OauthLoginHandler):
-    """ This class is a resource that represents the login 
-    action using the GooglePlus credentials to autenticate in PicBit 
+    """ This class is a resource that represents the login
+    action using the GooglePlus credentials to autenticate in PicBit
     """
     def post(self):
         self.post_login("googleplus")
@@ -707,7 +708,7 @@ class GooglePlusSignUpHandler(OauthSignUpHandler):
 
 class GooglePlusLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout
-    action using the GooglePlus credentials to autenticate in PicBit 
+    action using the GooglePlus credentials to autenticate in PicBit
     """
     def post(self):
         self.post_logout("googleplus")
@@ -716,7 +717,7 @@ class GooglePlusLogoutHandler(OauthLogoutHandler):
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
 class InstagramCredentialHandler(OAuthCredentialProviderHandler):
     """
-    Class that represents the Instagram token resource. 
+    Class that represents the Instagram token resource.
     Methods:
         get -- Returns the Instagram access_token and token_id
                for a user authenticated
@@ -736,7 +737,7 @@ class InstagramCredentialHandler(OAuthCredentialProviderHandler):
 
 class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     """
-    Class that represents the List of Instagram credentials resource. 
+    Class that represents the List of Instagram credentials resource.
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
@@ -747,7 +748,7 @@ class InstagramContainerHandler(OAuthCredentialsContainerHandler):
 # HANDLERS FOR RESOURCES RELATED TO LINKEDIN
 class LinkedinCredentialHandler(OAuthCredentialProviderHandler):
     """
-    Class that represents the Linkedin token resource. 
+    Class that represents the Linkedin token resource.
     Methods:
         get -- Returns the Linkedin access_token and token_id
                for a user authenticated
@@ -767,7 +768,7 @@ class LinkedinCredentialHandler(OAuthCredentialProviderHandler):
 
 class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
     """
-    Class that represents the List of Linkedin credentials resource. 
+    Class that represents the List of Linkedin credentials resource.
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
@@ -778,7 +779,7 @@ class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
 # HANDLERS FOR RESOURCES RELATED TO STACKOVERFLOW
 class StackOverflowCredentialHandler(OAuthCredentialProviderHandler):
     """
-    Class that represents the StackOverflow token resource. 
+    Class that represents the StackOverflow token resource.
     Methods:
         get -- Returns the StackOverflow access_token and token_id
                for a user authenticated
@@ -798,7 +799,7 @@ class StackOverflowCredentialHandler(OAuthCredentialProviderHandler):
 
 class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     """
-    Class that represents the List of Stackoverflow credentials resource. 
+    Class that represents the List of Stackoverflow credentials resource.
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
@@ -806,22 +807,22 @@ class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
         self.put_credentials("stackoverflow")
 
 # HANDLERS FOR RESOURCES RELATED TO TWITTER
-# Handler that manages the first step in the Twitter login flow 
+# Handler that manages the first step in the Twitter login flow
 # (obtain the request token and request url to initiate the login in client)
 class TwitterRequestLoginHandler(webapp2.RequestHandler):
     """ This resource represents the first step in the Twitter
-        login flow, in which the server must request to Twitter a 
+        login flow, in which the server must request to Twitter a
         request_token that identifies the login flow in a temporal way
         and provides the url in which the user must access and authorize
         the access of his/her credentials.
-        It is the first step in a login flow of three steps. 
+        It is the first step in a login flow of three steps.
         The second step is performed in frontend and the third step is a
         callback received from Twitter endpoint.
     """
     def get(self):
         global client
         """ Handles the first step in the Twitter login flow
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request build by webapp2
         """
         # Return the authorization URL
@@ -835,12 +836,12 @@ class TwitterAuthorizationHandler(SessionHandler):
     """ This class is a resource that represents the authorization
         step in the Twitter Login flow, in which the Twitter Endpoint returns
         asyncronously the credentials for the user authenticated in the flow.
-        It is the third step in a login flow of three steps.  
+        It is the third step in a login flow of three steps.
     """
 
     def get(self):
         """ Manages the callback from Twitter in the Twitter oauth flow.
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request built by webapp2
         """
         # Gets the params in the request
@@ -849,21 +850,21 @@ class TwitterAuthorizationHandler(SessionHandler):
         # Retrieves user info
         user_info = client.get_user_info(auth_token,
                 auth_verifier=oauth_verifier)
-        # Stores in memcache the session id associated with the oauth_verifier 
+        # Stores in memcache the session id associated with the oauth_verifier
         #and data associated to the logged user
         key_verifier = "oauth_verifier_" + oauth_verifier
         data = {"token_id": user_info["username"],
                 "access_token": user_info["token"]
                 }
         memcache.add(key_verifier, data)
-        
+
         # Set the status for the response
         self.response.set_status(200)
 
 class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
     def get(self, authorization_id):
         """Manages the info returned by the callback from Twitter
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request built by webapp2
         authorization_id -- oauth_verifier that defines the authorization flow
         """
@@ -883,7 +884,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
 
 class TwitterHandler(OauthCredentialsHandler):
     """
-    Class that represents the Twitter token resource. 
+    Class that represents the Twitter token resource.
     Methods:
         get -- Returns the Twitter access_token and token_id
                for a user authenticated
@@ -907,13 +908,13 @@ class TwitterSignUpHandler(SessionHandler):
     def post(self):
         oauth_verifier = self.request.get("oauth_verifier", default_value="None")
         user_identifier = self.request.get("user_identifier", default_value="")
-        
+
         if not oauth_verifier == "":
             key_verifier = "oauth_verifier_" + oauth_verifier
             twitter_user_data = memcache.get(key_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter") 
+                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter")
                 if stored_credentials == None:
                     user_info = {}
                     if not user_identifier == "":
@@ -926,7 +927,7 @@ class TwitterSignUpHandler(SessionHandler):
 
                             # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
                             memcache.delete(key_verifier)
-                            
+
                             # Returns the session, user_id and social_network cookie
                             session_id = self.login(user_key)
                             self.response.set_cookie("session",
@@ -938,17 +939,17 @@ class TwitterSignUpHandler(SessionHandler):
                             self.response.set_cookie("user",
                                     value=user_identifier, path="/", domain=domain,
                                     secure=True)
-                            
+
                             # Builds the response
                             response = {"status": "User logged successfully", "user_id": user_identifier}
                             self.response.content_type = "application/json"
-                            self.response.write(json.dumps(response))                    
+                            self.response.write(json.dumps(response))
                             self.response.set_status(201)
                         else:
                             response = {"error": "The user_identifier provided for the sign up has been already taken"}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
-                            self.response.set_status(400)    
+                            self.response.set_status(400)
                     else:
                         response = {"error": "You must provide a valid user_identifier in the request"}
                         self.response.content_type = "application/json"
@@ -998,7 +999,7 @@ class TwitterLoginHandler(SessionHandler):
 
                     # Gets the user_id to generate the user cookie
                     user_id = ndb_pb.getUserId(user_key)
-                    
+
                     # Returns the session, social_network and user cookie
                     self.response.set_cookie("session", session_id,
                             path="/", domain=domain, secure=True)
@@ -1034,8 +1035,8 @@ class TwitterLoginHandler(SessionHandler):
             self.response.set_status(400)
 
 class TwitterLogoutHandler(OauthLogoutHandler):
-    """ This class is a resource that represents the logout 
-    action using the Twitter credentials to autenticate in PicBit 
+    """ This class is a resource that represents the logout
+    action using the Twitter credentials to autenticate in PicBit
     """
     def post(self):
         self.post_logout("twitter")

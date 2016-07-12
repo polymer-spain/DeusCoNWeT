@@ -42,20 +42,23 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 			$location.path('/selectId');
 		}
 		$rScope.token = userData.token;
+		if ($location.$$path.indexOf('profile') === -1) {
 			$backend.getUserId(userData.userId, userData.redSocial)
-				.then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
+			.then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
 				/* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
 				var user = responseUserId.data;
 				$backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
-					.then(function() {
+				.then(function() {
 					$location.path('/user/' + user.user_id);
 				}, function(responseLogin) {
 					console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login');
 				});
 			}, function(){
 				newUser(userData);
-			}
-		);
+			});
+		} else {
+			$backend.sendData(userData.token, $scope.user.user_id, userData.redSocial);
+		}
 	};
 	$scope.pathname = window.location.pathname;
 	$scope.goto = function(view){
@@ -73,24 +76,24 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		var uri;
 		switch(socialNetwork) {
 			case 'googleplus':
-				uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
-				$http.get(uri).success(function (responseData) {
-					e.detail.userId = responseData.id;
-					$scope.loginProcess(e.detail);
-				});
-				break;
-			case 'twitter':
-				uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-				$http.get(uri).success(function (responseData) {
-					e.detail.userId = responseData.token_id;
-					$scope.loginProcess(e.detail);
-				}).error(function() {
-					console.log('Problemas al intentar obtener el token_id de un usuario' );
-				});
-				break;
-			default:
+			uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
+			$http.get(uri).success(function (responseData) {
+				e.detail.userId = responseData.id;
 				$scope.loginProcess(e.detail);
-				break;
+			});
+			break;
+			case 'twitter':
+			uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+			$http.get(uri).success(function (responseData) {
+				e.detail.userId = responseData.token_id;
+				$scope.loginProcess(e.detail);
+			}).error(function() {
+				console.log('Problemas al intentar obtener el token_id de un usuario' );
+			});
+			break;
+			default:
+			$scope.loginProcess(e.detail);
+			break;
 		}
 	};
 
@@ -103,7 +106,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 
 	// avoid language errors
 	$scope.$watch('language.delete', function(newValue) {
-  $('.icon-delete > span').html(newValue);
-});
+		$('.icon-delete > span').html(newValue);
+	});
 
 }]);// end angular.module

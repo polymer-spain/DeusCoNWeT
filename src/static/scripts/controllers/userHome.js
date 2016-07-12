@@ -1,8 +1,32 @@
 angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope','$interval', '$backend','$http', function ($scope, $timeout, $rootScope, $interval,
   $backend, $http) {
     'use strict';
+    // Lista de componentes añadidos
+    // TODO se deberan coger de la lista que se registra en usuario
     $scope.listComponentAdded = [];
-    $scope.itemDescription = "";
+
+    $scope.showToastr = function(type, message, time){
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": time || "5000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      };
+      toastr[type](message);
+    };
+    // Logica que dice que botones del a barra lateral estan activos y cuales
+    // han de desactivarse
     $scope.selectListButton = function(e){
       e.stopPropagation();
       var $target = $(e.currentTarget);
@@ -14,7 +38,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
 
     };
-    $rootScope.user = $rootScope.user || {tokens:{}};
+    // TODO se debe coger el catalogo de componentes del servidor
     $scope.catalogList = [
       {
         name:'twitter-timeline',
@@ -87,12 +111,15 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         }
       }
     ];
+
+    // borra los filtros
     $scope.removeStarFilter = function(){
       $scope.starFilter = undefined;
     };
     $scope.removeTextFilter = function(){
       $scope.textFilter = '';
     };
+    // Activa la lista de componenes que se pueden borrar
     $scope.activeDelCmpList = function(){
       var $list = $('.component-list');
       if (!$list.hasClass('active')){
@@ -101,6 +128,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $list.removeClass('active');
       }
     };
+    // Elimina un componente añadido
     $scope.removeElement = function(id){
       var finded = false;
 
@@ -112,17 +140,18 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         }
       }
     };
+
     $scope.blurList = function(e){
-      if ($scope.itemDescription === $scope.listComponentAdded) {
-        // del activated
-        var index = $(e.currentTarget).attr('data-index');
-        var id = $scope.listComponentAdded.splice(index,1)[0];
-        $scope.showList = $scope.listComponentAdded;
-        var element = '[id-element="' + id.name + '"]';
-        $(element)[0].setAttribute('disabled',false);
-        $(id.name).parent().remove();
-      }
+      // del activated
+      var index = $(e.currentTarget).attr('data-index');
+      var id = $scope.listComponentAdded.splice(index,1)[0];
+      $scope.showList = $scope.listComponentAdded;
+      var element = '[id-element="' + id.name + '"]';
+      $(element)[0].setAttribute('disabled',false);
+      $(id.name).parent().remove();
     };
+
+    // Cierra las listas cuando se pulsa sobro cualquier otro lado del dashboard
     $('#userHome').click(function(event){
       if (!event.target.hasAttribute('data-button') && !event.target.hasAttribute('data-list')){
         $('.component-list').removeClass('active');
@@ -130,6 +159,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
     });
 
+    // Cierra los modales en funcion de cual esté abierto
     $(document).on('keydown', function(e){
       e.stopPropagation();
       if (e.keyCode === 27 && $('#login-modal').is(':visible')){
@@ -138,11 +168,14 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $('#store-modal').modal('toggle');
       }
     });
+
+    //Evita que se cierren los dos modales a la vez
     $('#store-modal').on('hidden.bs.modal',function(){
       if ($('#login-modal').is(':visible')){
         $('#login-modal').modal('toggle');
       }
     });
+    // Selecciona que modal tiene que cerrarse en cada momento
     $scope.toggleCatalog = function(){
       if ($('#login-modal').is(':visible')){
         $('#login-modal').modal('toggle');
@@ -296,9 +329,11 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           var socialNetwork = e.detail.redSocial;
           var token = e.detail.token;
           var registerTokenError = function(){
-            console.error('Algo fue mal al intentar guardar los tokens de ' + socialNetwork);
+            $scope.showToastr('error',$scope.language.add_token_error);
+            $rootScope.user.tokens[socialNetwork] = '';
+            $scope.setToken(socialNetwork, '');
           };
-
+          $rootScope.user = $rootScope.user || {tokens:{}};
           $rootScope.user.tokens[socialNetwork] = token;
           $scope.setToken(socialNetwork, token);
           $('#login-modal').modal('toggle');
@@ -323,7 +358,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           //     $backend.addTokens(socialNetwork, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
           //     break;
           // }
-
         });
       }
       $('#login-modal google-login')[0].addEventListener('google-logged', loginCallback);

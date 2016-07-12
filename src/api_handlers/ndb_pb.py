@@ -129,6 +129,22 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
   #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
 
+class ComponentAttributes(ndb.Model):
+  component_id = ndb.StringProperty(required=True)
+  access_token = ndb.StringProperty(default="")
+  secret_token = ndb.StringProperty(default="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock")
+  consumer_key = ndb.StringProperty(default="J4bjMZmJ6hh7r0wlG9H90cgEe")
+  consumer_secret = ndb.StringProperty(default="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf")
+  endpoint = ndb.StringProperty()
+  component_base = ndb.StringProperty(default="bower_components/twitter-timeline/static/")
+  language = ndb.StringProperty(default=":language")
+  count = ndb.IntegerProperty(default=200)
+  username = ndb.StringProperty(default=":user")
+  token = ndb.StringProperty(default="")
+  mostrar = ndb.IntegerProperty(default=10)
+  component_directory = ndb.StringProperty()
+  accessToken = ndb.StringProperty(default="")
+
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
   name = ndb.StringProperty()
@@ -151,6 +167,7 @@ class Component(ndb.Model):
   predetermined = ndb.BooleanProperty(default=False)
   # Preasigned version to load the component. It needs to be confirmed
   preasigned_version = ndb.StringProperty()
+  attributes = ndb.StructuredProperty(ComponentAttributes)
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
@@ -698,12 +715,30 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False):
+def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
   # Generates a random initial value that represents the version of the component that will be 
   # served to the next user who adds it to his dashboard
+  # Depending on the social network, different attributes are needed
+  attributes = None
+  if rs == "twitter":
+    attributes = ComponentAttributes(component_id=name, endpoint=endpoint)
+    attributes.put()
+  elif rs == "github":
+    attributes = ComponentAttributes(component_id=name, component_directory=component_directory)
+    attributes.put()
+  elif rs == "instagram":
+    attributes = ComponentAttributes(component_id=name, endpoint=endpoint)
+    attributes.put()
+  elif rs == "googleplus":
+    attributes = ComponentAttributes(component_id=name)
+    attributes.put()
+  elif rs == "facebook":
+    attributes = ComponentAttributes(component_id=name, component_directory=component_directory)
+    attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
-   rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined)
+   rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
+   attributes=attributes)
   # We create a new VersionedComponent Entity for each version_added to the version_list
   # for version in version_list:
   #   versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
@@ -861,6 +896,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           if comp.active:
             info_comp = Component.query(Component.component_id == comp.component_id).get()
             rate = UserRating.query(UserRating.component_id == comp.component_id).get()
+            attributes = ComponentAttributes(ComponentAttributes.component_id == comp.component_id).get()
             general_comp["component_id"] = comp.component_id
             general_comp["url"] = info_comp.url
             general_comp["social_network"] = info_comp.rs
@@ -873,6 +909,33 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["height"] = comp.height
             general_comp["width"] = comp.width
             general_comp["version"] = comp.version
+            general_comp["attributes"] = {}
+            if general_comp["social_network"] == "twitter":
+              general_comp["attributes"]["access_token"] = attributes.access_token
+              general_comp["attributes"]["secret_token"] = attributes.secret_token
+              general_comp["attributes"]["consumer_key"] = attributes.consumer_key
+              general_comp["attributes"]["consumer_secret"] = attributes.consumer_secret
+              general_comp["attributes"]["endpoint"] = attributes.endpoint
+              general_comp["attributes"]["component_base"] = attributes.component_base
+              general_comp["attributes"]["language"] = attributes.language
+              general_comp["attributes"]["count"] = attributes.count
+            elif general_comp["social_network"] == "github":
+              general_comp["attributes"]["username"] = attributes.username
+              general_comp["attributes"]["token"] = attributes.token
+              general_comp["attributes"]["mostrar"] = attributes.mostrar
+              general_comp["attributes"]["language"] = attributes.language
+              general_comp["attributes"]["component_directory"] = attributes.component_directory
+            elif general_comp["social_network"] == "instagram":
+              general_comp["attributes"]["accessToken"] = attributes.accessToken
+              general_comp["attributes"]["endpoint"] = attributes.endpoint
+              general_comp["attributes"]["language"] = attributes.language
+            elif general_comp["social_network"] == "googleplus":
+              general_comp["attributes"]["token"] = attributes.token
+              general_comp["attributes"]["language"] = attributes.language
+            elif general_comp["social_network"] == "facebook":
+              general_comp["attributes"]["language"] = attributes.language
+              general_comp["attributes"]["component_directory"] = attributes.component_directory
+              general_comp["attributes"]["access_token"] = attributes.access_token
             if not rate == None: 
               general_comp["rate"] = rate.rating_value
             else:
@@ -1012,11 +1075,11 @@ def getProfile(user_id):
   ans = None
   user = User.query(User.user_id == user_id).get()
   if not user == None:
-    user_info = {"age": user["age"],
-                  "studies": user["studies"],
-                  "tech_exp": user["tech_exp"],
-                  "social_nets_use": user["social_nets_use"],
-                  "gender": user["gender"]}
+    user_info = {"age": user.age,
+                  "studies": user.studies,
+                  "tech_exp": user.tech_exp,
+                  "social_nets_use": user.social_nets_use,
+                  "gender": user.gender}
     ans = json.dumps(user_info)
   return ans
 def subscribedUser(email):

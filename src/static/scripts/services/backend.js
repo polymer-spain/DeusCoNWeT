@@ -1,5 +1,6 @@
 /*global angular */
-angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope', '$cookies', function ($http, $location, $rootScope, $cookies) {
+angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope', '$cookies',
+function ($http, $location, $rootScope, $cookies) {
 
   'use strict';
 
@@ -9,8 +10,13 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     this.endpoint = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
   }
 
-  /* Envia el token y el identificador del token correspondiente a una red social */
-  /* ¿¿ Control de errores ??*/
+  // Envia el token y el identificador del token correspondiente a una red social
+  // POST /api/oauth/{red_social}/login
+  // PARAMS: @token_id
+  //         @access_token
+  //         [@user_identifier]
+  //         [@oauth_verifier]
+
   this.sendData = function (token, tokenId, userId, redSocial, oauthVerifier) {
     var request, uri, params;
 
@@ -30,10 +36,11 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
       data: params
     };
     /* Devolvemos la promesa*/
-    $rootScope.promise = $http(request);
-    return $rootScope.promise;
+    $http(request);
+    return $http(request);
   };
 
+  //Function para crear un usuario en el sistema
   this.signup = function (token, tokenId, userId, redSocial, oauthVerifier) {
     var request, uri, params;
 
@@ -53,10 +60,11 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
       data: params
     };
     /* Devolvemos la promesa*/
-    $rootScope.promise = $http(request);
-    return $rootScope.promise;
+    return $http(request);
   };
 
+  // Retorna el identificador de un usuario basado en el identicador en una
+  // determinada red social.
   this.getUserId = function (tokenId, redSocial) {
     var request, uri;
     uri = this.endpoint + '/api/oauth/' + redSocial + '/credenciales/' + tokenId;
@@ -67,11 +75,10 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     };
 
-    $rootScope.promise = $http(request);
-    return $rootScope.promise;
+    return $http(request);
   };
 
-  /* Permite elegir un usuario por user_id */
+  // Devuelve un usuario basandose en su user_id en el sistema
   this.getUser = function (userId) {
     var request, uri;
     uri = this.endpoint + '/api/usuarios/' + userId;
@@ -81,10 +88,10 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
       url: uri,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     };
-    $rootScope.promise = $http(request);
-    return $rootScope.promise;
+    return $http(request);
   };
 
+  // (WARNING) Realiza una petición de un usuario de manera asincrona
   this.syncGetUser = function (userId) {
     var request, uri;
     uri = this.endpoint + '/api/usuarios/' + userId;
@@ -96,42 +103,8 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     return request;
   };
 
-  /* Contacto: envia un email al backend */
-  this.sendEmail = function (message, sender, subject) {
-    var request, uri, params;
 
-    uri = this.endpoint + '/api/contact';
-    params = 'action=contact&message=' + message + '&sender=' + sender;
-
-    if (subject) {
-      params += '&subject=' + subject;
-    }
-    request = {
-      method: 'post',
-      url: uri,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      data: params
-    };
-
-    $rootScope.promise = $http(request);
-    return $rootScope.promise;
-  };
-
-  this.sendSub = function (name, sender, surname) {
-    var request, uri, params;
-    uri = this.endpoint + '/api/subscriptions';
-    params = 'name=' + name + '&email=' + sender + '&surname=' + surname;
-    request = {
-      method: 'post',
-      url: uri,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      data: params
-    };
-
-    $rootScope.promise = $http(request);
-    return $rootScope.promise;
-  };
-
+  // Elimina y borra las credenciales de un usuario en el sistema
   this.logout = function () {
     var request, uri, socialnetwork;
     socialnetwork = $cookies.get('social_network') || 'googleplus';
@@ -143,13 +116,13 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     };
     $rootScope.user = undefined;
     $rootScope.isLogged = false;
-    $rootScope.promise = $http(request);
-    return $rootScope.promise;
+    return $http(request);
   };
 
+  // (Warning) Pide el token de una red social basandose en su identificador
+  // en dicha red social
   this.getSingleToken = function(socialNetwork, tokenid) {
     var request, uri;
-
     request = new XMLHttpRequest();
 
     uri = this.endpoint + '/api/oauth/' + socialNetwork + '/credenciales/' + tokenid;
@@ -158,6 +131,7 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
 
     return request;
   };
+  // (Warning) Peticion de tokens de manera recursiva
   this.getTokens = function(tokensId) {
     var access_tokens, item, request, data;
     access_tokens = {};
@@ -170,12 +144,10 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
     return access_tokens;
   };
 
-  this.addTokens = function(socialNetwork, token_id,access_token, user_id){
+  // Añade un token de una recial al sistema
+  this.addTokens = function(socialNetwork, token_id, access_token, user_id, oauth_verifier){
     var uri,
-    params={
-      token_id:token_id,
-      access_token: access_token
-    },
+    data = 'token_id=' + token_id + '&access_token=' + access_token,
     request, verb;
 
     switch (socialNetwork) {
@@ -186,33 +158,31 @@ angular.module('picbit').service('$backend', ['$http', '$location', '$rootScope'
       case 'twitter':
       uri = '/api/oauth/twitter/signup';
       verb = 'POST';
-      params.user_id = user_id;
+      data += '&user_identifier=' + user_id + "&oauth_verifier=" + oauth_verifier;
       break;
-      case 'Instagram':
-      uri = '/api/instagram/credenciales';
+      case 'instagram':
+      uri = '/api/oauth/instagram/credenciales';
       verb = 'PUT';
       break;
       case 'googleplus':
       uri = '/api/oauth/googleplus/signup';
       verb = 'POST';
-      params.user_id = user_id;
+      data += '&user_identifier=' + user_id;
       break;
       case 'facebook':
       uri = '/api/oauth/facebook/signup';
       verb = 'POST';
-      params.user_id = user_id;
+      data += '&user_identifier=' + user_id;
       break;
     }
-
     request = {
       method: verb,
       url: uri,
-<<<<<<< HEAD
-      headers: {'Content-Type': 'application/x-www-form-urlencoded',
-      params: params
-    }
+      data: data,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    };
+    return $http(request);
   };
-
-  return $http(request);
-};
 }]);

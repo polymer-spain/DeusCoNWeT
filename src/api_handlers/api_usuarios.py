@@ -107,13 +107,29 @@ class UserHandler(SessionHandler):
           user_logged_id = ndb_pb.getUserId(user_logged_key)
           # Depending on the user making the request, the info returned will be one or another
           if user_id == user_logged_id:
+            user_profile = ndb_pb.getProfile(user_id)
+            if user_profile == None:
+              user_info["age"] = ""
+              user_info["studies"] = ""
+              user_info["tech_exp"] = ""
+              user_info["social_nets_use"] = ""
+              user_info["gender"] = ""
+            else:
+              user_profile = json.loads(user_profile)
+              user_info["age"] = user_profile["age"]
+              user_info["studies"] = user_profile["studies"]
+              user_info["tech_exp"] = user_profile["tech_exp"]
+              user_info["social_nets_use"] = user_profile["social_nets_use"]
+              user_info["gender"] = user_profile["gender"]
             refs_list = []
             components_list = ndb_pb.getComponents()
             for comp in components_list:
-              component = ndb_pb.getComponentEntity(comp["component_id"])
+              comp = json.loads(comp)
+              ident = comp["component_id"]
+              component = ndb_pb.getComponentEntity(ident)
+              version = component.preasigned_version
               ref = "centauro.ls.fi.upm.es/bower_components/" + \
-                    comp["component_id"] + component["preversion"] + "/" + \
-                    comp["component_id"] + ".html"
+                    str(ident) + str(version) + "/" + str(ident) + ".html"
               refs_list.append(ref)
             user_info["references"] = refs_list
             self.response.content_type = "application/json"
@@ -125,16 +141,23 @@ class UserHandler(SessionHandler):
                           "image": user_info["image"],
                           "website": user_info["website"],
                           "networks": user_info["nets"],
-                          "components": user_info["components"]}
+                          "components": user_info["components"],
+                          "age": "",
+                          "studies": "",
+                          "tech_exp": "",
+                          "social_nets_use": "",
+                          "gender": ""}
             if user_info["private_email"] == False:
               user_dict["email"] = user_info["email"]
             if user_info["private_phone"] == False:
               user_dict["phone"] = user_info["phone"]
             for comp in user_info.components:
+              comp = json.loads(comp)
+              ident = comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
+              version = preversion.preasigned_version
               ref = "centauro.ls.fi.upm.es/bower_components/" + \
-                    comp["component_id"] + preversion + "/" + \
-                    comp["component_id"] + ".html"
+                    ident + version + "/" + ident + ".html"
               refs_list.append(ref)
             user_dict["references"] = refs_list
             self.response.content_type = "application/json"
@@ -331,58 +354,8 @@ class ProfileHandler(SessionHandler):
       Class that defines the user resource
       It acts as the handler of the /usuarios/{user_id}/profile resource
       Methods:
-      get -- Gets the info about a user profile
       post -- Modifies the info related to an user profile
   """
-
-  def get(self, user_id):
-    cookie_value = self.request.cookies.get("session")
-    if not cookie_value == None:
-      user_logged_key = self.getUserInfo(cookie_value)
-      if not user_logged_key == None:
-        users_logged_id = ndb_pb.getUserId(user_logged_key)
-        user_info = ndb_pb.getUser(user_id)
-        if user_info == None:
-          self.response.content_type = "application/json"
-          self.response.write({"error": "The requested user does not exist"})
-          self.response.set_status(404)
-        elif not user_info == None and user_info == user_id:
-          user_profile = ndb_pb.getProfile(user_id)
-          if not user_profile == None:
-            self.response.content_type = "application/json"
-            self.response.write(user_profile)
-            self.response.set_status(200)
-          else:
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps({"error": "The user profile is not fulfilled"}))
-            self.response.set_status(404)
-        else:
-          self.response.content_type = "application/json"
-          self.response.write(json.dumps({"error": "You don\"t have the proper rights to modify this resource" +
-            " (The cookie session header does not match with the resource requested)"}))
-          self.response.set_status(401)
-      else:
-        # We invalidate the session cookies received
-        expire_date = datetime.datetime(1970,1,1,0,0,0)
-        self.response.set_cookie("session", "",
-            path="/", domain=domain, secure=True, expires=expire_date)
-        # We delete and invalidate other cookies received, like the user logged nickname
-        # and social network in which the user performed the login
-        if not self.request.cookies.get("social_network") == None:
-            self.response.set_cookie("social_network", "",
-                path="/", domain=domain, secure=True, expires=expire_date)
-        if not self.request.cookies.get("user") == None:
-            self.response.set_cookie("user", "",
-                path="/", domain=domain, secure=True, expires=expire_date)
-
-        # Builds the response
-        self.response.content_type = "application/json"
-        self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
-        self.response.set_status(400)
-    else:
-      self.response.content_type = "application/json"
-      self.response.write(json.dumps({"error": "The user is not authenticated"}))
-      self.response.set_status(401)
 
   def post(self, user_id):
     cookie_value = self.request.cookies.get("session")
