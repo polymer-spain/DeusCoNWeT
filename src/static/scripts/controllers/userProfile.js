@@ -45,6 +45,7 @@ function ($scope, $rootScope, $backend, $http) {
 		if ($scope._uploadFile){
 			$backend.uploadImage($scope._uploadFile, function(response){
 				values.image = response.data.link;
+				$scope.showToastr('info','Perfil actualizado');
 				$('html').css('cursor','');
 				console.log(values);
 				console.log('TODO subir datos al servidor');
