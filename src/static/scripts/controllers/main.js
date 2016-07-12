@@ -2,7 +2,7 @@
 angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguage', '$location', '$cookies', '$backend', '$http', '$rootScope', function ($scope, RequestLanguage, $location, $cookies, $backend, $http, $rScope) {
 
 	'use strict';
-	if ($location.host() == "localhost"){
+	if ($location.host() === "localhost"){
 		$scope.domain = "http://" + $location.host() + ":" + $location.port();
 	}else {
 		$scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
@@ -27,10 +27,10 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 			if (parent){
 				document.getElementById(parent).close();
 			}
-			$location.path('/')
-		}, function(response){
+			$location.path('/');
+		}, function(){
 			$('html').css('cursor','');
-			$location.path('/')
+			$location.path('/');
 			//console.error('Error ' + response.status + ': Fallo al intentar realizar un logout del usurio ' + $rScope.user.name);
 		});
 	};
@@ -42,7 +42,6 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 			$location.path('/selectId');
 		}
 		$rScope.token = userData.token;
-		if ($location.$$path.indexOf('profile') === -1) {
 			$backend.getUserId(userData.userId, userData.redSocial)
 				.then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
 				/* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
@@ -51,12 +50,12 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 					.then(function() {
 					$location.path('/user/' + user.user_id);
 				}, function(responseLogin) {
-					console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login'); 
+					console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login');
 				});
-			}, function(){newUser(userData)});
-		} else {
-			$backend.sendData(userData.token, user.user_id, userData.redSocial);
-		}
+			}, function(){
+				newUser(userData);
+			}
+		);
 	};
 	$scope.pathname = window.location.pathname;
 	$scope.goto = function(view){
@@ -65,7 +64,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		}
 		$location.path(view); // path not hash
 
-	}
+	};
 	var loginCallback = function (e) {
 		//$scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
 		$('#login-popup').modal('hide');
@@ -92,7 +91,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 			default:
 				$scope.loginProcess(e.detail);
 				break;
-		};
+		}
 	};
 
 	// Binding login callback
@@ -101,9 +100,9 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		$('#login-popup twitter-login')[0].addEventListener('twitter-logged', loginCallback);
 		$('#login-popup login-facebook')[0].addEventListener('facebook-logged', loginCallback);
 	})();
-	
+
 	// avoid language errors
-	$scope.$watch('language.delete', function(newValue, oldValue) {
+	$scope.$watch('language.delete', function(newValue) {
   $('.icon-delete > span').html(newValue);
 });
 
