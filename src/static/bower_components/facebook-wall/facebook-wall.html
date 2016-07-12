@@ -1,11 +1,11 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-header-panel/paper-header-panel.html">
-<link rel="import" href="../paper-styles/paper-styles.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 <dom-module id="facebook-wall">
   <template>
     <style is="custom-style">
@@ -162,15 +162,6 @@
                method="GET"
                handleAs="json"
                on-response="_dataResponse"
-               >
-    </iron-ajax>
-    <iron-ajax
-               id="refreshData"
-               url="{{requestDataUrl}}"
-               headers="{'Timing-Allow-origin': '*'}"
-               method="GET"
-               handleAs="json"
-               on-response="_refreshResponse"
                >
     </iron-ajax>
     <iron-ajax
@@ -390,7 +381,7 @@ access_token={{access_token}}&summary=true -->
       },
 
       refresh: function(){
-        this.$.refreshData.generateRequest();
+        this.$.requestData.generateRequest();
       },
       /* Observer and computed properties*/
       _languageUpdate: function(newValue){
