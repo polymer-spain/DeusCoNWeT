@@ -24,6 +24,9 @@ function ($scope, $rootScope, $backend, $http) {
 			reader.onload = function (e) {
 				$('#userPicture')
 				.attr('src', e.target.result);
+				$backend.uploadImage(e.target.result).then(function(res){
+					console.log('Functiono', res);
+				});
 			};
 			reader.readAsDataURL(event.files[0]);
 		}

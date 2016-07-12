@@ -185,4 +185,18 @@ function ($http, $location, $rootScope, $cookies) {
     };
     return $http(request);
   };
+
+  this.uploadImage = function(image) {
+    var url = '	https://api.imgur.com/3/image';
+    var formData = new FormData();
+    formData.append('image',image);
+    var request = {
+      method: 'post',
+      url: url,
+      data: formData,
+      headers: {'Authoritaion': 'Client-ID 5bb1a6c31384b7a'}
+    };
+
+    return $http(request);
+  };
 }]);
