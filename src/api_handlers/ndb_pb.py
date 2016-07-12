@@ -239,6 +239,8 @@ class User(ndb.Model):
   rates = ndb.StructuredProperty(UserRating, repeated=True)
   components = ndb.StructuredProperty(UserComponent, repeated=True)
   # The next info is related to the user profile
+  name = ndb.StringProperty()
+  surname = ndb.StringProperty()
   age = ndb.IntegerProperty()
   studies = ndb.StringProperty() # This field is set through the cuestionaire
   tech_exp = ndb.StringProperty() # This field is set through the cuestionaire
@@ -1089,7 +1091,9 @@ def getProfile(user_id):
                   "studies": user.studies,
                   "tech_exp": user.tech_exp,
                   "social_nets_use": user.social_nets_use,
-                  "gender": user.gender}
+                  "gender": user.gender,
+                  "name": user.name,
+                  "surname": user.surname}
     ans = json.dumps(user_info)
   return ans
 def subscribedUser(email):

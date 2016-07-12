@@ -114,6 +114,8 @@ class UserHandler(SessionHandler):
               user_info["tech_exp"] = ""
               user_info["social_nets_use"] = ""
               user_info["gender"] = ""
+              user_info["name"] = ""
+              user_info["surname"] = ""
             else:
               user_profile = json.loads(user_profile)
               user_info["age"] = user_profile["age"]
@@ -121,6 +123,8 @@ class UserHandler(SessionHandler):
               user_info["tech_exp"] = user_profile["tech_exp"]
               user_info["social_nets_use"] = user_profile["social_nets_use"]
               user_info["gender"] = user_profile["gender"]
+              user_info["name"] = user_profile["name"]
+              user_info["surname"] = user_profile["surname"]
             refs_list = []
             components_list = ndb_pb.getComponents()
             for comp in components_list:
@@ -156,7 +160,7 @@ class UserHandler(SessionHandler):
               ident = comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               version = preversion.preasigned_version
-              ref = "centauro.ls.fi.upm.es/bower_components/" + \
+              ref = "../bower_components/" + \
                     ident + version + "/" + ident + ".html"
               refs_list.append(ref)
             user_dict["references"] = refs_list
@@ -383,6 +387,10 @@ class ProfileHandler(SessionHandler):
             updated_data["social_nets_use"] = values.get("social_nets_use")
           if values.hasKey("gender"):
             updated_data["gender"] = values.get("gender")
+          if values.hasKey("name"):
+            updated_data["name"] = values.get("name")
+          if values.hasKey("surname"):
+            updated_data["surname"] = values.get("surname")
 
           if not len(updated_data) == 0:
             updated_info = ndb_pb.updateProfile(user_id, updated_data)
