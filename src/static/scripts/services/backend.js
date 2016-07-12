@@ -189,10 +189,13 @@ function ($http, $location, $rootScope, $cookies) {
   this.uploadImage = function(image) {
     var data = new FormData();
     data.append('image', image);
+    var request = {
+      method:'POST',
+      headers: {'Authorization': 'Client-ID 5bb1a6c31384b7a'},
+      data: data,
+      url:'https://api.imgur.com/3/upload'
+    };
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://api.imgur.com/3/upload', true);
-    xhr.setRequestHeader('Authorization', 'Client-ID 5bb1a6c31384b7a');
-    xhr.send(data);
+    return $http(request);
   };
 }]);
