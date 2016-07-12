@@ -132,7 +132,7 @@ class UserHandler(SessionHandler):
               ident = comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
               version = component.preasigned_version
-              ref = "centauro.ls.fi.upm.es/bower_components/" + \
+              ref = "/bower_components/" + \
                     str(ident) + str(version) + "/" + str(ident) + ".html"
               refs_list.append(ref)
             user_info["references"] = refs_list
@@ -160,7 +160,7 @@ class UserHandler(SessionHandler):
               ident = comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               version = preversion.preasigned_version
-              ref = "../bower_components/" + \
+              ref = "/bower_components/" + \
                     ident + version + "/" + ident + ".html"
               refs_list.append(ref)
             user_dict["references"] = refs_list
