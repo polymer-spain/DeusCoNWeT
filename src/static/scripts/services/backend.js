@@ -188,22 +188,11 @@ function ($http, $location, $rootScope, $cookies) {
 
   this.uploadImage = function(image) {
     var data = new FormData();
-    data.append("image", image);
+    data.append('image', image);
 
     var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === 4) {
-        console.log(this.responseText);
-      }
-    });
-
-    xhr.open("POST", "https://api.imgur.com/3/image");
-    xhr.setRequestHeader("authorization", "Client-ID 5bb1a6c31384b7a");
-    xhr.setRequestHeader("cache-control", "no-cache");
-    xhr.setRequestHeader("postman-token", "2aeec236-af67-5cca-eb91-1e6a284c4e80");
-
+    xhr.open('POST', 'https://api.imgur.com/3/upload', true);
+    xhr.setRequestHeader('Authorization', 'Client-ID 5bb1a6c31384b7a');
     xhr.send(data);
   };
 }]);
