@@ -15,10 +15,12 @@ function ($scope, $rootScope, $backend, $http) {
 		$target.parent().addClass('active');
 		$(sectionTarget).addClass('active');
 	};
+
 	// Permite cambiar la imagen de un usuario, basandose
 	// en el input que ha dado
 	$scope.changePicture = function(event){
 		if (event.files && event.files[0].type.indexOf('image') !== -1){
+			$scope._uploadFile = event.files[0];
 			var reader = new FileReader();
 			reader.onload = function (e) {
 				$('#userPicture')
@@ -28,8 +30,11 @@ function ($scope, $rootScope, $backend, $http) {
 		}
 	};
 
+
 	// Envia los datos del usuario al servidor
+
 	$scope.submitForm = function(){
+		$('html').css('cursor','wait');
 		var values = {};
 		var $inputs = $('#userInformation input');
 
@@ -37,34 +42,24 @@ function ($scope, $rootScope, $backend, $http) {
 			var $target = $($inputs[i]);
 			values[$target.attr('data-field')] = $target.val();
 		}
-		// TODO comprobar que se han cambiado datos respecto a los recibidos
-		console.log('TODO send to server: ', values);
+		if ($scope._uploadFile){
+			$backend.uploadImage($scope._uploadFile, function(response){
+				values.image = response.data.link;
+				$('html').css('cursor','');
+				console.log(values);
+				console.log('TODO subir datos al servidor');
+			});
+	} else {
+		console.log('TODO subir datos al servidor');
+		$scope.showToastr('info','Perfil actualizado');
+		$('html').css('cursor','');
+	}
 	};
 
 	// Comprueba si ya esta registrado un token de una determinada red socialNetwork
 	// Valida las clases.
 	$scope.existToken = function(socialNetwork){
 		return $scope.user && $scope.user.tokens[socialNetwork];
-	};
-	$scope.showToastr = function(type, message, time){
-		toastr.options = {
-			"closeButton": false,
-			"debug": false,
-			"newestOnTop": false,
-			"progressBar": false,
-			"positionClass": "toast-top-right",
-			"preventDuplicates": false,
-			"onclick": null,
-			"showDuration": "300",
-			"hideDuration": "1000",
-			"timeOut": "5000",
-			"extendedTimeOut": time || "5000",
-			"showEasing": "swing",
-			"hideEasing": "linear",
-			"showMethod": "fadeIn",
-			"hideMethod": "fadeOut"
-		};
-		toastr[type](message);
 	};
 	function loginCallback(e){
 		//falta registralo
@@ -79,27 +74,27 @@ function ($scope, $rootScope, $backend, $http) {
 			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;
 
-			switch(socialNetwork) {
-				case 'googleplus':
-				var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
-				$http.get(uri).success(function (responseData) {
-					$backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
-				});
-				break;
-				case 'twitter':
-				uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-				$http.get(uri).success(function (responseData) {
-					e.detail.userId = responseData.token_id;
-					$backend.addTokens(socialNetwork, responseData.token_id, token,
-						$scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
-					}).error(function() {
-						console.log('Problemas al intentar obtener el token_id de un usuario' );
-					});
-					break;
-					default:
-					$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
-					break;
-				}
+			// switch(socialNetwork) {
+			// 	case 'googleplus':
+			// 	var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
+			// 	$http.get(uri).success(function (responseData) {
+			// 		$backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
+			// 	});
+			// 	break;
+			// 	case 'twitter':
+			// 	uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+			// 	$http.get(uri).success(function (responseData) {
+			// 		e.detail.userId = responseData.token_id;
+			// 		$backend.addTokens(socialNetwork, responseData.token_id, token,
+			// 			$scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
+			// 		}).error(function() {
+			// 			console.log('Problemas al intentar obtener el token_id de un usuario' );
+			// 		});
+			// 		break;
+			// 		default:
+			// 		$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
+			// 		break;
+			// 	}
 			});
 		}
 		(function(){
