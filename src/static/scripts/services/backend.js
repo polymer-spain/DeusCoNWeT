@@ -187,16 +187,23 @@ function ($http, $location, $rootScope, $cookies) {
   };
 
   this.uploadImage = function(image) {
-    var url = '	https://api.imgur.com/3/image';
-    var formData = new FormData();
-    formData.append('image',image);
-    var request = {
-      method: 'post',
-      url: url,
-      data: formData,
-      headers: {'Authoritaion': 'Client-ID 5bb1a6c31384b7a'}
-    };
+    var data = new FormData();
+    data.append("image", image);
 
-    return $http(request);
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        console.log(this.responseText);
+      }
+    });
+
+    xhr.open("POST", "https://api.imgur.com/3/image");
+    xhr.setRequestHeader("authorization", "Client-ID 5bb1a6c31384b7a");
+    xhr.setRequestHeader("cache-control", "no-cache");
+    xhr.setRequestHeader("postman-token", "2aeec236-af67-5cca-eb91-1e6a284c4e80");
+
+    xhr.send(data);
   };
 }]);

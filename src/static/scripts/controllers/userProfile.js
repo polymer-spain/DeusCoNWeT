@@ -21,12 +21,10 @@ function ($scope, $rootScope, $backend, $http) {
 	$scope.changePicture = function(event){
 		if (event.files && event.files[0].type.indexOf('image') !== -1){
 			var reader = new FileReader();
+			$backend.uploadImage(event.files[0]);
 			reader.onload = function (e) {
 				$('#userPicture')
 				.attr('src', e.target.result);
-				$backend.uploadImage(e.target.result).then(function(res){
-					console.log('Functiono', res);
-				});
 			};
 			reader.readAsDataURL(event.files[0]);
 		}
