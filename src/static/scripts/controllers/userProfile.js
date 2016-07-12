@@ -35,26 +35,36 @@ function ($scope, $rootScope, $backend, $http) {
 
 	$scope.submitForm = function(){
 		$('html').css('cursor','wait');
-		var values = {};
+		var values = '';
 		var $inputs = $('#userInformation input');
-
+		var changes = false;
 		for (var i =0;i<$inputs.length;i++){
 			var $target = $($inputs[i]);
-			values[$target.attr('data-field')] = $target.val();
+			if (i>0) {
+				values+='&';
+			}
+			if ($target.attr('data-field') !== 'image'){
+				values += $target.attr('data-field') + '=' + $target.val();
+
+				if ($scope.user[$target.attr('data-field') !== $target.val()]){
+					changes = true;
+				}
+			}
 		}
 		if ($scope._uploadFile){
 			$backend.uploadImage($scope._uploadFile, function(response){
-				values.image = response.data.link;
+				values += '&image=' + response.data.link;
+				$backend.updateProfile(values).then(function(){
+					$scope.showToastr('info','Perfil actualizado');
+					$('html').css('cursor','');
+				});
+			});
+		} else if (changes) {
+			$backend.updateProfile(values).then(function(){
 				$scope.showToastr('info','Perfil actualizado');
 				$('html').css('cursor','');
-				console.log(values);
-				console.log('TODO subir datos al servidor');
 			});
-	} else {
-		console.log('TODO subir datos al servidor');
-		$scope.showToastr('info','Perfil actualizado');
-		$('html').css('cursor','');
-	}
+		}
 	};
 
 	// Comprueba si ya esta registrado un token de una determinada red socialNetwork
@@ -96,13 +106,13 @@ function ($scope, $rootScope, $backend, $http) {
 			// 		$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
 			// 		break;
 			// 	}
-			});
-		}
-		(function(){
-			$('#socialNetwork google-login')[0].addEventListener('google-logged', loginCallback);
-			$('#socialNetwork github-login')[0].addEventListener('github-logged', loginCallback);
-			$('#socialNetwork instagram-login')[0].addEventListener('instagram-logged', loginCallback);
-			$('#socialNetwork twitter-login')[0].addEventListener('twitter-logged', loginCallback);
-			$('#socialNetwork login-facebook')[0].addEventListener('facebook-logged', loginCallback);
-		})();
-	}]);
+		});
+	}
+	(function(){
+		$('#socialNetwork google-login')[0].addEventListener('google-logged', loginCallback);
+		$('#socialNetwork github-login')[0].addEventListener('github-logged', loginCallback);
+		$('#socialNetwork instagram-login')[0].addEventListener('instagram-logged', loginCallback);
+		$('#socialNetwork twitter-login')[0].addEventListener('twitter-logged', loginCallback);
+		$('#socialNetwork login-facebook')[0].addEventListener('facebook-logged', loginCallback);
+	})();
+}]);
