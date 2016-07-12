@@ -16,18 +16,18 @@ limitations under the License.
 -->
 
 
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
 
-<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="bower_components/paper-material/paper-material.html">
-<link rel="import" href="bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="bower_components/iron-icons/image-icons.html">
-<link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
 <link rel="stylesheet" href="octicons/octicons.css">
 
 <!--
@@ -43,145 +43,125 @@ Element providing solution to no problem in particular.
 @homepage http://Mortega5.github.io/github-events
 -->
 <dom-module id="github-events">
-	<style is="custom-style">
-		:host {
-			display: inline-block;
-			--github-events-width: 450px;
-			--github-events-height: 450px;
-			font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-			color:#2e2e2e;
-		}
+<style is="custom-style">
+	:host {
+		display: inline-block;
+		--github-events-width: 450px;
+		--github-events-height: 450px;
+		min-height: 200px;
+		min-width: 200px;
+		font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		color:#2e2e2e;
+	}
 
-		paper-header-panel {
-			width: var(--github-events-width);
-			height: var(--github-events-height);
-			@apply(--shadow-elevation-3dp);
-			border-radius: 8px;
-			background: #e8e2e2;
-		}
-		div.paper-header {
-			height: 60px;
-			font-size: 16px;
-			line-height: 60px;
-			padding: 0 10px;
-			color: white;
-			transition: height 0.2s;
-			border-top-left-radius: 8px;
-			border-top-right-radius: 8px;
-		}
-		div.paper-header {
-			background: rgb(77,105,162);
-			background: linear-gradient(to bottom,  rgb(46, 46, 46) 0%,rgb(69, 69, 69) 100%);
+	paper-header-panel {
+		width: 100%;
+		height: 100%;
+		@apply(--shadow-elevation-3dp);
+		border-radius: 8px;
+		background: #e8e2e2;
+	}
+	div.paper-header {
+		height: 60px;
+		font-size: 16px;
+		line-height: 60px;
+		padding: 0 10px;
+		color: white;
+		transition: height 0.2s;
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+	}
+	div.paper-header {
+		background: rgb(77,105,162);
+		background: linear-gradient(to bottom,  rgb(46, 46, 46) 0%,rgb(69, 69, 69) 100%);
 
-		}
-		div.paper-header iron-icon {
-			border-radius: 5px;
-			width: 40px;
-			height: 40px;
-		}
-		.title {
-			font-weight: bold;
-			font-size: 1.3em;
-			margin:0;
-			text-align: center;
-		}
-		.event {
-			min-height: 100px;
-			padding: 8px;
-			border-radius: 3px;
-			font-size:14px;
-			background: rgb(238,238,238);
-			background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(233,233,233,1) 52%, rgba(238,238,238,1) 100%);
-			background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
-			background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
-			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
-		}
+	}
+	div.paper-header iron-icon {
+		border-radius: 5px;
+		width: 40px;
+		height: 40px;
+	}
+	.title {
+		font-weight: bold;
+		font-size: 1.3em;
+	}
+	.event {
+		min-height: 100px;
+		padding: 8px;
+		border-radius: 3px;
+		font-size:14px;
+		background: rgb(238,238,238);
+		background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(233,233,233,1) 52%, rgba(238,238,238,1) 100%);
+		background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+		background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
+	}
 
-		.eventShadow{
-			margin: 15px 8px;
-		}
-		paper-button {
-			background-color:#9e9e9e;
-			text-transform: none;
-			color: #444;
-			margin:0;
-			font-size: 14px;
-		}
-		.loadmore {
-			margin:5px auto 10px auto;
-		}
-		.header .name {
-			margin: auto 12px;			
-		}
-		.header iron-icon {
-			width: 40px;
-			height: 40px;
-		}
-		.header iron-icon /deep/ img {
-			border-radius: 50%;
-		}
-		.header .date {
-			font-size:11px;
-		}
-		a {
-			text-decoration: none;
-			color: #1e71bf;
-			font-weight: bold;
-		}
-		a:hover {
-			text-decoration: underline;
-		}
-		.event > .content {
-			margin: 10px 3px;
-		}
+	.eventShadow{
+		margin: 15px 8px;
+	}
+	paper-button {
+		background-color:#9e9e9e;
+		text-transform: none;
+		color: #444;
+		margin:0;
+		font-size: 14px;
+	}
+	.loadmore {
+		margin:5px auto 10px auto;
+	}
+	.header .name {
+		margin: auto 12px;
+	}
+	.header iron-icon {
+		width: 40px;
+		height: 40px;
+	}
+	.header iron-icon /deep/ img {
+		border-radius: 50%;
+	}
+	.header .date {
+		font-size:11px;
+	}
+	a {
+		text-decoration: none;
+		color: #1e71bf;
+		font-weight: bold;
+	}
+	a:hover {
+		text-decoration: underline;
+	}
+	.event > .content {
+		margin: 10px 3px;
+	}
 
-		.additionalInfo {
-			margin: 5px 28px;
-			font-size: 12px;
-		}
-		.additionalInfo p{
-			color: #666;
-			margin:0;
-		}
-		.githubIcon {
-			margin:auto 0;
-			text-align: center;
-		}
-		.watchevent .starIcon iron-icon{
-			width: 18px;
-		}
-		.text{
-			margin: 3px 0px 3px 8px;
-		}
-		.loading {
-			margin:auto;
-		}
-		.deletedBranch{
-			font-weight: bold;
-			color:darkred;
-		}
-		.modalError {
-			position:fixed;
-			height: 0;
-			color:white;
-			background-color:#1d4e79;
-			width:var(--github-events-width);
-			text-align:center;
-			opacity: 0;
-			transition: 0.3s linear;
-			z-index: 1000;
-		}
-		.modalError[show="true"]{
-			height: 40px;
-			opacity: 1;
-		}
-		.modalError > p {
-			margin:auto;
-		}
+	.additionalInfo {
+		margin: 5px 28px;
+		font-size: 12px;
+	}
+	.additionalInfo p{
+		color: #666;
+	}
+	.githubIcon {
+		margin:auto 0;
+	}
+	.watchevent .starIcon iron-icon{
+		width: 18px;
+	}
+	.text{
+		margin: 3px 0px 3px 8px;
+		word-break: break-all
+	}
+	.loading {
+		margin:auto;
+	}
+	.deletedBranch{
+		font-weight: bold;
+		color:darkred;
+	}
+</style>
 
-	</style>
-
-	<template id="template"> 
+	<template id="template">
 		<iron-ajax
 							 id="request"
 							 method="GET"
@@ -582,7 +562,7 @@ Element providing solution to no problem in particular.
 								</template>
 							</div>
 						</div>
-					</paper-material>						
+					</paper-material>
 				</template>
 
 				<!-- Show more button -->
@@ -846,7 +826,7 @@ Element providing solution to no problem in particular.
 						var dif = current_date.getFullYear() - date.getFullYear()
 						time = dif==1 ? dif + " " + this.language_data.year : dif + " " + this.language_data.years;
 						/* Meses */
-					} else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+					} else if ((current_date.getMonth() - date.getMonth()) != 0) {
 						var dif = current_date.getMonth() - date.getMonth();
 						time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
 						/* Dias */
@@ -912,7 +892,7 @@ Element providing solution to no problem in particular.
 
 			// PROCESS
 			_processUrl: function(component_directory, idioma) {
-				return component_directory + "language/" + idioma; 
+				return component_directory + "language/" + idioma;
 			},
 			_processEventUrl: function(username) {
 				return "https://api.github.com/users/" + username + "/received_events";
@@ -921,14 +901,14 @@ Element providing solution to no problem in particular.
 				return page < 1? {}: {page: page};
 			},
 			_processRefreshHeader: function(etag) {
-				this.$.refresh.headers["If-None-Match"] = etag;       
+				this.$.refresh.headers["If-None-Match"] = etag;
 			},
 
 
 			// BOOLEAN FUNCTION
 			_showLoadMore: function(lastPage, page, show){
 				return lastPage > page && !show;
-			},      
+			},
 			compareString: function(origin, type) {
 				return origin === type;
 			},

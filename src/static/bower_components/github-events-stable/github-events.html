@@ -16,18 +16,17 @@ limitations under the License.
 -->
 
 
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
 
-<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="bower_components/paper-material/paper-material.html">
-<link rel="import" href="bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="bower_components/iron-icons/image-icons.html">
-<link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <link rel="stylesheet" href="octicons/octicons.css">
 
 <!--
@@ -44,884 +43,788 @@ Element providing solution to no problem in particular.
 -->
 <dom-module id="github-events">
 
-	<style is="custom-style">
-		:host {
-			display: inline-block;
-			--github-events-width: 450px;
-			--github-events-height: 450px;
-			font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-			color:#2e2e2e;
-		}
+  <style is="custom-style">
+    :host {
+      display: inline-block;
+      --github-events-width: 450px;
+      --github-events-height: 450px;
+			min-height: 200px;
+			min-width: 200px;
+      font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      color:#2e2e2e;
+    }
 
-		paper-header-panel {
-			width: var(--github-events-width);
-			height: var(--github-events-height);
-			@apply(--shadow-elevation-3dp);
-			border-radius: 8px;
-			background: #e8e2e2;
-		}
-		div.paper-header {
-			height: 60px;
-			font-size: 16px;
-			line-height: 60px;
-			padding: 0 10px;
-			color: white;
-			transition: height 0.2s;
-			border-top-left-radius: 8px;
-			border-top-right-radius: 8px;
-		}
-		div.paper-header {
-			background: rgb(77,105,162);
-			background: linear-gradient(to bottom,  rgb(46, 46, 46) 0%,rgb(69, 69, 69) 100%);
+    paper-header-panel {
+      width: 100%;
+      height: 100%;
+      @apply(--shadow-elevation-3dp);
+      border-radius: 8px;
+      background: #e8e2e2;
+    }
+    div.paper-header {
+      height: 60px;
+      font-size: 16px;
+      line-height: 60px;
+      padding: 0 10px;
+      color: white;
+      transition: height 0.2s;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+    div.paper-header {
+      background: rgb(77,105,162);
+      background: linear-gradient(to bottom,  rgb(46, 46, 46) 0%,rgb(69, 69, 69) 100%);
 
-		}
-		div.paper-header iron-icon {
-			border-radius: 5px;
-			width: 40px;
-			height: 40px;
-		}
-		.title {
-			font-weight: bold;
-			font-size: 1.3em;
-			margin:0;
-			text-align: center;
-		}
-		.event {
-			min-height: 100px;
-			padding: 8px;
-			border-radius: 3px;
-			font-size:14px;
-			background: rgb(238,238,238);
-			background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(233,233,233,1) 52%, rgba(238,238,238,1) 100%);
-			background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
-			background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
-			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
-		}
+    }
+    div.paper-header iron-icon {
+      border-radius: 5px;
+      width: 40px;
+      height: 40px;
+    }
+    .title {
+      font-weight: bold;
+      font-size: 1.3em;
+    }
+    .event {
+      min-height: 100px;
+      padding: 8px;
+      border-radius: 3px;
+      font-size:14px;
+      background: rgb(238,238,238);
+      background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(233,233,233,1) 52%, rgba(238,238,238,1) 100%);
+      background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+      background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
+    }
 
-		.eventShadow{
-			margin: 15px 8px;
-		}
-		paper-button {
-			background-color:#9e9e9e;
-			text-transform: none;
-			color: #444;
-			margin:0;
-			font-size: 14px;
-		}
-		.loadmore {
-			margin:5px auto 10px auto;
-		}
-		.header .name {
-			margin: auto 12px;			
-		}
-		.header iron-icon {
-			width: 40px;
-			height: 40px;
-		}
-		.header iron-icon /deep/ img {
-			border-radius: 50%;
-		}
-		.header .date {
-			font-size:11px;
-		}
-		a {
-			text-decoration: none;
-			color: #1e71bf;
-			font-weight: bold;
-		}
-		a:hover {
-			text-decoration: underline;
-		}
-		.event > .content {
-			margin: 10px 3px;
-		}
+    .eventShadow{
+      margin: 15px 8px;
+    }
+    paper-button {
+      background-color:#9e9e9e;
+      text-transform: none;
+      color: #444;
+      margin:0;
+      font-size: 14px;
+    }
+    .loadmore {
+      margin:5px auto 10px auto;
+    }
+    .header .name {
+      margin: auto 12px;
+    }
+    .header iron-icon {
+      width: 40px;
+      height: 40px;
+    }
+    .header iron-icon /deep/ img {
+      border-radius: 50%;
+    }
+    .header .date {
+      font-size:11px;
+    }
+    a {
+      text-decoration: none;
+      color: #1e71bf;
+      font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .event > .content {
+      margin: 10px 3px;
+    }
 
-		.additionalInfo {
-			margin: 5px 28px;
-			font-size: 12px;
-		}
-		.additionalInfo p{
-			color: #666;
-			margin:0;
-		}
-		.githubIcon {
-			margin:auto 0;
-			text-align: center;
-		}
-		.watchevent .starIcon iron-icon{
-			width: 18px;
-		}
-		.text{
-			margin: 3px 0px 3px 8px;
-		}
-		.loading {
-			margin:auto;
-		}
-		.deletedBranch{
-			font-weight: bold;
-			color:darkred;
-		}
-		.modalError {
-			position:fixed;
-			height: 0;
-			color:white;
-			background-color:#1d4e79;
-			width:var(--github-events-width);
-			text-align:center;
-			opacity: 0;
-			transition: 0.3s linear;
-			z-index: 1000;
-		}
-		.modalError[show="true"]{
-			height: 40px;
-			opacity: 1;
-		}
-		.modalError > p {
-			margin:auto;
-		}
+    .additionalInfo {
+      margin: 5px 28px;
+      font-size: 12px;
+    }
+    .additionalInfo p{
+      color: #666;
+    }
+    .githubIcon {
+      margin:auto 0;
+    }
+    .watchevent .starIcon iron-icon{
+      width: 18px;
+    }
+    .text{
+      margin: 3px 0px 3px 8px;
+      word-break: break-all
+    }
+    .loading {
+      margin:auto;
+    }
+    .deletedBranch{
+      font-weight: bold;
+      color:darkred;
+    }
+  </style>
 
-	</style>
+  <template id="template">
+    <iron-ajax
+               id="request"
+               method="GET"
+               url="{{events_url}}"
+               params="{{events_params}}"
+               handleAs="json"
+               on-response="_response"
+               on-request="waitCursor"
+               >
+    </iron-ajax>
+    <iron-ajax
+               id="refresh"
+               method="GET"
+               url="{{events_url}}"
+               handleAs="json"
+               on-response="_refreshResponse"
+               on-error="_refreshResponse"
+               on-request="waitCursor"
+               >
+    </iron-ajax>
+    <iron-ajax
+               id="requestLanguage"
+               url="{{language_url}}"
+               method="GET"
+               handleAs='json'
+               on-response="_language_response"
+               on-request="waitCursor"
+               >
+    </iron-ajax>
+    <paper-header-panel id="panelHeader" mode="waterfall" class="blue">
+      <div class="paper-header horizontal layout center-justified">
+        <div><iron-icon src="picture.png"></iron-icon></div>
+        <div class="flex" style="text-align:center"><span class="title">GitHub Events</span></div>
+        <div><paper-icon-button icon="refresh" on-click="refresh"></paper-icon-button></div>
+      </div>
+      <div class="content">
+        <template is="dom-repeat" items="{{events}}">
+          <paper-material elevation="2" class="eventShadow">
+            <div class="event">
+              <!-- HEADER user and time information -->
+              <div class="header horizontal layout">
+                <iron-icon src="{{item.actor.avatar_url}}" class="imgEvent"></iron-icon>
+                <div class="flex"><a href="{{_getUrlWithGithub(item.actor.login)}}" target="_blank" class="name">
+                  {{item.actor.login}}
+                  </a>
+                </div>
+                <span class="date">{{item.date}}</span>
+              </div>
 
-	<template id="template"> 
-		<iron-ajax
-							 id="request"
-							 method="GET"
-							 url="{{events_url}}"
-							 params="{{events_params}}"
-							 handleAs="json"
-							 on-response="_response"
-							 on-request="waitCursor"
-							 on-error="error">
-		</iron-ajax>
-		<iron-ajax
-							 id="refresh"
-							 method="GET"
-							 url="{{events_url}}"
-							 handleAs="json"
-							 on-response="_refreshResponse"
-							 on-error="_refreshResponse"
-							 on-request="waitCursor"
-							 >
-		</iron-ajax>
-		<iron-ajax
-							 id="requestLanguage"
-							 url="{{language_url}}"
-							 method="GET"
-							 handleAs='json'
-							 on-response="_language_response"
-							 on-request="waitCursor"
-							 >
-		</iron-ajax>
-		<paper-header-panel id="panelHeader" mode="waterfall" class="blue">
-			<div class="paper-header horizontal layout center-justified">
-				<div><iron-icon src="picture.png"></iron-icon></div>
-				<p class="title flex">GitHub Events</p>
-				<div><paper-icon-button icon="refresh" on-click="refresh"></paper-icon-button></div>
-			</div>
-			<!-- CONTENT INFO-->
-			<div class="content vertical layout">
-				<!-- Modal troubles -->
-				<div id="toast1" class="modalError flex horizontal center-justified layout">
-					<div><p>{{language_data.errorMessage}}</p></div>
-				</div>
+              <!-- content information-->
+              <div class="content">
 
-				<template is="dom-repeat" items="{{events}}">
-					<paper-material elevation="2" class="eventShadow">
-						<div class="event">
-							<!-- HEADER user and time information -->
-							<div class="header horizontal layout">
-								<iron-icon src="{{item.actor.avatar_url}}" class="imgEvent"></iron-icon>
-								<a href="{{_getUrlWithGithub(item.actor.login)}}" target="_blank" class="name flex">
-									{{item.actor.login}}
-								</a>
+                <!-- PUSH EVENT -->
+                <template is="dom-if" if="{{_checkPostType(item.type, 'PushEvent')}}">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-git-commit"></span>
+                    </div>
+                    <div>
+                      <p class="text">
+                        <span>{{language_data.push}}</span>
+                        <a href="{{_getBranchUrl(item.repo.name, item.payload.ref)}}" target="_blank">
+                          <span>{{_getBranch(item.payload.ref)}}</span>
+                        </a>
+                        <span>{{language_data.at}}</span>
+                        <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                          <span>{{item.repo.name}}</span>
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="additionalInfo">
+                    <p>
+                      <a href="{{_getCommitInfo(item.repo.name, item.payload.head)}}" target="_blank">
+                        <span>{{_getCommitHead(item.payload.head)}}</span>
+                      </a>
+                      <span> {{_getCommitMessage(item.payload.commits, 0)}}</span>
+                    </p>
+                  </div>
+                </template>
 
-								<span class="date">{{item.date}}</span>
-							</div>
+                <!-- WATCH EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'WatchEvent')]]">
+                  <div class="horizontal layout watchevent">
+                    <div class="githubIcon"><span class="octicon octicon-star"></span>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.starred}}</span>
+                      <a href="{{_getUrlWithGithub(item.repo.name)}}" target="_blank">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
 
-							<!-- content information-->
-							<div class="content">
+                <!-- CREATE EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'CreateEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <template is="dom-if" if="[[_checkPostType(item.payload.ref_type, 'branch')]]">
+                        <span class="octicon octicon-git-branch"></span>
+                      </template>
+                      <template is="dom-if" if="[[_checkPostType(item.payload.ref_type, 'tag')]]">
+                        <span class="octicon octicon-tag"></span>
+                      </template>
+                      <template is="dom-if" if="[[_checkPostType(item.payload.ref_type, 'repository')]]">
+                        <span class="octicon octicon-git-branch"></span>
+                      </template>
+                    </div>
+                    <p class="text">
+                      <span>{{item.createEvent}}</span>
+                      <template is="dom-if" if="{{item.payload.ref}}">
+                        <a href="{{_getBranchUrl(item.repo.name, item.payload.ref)}}" target="_blank">
+                          <span>{{item.payload.ref}}</span>
+                        </a>
+                      </template>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
 
-								<!-- PUSH EVENT -->
-								<template is="dom-if" if="{{compareString(item.type, 'PushEvent')}}">
-									<div class="horizontal layout">
-										<p class="octicon octicon-git-commit githubIcon"></p>
-										<div>
-											<p class="text">
-												{{language_data.push}}
-												<a href="{{_getBranchUrl(item.repo.name, item.payload.ref)}}" target="_blank">
-													{{_getBranch(item.payload.ref)}}
-												</a>
-												{{language_data.at}}
-												<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-													{{item.repo.name}}
-												</a>
-											</p>
-										</div>
-									</div>
-									<div class="additionalInfo">
-										<p>
-											<a href="{{_getCommitInfo(item.repo.name, item.payload.head)}}" target="_blank">
-												{{_getCommitHead(item.payload.head)}}
-											</a>
-											{{_getCommitMessage(item.payload.commits)}}
-										</p>
-									</div>
-								</template>
+                <!-- PULL REQUEST EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'PullRequestEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-git-pull-request">
+                      </span>
+                    </div>
+                    <div>
+                      <p class="text">
+                        <span>{{item.pullRequestAction}}</span>
+                        <a href="{{_getPullRequestUrl(item.repo.name, item.payload.number)}}" target="_blank">
+                          <span>#{{item.payload.number}}</span>
+                        </a>
+                        <span>{{language_data.at}}</span>
+                        <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                          <span>{{item.repo.name}}</span>
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="additionalInfo">
+                    <p style="margin:0px">{{item.payload.pull_request.title}}</p>
+                  </div>
+                </template>
+                <!-- ISSUES EVENTS -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'IssuesEvent')]]">
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'opened')]]">
+                    <div class="horizontal layout">
+                      <div class="githubIcon">
+                        <span class="octicon octicon-issue-opened"></span>
+                      </div>
+                      <div>
+                        <p class="text">
+                          <span>{{language_data.issuesEvent.opened}}</span>
+                          <a href="{{_getIssueUrl(item.repo.name, item.payload.issue.number)}}" target="_blank">
+                            <span>#{{item.payload.issue.number}}</span>
+                          </a>
+                          <span> {{language_data.at}}</span>
+                          <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                            <span>{{item.repo.name}}</span>
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="additionalInfo">
+                      <p style="margin:0px">{{item.payload.issue.title}}</p>
+                    </div>
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'closed')]]">
+                    <div class="horizontal layout">
+                      <div class="githubIcon">
+                        <span class="octicon octicon-issue-closed"></span>
+                      </div>
+                      <div>
+                        <p class="text">
+                          <span>{{language_data.issuesEvent.closed}}</span>
+                          <a href="{{_getIssueUrl(item.repo.name, item.payload.issue.number)}}" target="_blank">
+                            <span>#{{item.payload.issue.number}}</span>
+                          </a>
+                          <span> {{language_data.at}}</span>
+                          <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                            <span>{{item.repo.name}}</span>
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="additionalInfo">
+                      <p style="margin:0px">{{item.payload.issue.title}}</p>
+                    </div>
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'assigned')]]">
+                    Not yet implemented assigned
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'unassigned')]]">
+                    Not yet implemented unassigned
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'labeled')]]">
+                    Not yet implemented labeled
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'unlabeled')]]">
+                    Not yet implemented unlabeled
+                  </template>
+                  <template is="dom-if" if="[[_checkPostType(item.payload.action, 'reopened')]]">
+                    <div class="horizontal layout">
+                      <div class="githubIcon">
+                        <span class="octicon octicon-issue-reopened"></span>
+                      </div>
+                      <div>
+                        <p class="text">
+                          <span>{{language_data.issuesEvent.reopened}}</span>
+                          <a href="{{_getIssueUrl(item.repo.name, item.payload.issue.number)}}" target="_blank">
+                            <span>#{{item.payload.issue.number}}</span>
+                          </a>
+                          <span> {{language_data.at}}</span>
+                          <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                            <span>{{item.repo.name}}</span>
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="additionalInfo">
+                      <p style="margin:0px">{{item.payload.issue.title}}</p>
+                    </div>
+                  </template>
+                </template>
 
-								<!-- WATCH EVENT -->
-								<template is="dom-if" if="[[compareString(item.type, 'WatchEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-star githubIcon"></p>
-										<p class="text">
-											{{language_data.starred}}
-											<a href="{{_getUrlWithGithub(item.repo.name)}}" target="_blank">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-								</template>
+                <!-- DELETE EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'DeleteEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon"><span class="octicon octicon-trashcan"></span>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.delete}}</span>
+                      <span class="deletedBranch">{{_getBranch(item.payload.ref)}}</span>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
 
-								<!-- CREATE EVENT -->
-								<template is="dom-if" if="[[compareString(item.type, 'CreateEvent')]]">
-									<div class="horizontal layout">
-										<template is="dom-if" if="[[compareString(item.payload.ref_type, 'branch')]]">
-											<p class="octicon octicon-git-branch githubIcon"></p>
-										</template>
-										<template is="dom-if" if="[[compareString(item.payload.ref_type, 'tag')]]">
-											<p class="octicon octicon-tag githubIcon"></p>
-										</template>
-										<template is="dom-if" if="[[compareString(item.payload.ref_type, 'repository')]]">
-											<p class="octicon octicon-git-branch githubIcon"></p>
-										</template>
-										<p class="text">
-											{{item.createEvent}}
-											<template is="dom-if" if="{{item.payload.ref}}">
-												<a href="{{_getBranchUrl(item.repo.name, item.payload.ref)}}" target="_blank">
-													{{item.payload.ref}}
-												</a>
-											</template>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-								</template>
+                <!-- MEMBER EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'MemberEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-person"></span>
 
-								<!-- PULL REQUEST EVENT -->
-								<template is="dom-if" if="[[compareString(item.type, 'PullRequestEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-git-pull-request githubIcon"></p>
-										<p class="text">
-											{{item.pullRequestAction}}
-											<a href="{{item.payload.pull_request.html_url}}" target="_blank">
-												#{{item.payload.number}}
-											</a>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-									<div class="additionalInfo">
-										<p>{{item.payload.pull_request.title}}</p>
-									</div>
-								</template>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.member}}</span>
+                      <a href="{{_getUrlWithGithub(item.payload.member.login)}}" target="_blank" class="name">
+                        <span>{{item.payload.member.login}}</span>
+                      </a>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
 
-								<!-- ISSUES EVENTS -->
-								<template is="dom-if" if="[[compareString(item.type, 'IssuesEvent')]]">
-									<template is="dom-if" if="[[compareString(item.payload.action, 'opened')]]">
-										<div class="horizontal layout">
-											<p class="octicon octicon-issue-opened githubIcon"></p>
-											<p class="text">
-												{{language_data.issuesEvent.opened}}
-												<a href="{{item.payload.issue.html_url}}" target="_blank">
-													#{{item.payload.issue.number}}
-												</a>
-												{{language_data.at}}
-												<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-													{{item.repo.name}}
-												</a>
-											</p>
-										</div>
-										<div class="additionalInfo">
-											<p>{{item.payload.issue.title}}</p>
-										</div>
-									</template>
-									<template is="dom-if" if="[[compareString(item.payload.action, 'closed')]]">
-										<div class="horizontal layout">
-											<div class="githubIcon">
-												<span class="octicon octicon-issue-closed"></span>
-											</div>
-											<div>
-												<p class="text">
-													<span>{{language_data.issuesEvent.closed}}</span>
-													<a href="{{item.payload.issue.html_url}}" target="_blank">
-														<span>#{{item.payload.issue.number}}</span>
-													</a>
-													<span> {{language_data.at}}</span>
-													<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-														<span>{{item.repo.name}}</span>
-													</a>
-												</p>
-											</div>
-										</div>
-										<div class="additionalInfo">
-											<p style="margin:0px">{{item.payload.issue.title}}</p>
-										</div>
-									</template>
-									<template is="dom-if" if="[[compareString(item.payload.action, 'assigned')]]">
-										Not yet implemented assigned
-									</template>
-									<template is="dom-if" if="[[compareString(item.payload.action, 'unassigned')]]">
-										Not yet implemented unassigned
-									</template>
-									<template is="dom-if" if="[[compareString(item.payload.action, 'labeled')]]">
-										Not yet implemented labeled
-									</template>
-									<template is="dom-if" if="[[compareString(item.payload.action, 'unlabeled')]]">
-										Not yet implemented unlabeled
-									</template>
-									<template is="dom-if" if="[[compareString(item.payload.action, 'reopened')]]">
-										<div class="horizontal layout">
-											<div class="githubIcon">
-												<span class="octicon octicon-issue-reopened"></span>
-											</div>
-											<div>
-												<p class="text">
-													<span>{{language_data.issuesEvent.reopened}}</span>
-													<a href="{{item.payload.issue.html_url}}" target="_blank">
-														<span>#{{item.payload.issue.number}}</span>
-													</a>
-													<span> {{language_data.at}}</span>
-													<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-														<span>{{item.repo.name}}</span>
-													</a>
-												</p>
-											</div>
-										</div>
-										<div class="additionalInfo">
-											<p style="margin:0px">{{item.payload.issue.title}}</p>
-										</div>
-									</template>
-								</template>
+                <!-- RELEASE EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'ReleaseEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-tag"></span>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.releaseEvent}}</span>
+                      <a href="{{_getReleaseUrl(item.repo.name, item.payload.release.tag_name)}}" target="_blank" class="name">
+                        <span>{{item.payload.release.name}}</span>
+                      </a>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                </template>
 
-								<!-- DELETE EVENT -->
-								<template is="dom-if" if="[[compareString(item.type, 'DeleteEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-trashcan githubIcon"></p>
-										<p class="text">
-											{{language_data.delete}}
-											<span class="deletedBranch">{{_getBranch(item.payload.ref)}}</span>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-								</template>
+                <!-- COMMIT COMMENT EVENT -->
+                <template is="dom-if" if="[[_checkPostType(item.type, 'CommitCommentEvent')]]">
+                  <div class="horizontal layout">
+                    <div class="githubIcon">
+                      <span class="octicon octicon-comment"></span>
+                    </div>
+                    <p class="text">
+                      <span>{{language_data.commitCommentEvent}}</span>
+                      <a href="{{item.payload.comment.html_url}}" target="_blank" class="name">
+                        <span>{{_getCommitHead(item.payload.comment.commit_id)}}</span>
+                      </a>
+                      <span>{{language_data.at}}</span>
+                      <a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
+                        <span>{{item.repo.name}}</span>
+                      </a>
+                    </p>
+                  </div>
+                  <div class="additionalInfo">
+                    <p>
+                      <iron-icon src="{{item.payload.comment.user.avatar_url}}"></iron-icon>
+                      <span>{{item.payload.comment.body}}</span>
+                    </p>
+                  </div>
+                </template>
 
-								<!-- MEMBER EVENT -->
-								<template is="dom-if" if="[[compareString(item.type, 'MemberEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-person githubIcon"></p>
-										<p class="text">
-											{{language_data.member}}
-											<a href="{{_getUrlWithGithub(item.payload.member.login)}}" target="_blank" class="name">
-												{{item.payload.member.login}}
-											</a>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-								</template>
+                <template is="dom-if" if="[[_checkPostType(item.type, 'GollumEvent')]]">
+                  TODO gollum event
+                </template>
 
-								<!-- RELEASE EVENT -->
-								<template is="dom-if" if="[[compareString(item.type, 'ReleaseEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-tag githubIcon"></p>
-										<p class="text">
-											{{language_data.releaseEvent}}
-											<a href="{{item.payload.release.html_url}}" target="_blank" class="name">
-												{{item.payload.release.name}}
-											</a>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-								</template>
+                <template is="dom-if" if="[[_checkPostType(item.type, 'IssueCommentEvent')]]">
+                  TODO issue comment event
+                </template>
 
-								<!-- COMMIT COMMENT EVENT -->
-								<template is="dom-if" if="[[compareString(item.type, 'CommitCommentEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-comment githubIcon"></p>
-										<p class="text">
-											{{language_data.commitCommentEvent}}
-											<a href="{{item.payload.comment.html_url}}" target="_blank" class="name">
-												{{_getCommitHead(item.payload.comment.commit_id)}}
-											</a>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-									<div class="additionalInfo">
-										<p>
-											<iron-icon src="{{item.payload.comment.user.avatar_url}}"></iron-icon>
-											{{item.payload.comment.body}}
-										</p>
-									</div>
-								</template>
+                <template is="dom-if" if="[[_checkPostType(item.type, 'PublicEvent')]]">
+                  TODO public event
+                </template>
 
-								<!-- FORK EVENT -->
-								<template is="dom-if" if="[[compareString(item.type, 'ForkEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-git-branch githubIcon"></p>
-										<p class="text">
-											{{language_data.fork}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-											{{language_data.to}}
-											<a target="_blank" href="{{item.payload.forkee.html_url}}">
-												{{item.payload.forkee.full_name}}
-											</a>
-										</p>
-									</div>
-								</template>
-
-								<!-- ISSUE COMMENT EVENT-->
-								<template is="dom-if" if="[[compareString(item.type, 'IssueCommentEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-comment-discussion githubIcon"></p>
-										<p class="text">
-											{{language_data.issueComment}}
-											<a href="{{item.payload.issue.html_url}}" target="_blank">
-												#{{item.payload.issue.number}}
-											</a>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-									<div class="additionalInfo">
-										<p>{{item.payload.comment.body}}</p>
-									</div>
-								</template>
-
-								<template is="dom-if" if="[[compareString(item.type, 'PublicEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-rocket githubIcon"></p>
-										<p class="text">
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-											{{language_data.publicEvent}}
-										</p>
-									</div>
-								</template>
-
-								<!-- PULL REQUEST REVIEW COMMENT-->
-								<template is="dom-if" if="[[compareString(item.type, 'PullRequestReviewCommentEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-comment githubIcon"></p>
-										<p class="text">
-											<a href="{{_getUrlWithGithub(item.actor.login)}}" target="_blank" class="name flex">
-												{{item.payload.comment.user.login}}
-											</a>
-											{{language_data.pullRequestReview.commend}}
-											<a href="{{item.payload.comment.html_url}}" target="_blank">
-												{{item.payload.comment.path}}
-											</a>
-											{{language_data.pullRequestReview.pullRequest}}
-											<a href="{{item.payload.pull_request.html_url}}" target="_blank">
-												#{{item.payload.pull_request.number}}
-											</a>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repo.name}}
-											</a>
-										</p>
-									</div>
-									<div class="additionalInfo">
-										<p>
-											<iron-icon src="{{item.payload.comment.user.avatar_url}}"></iron-icon>
-											{{item.payload.comment.body}}
-										</p>
-									</div>
-								</template>
-
-								<!-- GOLLUM EVENT-->
-								<template is="dom-if" if="[[compareString(item.type, 'GollumEvent')]]">
-									<div class="horizontal layout">
-										<p class="octicon octicon-comment-discussion githubIcon"></p>
-										<p class="text">
-											<template is="dom-if" if="[[compareString(item.payload.pages.action, 'created')]]">
-												{{language_data.gollumEvent.created}}
-											</template>
-											<template is="dom-if" if="[[compareString(item.payload.pages.action, 'update')]]">
-												{{language_data.gollumEvent.created}}
-											</template>
-											<a href="{{item.payload.pages.html_url}}" target="_blank">
-												#{{item.payload.pages.page_name}
-											</a>
-											{{language_data.at}}
-											<a target="_blank" href="{{_getUrlWithGithub(item.repo.name)}}">
-												{{item.repository.name}}
-											</a>
-										</p>
-									</div>
-									<div class="additionalInfo">
-										<p>{{item.payload.comment.body}}</p>
-									</div>
-								</template>
-							</div>
-						</div>
-					</paper-material>						
-				</template>
-
-				<!-- Show more button -->
-				<template is="dom-if" if="[[_showLoadMore(lastPage, page, show)]]">
-					<div class="horizontal center-justified layout">
-						<paper-material elevation="2" class="loadmore">
-							<paper-button on-click="load">{{language_data.load_more}}</paper-button>
-						</paper-material>
-					</div>
-				</template>
-				<!-- loading screen-->
-				<template is="dom-if" if="{{_noEvents(events.length)}}">
-					<div class="vertical center-justified layout">
-						<img class="loading" src="loading-gif.gif">
-					</div>
-				</template>
-			</div>
-		</paper-header-panel>
-	</template>
-
-	<script>
+                <template is="dom-if" if="[[_checkPostType(item.type, 'PullRequestReviewCommentEvent')]]">
+                  TODO pull request review event
+                </template>
+                <template is="dom-if" if="[[_checkPostType(item.type, 'ForkEvent')]]">
+                  TODO pull request fork event
+                </template>
 
 
-		Polymer({
+              </div>
+            </div>
+          </paper-material>
+        </template>
 
-			is: "github-events",
-			properties: {
-				lastPage: {
-					type: Number,
-					value: 0
-				},
-				per_page: {
-					type: Number,
-					value:15,
-					notify: true/*,
+        <!-- Show more button -->
+        <template is="dom-if" if="[[_showLoadMore(lastPage, page, show)]]">
+          <div class="horizontal center-justified layout">
+            <paper-material elevation="2" class="loadmore">
+              <paper-button on-click="load">{{language_data.load_more}}</paper-button>
+            </paper-material>
+          </div>
+        </template>
+        <!-- loading screen-->
+        <template is="dom-if" if="{{_noEvents(events.length)}}">
+          <div class="vertical center-justified layout">
+            <img class="loading" src="loading.gif">
+          </div>
+        </template>
+      </div>
+    </paper-header-panel>
+  </template>
+
+  <script>
+
+
+    Polymer({
+
+      is: "github-events",
+      properties: {
+        lastPage: {
+          type: Number,
+          value: 0
+        },
+        per_page: {
+          type: Number,
+          value:15,
+          notify: true/*,
           reflectToAttribute: true*/
-				},
-				username: {
-					type: String,
-					value: '',
-					notify: true,
-					reflectToAttribute: true
-				},
-				show: {
-					type: Boolean,
-					value: true,
-				},
-				page: {
-					type: Number,
-					value: 1,
-					notify: true
-				},
-				language: {
-					type: String,
-					value: 'es',
-					notify: true,
-					reflectToAttribute: true,
-					observer: "_languageChanged"
-				},
-				language_url: {
-					type: String,
-					computed: '_processUrl(component_directory, idioma)'
-				},
-				events_url: {
-					type: String,
-					computed: '_processEventUrl(username)'
-				},
-				events_params: {
-					type: String,
-					computed: '_processEventParams(page, per_page)'
-				},
-				events: {
-					type: Object,
-					value: []
-				},
-				token: {
-					type:String,
-					notify: true
-				},
-				component_directory: {
-					type:String,
-					value: "",
-					reflectToAttribute: true
-				},
-				etag: {
-					type: String,
-					notify: true,
-					observer: '_processRefreshHeader'
-				},
-				refresh_time: {
-					type: Number,
-					value: 60000,
-					reflectToAttribute: true,
-					notify: true,
-					observer: '_refresUpdate'
-				}
-			},
+        },
+        username: {
+          type: String,
+          value: '',
+          notify: true,
+          reflectToAttribute: true
+        },
+        show: {
+          type: Boolean,
+          value: true,
+        },
+        page: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+        language: {
+          type: String,
+          value: 'es',
+          notify: true,
+          reflectToAttribute: true,
+          observer: "_languageChanged"
+        },
+        language_url: {
+          type: String,
+          computed: '_processUrl(component_directory, idioma)'
+        },
+        events_url: {
+          type: String,
+          computed: '_processEventUrl(username)'
+        },
+        events_params: {
+          type: String,
+          computed: '_processEventParams(page, per_page)'
+        },
+        events: {
+          type: Object,
+          value: []
+        },
+        token: {
+          type:String,
+          notify: true
+        },
+        component_directory: {
+          type:String,
+          value: "",
+          reflectToAttribute: true
+        },
+        etag: {
+          type: String,
+          notify: true,
+          observer: '_processRefreshHeader'
+        },
+        refresh_time: {
+          type: Number,
+          value: 60000,
+          reflectToAttribute: true,
+          notify: true,
+          observer: '_refresUpdate'
+        }
+      },
 
-			attached : function() {
-				this.requestError = false;
-				if (this.token) {
-					this.$.request.setAttribute("headers", '{"Authorization":"token '+this.token+'"}');
-					this.$.refresh.setAttribute("headers", '{"Authorization":"token '+this.token+'"}');
-				}
-				var back = this;
-				window.setInterval(function(){back.$.refresh.generateRequest();}, back.refresh_time);
+      attached : function() {
+        //TODO remove that
+        if (this.token) {
+          this.$.request.setAttribute("headers", '{"Authorization":"token '+this.token + '"}');
+          this.$.refresh.setAttribute("headers", '{"Authorization":"token '+this.token + '"}');
+        }
+        var back = this;
+        window.setInterval(function(){back.$.request.generateRequest();}, back.refresh_time);
 
-				this.$.requestLanguage.generateRequest();
-			},
+        this.$.requestLanguage.generateRequest();
+      },
 
-			// AJAX RESPONSE
-			_response: function(event,detail){
-				this.stopWait();
-				if (this.events.length > 0) {
-					for (i=0;i<detail.response.length;i++) {
-						if (detail.response[i].type === "PullRequestEvent") {
-							detail.response[i].pullRequestAction = this.language_data[detail.response[i].payload.action + "PullRequest"];
-						} else if (detail.response[i].type === "CreateEvent") {
-							detail.response[i].createEvent = this.language_data.createEvent[detail.response[i].payload.ref_type];
-						}
-						this.push('events', detail.response[i])
-					};
-				} else {
-					this.set('events', detail.response);
-					for (i=0;i<this.events.length;i++) {
-						if (this.events[i].type === "PullRequestEvent") {
-							this.set('events.' + i + '.pullRequestAction', this.language_data[this.events[i].payload.action + "PullRequest"])
-						} else if (this.events[i].type === "CreateEvent") {
-							this.set('events.' + i + '.createEvent', this.language_data.createEvent[this.events[i].payload.ref_type]);
-						}
-					};
-				};
-				this._changeTime(this.events);
+      // AJAX RESPONSE
+      _response: function(event,detail){
+        this.$.panelHeader.style.cursor = "default";
+        if (this.events.length > 0) {
+          for (i=0;i<detail.response.length;i++) {
+            if (detail.response[i].type === "PullRequestEvent") {
+              detail.response[i].pullRequestAction = this.language_data[detail.response[i].payload.action + "PullRequest"];
+            } else if (detail.response[i].type === "CreateEvent") {
+              detail.response[i].createEvent = this.language_data.createEvent[detail.response[i].payload.ref_type];
+            }
+            this.push('events', detail.response[i])
+          };
+        } else {
+          this.set('events', detail.response);
+          for (i=0;i<this.events.length;i++) {
+            if (this.events[i].type === "PullRequestEvent") {
+              this.set('events.' + i + '.pullRequestAction', this.language_data[this.events[i].payload.action + "PullRequest"])
+            } else if (this.events[i].type === "CreateEvent") {
+              this.set('events.' + i + '.createEvent', this.language_data.createEvent[this.events[i].payload.ref_type]);
+            }
+          };
+        };
+        this._changeTime(this.events);
 
-				// take etag
-				this.etag = detail.xhr.getResponseHeader("ETag");
+        // take etag
+        this.etag = detail.xhr.getResponseHeader("ETag");
 
-				// Check lastPage
-				if (this.lastPage == '') {
-					var headers = detail.xhr.getAllResponseHeaders();
-					headers = headers.split(",");
-					var head = headers[headers.length-1];
-					var patron = 'page'+'=([^&]*)';
-					var exp = new RegExp(patron);
-					this.lastPage = parseInt(exp.exec(head)[1]);
-				}
-				this.show = false;
-				// If not lastPage, next request is the next page
-				if (this.page != this.lastPage)
-					this.page++;
-			},
+        // Check lastPage
+        if (this.lastPage == '') {
+          var headers = detail.xhr.getAllResponseHeaders();
+          headers = headers.split(",");
+          var head = headers[headers.length-1];
+          var patron = 'page'+'=([^&]*)';
+          var exp = new RegExp(patron);
+          this.lastPage = parseInt(exp.exec(head)[1]);
+        }
+        this.show = false;
+        // If not lastPage, next request is the next page
+        if (this.page != this.lastPage)
+          this.page++;
+      },
 
-			_language_response: function(event, detail){
-				this.$.panelHeader.style.cursor = "default";
-				this.language_data = detail.response;
-				if(this.events.length === 0){
-					this.$.request.generateRequest();
-				}
-				else{
-					this._changeTime(this.events);
-					for (i=0;i<this.events.length;i++) {
-						if (this.events[i].type === "PullRequestEvent") {
-							this.set('events.' + i + '.pullRequestAction', this.language_data[this.events[i].payload.action + "PullRequest"])
-						}
-					}
-				}
-			},
+      _language_response: function(event, detail){
+        this.$.panelHeader.style.cursor = "default";
+        this.language_data = detail.response;
+        if(this.events.length === 0){
+          this.$.request.generateRequest();
+        }
+        else{
+          this._changeTime(this.events);
+          for (i=0;i<this.events.length;i++) {
+            if (this.events[i].type === "PullRequestEvent") {
+              this.set('events.' + i + '.pullRequestAction', this.language_data[this.events[i].payload.action + "PullRequest"])
+            }
+          }
+        }
+      },
+      // OBSERVERS
+      _languageChanged: function(newVal){
+        if(newVal === "en"){
+          this.language = "en";
+          this.idioma = "en_en.json"
+        }
+        else if(newVal === "es"){
+          this.language = "es";
+          this.idioma = "es_es.json"
+        }
+        if (this.component_directory || this.component_directory == "") {
+          this.$.requestLanguage.generateRequest();
+        }
+      },
+      _refresUpdate: function(newVal) {
+        var back = this;
+        window.clearInterval();
+        window.setInterval(function(){back.$.refresh.generateRequest()}, back.refresh_time);
+      },
 
-			error: function(){
-				this.$.toast1.setAttribute('show', true);
-				var back = this;
-			},
-			// OBSERVERS
-			_languageChanged: function(newVal){
-				if(newVal === "en"){
-					this.language = "en";
-					this.idioma = "en_en.json"
-				}
-				else if(newVal === "es"){
-					this.language = "es";
-					this.idioma = "es_es.json"
-				}
-				if (this.component_directory || this.component_directory == "") {
-					this.$.requestLanguage.generateRequest();
-				}
-			},
-			_refresUpdate: function(newVal) {
-				var back = this;
-				window.clearInterval();
-				window.setInterval(function(){back.$.refresh.generateRequest()}, back.refresh_time);
-			},
+      // MORE BUTTON
+      load: function(){
+        this.$.request.generateRequest();
+      },
 
-			// MORE BUTTON
-			load: function(){
-				this.$.request.generateRequest();
-			},
+      // REFRESH REQUEST
+      refresh: function(){
+        // if-none-match minusculas
+        this.$.refresh.generateRequest();
+      },
+      _refreshResponse: function(e, d) {
+        this.$.panelHeader.style.cursor = "default";
+        if (d.status === 200){
+          var last_id = this.events[0].id;
+          this.etag = d.xhr.getResponseHeader('ETag');
+          var isNew = true;
+          for (i=0;i<d.response.length && isNew;i++) {
+            if (d.response[i].id == last_id) {
+              isNew = false;
+            } else {
+              if (d.response[i].type === "PullRequestEvent") {
+                d.response[i].pullRequestAction = this.language_data[d.response[i].payload.action + "PullRequest"];
+              } else if (d.response[i].type === "CreateEvent") {
+                d.response[i].createEvent = this.language_data.createEvent[d.response[i].payload.ref_type];
+              }
+              this.unshift('events', d.response[i])
+            }
+          };
+        }
+        this._changeTime(this.events);
+      },
+      // PARSE TIME
+      _changeTime: function(list){
+        for (i=0;i<list.length;i++){
+          var date = new Date(list[i].created_at);
+          var current_date = new Date();
+          var time;
+          /* Años*/
+          if ((current_date.getFullYear() - date.getFullYear()) != 0) {
+            var dif = current_date.getFullYear() - date.getFullYear()
+            time = dif==1 ? dif + " " + this.language_data.year : dif + " " + this.language_data.years;
+            /* Meses */
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) {
+            var dif = current_date.getMonth() - date.getMonth();
+            time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
+            /* Dias */
+          } else if((current_date.getDate() - date.getDate()) == 0 ){
+            if((current_date.getHours() - date.getHours()) == 0 ){
+              if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
 
-			// REFRESH REQUEST
-			refresh: function(){
-				// if-none-match minusculas
-				this.$.refresh.generateRequest();
-			},
-			_refreshResponse: function(e, d) {
-				this.stopWait();
-				if (d.status === 200){
-					var last_id = this.events[0].id;
-					this.etag = d.xhr.getResponseHeader('ETag');
-					var isNew = true;
-					for (i=0;i<d.response.length && isNew;i++) {
-						if (d.response[i].id == last_id) {
-							isNew = false;
-						} else {
-							if (d.response[i].type === "PullRequestEvent") {
-								d.response[i].pullRequestAction = this.language_data[d.response[i].payload.action + "PullRequest"];
-							} else if (d.response[i].type === "CreateEvent") {
-								d.response[i].createEvent = this.language_data.createEvent[d.response[i].payload.ref_type];
-							}
-							this.unshift('events', d.response[i])
-						}
-					};
-				}
-				this._changeTime(this.events);
-			},
-			// PARSE TIME
-			_changeTime: function(list){
-				for (i=0;i<list.length;i++){
-					var date = new Date(list[i].created_at);
-					var current_date = new Date();
-					var time;
-					/* Años*/
-					if ((current_date.getFullYear() - date.getFullYear()) != 0) {
-						var dif = current_date.getFullYear() - date.getFullYear()
-						time = dif==1 ? dif + " " + this.language_data.year : dif + " " + this.language_data.years;
-						/* Meses */
-					} else if ((current_date.getMonth() - date.getMonth()) != 0) { 
-						var dif = current_date.getMonth() - date.getMonth();
-						time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
-						/* Dias */
-					} else if((current_date.getDate() - date.getDate()) == 0 ){
-						if((current_date.getHours() - date.getHours()) == 0 ){
-							if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
+                time = current_date.getSeconds() - date.getSeconds()+" "+this.language_data.seconds
+              }
+              else{
+                time = current_date.getMinutes() - date.getMinutes()+" "+this.language_data.minutes
+              }
+            }
+            else{
+              if (current_date.getHours() - date.getHours() == 1) {
+                time = current_date.getHours() - date.getHours()+" "+this.language_data.hour;
+              }else {
+                time = current_date.getHours() - date.getHours()+" "+this.language_data.hours;
+              }
+            }
+          }
+          else if( ((current_date.getDate() - date.getDate()) < 8) && ( (current_date.getDate() - date.getDate()) > 0)){
+            if( (current_date.getDate() - date.getDate()) == 1){
+              time = current_date.getDate() - date.getDate()+" "+ this.language_data.day
+            }
+            else{
+              time = current_date.getDate() - date.getDate()+" "+this.language_data.days
+            }
+          }
+          else{
+            var month = [this.language_data.january,this.language_data.february,this.language_data.march,this.language_data.april, this.language_data.may,this.language_data.june,this.language_data.july,this.language_data.august,this.language_data.september,this.language_data.october,this.language_data.november,this.language_data.december];
+            time = date.getDate()+" "+month[date.getMonth()] + ". "+date.getFullYear();
 
-								time = current_date.getSeconds() - date.getSeconds()+" "+this.language_data.seconds
-								time += time == 1? " " + this.language_data.second: " "+this.language_data.seconds
-							}
-							else{
-								time = current_date.getMinutes() - date.getMinutes();
-								time += time == 1? " " + this.language_data.minute:  " "+this.language_data.minutes
-							}
-						}
-						else{
-							if (current_date.getHours() - date.getHours() == 1) {
-								time = current_date.getHours() - date.getHours()+" "+this.language_data.hour;
-							}else {
-								time = current_date.getHours() - date.getHours()+" "+this.language_data.hours;
-							}
-						}
-					}
-					else if( ((current_date.getDate() - date.getDate()) < 8) && ( (current_date.getDate() - date.getDate()) > 0)){
-						if( (current_date.getDate() - date.getDate()) == 1){
-							time = current_date.getDate() - date.getDate()+" "+ this.language_data.day
-						}
-						else{
-							time = current_date.getDate() - date.getDate()+" "+this.language_data.days
-						}
-					}
-					else{
-						var month = [this.language_data.january,this.language_data.february,this.language_data.march,this.language_data.april, this.language_data.may,this.language_data.june,this.language_data.july,this.language_data.august,this.language_data.september,this.language_data.october,this.language_data.november,this.language_data.december];
-						time = date.getDate()+" "+month[date.getMonth()] + ". "+date.getFullYear();
+          }
+          this.set("events." + i + ".date", time);
 
-					}
-					this.set("events." + i + ".date", time);
+        }
+      },
 
-				}
-			},
-
-			// GETTERS
-			_getBranch: function(ref) {
-				refSplited = ref.split("/");
-				return refSplited[refSplited.length-1];
-			},
-			_getBranchUrl: function(url, ref){
-				var branch = this._getBranch(ref);
-				return "https://github.com/" + url + "/tree/" + branch;
-			},
-			_getCommitHead: function(sha) {
-				return sha.slice(0, 7);
-			},
-			_getCommitMessage: function(commits) {
-				return commits[commits.length -1].message;
-			},
-			_getUrlWithGithub: function(path) {
-				return "https://github.com/" + path;
-			},
-			_getCommitInfo: function(name, commit) {
-				return "https://github.com/" + name + "/commit/" + commit;
-			},
-
-			// PROCESS
-			_processUrl: function(component_directory, idioma) {
-				return component_directory + "language/" + idioma; 
-			},
-			_processEventUrl: function(username) {
-				return "https://api.github.com/users/" + username + "/received_events";
-			},
-			_processEventParams: function(page, per_page) {
-				return page < 1? {}: {page: page};
-			},
-			_processRefreshHeader: function(etag) {
-				this.$.refresh.headers["If-None-Match"] = etag;       
-			},
+      // GETTERS
+      _getBranch: function(ref) {
+        refSplited = ref.split("/");
+        return refSplited[refSplited.length-1];
+      },
+      _getBranchUrl: function(url, ref){
+        var branch = this._getBranch(ref);
+        return "https://github.com/" + url + "/tree/" + branch;
+      },
+      _getCommitHead: function(sha) {
+        return sha.slice(0, 7);
+      },
+      _getCommitMessage: function(commits, position) {
+        return commits[position].message;
+      },
+      _getUrlWithGithub: function(path) {
+        return "https://github.com/" + path;
+      },
+      _getCommitInfo: function(name, commit) {
+        return "https://github.com/" + name + "/commit/" + commit;
+      },
+      _getPullRequestUrl: function(repo, pullRequesId) {
+        return "https://github.com/" + repo + "/pull/" + pullRequesId;
+      },
+      _getIssueUrl: function(repo, number) {
+        return "https://github.com/" + repo + "/issues/" + number;
+      },
+      _getReleaseUrl: function(repo, tag) {
+        return "https://github.com/" + repo + "/releases/tag/" + tag;
+      },
 
 
-			// BOOLEAN FUNCTION
-			_showLoadMore: function(lastPage, page, show){
-				return lastPage > page && !show;
-			},      
-			compareString: function(origin, type) {
-				return origin === type;
-			},
-			_noEvents: function(events) {
-				return events == 0;
-			},
-			waitCursor: function(){
-				this.$.panelHeader.style.cursor = "wait";
-				var back = this;
-				this.timeout = true;
-				setTimeout(function(){
-					if (this.timeou)
-						back.$.toast1.setAttribute('show', true);
-				},5000);
-			},
-			stopWait: function (){
-				this.timeout = false;
-				this.$.panelHeader.style.cursor = "default";
-				this.$.toast1.setAttribute('show', false);
-			}
+      // PROCESS
+      _processUrl: function(component_directory, idioma) {
+        return component_directory + "language/" + idioma;
+      },
+      _processEventUrl: function(username) {
+        return "https://api.github.com/users/" + username + "/received_events";
+      },
+      _processEventParams: function(page, per_page) {
+        return page == 0? {}: {page: page};
+      },
+      _processRefreshHeader: function(etag) {
+        this.$.refresh.headers["If-None-Match"] = etag;
+      },
 
-		});
-	</script>
+
+      // BOOLEAN FUNCTION
+      _showLoadMore: function(lastPage, page, show){
+        return lastPage > page && !show;
+      },
+      _checkPostType: function(origin, type) {
+        return origin === type;
+      },
+      _noEvents: function(events) {
+        return events == 0;
+      },
+      waitCursor: function(){
+        this.$.panelHeader.style.cursor = "wait";
+      }
+
+    });
+  </script>
 </dom-module>

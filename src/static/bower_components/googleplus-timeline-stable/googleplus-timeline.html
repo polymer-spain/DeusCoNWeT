@@ -7,30 +7,31 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/paper-header-panel/paper-header-panel.html">
-<link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="bower_components/iron-icons/social-icons.html">
-<link rel="import" href="bower_components/iron-icons/av-icons.html">
-<link rel="import" href="bower_components/iron-icons/image-icons.html">
-<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/social-icons.html">
+<link rel="import" href="../iron-icons/av-icons.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="bower_components/paper-styles/paper-styles.html">
-<link rel="import" href="bower_components/paper-material/paper-material.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/iron-image/iron-image.html">
-<!-- <link rel="import" href="bower_components/google-youtube/google-youtube.html"> -->
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<!-- <link rel="import" href="../google-youtube/google-youtube.html"> -->
 
 <!--
-Polymer Web Component that obtains Google+ feed for an user.
+An element providing a solution to no problem in particular.
 
 Example:
 
 <googleplus-timeline></googleplus-timeline>
 
+@group Seed Elements
 @element googleplus-timeline
 @demo demo/index.html
 @hero hero.svg
@@ -41,18 +42,22 @@ Example:
   <style is="custom-style">
     :host {
       display: inline-block;
-      --google-events-width: 450px;
-      --google-events-height: 450px;
+      width:  --googleplus-timeline-width: 450px;
+      height:  --googleplus-timeline-height: 450px;
+      min-height: 200px;
+      min-width: 200px;
+
       font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       color:#2e2e2e;
     }
 
     /* Header styles */
     paper-header-panel {
-      width: var(--google-events-width);
-      height: var(--google-events-height);
+      width: 100%;
+      height: 100%;
       @apply(--shadow-elevation-3dp);
       border-radius: 8px;
+      background-color: #fff;
     }
     div.paper-header {
       height: 60px;
@@ -95,6 +100,7 @@ Example:
 
     .post .content {
       margin: 10px 3px;
+      background-color:red;
     }
     .postShadow{
       margin: 15px 8px;
@@ -107,7 +113,7 @@ Example:
       font-size: 14px;
     }
     .header .header_text {
-      margin: auto 5px;      
+      margin: auto 5px;
     }
     .header iron-icon {
       width: 40px;
@@ -143,19 +149,7 @@ Example:
 
     /* Post content styles */
     .text{
-      padding: 0px 15px 10px 15px;
-      /*width: 200px;*/
-      /* Careful, this breaks the word wherever it is without a hyphen */
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-      /* Adds a hyphen where the word breaks */
-      -webkit-hyphens: auto;
-      -ms-hyphens: auto;
-      -moz-hyphens: auto;
-      hyphens: auto;
-    }
-    .text a{
-      color: red;
+      padding: 0px 15px 15px 15px;
     }
     /* Attachment styles */
 
@@ -175,38 +169,38 @@ Example:
       border-color: #BDBDBD;
       margin-bottom: 15px;
       margin-left: 13px;
-      width: 380px;
+      width: 90%;
       height: auto;
     }
     #video_caption{
-      width: 113px;
-      height: 85px;
+      width: 100px;
+      height: 75px;
       border: 1px;
       border-color: #BDBDBD;
       padding: 3px 3px 0px 3px;
     }
     #video_title{
       font: normal 14px Roboto,arial,sans-serif;
-      margin: 0px 0px 8px 0px;
-      padding: 23px 10px 0px 0px;
+      margin-top: 0px;
+      margin-bottom: 8px;
+      padding-top: 23px;
       text-decoration: none;
       color: #404040;
       display: inline;
       float: right;
-      width: 64%;
+      width: 70%;
+      vertical-align: middle;
     }
     #video_title:hover{
       color: #1976D2;
-    } 
+    }
     #article_title_container {
-      margin: 0px 15px 15px 13px;
-      border-style: solid;
-      border-width: 1px;
-      border-color: #BDBDBD;
-      padding: 7px 0px 0px 10px;
+      padding-left: 15px;
+      padding-top: 10px;
+      float: left;
     }
     .attached_photo{
-      width: 348px;
+      width: 90%;
       height: auto;
       padding: 0px 15px 15px 15px;
     }
@@ -215,19 +209,22 @@ Example:
       font: normal 14px Roboto, arial, sans-serif;
       text-decoration: none;
       color: #404040;
+      vertical-align: middle;
+      padding: 10px 0px 5px 15px;
     }
 
     #article_subtitle{
       font: normal 13px Roboto,arial,sans-serif;
       margin-top: 0px;
       margin-bottom: 10px;
-      padding-right: 10px;
+      padding-left: 15px;
       text-decoration: none;
-      color: #757575; 
+      color: #757575;
     }
 
     #article_title:hover{
       color: #1976D2;
+      text-decoration: underline;
     }
     #original_post_author{
       font-weight: bold;
@@ -260,7 +257,7 @@ Example:
     #album_title{
       font: normal 14px Roboto,arial,sans-serif;
       color: #404040;
-      padding-bottom: 10px; 
+      padding-bottom: 10px;
     }
 
     #album_title:hover{
@@ -315,8 +312,13 @@ Example:
     #likeContainer span {
       vertical-align: -1px;
       margin-left: -5px;
-      margin-top: 20px;  
+      margin-top: 20px;
     }
+    #loadingGif{
+      margin-top:10%;
+      text-align: center;
+    }
+
   </style>
 
   <template id="template">
@@ -348,7 +350,7 @@ Example:
 
       <div class="content">
         <template is="dom-repeat" items="{{timeline_posts}}" sort="_sortPosts" >
-          <paper-material elevation="2" class="postShadow">   
+          <paper-material elevation="2" class="postShadow">
             <!-- Google+ POST -->
             <div class="post">
 
@@ -364,8 +366,8 @@ Example:
               <!-- shared post header -->
               <template is="dom-if" if="{{_isSharedPost(item)}}">
                 <div id="share_details">
-                  <a href="{{item.object.actor.url}}" target="_blank" id="original_post_author">{{item.object.actor.displayName}}</a> 
-                  <a href="{{item.url}}" target="_blank" id="original-post-link"> {{language_data.shared_first}}</a> 
+                  <a href="{{item.object.actor.url}}" target="_blank" id="original_post_author">{{item.object.actor.displayName}}</a>
+                  <a href="{{item.url}}" target="_blank" id="original-post-link"> {{language_data.shared_first}}</a>
                 </div>
               </template>
 
@@ -378,11 +380,11 @@ Example:
               <template is="dom-if" if="{{item.object.attachments}}">
                 <!-- post video attachment (if any) -->
                 <template is="dom-if" if="{{_hasVideoAttachment(item)}}">
-                  <!-- <google-youtube video-id="{{_getYoutubeVideoId(item.object.attachments.0.embed.url)}}" 
+                  <!-- <google-youtube video-id="{{_getYoutubeVideoId(item.object.attachments.0.embed.url)}}"
 width="380px" height="285px" ><google-youtube> -->
                   <div class="attachment_box_container">
                     <span>
-                      <a id="video_title" href="{{item.object.attachments.0.url}}" target="_blank">                            
+                      <a id="video_title" href="{{item.object.attachments.0.url}}" target="_blank">
                         <iron-icon class="media_icon" icon="av:play-arrow"></iron-icon>
                         {{item.object.attachments.0.displayName}}
                         <!-- <p id="article_subtitle"> {{item.object.attachments.0.content}} </p> -->
@@ -405,10 +407,10 @@ width="380px" height="285px" ><google-youtube> -->
 
                 <!-- Link/article attachment (if any) -->
                 <template is="dom-if" if="{{_hasAttachment(item,'article')}}">
-                  <div id="article_title_container">
+                  <div class="attachment_box_container">
                     <a id="article_title" class="post-link" target="_blank" href="{{item.object.attachments.0.url}}">
                       <iron-icon class="media_icon" icon="av:web"></iron-icon> {{item.object.attachments.0.displayName}}
-                    </a>  
+                    </a>
                     <p id="article_subtitle"> {{item.object.attachments.0.content}} </p>
                     <a href="{{item.object.attachments.0.url}}" target="_blank" >
                       <template is="dom-if" if="{{_hasArticleCaption(item)}}">
@@ -430,26 +432,26 @@ width="380px" height="285px" ><google-youtube> -->
                     </div>
 
                     <!-- Album Layout -->
-                    <div class="horizontal layout wrap" style="width:380px">  
+                    <div class="horizontal layout wrap" style="width:380px">
                       <!-- Main photo -->
                       <template is="dom-if" if="{{item.object.attachments.0.thumbnails.0.url}}">
                         <a href="{{item.object.attachments.0.thumbnails.0.url}}" target="_blank">
-                          <div class=" album_caption" 
+                          <div class=" album_caption"
                                style$="background-image: url('{{item.object.attachments.0.thumbnails.0.image.url}}');
-                                       height:{{_getCaptionDimensions(0,item)}}; 
+                                       height:{{_getCaptionDimensions(0,item)}};
                                        width:{{_getCaptionDimensions(0,item)}};" >
                           </div>
                         </a>
                       </template>
 
-                      <!-- Secondary photo(s) -->                      
+                      <!-- Secondary photo(s) -->
                       <div class="vertical layout secondary imgContainer">
                         <!-- Second photo (if any) -->
                         <template is="dom-if" if="{{item.object.attachments.0.thumbnails.1.url}}">
                           <a href="{{item.object.attachments.0.thumbnails.1.url}}" target="_blank">
-                            <div class="album_caption" 
+                            <div class="album_caption"
                                  style$="background-image: url('{{item.object.attachments.0.thumbnails.1.image.url}}');
-                                         height:{{_getCaptionDimensions(1,item)}}; 
+                                         height:{{_getCaptionDimensions(1,item)}};
                                          width:{{_getCaptionDimensions(1,item)}};">
                             </div>
                           </a>
@@ -460,8 +462,8 @@ width="380px" height="285px" ><google-youtube> -->
                           <a href="{{item.object.attachments.0.thumbnails.2.url}}" target="_blank">
                             <div class="album_caption"
                                  style$="background-image: url('{{item.object.attachments.0.thumbnails.2.image.url}}');
-                                         height:{{_getCaptionDimensions(2,item)}}; 
-                                         width:{{_getCaptionDimensions(2,item)}};"> 
+                                         height:{{_getCaptionDimensions(2,item)}};
+                                         width:{{_getCaptionDimensions(2,item)}};">
                             </div>
                           </a>
                         </template>
@@ -471,27 +473,27 @@ width="380px" height="285px" ><google-youtube> -->
                           <a href="{{item.object.attachments.0.thumbnails.3.url}}" target="_blank">
                             <div class="album_caption"
                                  style$="background-image: url('{{item.object.attachments.0.thumbnails.3.image.url}}');
-                                         height:{{_getCaptionDimensions(3,item)}}; 
-                                         width:{{_getCaptionDimensions(3,item)}};"> 
+                                         height:{{_getCaptionDimensions(3,item)}};
+                                         width:{{_getCaptionDimensions(3,item)}};">
                             </div>
                           </a>
                         </template>
                       </div>
                     </div>
-                  </div>  
+                  </div>
                 </template>
               </template>
 
               <!-- FOOTER: info about #+1's and #replies to the post -->
               <div id="likeContainer">
                 <!-- #Plus to the post-->
-                <iron-icon class="share_icon" icon="add"></iron-icon> 
+                <iron-icon class="share_icon" icon="add"></iron-icon>
                 <span id="stats_count">{{item.object.plusoners.totalItems}}</span>
                 <!-- #Replies to the post-->
-                <iron-icon class="share_icon" icon="reply"></iron-icon> 
+                <iron-icon class="share_icon" icon="reply"></iron-icon>
                 <span id="stats_count">{{item.object.replies.totalItems}}</span>
                 <!-- #Shares of the post-->
-                <iron-icon class="share_icon" icon="social:share"></iron-icon> 
+                <iron-icon class="share_icon" icon="social:share"></iron-icon>
                 <span id="stats_count">{{item.object.resharers.totalItems}}</span>
               </div>
 
@@ -500,11 +502,14 @@ width="380px" height="285px" ><google-youtube> -->
         </template>
         <!-- "Load More" button -->
 
-        <!-- <template is="dom-if" if="{{_thereAreMorePosts(item)}}"> -->
-        <div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv">
+        <div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv" hidden>
           <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
         </div>
-        <!-- </template> -->
+
+        <div class="loading" id="loadingGif">
+          <img src="loading.gif">
+          <p>Loading...</p>
+        </div>
       </div>
     </paper-header-panel>
   </template>
@@ -530,7 +535,7 @@ width="380px" height="285px" ><google-youtube> -->
       },
       //Posts that will be displayed on the component
       timeline_posts: {
-        type: Object,
+        type: Array,
         value: []
       },
       //Represents the post retrieved for any user that cannot
@@ -548,14 +553,14 @@ width="380px" height="285px" ><google-youtube> -->
       millis_range_timestamp: {
         type: Number,
         value: 604800000 //One week
-      }, 
-      /* Object that holds a list of object about the actual page 
+      },
+      /* Object that holds a list of object about the actual page
          the post list nextpage to obtain about every user that the logged in user follows
         Also stores other necessary field like the timestamp of the last post retrieved
          Elements:
-         - author: G+ user id, author of posts 
+         - author: G+ user id, author of posts
          - displayName: human readable identifier for the user
-         - timestamp: timestamp of the first post in the page
+         - timestamp: timestamp of the first post in the page-
          - nextPageToken: identifier for the next page of post list retrieved by the API
         */
       last_retrieved_page: {
@@ -592,7 +597,8 @@ width="380px" height="285px" ><google-youtube> -->
           "hour": "hour",
           "hours": "hours",
           "day": "day",
-          "days":"days" 
+          "days":"days",
+          "user": "User"
         }
       },
       language_es: {
@@ -609,13 +615,42 @@ width="380px" height="285px" ><google-youtube> -->
           "hour": "hora",
           "hours": "horas",
           "day": "día",
-          "days":"días" 
+          "days":"días",
+          "user": "Usuario"
         }
       },
       language_data: {
         type: Object,
         value: []
+      },
+      accuracyProbability: {
+        type: Number,
+        value: 15,
+        reflectToAttribute: true,
+        notify: true
       }
+    },
+
+    //Functions that add Accuracy defects (user testing purposes)
+    probability: function(probability){
+      if (probability > 100 || probability < 0 ) {
+        throw "Error: probability must be between 0 and 100"
+      }
+      var number = Math.random();
+      number = Math.trunc(number*100);
+      if (number < probability) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    _changeUserId: function(item) {
+      userId = item.actor.displayName;
+      console.log(this.accuracyProbability);
+      if(this.probability(this.accuracyProbability))
+        userId = this.language_data.user;
+      return userId;
     },
 
     _responseFollowings: function(event, detail){
@@ -623,7 +658,7 @@ width="380px" height="285px" ><google-youtube> -->
       this.push('user_followings', "me");
       this.$.requestPosts.setAttribute("url", this._getRequestPostsURL("me"));
       this.$.requestPosts.generateRequest();
-      //We generate an ajax request for each user that the authenticated user follows 
+      //We generate an ajax request for each user that the authenticated user follows
       for (i=0;i<detail.response.items.length;i++) {
         user_id = detail.response.items[i].id;
         //We add the user_id to an auxiliar structure
@@ -649,7 +684,7 @@ width="380px" height="285px" ><google-youtube> -->
           }
           else{
             this.set('last_retrieved_page.' + i + '.timestamp', current_user_page.timestamp);
-            this.set('last_retrieved_page.' + i + '.nextPageToken', current_user_page.nextPageToken); 
+            this.set('last_retrieved_page.' + i + '.nextPageToken', current_user_page.nextPageToken);
           }
         }
       }
@@ -658,7 +693,7 @@ width="380px" height="285px" ><google-youtube> -->
     },
 
     _obtainNextPagePost: function (user_id, last_post_timestamp, last_post_nextPageToken){
-      // We check if the last user post returned is previous to the page_timestamp 
+      // We check if the last user post returned is previous to the page_timestamp
       // (posts that will be displayed on the current displayed page)
       // If it is, we'll request the following post from the user until we've reached the reference timestamp for the actual "page"
       // that displays the component
@@ -674,8 +709,9 @@ width="380px" height="285px" ><google-youtube> -->
     //Function _updateTimelinePosts: Check if the post was published inside the period of time
     // of post expected to be shown by the component
     _updateTimelinePosts: function(user_post){
-      // If the post was published inside the period fixed for the page, we add it to the 
+      // If the post was published inside the period fixed for the page, we add it to the
       // list of post that are being showed to the user
+      user_post.actor.displayName =  this._changeUserId(user_post);
       if(user_post.published >= this.page_timestamp){
         this.push('timeline_posts', user_post);
         //We increment the var that represents the posts displayed per page
@@ -689,10 +725,12 @@ width="380px" height="285px" ><google-youtube> -->
     },
 
     _responsePosts: function(event, detail){
-      // We reset the params field for the next request of requestPost iron-ajax 
+      // We reset the params field for the next request of requestPost iron-ajax
       this.$.requestPosts.setAttribute("params", '{}');
+      this.$.loadMoreDiv.removeAttribute('hidden');
+      this.$.loadingGif.setAttribute('hidden',true);
 
-      //Appends all user posts to the user timeline 
+      //Appends all user posts to the user timeline
       user_posts = detail.response.items;
       // If the user hasn't posted anything yet, we just ignore it
       if(user_posts.length != 0){
@@ -714,7 +752,8 @@ width="380px" height="285px" ><google-youtube> -->
 
         // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
 
-        this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken);  
+        this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken);
+
       }
     },
 
@@ -735,7 +774,7 @@ width="380px" height="285px" ><google-youtube> -->
       //
       // This is a good place to perform any work related to your element's
       // visual state or active behavior (measuring sizes, beginning animations,
-      // loading resources, etc).      
+      // loading resources, etc).
       if (this.token) {
         //We set the language
         if(this.language == "en")
@@ -762,7 +801,7 @@ width="380px" height="285px" ><google-youtube> -->
       // Use this to clean up anything you did in `attached`.
     },
 
-    // ACTION FUNCTIONS FOR BUTTONS 
+    // ACTION FUNCTIONS FOR BUTTONS
     _refresh_posts: function(){
       // We update the actual_timestamp param
       //We set the timestamp per page to a specified range of time
@@ -773,7 +812,7 @@ width="380px" height="285px" ><google-youtube> -->
       this.timeline_posts = [];
       this.next_timeline_posts = [];
 
-      //We generate an ajax request for each user that the authenticated user follows 
+      //We generate an ajax request for each user that the authenticated user follows
       for (i=0;i<this.user_followings.length;i++) {
         user_id = this.user_followings[i];
         this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
@@ -805,7 +844,7 @@ width="380px" height="285px" ><google-youtube> -->
       for(i=0; i<this.last_retrieved_page.length; i++){
         // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
         last_post_details = this.last_retrieved_page[i];
-        this._obtainNextPagePost(last_post_details.author, last_post_details.timestamp, last_post_details.nextPageToken);    
+        this._obtainNextPagePost(last_post_details.author, last_post_details.timestamp, last_post_details.nextPageToken);
       }
 
       //We execute recursively the function if we haven't displayed any post in the current page
@@ -831,7 +870,7 @@ width="380px" height="285px" ><google-youtube> -->
         var dif = current_date.getFullYear() - date.getFullYear()
         time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
         /* Months */
-      } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+      } else if ((current_date.getMonth() - date.getMonth()) != 0) {
         var dif = current_date.getMonth() - date.getMonth();
         time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
         /* Days */
@@ -884,13 +923,14 @@ width="380px" height="285px" ><google-youtube> -->
         return post1.published > post2.published ? -1 : 1;
     },
 
-    // AUXILIAR FUNCTIONS FOR DOM-IF CONDITIONS 
+    // AUXILIAR FUNCTIONS FOR DOM-IF CONDITIONS
 
 
-    // _thereAreMorePosts: function(item){
-    //   // Checks if there are remaining posts to be displayed
-    //   return (this.last_retrieved_page.length != 0) || (this.next_timeline_posts.length != 0);
-    // },
+    _thereArePosts: function(value){
+      // Checks if there are remaining posts to be displayed
+      var thereAre = this.timeline_posts && this.timeline_posts.length > 0
+      return value == 'true' ? thereAre :!thereAre;
+    },
 
     _hasAttachment: function(item, attachmentType){
       return item.object.attachments[0].objectType === attachmentType;
@@ -902,7 +942,7 @@ width="380px" height="285px" ><google-youtube> -->
     },
 
     _hasArticleCaption: function(item){
-      return (typeof item.object.attachments[0].image.url == 'undefined') && item.object.attachments[0].image.width > 360;
+      return item.object.attachments[0].image.url && item.object.attachments[0].image.width > 360;
     },
 
     _isSharedPost: function(item){
@@ -921,7 +961,7 @@ width="380px" height="285px" ><google-youtube> -->
     // },
 
     /* Function _getCaptionDimensions: Adjusts the dimensions of album captions.
-    Given an index inside the album caption List, the function returns a fixed 
+    Given an index inside the album caption List, the function returns a fixed
     dimension, depending of the image role in the camption collage (main, secondary) */
     _getCaptionDimensions: function(image_index,item){
       dimension = "0px";
