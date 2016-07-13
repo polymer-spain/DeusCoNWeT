@@ -54,13 +54,13 @@ function ($scope, $rootScope, $backend, $http) {
 		if ($scope._uploadFile){
 			$backend.uploadImage($scope._uploadFile, function(response){
 				values += '&image=' + response.data.link;
-				$backend.updateProfile(values).then(function(){
+				$backend.updateProfile(values, $scope.user.user_id).then(function(){
 					$scope.showToastr('info','Perfil actualizado');
 					$('html').css('cursor','');
 				});
 			});
 		} else if (changes) {
-			$backend.updateProfile(values).then(function(){
+			$backend.updateProfile(values, $scope.user.user_id).then(function(){
 				$scope.showToastr('info','Perfil actualizado');
 				$('html').css('cursor','');
 			});
