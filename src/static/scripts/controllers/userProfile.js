@@ -57,11 +57,15 @@ function ($scope, $rootScope, $backend, $http) {
 				$backend.updateProfile(values, $scope.user.user_id).then(function(){
 					$scope.showToastr('info','Perfil actualizado');
 					$('html').css('cursor','');
+				}, function(){
+					$('html').css('cursor','');
 				});
 			});
 		} else if (changes) {
 			$backend.updateProfile(values, $scope.user.user_id).then(function(){
 				$scope.showToastr('info','Perfil actualizado');
+				$('html').css('cursor','');
+			}, function(){
 				$('html').css('cursor','');
 			});
 		}
