@@ -671,10 +671,10 @@ class GitHubContainerHandler(webapp2.RequestHandler):
                     str(user_details["id"]), access_token)
             self.response.set_status(201)
         else:
-                # Almacenamos el access token recibido
-                user_id = ndb_pb.modifyToken(str(user_details["id"]),
-                        access_token, "github")
-                self.response.set_status(200)
+            # Almacenamos el access token recibido
+            user_id = ndb_pb.modifyToken(str(user_details["id"]),
+                    access_token, "github")
+            self.response.set_status(200)
 
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):

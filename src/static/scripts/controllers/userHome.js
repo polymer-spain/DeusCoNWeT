@@ -5,26 +5,15 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // TODO se deberan coger de la lista que se registra en usuario
     $scope.listComponentAdded = [];
 
-    $scope.showToastr = function(type, message, time){
-      toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": time || "5000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-      };
-      toastr[type](message);
-    };
+    // loads references for this
+    (function(){
+      if ($scope.user.references){
+        $scope.user.references.forEach(function(value,index){
+          var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
+          $('body').append($link);
+        });
+      }
+    })();
     // Logica que dice que botones del a barra lateral estan activos y cuales
     // han de desactivarse
     $scope.selectListButton = function(e){
@@ -338,27 +327,26 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           $scope.setToken(socialNetwork, token);
           $('#login-modal').modal('toggle');
 
-          switch(socialNetwork) {
-            case 'googleplus':
-            var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
-            $http.get(uri).success(function (responseData) {
-              $backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
-            });
-            break;
-            case 'twitter':
-            uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-            $http.get(uri).success(function (responseData) {
-              e.detail.userId = responseData.token_id;
-              $backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
-            }).error(function() {
-              console.log('Problemas al intentar obtener el token_id de un usuario' );
-            });
-            break;
-            default:
-            $backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
-            break;
-          }
-
+          // switch(socialNetwork) {
+          //   case 'googleplus':
+          //     var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
+          //     $http.get(uri).success(function (responseData) {
+          //       $backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
+          //     });
+          //     break;
+          //   case 'twitter':
+          //     uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+          //     $http.get(uri).success(function (responseData) {
+          //       e.detail.userId = responseData.token_id;
+          //       $backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
+          //     }).error(function() {
+          //       console.log('Problemas al intentar obtener el token_id de un usuario' );
+          //     });
+          //     break;
+          //   default:
+          //     $backend.addTokens(socialNetwork, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
+          //     break;
+          // }
         });
       }
       $('#login-modal google-login')[0].addEventListener('google-logged', loginCallback);

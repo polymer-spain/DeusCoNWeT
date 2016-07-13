@@ -165,15 +165,6 @@
                >
     </iron-ajax>
     <iron-ajax
-               id="refreshData"
-               url="{{requestDataUrl}}"
-               headers="{'Timing-Allow-origin': '*'}"
-               method="GET"
-               handleAs="json"
-               on-response="_refreshResponse"
-               >
-    </iron-ajax>
-    <iron-ajax
                id="requestLanguage"
                url="{{languageUrl}}"
                method="GET"
@@ -390,7 +381,7 @@ access_token={{access_token}}&summary=true -->
       },
 
       refresh: function(){
-        this.$.refreshData.generateRequest();
+        this.$.requestData.generateRequest();
       },
       /* Observer and computed properties*/
       _languageUpdate: function(newValue){

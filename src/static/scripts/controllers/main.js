@@ -34,29 +34,33 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 			//console.error('Error ' + response.status + ': Fallo al intentar realizar un logout del usurio ' + $rScope.user.name);
 		});
 	};
-
 	// Login callback function
 	$scope.loginProcess = function(userData){
-		$rScope.token = userData.token;
-		// buscamos si existe el usuario
-		$backend.getUserId(userData.userId, userData.redSocial)
-		.then(function (responseUserId) {
-			/* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-			var user = responseUserId.data;
-			// actualizamos los datos del usuario en el servidor
-			$backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
-			.then(function() {
-				// Si todo va bien, le mandamos a su dashboard
-				$location.path('/user/' + user.user_id);
-			}, function(responseLogin) {
-				console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login');
-			});
-		}, function(){// Si response con error, significa que no existe el usuario
+		/* Cogemos el identificador del usuario */
+		function newUser(userData) {
 			$rScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
 			$location.path('/selectId');
-		});
+		}
+		$rScope.token = userData.token;
+		if ($location.$$path.indexOf('profile') === -1) {
+			$backend.getUserId(userData.userId, userData.redSocial)
+			.then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
+				/* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
+				var user = responseUserId.data;
+				$backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
+				.then(function() {
+					$location.path('/user/' + user.user_id);
+				}, function(responseLogin) {
+					console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login');
+				});
+			}, function(){
+				newUser(userData);
+			});
+		} else {
+			$backend.sendData(userData.token, $scope.user.user_id, userData.redSocial);
+		}
 	};
-	
+	$scope.pathname = window.location.pathname;
 	$scope.goto = function(view){
 		if (view.indexOf(':user') > -1){
 			view = view.replace(/:user/g,$rScope.user.user_id);
@@ -105,4 +109,24 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 		$('.icon-delete > span').html(newValue);
 	});
 
+	$scope.showToastr = function(type, message, time){
+		toastr.options = {
+			"closeButton": true,
+			"debug": false,
+			"newestOnTop": false,
+			"progressBar": false,
+			"positionClass": "toast-top-right",
+			"preventDuplicates": false,
+			"onclick": null,
+			"showDuration": "300",
+			"hideDuration": "1000",
+			"timeOut": "5000",
+			"extendedTimeOut": time || "5000",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "fadeIn",
+			"hideMethod": "fadeOut"
+		};
+		toastr[type](message);
+	};
 }]);// end angular.module

@@ -185,4 +185,33 @@ function ($http, $location, $rootScope, $cookies) {
     };
     return $http(request);
   };
+
+  this.uploadImage = function(image, callback) {
+    var data = new FormData();
+    data.append('image', image);
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        if (callback){
+          callback(JSON.parse(xhr.responseText));
+        }
+      }
+    };
+    xhr.open('POST', 'https://api.imgur.com/3/upload', true);
+    xhr.setRequestHeader('Authorization', 'Client-ID 5bb1a6c31384b7a');
+    xhr.send(data);
+  };
+  this.updateProfile = function(values, user){
+    var request, uri, socialnetwork;
+    uri = this.endpoint + '/api/usuarios/' + user + '/profile';
+    request = {
+      method: 'post',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      data: values
+    };
+
+    return $http(request);
+  }
 }]);
