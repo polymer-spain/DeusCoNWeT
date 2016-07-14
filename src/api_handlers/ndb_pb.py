@@ -740,9 +740,10 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
     attributes = ComponentAttributes(component_id=name, component_directory=component_directory)
     attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
+  version = setPreasignedVersion(name)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
-   attributes=attributes)
+   preasigned_version=version, attributes=attributes)
   # We create a new VersionedComponent Entity for each version_added to the version_list
   # for version in version_list:
   #   versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
@@ -1050,7 +1051,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["rate"] = 0
           ans.append(json.dumps(general_comp))
 
-  return ans
+  return json.dumps({"data": ans})
 
 def newUserBeta(email, name, surname): #FUNCIONA
   beta_user = UserBeta(email=email, name=name, surname=surname)
