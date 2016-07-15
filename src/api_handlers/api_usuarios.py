@@ -127,7 +127,8 @@ class UserHandler(SessionHandler):
               user_info["surname"] = user_profile["surname"]
             refs_list = []
             components_list = ndb_pb.getComponents()
-            for comp in components_list:
+            components_list = json.loads(components_list)
+            for comp in components_list["data"]:
               comp = json.loads(comp)
               ident = comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
