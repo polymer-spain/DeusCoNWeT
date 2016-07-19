@@ -196,8 +196,13 @@ class ComponentListHandler(SessionHandler):
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("versions")
-            endpoint = self.request.POST["endpoint"]
-            component_directory = self.request.POST["component_directory"]
+
+            endpoint = ""
+            component_directory = ""
+            if self.request.POST.has_key("endpoint"):
+                endpoint = self.request.POST["endpoint"]
+            if self.request.POST.has_key("component_directory"):
+                component_directory = self.request.POST["component_directory"]
 
             # Predetermined is an optional param (default_value=False)
             predetermined = None

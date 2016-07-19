@@ -74,7 +74,7 @@ params = urllib.urlencode({'url': 'https://github.com/Mortega5/facebook-wall',
         'social_network': 'facebook',
         'input_type': 'None',
         'output_type': 'tweet',
-        'versions': 'stable',
+        'versions': versions_list,
         'component_directory': 'bower_components/facebook-wall/'
         })
 test_utils.make_request("PUT", request_uri, params, 201, None)
