@@ -742,7 +742,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   initial_index = random.randint(0, len(version_list)-1)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
-   preasigned_version=version, attributes=attributes)
+   attributes=attributes)
   # We create a new VersionedComponent Entity for each version_added to the version_list
   # for version in version_list:
   #   versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
@@ -751,7 +751,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   # Saves the changes to the entity
   component.put()
 
-  component.version = setPreasignedVersion(name)
+  component.preasigned_version = setPreasignedVersion(name)
   component.put()
 
 
