@@ -1160,7 +1160,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         components = Component.query().fetch(20)
         for component in components:
           rate = UserRating.query(UserRating.component_id == component.component_id).get()
-          attributes = ComponentAttributes(ComponentAttributes.component_id == component.component_id).get()
+          attributes = ComponentAttributes.query(ComponentAttributes.component_id == component.component_id).get()
           general_comp["component_id"] = component.component_id
           general_comp["url"] = component.url
           general_comp["social_network"] = component.rs
