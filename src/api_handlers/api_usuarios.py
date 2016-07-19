@@ -363,6 +363,7 @@ class ProfileHandler(SessionHandler):
   """
 
   def post(self, user_id):
+    print user_id
     cookie_value = self.request.cookies.get("session")
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
