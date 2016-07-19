@@ -740,7 +740,6 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
     attributes = ComponentAttributes(component_id=name, component_directory=component_directory)
     attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
-  version = setPreasignedVersion(name)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
    preasigned_version=version, attributes=attributes)
@@ -750,6 +749,9 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   #   versionedComponent.put()
   created = True
   # Saves the changes to the entity
+  component.put()
+
+  component.version = setPreasignedVersion(name)
   component.put()
 
 
