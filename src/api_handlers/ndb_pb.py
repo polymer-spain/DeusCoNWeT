@@ -334,7 +334,7 @@ def assignPredeterminedComponentsToUser(entity_key):
 def setPreasignedVersion(component_id):
   comp = Component.query(Component.component_id == component_id).get()
   version = setComponentVersion(comp)
-  comp["preasigned_version"] = version
+  comp.preasigned_version = version
   comp.put()
   return version
 
@@ -751,8 +751,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   # Saves the changes to the entity
   component.put()
 
-  component.preasigned_version = setPreasignedVersion(name)
-  component.put()
+  setPreasignedVersion(name)
 
 
 # Modifies the related info about a General component in the system (ComponentEntity)
