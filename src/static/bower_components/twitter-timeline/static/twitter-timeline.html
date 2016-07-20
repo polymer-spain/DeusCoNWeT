@@ -28,8 +28,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     :host{
       display: inline-block;
       color: black;
+      width: var(--twitter-timeline-width, 350px);
+      height: var(--twitter-timeline-height, 350px);
+      min-height: 350px;
+      min-width: 350px;
     }
-
+    .wrapper {
+      width: 100%;
+      height: 100%;
+      margin:0;
+      padding:0;
+    }
     .box {
       border: 1px solid #d0f0f0;
       border-bottom: 1px solid #d0f0f0;
@@ -112,11 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     .time {
       font-size: 13px;
-      col		<script>
-			if (window.location.protocol == "http:"){
-				window.location.protocol = "https:";
-			}
-		</script>or: #8899a6;
+      color: #8899a6;
     }
 
     .time:hover{
@@ -158,6 +163,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     .refresh_button {
+      background: #fff;
+      cursor: pointer;
       height: 28px;
       width: 28px;
       padding:0;
@@ -166,7 +173,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </style>
   <template>
     <!-- Request to the API. Tokens are necessary -->
-    <iron-ajax 
+    <iron-ajax
                id="requesttimeline"
                url="{{ endpoint }}"
                method="GET"
@@ -185,7 +192,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                >
     </iron-ajax>
 
-    <paper-material>
+    <paper-material class="wrapper vertical layout">
       <!-- Header -->
       <paper-material>
         <div id ="header" class="horizontal center-justified layout">
@@ -266,7 +273,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           reflectToAttribute: true,
           observer: "languageChanged"
         },
-        count: { 
+        count: {
           type: Number,
           value: 200,
           notify: true,
@@ -290,19 +297,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         consumerKey: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         consumerSecret: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         component_base: {
           type: String,
@@ -376,7 +383,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var dif = current_date.getFullYear() - date.getFullYear()
             time = dif==1 ? dif + " " + this.data.year : dif + " " + this.data.years;
             /* Meses */
-          } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) {
             var dif = current_date.getMonth() - date.getMonth();
             time = dif==1 ? dif + " " + this.data.month : dif + " " + this.data.months;
             /* Dias */
@@ -465,7 +472,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       /* Calculate endpoint for request url */
       _calculateLanguageUrl: function(component_directory, file) {
-        return component_directory + "language/" + file; 
+        return component_directory + "language/" + file;
       },
       _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
         return {
@@ -483,10 +490,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return "https://twitter.com/" + id + "/status/" + id_str;
       },
       _getTextId: function(index) {
-        return "Text" + index; 
+        return "Text" + index;
       },
       _withoutStatus: function(status) {
-        return !status; 
+        return !status;
       },
       _filter: function(item){
         var dentro = false;

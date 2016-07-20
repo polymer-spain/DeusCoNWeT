@@ -8,13 +8,16 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="bower_components/paper-material/paper-material.html">
-<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-ajax/iron-ajax.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-material/paper-material.html">
+<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
+
+
+
 
 <dom-module id="twitter-timeline">
   <style is="custom-style">
@@ -22,11 +25,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-family: HelveticaNeue;
       src: url('font/HelveticaNeueLTStd-Ex.otf');
     }
-
     :host{
       display: inline-block;
+      color: black;
+      width: var(--twitter-timeline-width, 350px);
+      height: var(--twitter-timeline-height, 350px);
+      min-height: 350px;
+      min-width: 350px;
     }
-
+    .wrapper {
+      width: 100%;
+      height: 100%;
+      margin:0;
+      padding:0;
+    }
     .box {
       border: 1px solid #d0f0f0;
       border-bottom: 1px solid #d0f0f0;
@@ -37,6 +49,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       margin:0;
       font-size: 14px;
       background: #fff; /* Old browsers */
+
+
+
     }
 
     #header {
@@ -48,6 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       background: -ms-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
       background: linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#05abe0', endColorstr='#05abe0',GradientType=1 );
+
       color:#fff;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
@@ -61,12 +77,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       text-align:center;
       padding-left:50px;
     }
-
     #contain {
       overflow-y: auto;
       max-height: 400px;
     }
-
     #end {
       background: #55acee;
       border-bottom-left-radius: 5px;
@@ -131,12 +145,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-style: oblique;
       transition: background .2s linear, border-radius 1s ease-in 1s;
     }
-
     .button:hover {
       background: #55acee;
       color: #fff;
     }
-
     ::-webkit-scrollbar {
       width: 4px;
       background: #b9b9b9;
@@ -146,12 +158,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       background: #55acee;
       -webkit-border-radius: 1ex;
     }
-
     .refresh {
       text-align: right;
     }
 
     .refresh_button {
+      background: #fff;
+      cursor: pointer;
       height: 28px;
       width: 28px;
       padding:0;
@@ -160,11 +173,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </style>
   <template>
     <!-- Request to the API. Tokens are necessary -->
-    <iron-ajax 
+    <iron-ajax
                id="requesttimeline"
                url="{{ endpoint }}"
                method="GET"
-               headers="{'Timing-Allow-origin': '*'}"
                params="{{timeline_params}}"
                handleAs='json'
                on-response="_response"
@@ -175,13 +187,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                id="requestLanguage"
                url="{{language_url}}"
                method="GET"
-               headers="{'Timing-Allow-origin': '*'}"
                handleAs="json"
                on-response="_language_response"
                >
     </iron-ajax>
 
-    <paper-material>
+    <paper-material class="wrapper vertical layout">
       <!-- Header -->
       <paper-material>
         <div id ="header" class="horizontal center-justified layout">
@@ -259,7 +270,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           reflectToAttribute: true,
           observer: "_languageChanged"
         },
-        count: { 
+        count: {
           type: Number,
           value: 200,
           notify: true,
@@ -282,19 +293,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         consumerKey: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         consumerSecret: {
           type: String,
           value: "",
           notify: true,
-          reflectToAttribute: true 
+          reflectToAttribute: true
         },
         component_directory: {
           type: String,
@@ -325,7 +336,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _calculateLanguageUrl: function(component_directory, file) {
-        return component_directory + "language/" + file; 
+        return component_directory + "language/" + file;
       },
 
       _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
@@ -347,11 +358,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _getTextId: function(index) {
-        return "Text" + index; 
+        return "Text" + index;
       },
 
       _withoutStatus: function(status) {
-        return !status; 
+        return !status;
       },
 
       _filter: function(item){
@@ -433,7 +444,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var dif = current_date.getFullYear() - date.getFullYear()
             time = dif==1 ? dif + " " + this.data.year : dif + " " + this.language_data.years;
             /* Meses */
-          } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) {
             var dif = current_date.getMonth() - date.getMonth();
             time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
             /* Dias */
@@ -472,7 +483,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /* Function that parse the tweet's text */
       parser: function(list){
-        for(i = 0; i < list.length; i++){    
+        for(i = 0; i < list.length; i++){
           list[i].text = this.parseURL(list[i].text);
           list[i].text = this.parseUsername(list[i].text);
           list[i].text = this.parseHashtag(list[i].text);

@@ -111,7 +111,7 @@ Element providing solution to no problem in particular.
       margin:5px auto 10px auto;
     }
     .header .name {
-      margin: auto 12px;			
+      margin: auto 12px;
     }
     .header iron-icon {
       width: 40px;
@@ -133,6 +133,7 @@ Element providing solution to no problem in particular.
     }
     .event > .content {
       margin: 10px 3px;
+      width: 100%;
     }
 
     .additionalInfo {
@@ -161,7 +162,7 @@ Element providing solution to no problem in particular.
     }
   </style>
 
-  <template id="template"> 
+  <template id="template">
     <iron-ajax
                id="request"
                method="GET"
@@ -494,7 +495,7 @@ Element providing solution to no problem in particular.
 
               </div>
             </div>
-          </paper-material>						
+          </paper-material>
         </template>
 
         <!-- Show more button -->
@@ -724,7 +725,7 @@ Element providing solution to no problem in particular.
             var dif = current_date.getFullYear() - date.getFullYear()
             time = dif==1 ? dif + " " + this.language_data.year : dif + " " + this.language_data.years;
             /* Meses */
-          } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) {
             var dif = current_date.getMonth() - date.getMonth();
             time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
             /* Dias */
@@ -798,7 +799,7 @@ Element providing solution to no problem in particular.
 
       // PROCESS
       _processUrl: function(component_directory, idioma) {
-        return component_directory + "language/" + idioma; 
+        return component_directory + "language/" + idioma;
       },
       _processEventUrl: function(username) {
         return "https://api.github.com/users/" + username + "/received_events";
@@ -807,14 +808,14 @@ Element providing solution to no problem in particular.
         return page == 0? {}: {page: page};
       },
       _processRefreshHeader: function(etag) {
-        this.$.refresh.headers["If-None-Match"] = etag;       
+        this.$.refresh.headers["If-None-Match"] = etag;
       },
 
 
       // BOOLEAN FUNCTION
       _showLoadMore: function(lastPage, page, show){
         return lastPage > page && !show;
-      },      
+      },
       _checkPostType: function(origin, type) {
         return origin === type;
       },
