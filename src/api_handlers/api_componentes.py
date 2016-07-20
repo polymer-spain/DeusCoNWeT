@@ -29,7 +29,7 @@ from api_oauth import SessionHandler
 # import cliente_gitHub
 
 # Import config vars and datetime package (to manage request/response cookies)
-import datetime, os, yaml
+import datetime, os, yaml, json
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
 with open(configFile, "r") as ymlfile:
@@ -140,7 +140,8 @@ class ComponentListHandler(SessionHandler):
                     user_filter = True if filter_param == "user" else False
                     # Get the component list, according to the filters given
                     component_list = ndb_pb.getComponents(user_id, social_network, format_flag, user_filter)
-                    if not len(component_list) == 0:
+                    component_list_aux = json.loads(component_list)
+                    if not len(component_list_aux["data"]) == 0:
                         self.response.content_type = "application/json"
                         self.response.write(component_list)
                         self.response.set_status(200)
@@ -195,8 +196,13 @@ class ComponentListHandler(SessionHandler):
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("versions")
-            endpoint = self.request.POST["endpoint"]
-            component_directory = self.request.POST["component_directory"]
+
+            endpoint = ""
+            component_directory = ""
+            if self.request.POST.has_key("endpoint"):
+                endpoint = self.request.POST["endpoint"]
+            if self.request.POST.has_key("component_directory"):
+                component_directory = self.request.POST["component_directory"]
 
             # Predetermined is an optional param (default_value=False)
             predetermined = None
