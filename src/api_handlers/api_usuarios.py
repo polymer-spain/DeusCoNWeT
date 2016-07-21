@@ -158,6 +158,9 @@ class UserHandler(SessionHandler):
               user_dict["phone"] = user_info["phone"]
             for comp in user_info.components:
               dict_comp = json.loads(comp)
+              print "=================================================="
+              print dict_comp
+              print "=================================================="
               ident = dict_comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               version = preversion.preasigned_version
