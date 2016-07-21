@@ -129,8 +129,8 @@ class UserHandler(SessionHandler):
             components_list = ndb_pb.getComponents()
             components_list = json.loads(components_list)
             for comp in components_list["data"]:
-              comp = json.loads(comp)
-              ident = comp["component_id"]
+              dict_comp = json.loads(comp)
+              ident = dict_comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
               version = component.preasigned_version
               ref = "/bower_components/" + \
@@ -157,8 +157,8 @@ class UserHandler(SessionHandler):
             if user_info["private_phone"] == False:
               user_dict["phone"] = user_info["phone"]
             for comp in user_info.components:
-              comp = json.loads(comp)
-              ident = comp["component_id"]
+              dict_comp = json.loads(comp)
+              ident = dict_comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               version = preversion.preasigned_version
               ref = "/bower_components/" + \
