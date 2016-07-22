@@ -22,6 +22,7 @@ import webapp2, json
 import ndb_pb
 from google.appengine.api import memcache
 from api_oauth import SessionHandler
+import logging
 
 # Import config vars and datetime package (to manage request/response cookies)
 import datetime, os, yaml
@@ -130,6 +131,7 @@ class UserHandler(SessionHandler):
             components_list = json.loads(components_list)
             for comp in components_list["data"]:
               dict_comp = json.loads(comp)
+              logging.info(dict_comp)
               ident = dict_comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
               version = component.preasigned_version
@@ -158,9 +160,6 @@ class UserHandler(SessionHandler):
               user_dict["phone"] = user_info["phone"]
             for comp in user_info.components:
               dict_comp = json.loads(comp)
-              print "=================================================="
-              print dict_comp
-              print "=================================================="
               ident = dict_comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               version = preversion.preasigned_version
