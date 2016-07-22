@@ -134,8 +134,10 @@ class UserHandler(SessionHandler):
               ident = dict_comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
               version = component.preasigned_version
+              static = "/"
+              if str(ident) == "twitter-timeline": static = "/static/"
               ref = "/bower_components/" + \
-                    str(ident) + "-" + str(version) + "/" + str(ident) + ".html"
+                    str(ident) + "-" + str(version) + static + str(ident) + ".html"
               refs_list.append(ref)
             user_info["references"] = refs_list
             self.response.content_type = "application/json"
@@ -162,8 +164,10 @@ class UserHandler(SessionHandler):
               ident = dict_comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               version = preversion.preasigned_version
+              static = "/"
+              if ident == "twitter-timeline": static = "/static/"
               ref = "/bower_components/" + \
-                    ident + "-" + version + "/" + ident + ".html"
+                    ident + "-" + version + static + ident + ".html"
               refs_list.append(ref)
             user_dict["references"] = refs_list
             self.response.content_type = "application/json"
