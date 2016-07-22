@@ -22,17 +22,54 @@ function ($scope, $rootScope, $backend, $http) {
 		if (event.files && event.files[0].type.indexOf('image') !== -1){
 			$scope._uploadFile = event.files[0];
 			var reader = new FileReader();
-			reader.onload = function (e) {
-				$('#userPicture')
-				.attr('src', e.target.result);
+			reader.onload = function (e){
+				var image = new Image();
+				image.onload = function(){
+					$scope._uploadFile = generateThumbnail(image);
+					$('#userPicture')
+					.attr('src', $scope._uploadFile);
+				};
+				image.src = reader.result;
 			};
 			reader.readAsDataURL(event.files[0]);
 		}
 	};
+	var dataURItoBlob = function(dataURI) {
+		// convert base64/URLEncoded data component to raw binary data held in a string
+		var byteString;
+		if (dataURI.split(',')[0].indexOf('base64') >= 0){
+			byteString = atob(dataURI.split(',')[1]);
+		}	else{
+			byteString = unescape(dataURI.split(',')[1]);
+		}
+		// separate out the mime component
+		var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
+		// write the bytes of the string to a typed array
+		var ia = new Uint8Array(byteString.length);
+		for (var i = 0; i < byteString.length; i++) {
+			ia[i] = byteString.charCodeAt(i);
+		}
+
+		return new Blob([ia], {type:mimeString});
+	};
 
 	// Envia los datos del usuario al servidor
+	var generateThumbnail = function(element) {
+		var canvasHeight = 100;
+		var canvas = document.createElement('canvas');
 
+		var ratio = canvasHeight / element.height;
+		var canvasWidth = element.width * ratio;
+		canvas.width = canvasWidth;
+		canvas.height = canvasHeight;
+		var context = canvas.getContext('2d');
+		context.drawImage(element, 0, 0, canvasWidth, canvasHeight);
+
+		var dataURL = canvas.toDataURL();
+		//var thumb = dataURItoBlob(dataURL);
+		return dataURL;
+	};
 	$scope.submitForm = function(){
 		$('html').css('cursor','wait');
 		var values = '';
@@ -52,7 +89,8 @@ function ($scope, $rootScope, $backend, $http) {
 			}
 		}
 		if ($scope._uploadFile){
-			$backend.uploadImage($scope._uploadFile, function(response){
+			var thumbnail = $scope._uploadFile.replace(/data:image\/[^;]*;base64,/,'');
+			$backend.uploadImage(thumbnail, function(response){
 				values += '&image=' + response.data.link;
 				$backend.updateProfile(values, $scope.user.user_id).then(function(){
 					$scope.showToastr('info','Perfil actualizado');
