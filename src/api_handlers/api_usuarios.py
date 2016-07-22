@@ -135,7 +135,7 @@ class UserHandler(SessionHandler):
               component = ndb_pb.getComponentEntity(ident)
               version = component.preasigned_version
               ref = "/bower_components/" + \
-                    str(ident) + str(version) + "/" + str(ident) + ".html"
+                    str(ident) + "-" + str(version) + "/" + str(ident) + ".html"
               refs_list.append(ref)
             user_info["references"] = refs_list
             self.response.content_type = "application/json"
@@ -163,7 +163,7 @@ class UserHandler(SessionHandler):
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               version = preversion.preasigned_version
               ref = "/bower_components/" + \
-                    ident + version + "/" + ident + ".html"
+                    ident + "-" + version + "/" + ident + ".html"
               refs_list.append(ref)
             user_dict["references"] = refs_list
             self.response.content_type = "application/json"
@@ -364,9 +364,6 @@ class ProfileHandler(SessionHandler):
   """
 
   def post(self, user_id):
-    print "===================================================="
-    print user_id
-    print "===================================================="
     cookie_value = self.request.cookies.get("session")
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
