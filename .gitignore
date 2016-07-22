@@ -8,3 +8,4 @@ build
 .brackets.json
 *.*~
 file.log
+readlog.sh
