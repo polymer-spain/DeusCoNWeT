@@ -288,7 +288,8 @@ class OauthCredentialsHandler(SessionHandler):
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],
-                            "access_token": user_credentials["token"]}
+                            "access_token": user_credentials["token"],
+                            "token_id": user_credentials["token_id"]}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
