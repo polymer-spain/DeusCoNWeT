@@ -430,7 +430,8 @@ def getToken(id_rs, social_net):  # FUNCIONA
   if not user == None:
     cipher = getCipher(token.key.id())
     ans = {"token": decodeAES(cipher, token.token),
-          "user_id": user.user_id}
+          "user_id": user.user_id,
+          "token_id": token.identifier}
   return ans
 
 def getUserTokens(user_id):
