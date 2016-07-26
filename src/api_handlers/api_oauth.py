@@ -669,11 +669,11 @@ class GitHubContainerHandler(webapp2.RequestHandler):
 
             # Almacena las credenciales en una entidad Token
             user_credentials = ndb_pb.insertUser("github",
-                    str(user_details["id"]), access_token)
+                    str(user_details["login"]), access_token)
             self.response.set_status(201)
         else:
             # Almacenamos el access token recibido
-            user_id = ndb_pb.modifyToken(str(user_details["id"]),
+            user_id = ndb_pb.modifyToken(str(user_details["login"]),
                     access_token, "github")
             self.response.set_status(200)
 
