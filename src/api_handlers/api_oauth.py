@@ -609,73 +609,69 @@ class GitHubContainerHandler(webapp2.RequestHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
-        def post(self):
-            # tok1 = "80dbc6c5b"
-            # tok2 = "35c8ee515"
-            # tok3 = "b8d18cc8a"
-            # tok4 = "489646d3c"
-            # tok5 = "8457"
-            # git_tok = ndb_pb.GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
-            # git_tok.put()
-            url = "github.com"
-            # authorize_url = \
-            # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
-            access_token_url = "/login/oauth/access_token"
-            client_id = "ae271d42c068cae023b9"
-            client_secret = "7834524345411e5b112c9715949ba33861db61a4"
-            access_token = ""
-            connection = httplib.HTTPSConnection(url)
+    def post(self):
+        # tok1 = "80dbc6c5b"
+        # tok2 = "35c8ee515"
+        # tok3 = "b8d18cc8a"
+        # tok4 = "489646d3c"
+        # tok5 = "8457"
+        # git_tok = ndb_pb.GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
+        # git_tok.put()
+        url = "github.com"
+        # authorize_url = \
+        # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
+        access_token_url = "/login/oauth/access_token"
+        client_id = "ae271d42c068cae023b9"
+        client_secret = "7834524345411e5b112c9715949ba33861db61a4"
+        access_token = ""
+        connection = httplib.HTTPSConnection(url)
+        # Cogemos el codigo de la peticion
+ 	    body = json.loads(self.request.body)
+        code = body.get('code')
+        params_token = urllib.urlencode({"client_id": client_id,
+                "client_secret": client_secret, "code": code})
+        # Realizamos la peticion en la conexion
+        connection.request("POST", access_token_url, params_token)
+        # Cogemos la respuesta de la peticion y realizamos un split
+        # para coger el valor del token
+        response_token = connection.getresponse()
+        data_token = response_token.read()
+        print "===========================================================" + data_token
+        access_token = data_token.split("&")
+        access_token = access_token[0].split("=")[1]
+    	logging.info('Ya tiene codigo: ' + access_token)
+        # Gestion de la respuesta de webapp
+        # self.response.content_type = "application/json"
+        # response = {"token": "" + access_token + ""}
+        # self.response.write(json.dumps(response))
+        # connection.close()
+        # self.response.set_status(200)
 
-            # Cogemos el codigo de la peticion
-    	    body = json.loads(self.request.body)
-            code = body.get('code')
-            params_token = urllib.urlencode({"client_id": client_id,
-                    "client_secret": client_secret, "code": code})
-            # Realizamos la peticion en la conexion
-            connection.request("POST", access_token_url, params_token)
-
-            # Cogemos la respuesta de la peticion y realizamos un split
-            # para coger el valor del token
-            response_token = connection.getresponse()
-            data_token = response_token.read()
-            print "===========================================================" + data_token
-            access_token = data_token.split("&")
-            access_token = access_token[0].split("=")[1]
-    	    logging.info('Ya tiene codigo: ' + access_token)
-            # Gestion de la respuesta de webapp
-            # self.response.content_type = "application/json"
-            # response = {"token": "" + access_token + ""}
-            # self.response.write(json.dumps(response))
-            # connection.close()
-            # self.response.set_status(200)
-
-            # Obtenemos los detalles del usuario autenticado
-            connectionAPI = httplib.HTTPSConnection("api.github.com")
-            headers = {"Accept": "application/vnd.github.v3+json",
-                       "User-Agent": "PicBit-App",
-                       "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
-            connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
-            response = connectionAPI.getresponse()
-            aux = response.read()
-            user_details = json.loads(aux)
-
-            # Buscamos el par id usuario/token autenticado en la base
-            stored_credentials = ndb_pb.searchToken(str(user_details["id"
-                    ]), "github")
-            response = {"token": access_token}
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps(response))
-            if stored_credentials == None:
-
-                # Almacena las credenciales en una entidad Token
-                user_credentials = ndb_pb.insertUser("github",
-                        str(user_details["login"]), access_token)
-                self.response.set_status(201)
-            else:
-                # Almacenamos el access token recibido
-                user_id = ndb_pb.modifyToken(str(user_details["login"]),
-                        access_token, "github")
-                self.response.set_status(200)
+        # Obtenemos los detalles del usuario autenticado
+        connectionAPI = httplib.HTTPSConnection("api.github.com")
+        headers = {"Accept": "application/vnd.github.v3+json",
+                    "User-Agent": "PicBit-App",
+                    "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
+        connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
+        response = connectionAPI.getresponse()
+        aux = response.read()
+        user_details = json.loads(aux)
+        # Buscamos el par id usuario/token autenticado en la base
+        stored_credentials = ndb_pb.searchToken(str(user_details["id"
+                ]), "github")
+        response = {"token": access_token}
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps(response))
+        if stored_credentials == None:
+            # Almacena las credenciales en una entidad Token
+            user_credentials = ndb_pb.insertUser("github",
+                    str(user_details["login"]), access_token)
+            self.response.set_status(201)
+        else:
+            # Almacenamos el access token recibido
+            user_id = ndb_pb.modifyToken(str(user_details["login"]),
+                    access_token, "github")
+            self.response.set_status(200)
 
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):
