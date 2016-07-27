@@ -27,6 +27,7 @@ import base64
 import os
 import yaml
 import random
+import logging
 
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
@@ -505,10 +506,7 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
 
     # Obtenemos la lista de credenciales de usuario
     credential_list = getUserCredentialList(user_id)
-    print "========================================================"
-    print "Respuesta de getUser credential List"
-    print credential_list
-    print "========================================================"
+    logging.info("respuesta de getUserCredentialList: " + credential_list)
     # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
                 "description": user.description,
