@@ -1,16 +1,16 @@
 <style>
-  body {
-    background-image:url('../images/userhome.jpg');
-  }
-  paper-toolbar.header {
-    background: -moz-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%, rgba(14,14,14,0.7) 100%);
-    background: -webkit-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
-    background: radial-gradient(ellipse at center,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b37d7e7d', endColorstr='#b30e0e0e',GradientType=1 );
-  }
-  .footer {
-    display:none !important;
-  }
+body {
+  background-image:url('../images/userhome.jpg');
+}
+paper-toolbar.header {
+  background: -moz-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%, rgba(14,14,14,0.7) 100%);
+  background: -webkit-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
+  background: radial-gradient(ellipse at center,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b37d7e7d', endColorstr='#b30e0e0e',GradientType=1 );
+}
+.footer {
+  display:none !important;
+}
 </style>
 <div id="userHome" ng-container>
   <!-- Left bar -->
@@ -47,182 +47,190 @@
           <p>
             <strong>{{language.user_action.add}} ( <span class="glyphicon glyphicon-plus"></span>
               )</strong><span>: {{language.help.add}}</span>
-          </p>
-          <br>
-          <p>
-            <strong>{{language.user_action.delete}}(				<span class="glyphicon glyphicon-trash"></span>
-              )</strong>: <span>{{language.help.delete}}</span>
-          </p>
+            </p>
+            <br>
+            <p>
+              <strong>{{language.user_action.delete}}(				<span class="glyphicon glyphicon-trash"></span>
+                )</strong>: <span>{{language.help.delete}}</span>
+              </p>
+
+            </div>
+          </div>
 
         </div>
       </div>
+      <div id="store-modal" class="modal fade" role="dialog" data-keyboard="false" >
+        <div class="modal-dialog modal-lg vertical store layout">
 
-    </div>
-  </div>
-  <div id="store-modal" class="modal fade" role="dialog" data-keyboard="false" >
-    <div class="modal-dialog modal-lg vertical store layout">
-
-      <!-- Modal content-->
-      <div class="modal-content store vertical layout flex">
-        <div class="modal-header">
-          <button type="button" class="close" ng-click="closeModal('#store-modal')">&times;</button>
-          <h4 class="modal-title">{{language.catalog.componentList}}</h4>
-        </div>
-        <div class="modal-body store flex horizontal layout">
-          <div id="searchCatalog" class="vertical layout">
-            <div class="btn-group">
-              <input type="text" ng-model="textFilter" class="form-control" placeholder="{{language.catalog.search}}" aria-describedby="basic-addon1">
-              <span id="searchclear" ng-click="removeTextFilter()" class="glyphicon glyphicon-remove-circle"></span>
+          <!-- Modal content-->
+          <div class="modal-content store vertical layout flex">
+            <div class="modal-header">
+              <button type="button" class="close" ng-click="closeModal('#store-modal')">&times;</button>
+              <h4 class="modal-title">{{language.catalog.componentList}}</h4>
             </div>
-            <hr>
-            <div class="horizontal layout title">
-              <p class="flex">{{language.catalog.rate}}</p>
-              <p class="clear" ng-show="starFilter != undefined" ng-click="removeStarFilter()">{{language.catalog.clear}}</p>
-            </div>
-            <div class="radio">
-              <label><input type="radio" ng-model="starFilter" value="5" name="optradio"><star-rate star="5" value="5"></star-rate></label>
-            </div>
-            <div class="radio">
-              <label><input type="radio" ng-model="starFilter" value="4" name="optradio"><star-rate star="5" value="4"></star-rate>{{language.catalog.rateUp}}</label>
-            </div>
-            <div class="radio">
-              <label><input type="radio" ng-model="starFilter" value="3" name="optradio"><star-rate star="5" value="3"></star-rate>{{language.catalog.rateUp}}</label>
-            </div>
-            <div class="radio">
-              <label><input type="radio" ng-model="starFilter" value="2" name="optradio"><star-rate star="5" value="2"></star-rate>{{language.catalog.rateUp}}</label>
-            </div>
-          </div>
-          <div id="listCatalog" class="flex" >
-            <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{user.tokens[item.socialNetwork]}}">
-              <span class="label label-warning warning" ng-hide="user.tokens[item.socialNetwork]">{{language.noToken}}</span>
-              <button ng-hide="user.tokens[item.socialNetwork]" ng-click="login(item.name, $event)" class="tokenDisabled">
-                {{language.noTokenDescription}}
-              </button>
-              <div ng-show="user.tokens[item.socialNetwork]" class="description" title="{{item.description}}" data-test="{{user.tokens[item.socialNetwork]}}">
-                {{item.description}}
-              </div>
-              <div class="componentData horizontal layout">
-                <img ng-src="{{item.img}}" style="width:45px;height:45px"/>
-                <div class="flex vertical center-center layout componentInfo">
-                  <p>{{item.name}}</p>
+            <div class="modal-body store flex horizontal layout">
+              <div id="searchCatalog" class="vertical layout">
+                <div class="btn-group">
+                  <input type="text" ng-model="textFilter" class="form-control" placeholder="{{language.catalog.search}}" aria-describedby="basic-addon1">
+                  <span id="searchclear" ng-click="removeTextFilter()" class="glyphicon glyphicon-remove-circle"></span>
+                </div>
+                <hr>
+                <div class="horizontal layout title">
+                  <p class="flex">{{language.catalog.rate}}</p>
+                  <p class="clear" ng-show="starFilter != undefined" ng-click="removeStarFilter()">{{language.catalog.clear}}</p>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" ng-model="starFilter" value="5" name="optradio"><star-rate star="5" value="5"></star-rate></label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" ng-model="starFilter" value="4" name="optradio"><star-rate star="5" value="4"></star-rate>{{language.catalog.rateUp}}</label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" ng-model="starFilter" value="3" name="optradio"><star-rate star="5" value="3"></star-rate>{{language.catalog.rateUp}}</label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" ng-model="starFilter" value="2" name="optradio"><star-rate star="5" value="2"></star-rate>{{language.catalog.rateUp}}</label>
                 </div>
               </div>
-              <star-rate star="5" value="{{item.rate}}"></star-rate>
+              <div id="listCatalog" class="flex" >
+                <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.name}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{user.tokens[item.socialNetwork]}}">
+                  <span class="label label-warning warning" ng-hide="user.tokens[item.socialNetwork]">{{language.noToken}}</span>
+                  <button ng-hide="user.tokens[item.socialNetwork]" ng-click="login(item.name, $event)" class="tokenDisabled">
+                    {{language.noTokenDescription}}
+                  </button>
+                  <div ng-show="user.tokens[item.socialNetwork]" class="description" title="{{item.description}}" data-test="{{user.tokens[item.socialNetwork]}}">
+                    {{item.description}}
+                  </div>
+                  <div class="componentData horizontal layout">
+                    <img ng-src="{{item.img}}" style="width:45px;height:45px"/>
+                    <div class="flex vertical center-center layout componentInfo">
+                      <p>{{item.name}}</p>
+                    </div>
+                  </div>
+                  <star-rate star="5" value="{{item.rate}}"></star-rate>
+                </div>
+              </div>
+
             </div>
           </div>
-
         </div>
-      </div>
-    </div>
-    <div id="login-modal" class="modal fade" role="dialog" data-keyboard="false">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content modal-md">
-          <div class="modal-header">
-            <button type="button" class="close" ng-click="closeModal('#login-modal')" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            <h4 class="modal-title">{{language.loginTitle}} {{loginSelected}}</h4>
-          </div>
-          <div class="modal-body login-body">
-            <p>{{language.loginRequest}}</p>
-            <google-login data-role="login" ng-show="loginSelected == 'googleplus'" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" 	callback="{{domain}}" static="true"></google-login>
-            <github-login data-role="login" sort scope="user:email" ng-show="loginSelected == 'github'" static endpoint="{{domain}}/api/oauth/github/credenciales" client_id="ae271d42c068cae023b9"></github-login>
-            <login-facebook data-role="login" ng-show="loginSelected == 'facebook'" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
-            <twitter-login data-role="login" ng-show="loginSelected == 'twitter'" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
-            <instagram-login data-role="login" ng-show="loginSelected == 'instagram'" client_id="34af286560fc492cbabc62285f098047" redirect_uri="{{domain}}"></instagram-login>
+        <div id="login-modal" class="modal fade" role="dialog" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content modal-md">
+              <div class="modal-header">
+                <button type="button" class="close" ng-click="closeModal('#login-modal')" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">{{language.loginTitle}} {{loginSelected}}</h4>
+              </div>
+              <div class="modal-body login-body">
+                <p>{{language.loginRequest}}</p>
+                <google-login data-role="login" ng-show="loginSelected == 'googleplus'" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" 	callback="{{domain}}" static="true"></google-login>
+                <github-login data-role="login" sort scope="user:email" ng-show="loginSelected == 'github'" static endpoint="{{domain}}/api/oauth/github/credenciales" client_id="ae271d42c068cae023b9"></github-login>
+                <login-facebook data-role="login" ng-show="loginSelected == 'facebook'" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+                <twitter-login data-role="login" ng-show="loginSelected == 'twitter'" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+                <instagram-login data-role="login" ng-show="loginSelected == 'instagram'" client_id="34af286560fc492cbabc62285f098047" redirect_uri="{{domain}}"></instagram-login>
 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click="closeModal('#login-modal')">Close</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-  </div>
-
-  <div id="rate-modal" class="modal fade scrollbar-macosx scroll-content scroll-scrolly_visible" role="dialog" tabindex="-1">
-    <div class="modal-dialog modal-md">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">{{language.questionary.about}} {{randomComponent}}</h4>
-        </div>
-        <div class="modal-body vertical layout" >
-          <div id="initialQuestion">
-            <p class="questionText">{{language.questionary.define}}</p>
-            <paper-radio-group>
-              <paper-radio-button name="1">{{language.questionary.component.verybad}} </paper-radio-button><br>
-              <paper-radio-button name="2">{{language.questionary.component.bad}}</paper-radio-button><br>
-              <paper-radio-button name="3">{{language.questionary.component.neutral}}</paper-radio-button><br>
-              <paper-radio-button name="4">{{language.questionary.component.good}}</paper-radio-button><br>
-              <paper-radio-button name="5">{{language.questionary.component.verygood}} </paper-radio-button><br>
-            </paper-radio-group>
-          </div>
-          <div id="aditionalForm" elevation="2" class="userForm" style="display:none">
-            <p>{{getRandomComponent()}} </p>
-            <form is="iron-form" >
-              <p class="questionText">{{language.questionary.difficulty}} </p>
-              <paper-radio-group id="question2" class="aditionalQuestion" >
-                <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
-                <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
-                <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
-                <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
-                <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
-              </paper-radio-group>
-            </form>
-
-            <form is="iron-form">
-              <p class="questionText">{{language.questionary.design}}</p>
-              <paper-radio-group id="question3" class="aditionalQuestion">
-                <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
-                <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
-                <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
-                <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
-                <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
-              </paper-radio-group>
-            </form>
-
-            <form is="iron-form">
-              <p class="questionText">{{language.questionary.information}}</p>
-              <paper-radio-group id="question4" class="aditionalQuestion">
-                <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
-                <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
-                <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
-                <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
-                <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
-              </paper-radio-group>
-            </form>
-
-            <!-- Confirmation to take an aditional questionaire about the component-->
-            <form is="iron-form">
-              <p class="questionText">{{language.questionary.share}}</p>
-              <paper-radio-group id="question5" class="aditionalQuestion">
-                <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
-                <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
-              </paper-radio-group>
-            </form>
-
-            <form is="iron-form">
-              <p class="questionText">{{language.questionary.recommend}}</p>
-              <paper-radio-group id="question6" class="aditionalQuestion">
-                <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
-                <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
-              </paper-radio-group>
-            </form>
-          </div>
-          <div id="thanksInfo" style="display:none">
-            <p>{{language.questionary.end}}</p>
-          </div>
-        </div>
-        <div class="modal-footer horizontal">
-          <p>{{language.questionary.emptyQuestions}}</p>
-          <button class="btn btn-danger" data-toggle="modal" data-target="#rate-modal" ng-click="submitRating()">{{language.close}}</button>
-          <button class="btn btn-primary" ng-click="submitRating()">{{language.send}}</button>
-          <button class="btn btn-primary" id="closeRateModal" data-toggle="modal" data-target="#rate-modal" style="display:none">OK</button>
-        </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="closeModal('#login-modal')">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
       </div>
 
+      <div id="rate-modal" class="modal fade scrollbar-macosx scroll-content scroll-scrolly_visible" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-md">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">{{language.questionary.about}} {{randomComponent}}</h4>
+            </div>
+            <div class="modal-body vertical layout" >
+              <div id="initialQuestion">
+                <p class="questionText">{{language.questionary.define}}</p>
+                <paper-radio-group>
+                  <paper-radio-button name="1">{{language.questionary.component.verybad}} </paper-radio-button><br>
+                  <paper-radio-button name="2">{{language.questionary.component.bad}}</paper-radio-button><br>
+                  <paper-radio-button name="3">{{language.questionary.component.neutral}}</paper-radio-button><br>
+                  <paper-radio-button name="4">{{language.questionary.component.good}}</paper-radio-button><br>
+                  <paper-radio-button name="5">{{language.questionary.component.verygood}} </paper-radio-button><br>
+                </paper-radio-group>
+              </div>
+              <div id="aditionalForm" elevation="2" class="userForm" style="display:none">
+                <form is="iron-form" >
+                  <p class="questionText">{{language.questionary.difficulty}} </p>
+                  <paper-radio-group id="question2" class="aditionalQuestion" >
+                    <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+                    <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+                    <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+                    <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+                    <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+                  </paper-radio-group>
+                </form>
+
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.design}}</p>
+                  <paper-radio-group id="question3" class="aditionalQuestion">
+                    <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+                    <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+                    <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+                    <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+                    <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+                  </paper-radio-group>
+                </form>
+
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.information}}</p>
+                  <paper-radio-group id="question4" class="aditionalQuestion">
+                    <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+                    <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+                    <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+                    <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+                    <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+                  </paper-radio-group>
+                </form>
+
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.advantage}}</p>
+                  <input type="text" class="form-control aditionalQuestion" id="advantage" data-field="advantage" placeholder="{{language.questionary.advantage_sort}}">
+              </form>
+              <form is="iron-form">
+                <p class="questionText">{{language.questionary.drawback}}</p>
+                <input type="text" class="form-control aditionalQuestion" id="drawback" data-field="drawback" placeholder="{{language.questionary.drawback_sort}}">
+              </form>
+
+              <!-- Confirmation to take an aditional questionaire about the component-->
+              <form is="iron-form">
+                <p class="questionText">{{language.questionary.share}}</p>
+                <paper-radio-group id="question5" class="aditionalQuestion">
+                  <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
+                  <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
+                </paper-radio-group>
+              </form>
+
+              <form is="iron-form">
+                <p class="questionText">{{language.questionary.recommend}}</p>
+                <paper-radio-group id="question6" class="aditionalQuestion">
+                  <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
+                  <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
+                </paper-radio-group>
+              </form>
+            </div>
+            <div id="thanksInfo" style="display:none">
+              <p>{{language.questionary.end}}</p>
+            </div>
+          </div>
+          <div class="modal-footer horizontal">
+            <p>{{language.questionary.emptyQuestions}}</p>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#rate-modal" ng-click="submitRating()">{{language.close}}</button>
+            <button class="btn btn-primary" ng-click="submitRating()">{{language.send}}</button>
+            <button class="btn btn-primary" id="closeRateModal" data-toggle="modal" ng-click="closerating()" data-target="#rate-modal" style="display:none">OK</button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
-</div>

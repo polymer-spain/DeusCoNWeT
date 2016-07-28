@@ -97,7 +97,11 @@
 		"information": "La información del componente se muestra de manera concisa y clara.",
 		"share": "¿Recomendarías este componente?",
 		"recommend": "¿Compartirías este componente?",
-		"end": "El cuestionario ha terminado. Gracias por tu tiempo."
+		"end": "El cuestionario ha terminado. Gracias por tu tiempo.",
+		"advantage": "Indique una característica a destacar del componente",
+		"advantage_sort":"Ventaja del componente",
+		"drawback":"Indique un defecto a destacar del componente",
+		"drawback_sort":"Defecto del componente"
 	},
 	"delete":"Borrar",
 	"noToken": "Sin permisos",

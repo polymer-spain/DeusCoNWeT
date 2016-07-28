@@ -94,7 +94,11 @@
     "information": "The component information is shown concise and clearly",
     "share": "Would you share this component?",
     "recommend": "Would you recommend this component?",
-    "end": "The survey has finished. Thanks for your time"
+    "end": "The survey has finished. Thanks for your time",
+    "advantage": "Point out a strenght of the component",
+    "advantage_sort":"Advantage of the component",
+    "drawback":"Point out a weakness of the component",
+    "drawback_sort":"Defect of the component"
   },
   "delete":"Delete",
   "noToken": "Unauthorized",
