@@ -22,6 +22,7 @@ import webapp2, json
 import ndb_pb
 from google.appengine.api import memcache
 from api_oauth import SessionHandler
+import logging
 
 # Import config vars and datetime package (to manage request/response cookies)
 import datetime, os, yaml
@@ -126,15 +127,17 @@ class UserHandler(SessionHandler):
               user_info["name"] = user_profile["name"]
               user_info["surname"] = user_profile["surname"]
             refs_list = []
-            components_list = ndb_pb.getComponents()
-            components_list = json.loads(components_list)
+            components_list_js = ndb_pb.getComponents()
+            components_list = json.loads(components_list_js)
             for comp in components_list["data"]:
               dict_comp = json.loads(comp)
               ident = dict_comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
               version = component.preasigned_version
+              static = "/"
+              if str(ident) == "twitter-timeline": static = "/static/"
               ref = "/bower_components/" + \
-                    str(ident) + str(version) + "/" + str(ident) + ".html"
+                    str(ident) + "-" + str(version) + static + str(ident) + ".html"
               refs_list.append(ref)
             user_info["references"] = refs_list
             self.response.content_type = "application/json"
@@ -158,14 +161,13 @@ class UserHandler(SessionHandler):
               user_dict["phone"] = user_info["phone"]
             for comp in user_info.components:
               dict_comp = json.loads(comp)
-              print "=================================================="
-              print dict_comp
-              print "=================================================="
               ident = dict_comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
               version = preversion.preasigned_version
+              static = "/"
+              if ident == "twitter-timeline": static = "/static/"
               ref = "/bower_components/" + \
-                    ident + version + "/" + ident + ".html"
+                    ident + "-" + version + static + ident + ".html"
               refs_list.append(ref)
             user_dict["references"] = refs_list
             self.response.content_type = "application/json"
@@ -366,9 +368,6 @@ class ProfileHandler(SessionHandler):
   """
 
   def post(self, user_id):
-    print "===================================================="
-    print user_id
-    print "===================================================="
     cookie_value = self.request.cookies.get("session")
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
