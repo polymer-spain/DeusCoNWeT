@@ -216,13 +216,13 @@ function ($http, $location, $rootScope, $cookies) {
   };
 
   this.getComponentInfo = function(){
-    var request, uri;
-    request = new XMLHttpRequest();
-
-    uri = this.endpoint + '/api/componentes';
-    request.open('GET', uri, false);
-    request.send();
-
-    return request;
+    var uri = this.endpoint + '/api/componentes';
+    var request = {
+      method: 'get',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    };
+    return $http(request);
   };
-}]);
+}
+]);
