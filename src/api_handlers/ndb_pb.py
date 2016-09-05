@@ -160,7 +160,7 @@ class Component(ndb.Model):
   description = ndb.StringProperty()
   # List of versions available for a component
   version_list = ndb.StringProperty(repeated=True)
-  # Index to control the version that will be served to the next user that adds it to his dashboard 
+  # Index to control the version that will be served to the next user that adds it to his dashboard
   version_index = ndb.IntegerProperty()
   # Determines the times that the general component has been tested
   test_count = ndb.IntegerProperty(default=0)
@@ -198,7 +198,7 @@ class ComponentTested(ndb.Model):
 #   version = ndb.StringProperty()
 #   # Determines the times that the versioned component has been tested
 #   test_count = ndb.IntegerProperty(default=0)
-#   version_rating = ndb.FloatProperty(default=0) 
+#   version_rating = ndb.FloatProperty(default=0)
 
 class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
@@ -206,7 +206,7 @@ class UserRating(ndb.Model):
   rating_value = ndb.FloatProperty()
   # In the future, this field it could be a reference to an entity that would hold the evaluation resuls
   # Optional_evaluation indicates whether a user has completed the optional form or not.
-  optional_evaluation = ndb.BooleanProperty(default=False) 
+  optional_evaluation = ndb.BooleanProperty(default=False)
 
 class Group(ndb.Model):
   group_name = ndb.StringProperty(required=True)
@@ -263,7 +263,7 @@ class Session(ndb.Model):
 # Tamaño de bloque
 BLOCK_SIZE = 32
 
-# caracter para realizar un padding del mensaje a cifrar 
+# caracter para realizar un padding del mensaje a cifrar
 # (para que sea multiplo del tamaño del bloque)
 PADDING = '{'
 #Funcion de padding del mensaje a cifrar
@@ -443,13 +443,13 @@ def getUserTokens(user_id):
     for token in user.tokens:
       cipher = getCipher(token.key.id())
       token_aux[token.social_name] = decodeAES(cipher, token.token)
-    ans = json.dumps(token_aux) 
+    ans = json.dumps(token_aux)
   return ans
-    
+
 
 def searchToken(token_id, rs): #FUNCIONA
   tokens = Token.query()
-  token = tokens.filter(Token.identifier==token_id).filter(Token.social_name==rs).get() 
+  token = tokens.filter(Token.identifier==token_id).filter(Token.social_name==rs).get()
   if token:
     cipher = getCipher(token.key.id())
     return decodeAES(cipher, token.token)
@@ -458,11 +458,11 @@ def searchToken(token_id, rs): #FUNCIONA
 
 def modifyToken(user_id, new_token, rs): #FUNCIONA
   tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
-  
+
   # Ciphers the token
   cipher = getCipher(tok.key.id())
   new_token = encodeAES(cipher, new_token)
-  
+
   # Updates the token
   tok.token = new_token
   token_key = tok.put()
@@ -493,20 +493,20 @@ def getUserCredentialList(user_id):
 def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
-  
+
   if not user == None:
     rates = user.rates; nets = user.net_list
     user_component_list = [];  net_names = []
     # Componemos la lista de redes a la que está suscrito un usuario
     for net in nets:
       net_names.append(net.social_name)
-    
+
     # Componemos la lista de componentes de usuario, detallada o reducida
     user_component_list = getUserComponentList(user_id, component_detailed_info)
 
     # Obtenemos la lista de credenciales de usuario
     credential_list = getUserCredentialList(user_id)
-    print "respuesta de getUserCredentialList: " 
+    print "respuesta de getUserCredentialList: "
     print credential_list
     # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
@@ -558,7 +558,7 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
 
   # Inserts the user entity
   user_key = user.put()
-  
+
   token = Token(identifier=ide, token="", social_name=rs)
   token_key = token.put()
   # Ciphers the access token and stores in the datastore
@@ -596,7 +596,7 @@ def updateUser(entity_key, data): #FUNCIONA
   if data.has_key("description"):
     user.description = data["description"]
     updated_data += ["description"]
-  
+
   if data.has_key("image"):
     user.image = data["image"]
     updated_data += ["image"]
@@ -619,10 +619,10 @@ def updateUser(entity_key, data): #FUNCIONA
     user.rates.append(rating)
     updated_data += ["rate"]
 
-  # We update the optional_evaluation field     
+  # We update the optional_evaluation field
   if data.has_key("optional_evaluation"):
     user.optional_evaluation = data['optional_evaluation']
-    
+
   # Updates the user data
   user.put()
   # Returns the list that represents the data that was updated
@@ -630,7 +630,7 @@ def updateUser(entity_key, data): #FUNCIONA
 
 
 def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
-  user = entity_key.get()  
+  user = entity_key.get()
   # We create a Token Entity in the datastore
   tok_aux = Token(identifier=user_id, token="", social_name=social_name)
   token_key = tok_aux.put()
@@ -653,7 +653,7 @@ def insertGroup(entity_key, name, data=None): #FUNCIONA
   user = entity_key.get()
   group = Group(group_name=name)
   users = ""
-  
+
   if not data == None:
     if data.has_key("description"): group.description = data["description"]
     if data.has_key("usuarios"):
@@ -709,7 +709,7 @@ def insertNetwork(entity_key, name, data=None): # FUNCIONA
 
   user.net_list.append(user_social)
   user.put()
-    
+
 
 def searchNetwork(entity_key): # FUNCIONA
   user = entity_key.get()
@@ -724,7 +724,7 @@ def searchNetwork(entity_key): # FUNCIONA
 
 # Creates a component (Component Entity)
 def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
-  # Generates a random initial value that represents the version of the component that will be 
+  # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
   # Depending on the social network, different attributes are needed
   attributes = None
@@ -818,11 +818,11 @@ def addListening(entity_key, name, events):
         comp.listening += event + ""
 
   user.put()
-  
+
 
 def searchComponent(component_id):
   return Component.query(Component.component_id == component_id).get()
-  
+
 def getComponent(entity_key, name, all_info=False): # FUNCIONA
   comp = Component.query(Component.component_id == name).get()
   if comp == None:
@@ -835,7 +835,7 @@ def getComponent(entity_key, name, all_info=False): # FUNCIONA
     general_comp["url"] = comp.url
     general_comp["social_network"] = comp.rs
     general_comp["description"] = comp.description
-    if not rate == None: 
+    if not rate == None:
       general_comp["rate"] = rate.rating_value
     else:
       general_comp["rate"] = 0
@@ -874,7 +874,7 @@ def getUserComponentList(user_id, component_detailed_info=False):
       rating = UserRating.query(UserRating.component_id == comp.component_id).get()
       component_rate = rating if not rating == None else 0.0
       if component_detailed_info:
-        component_info = {"component_id": comp.component_id, 
+        component_info = {"component_id": comp.component_id,
                         "x": comp.x,
                         "y": comp.y,
                         "height": comp.height,
@@ -883,7 +883,7 @@ def getUserComponentList(user_id, component_detailed_info=False):
                         "user_rate": component_rate,
                         "version": comp.version}
       else:
-          component_info = {"component_id": comp.component_id, 
+          component_info = {"component_id": comp.component_id,
                         "user_rate": component_rate}
       # Adds the component to the component list
       component_list.append(component_info)
@@ -961,7 +961,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               json.dumps(general_comp["attributes"])
               general_comp["img"] = 'images/components/facebook-icon.png'
               general_comp["tokenAttr"] = 'access_token'
-            if not rate == None: 
+            if not rate == None:
               general_comp["rate"] = rate.rating_value
             else:
               general_comp["rate"] = 0
@@ -1023,7 +1023,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               json.dumps(general_comp["attributes"])
               general_comp["img"] = 'images/components/facebook-icon.png'
               general_comp["tokenAttr"] = 'access_token'
-            if not rate == None: 
+            if not rate == None:
               general_comp["rate"] = rate.rating_value
             else:
               general_comp["rate"] = 0
@@ -1092,7 +1092,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
                 json.dumps(general_comp["attributes"])
                 general_comp["img"] = 'images/components/facebook-icon.png'
                 general_comp["tokenAttr"] = 'access_token'
-              if not rate == None: 
+              if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
                 general_comp["rate"] = 0
@@ -1153,7 +1153,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
                 json.dumps(general_comp["attributes"])
                 general_comp["img"] = 'images/components/facebook-icon.png'
                 general_comp["tokenAttr"] = 'access_token'
-              if not rate == None: 
+              if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
                 general_comp["rate"] = 0
@@ -1213,7 +1213,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             json.dumps(general_comp["attributes"])
             general_comp["img"] = 'images/components/facebook-icon.png'
             general_comp["tokenAttr"] = 'access_token'
-          if not rate == None: 
+          if not rate == None:
             general_comp["rate"] = rate.rating_value
           else:
             general_comp["rate"] = 0
@@ -1269,13 +1269,13 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             json.dumps(general_comp["attributes"])
             general_comp["img"] = 'images/components/facebook-icon.png'
             general_comp["tokenAttr"] = 'access_token'
-          if not rate == None: 
+          if not rate == None:
             general_comp["rate"] = rate.rating_value
           else:
             general_comp["rate"] = 0
           ans.append(json.dumps(general_comp))
 
-  return json.dumps({"data": ans})
+  return json.dumps({"data": json.dumps(ans)})
 
 def newUserBeta(email, name, surname): #FUNCIONA
   beta_user = UserBeta(email=email, name=name, surname=surname)
@@ -1381,7 +1381,7 @@ def deleteCredentials(entity_key, rs, id_rs):
     # does not belong to a social network to perform login in our system
     if not rs in ['googleplus', 'facebook', 'twitter'] and not len(user.tokens) == 1:
       token_aux = tok.token
-      del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
+      del_token = Token(identifier = id_rs, token = token_aux, social_name = rs)
       tok.key.delete()
       if not user == None:
         # Deletes the token from the user
@@ -1406,7 +1406,7 @@ def getUsers():
               "description": user.description,
               "groups": group_names,
               "networks": net_names}
-    # Returns the user's phone an email if they haven't a private scope 
+    # Returns the user's phone an email if they haven't a private scope
     if not user.private_phone:
       usuario["phone"] = user.phone
     if not user.private_email:
@@ -1457,9 +1457,9 @@ def deleteSession(hashed_id):
 #   def get(self):
 #     self.response.headers['Content-Type'] = 'text/plain'
 #     #PARTE 1: INSERCION DE 1 USUARIO, INSERCION 1 TOKEN, MOSTRAR TOKENS
-#     datos = {"email":"lruiz@conwet.com", 
-#               "telefono": 61472589, 
-#               "descripcion":"Este es mi perfil personal", 
+#     datos = {"email":"lruiz@conwet.com",
+#               "telefono": 61472589,
+#               "descripcion":"Este es mi perfil personal",
 #               "imagen": "www.example.com/mi-foto.jpg"}
 #     key = insertaUsuario("twitter", "lrr9204", "asdfghjklm159753", datos)
 
