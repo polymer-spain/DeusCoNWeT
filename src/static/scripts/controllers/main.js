@@ -1,7 +1,16 @@
 /*global angular, document, console*/
 angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguage', '$location', '$cookies', '$backend', '$http', '$rootScope', function ($scope, RequestLanguage, $location, $cookies, $backend, $http, $rScope) {
 
+
 	'use strict';
+
+	// BORRAR ES SOLO UNA PRUEBA
+	$backend.getComponentInfo().then(function(e){
+		console.log('Fue bien', e);
+	},function(e){
+		console.log('Fue mal', e);
+	});
+
 	if ($location.host() === "localhost"){
 		$scope.domain = "http://" + $location.host() + ":" + $location.port();
 	}else {

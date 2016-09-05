@@ -203,7 +203,7 @@ function ($http, $location, $rootScope, $cookies) {
     xhr.send(data);
   };
   this.updateProfile = function(values, user){
-    var request, uri, socialnetwork;
+    var request, uri;
     uri = this.endpoint + '/api/usuarios/' + user + '/profile';
     request = {
       method: 'post',
@@ -213,5 +213,16 @@ function ($http, $location, $rootScope, $cookies) {
     };
 
     return $http(request);
-  }
+  };
+
+  this.getComponentInfo = function(){
+    var request, uri;
+    request = new XMLHttpRequest();
+
+    uri = this.endpoint + '/api/componentes';
+    request.open('GET', uri, false);
+    request.send();
+
+    return request;
+  };
 }]);
