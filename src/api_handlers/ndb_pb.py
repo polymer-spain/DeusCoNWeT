@@ -1172,7 +1172,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["social_network"] = str(component.rs)
           general_comp["description"] = str(component.description)
           general_comp["preversion"] = str(component.preasigned_version)
-          general_comp["attributes"] = str({}
+          general_comp["attributes"] = {}
           if general_comp["social_network"] == "twitter":
             general_comp["attributes"]["access_token"] = str(attributes.access_token)
             general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
@@ -1276,7 +1276,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["rate"] = 0
           ans.append(json.dumps(general_comp))
 	loggin.info(ans)
-  return json.dumps({'data':[{'0':'hola'},{'1':'adios'}]})
+  return json.dumps({'data':[json.loads(el) for el in ans]})
   # return json.dumps({'data':})
 
 def newUserBeta(email, name, surname): #FUNCIONA
