@@ -4,17 +4,17 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // Lista de componentes añadidos
     // TODO se deberan coger de la lista que se registra en usuario
     $scope.listComponentAdded = [];
-
+    $scope.componentsRated = [];
     // loads references for this
-    (function(){
-      if ($scope.user.references){
-        $scope.user.references.forEach(function(value,index){
-          var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
-          $('body').append($link);
-        });
-      }
-    })();
-    // Logica que dice que botones del a barra lateral estan activos y cuales
+     (function(){
+       if ($scope.user.references){
+         $scope.user.references.forEach(function(value,index){
+           var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
+           $('body').append($link);
+         });
+       }
+     })();
+    //  Logica que dice que botones del a barra lateral estan activos y cuales
     // han de desactivarse
     $scope.selectListButton = function(e){
       e.stopPropagation();
@@ -33,10 +33,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         name:'twitter-timeline',
         rate:5,
         img:'images/components/twitter-logo.png',
-        tokenAttr: 'access-token',
-        description:'Muestra el timeline de twitter texto muy largo para provocar un overflow y ver que ocurre en la imagen que representa',
-        socialNetwork: 'twitter',
-        attributes: {
+        attributes:{
           "access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
           "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
           "consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
@@ -194,32 +191,74 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
     $scope.formLoadTime = 60000; // Indicates when we'll show to the user the form
 
-
-    var platformTimeHandler = $interval(function(){
-      if(document.visibilityState === "visible" ){
-        $scope.platformUsedTime += $scope.intervalTime;
-      }
-    }, $scope.intervalTime);
+    var platformTimeFunction = function(){
+      var interval = $interval(function(){
+        if(document.visibilityState === "visible" ){
+          $scope.platformUsedTime += $scope.intervalTime;
+        }
+      }, $scope.intervalTime);
+      return interval;
+    }.bind(this);
+    var platformTimeHandler = platformTimeFunction();
 
     $scope.$watch("platformUsedTime", function(newValue, oldValue){
       if (newValue!==oldValue && newValue >= $scope.formLoadTime && $scope.listComponentAdded.length >0) {
-        $scope.getRandomComponent();
-        $('#rate-modal').modal({
-          backdrop: 'static',
-          keyboard: false
-        });
+        var result = $scope.getRandomComponent();
+        if (result){
+          $('#rate-modal').modal({
+            backdrop: 'static',
+            keyboard: false
+          });
+          $scope.platformUsedTime = 0;
+        }
         $interval.cancel(platformTimeHandler);
       }
     });
     $scope.getRandomComponent = function(){
+      var unratedList = $scope.listComponentAdded;
+      var findElement = function(element, list){
+        var find = -1;
+        for (var i=0;i<list.length && find === -1;i++){
+          if (element === list[i] || (list[i] && list[i].name === element)){
+            find=i;
+          }
+        }
+        return find;
+      };
+      for (var i=0;i< $scope.componentsRated.length;i++){
+        var component = $scope.componentsRated[i];
+        if (findElement(component,unratedList)!== -1){
+          var unrated_index = findElement(component, unratedList);
+          unratedList.splice(unrated_index,1);
+        }
+      }
       if (!$scope.randomComponent){
         var random = Math.round(Math.random()*100);
-        if ($scope.listComponentAdded.length > 0){
-          var position = random % $scope.listComponentAdded.length;
-          $scope.randomComponent = $scope.listComponentAdded[position].name;
+        if (unratedList.length > 0){
+          var position = random % unratedList.length;
+          $scope.randomComponent = unratedList[position].name;
         }
       }
       return $scope.randomComponent;
+    };
+    var resetModal = function(){
+      setTimeout(function(){
+        $('#thanksInfo').hide();
+        $('#initialQuestion').show();
+        $('#rate-modal .modal-footer button').show();
+        $('#rate-modal .modal-footer #closeRateModal').hide();
+        $('#rate-modal paper-radio-group').each(function(i,e){
+          e.selected = '';
+        });
+        $('#rate-modal input').each(function(i,e){
+          e.value = "";
+        });
+      },200);
+    };
+    $scope.closerating = function(){
+      $scope.randomComponent = undefined;
+      resetModal();
+      platformTimeFunction();
     };
     $scope.submitRating = function(){
       if (!$('#aditionalForm').is(':visible')){
@@ -238,10 +277,18 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         var $aditionalQuestion = $('.aditionalQuestion');
         $('#rate-modal .modal-footer p').hide();
         var selected = $aditionalQuestion.children('.iron-selected');
-        if ( $aditionalQuestion.length === selected.length) {
+        var text = $('.aditionalQuestion.form-control');
+        var completed = 0;
+        text.each(function(index,element){
+          if ($(element).val() !== ''){
+            completed+=1;
+          }
+        });
+        if ( $aditionalQuestion.length === selected.length + completed) {
           $('#rate-modal .modal-footer p').hide();
           $('#rate-modal .modal-footer button').hide();
           $scope._submitExtendedQuestionaire();
+          $scope.componentsRated.push($scope.randomComponent);
           $('#aditionalForm').fadeOut('easing',function(){
             $('#thanksInfo').show();
             $('#rate-modal .modal-footer button').hide();
@@ -273,14 +320,18 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
     $scope._submitExtendedQuestionaire = function(){
       // We get the responses for every question
-      var aditional_questions = document.getElementsByClassName("aditionalQuestion");
+      var aditional_questions = document.querySelector(".aditionalQuestion");
       var mixpanel_event_list = [];
       var mixpanel_event = {};
       var answer = "";
       var question_text = "";
       Array.prototype.forEach.call(aditional_questions, function(question){
         answer = question.selected || "";
-        question_text = $(question).children('.iron-selected').html() || "";
+        if ($(question).hasClass('form-control')){
+          question_text = $(question).value();
+        } else {
+          question_text = $(question).children('.iron-selected').html() || "";
+        }
         if (answer !== "" && question_text !== ""){
           mixpanel_event = {
             "event_name": question.id,
