@@ -966,7 +966,8 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             else:
               general_comp["rate"] = 0
             # ans = general_comp
-            ans.append(json.dumps(general_comp))
+            ans.append(general_comp)
+	    
 
       else:
         user = entity_key.get()
@@ -1274,8 +1275,9 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           else:
             general_comp["rate"] = 0
           ans.append(json.dumps(general_comp))
-
-  return json.dumps({"data": json.dumps(ans)})
+	  logging.info(ans)
+  return json.dumps({'data':[{'0':'hola'},{'1':'adios'}]})
+  # return json.dumps({'data':})
 
 def newUserBeta(email, name, surname): #FUNCIONA
   beta_user = UserBeta(email=email, name=name, surname=surname)
