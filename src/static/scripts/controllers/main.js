@@ -99,9 +99,14 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 
 	// Binding login callback
 	(function(){
-		$('#login-popup google-login')[0].addEventListener('google-logged', loginCallback);
-		$('#login-popup twitter-login')[0].addEventListener('twitter-logged', loginCallback);
-		$('#login-popup login-facebook')[0].addEventListener('facebook-logged', loginCallback);
+		// This file is invoked 2 times when load. We must unbind events before bind
+		$('#login-popup google-login').unbind('google-logged');
+		$('#login-popup twitter-login').unbind('twitter-logged');
+		$('#login-popup login-facebook').unbind('facebook-logged');
+
+		$('#login-popup google-login').bind('google-logged', loginCallback);
+		$('#login-popup twitter-login').bind('twitter-logged', loginCallback);
+		$('#login-popup login-facebook').bind('facebook-logged', loginCallback);
 	})();
 
 	// avoid language errors
