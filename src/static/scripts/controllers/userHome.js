@@ -97,7 +97,11 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         }
       }
     ];
-
+    $backend.getComponentInfo().then(function(res){
+      $scope.catalogList = res.data;
+    }, function(){
+      console.error('Error al pedir datos del componente');
+    });
     // borra los filtros
     $scope.removeStarFilter = function(){
       $scope.starFilter = undefined;

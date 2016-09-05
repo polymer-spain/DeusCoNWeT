@@ -5,7 +5,7 @@
   Copyright 2015 Ana Isabel Lopera Martínez
   Copyright 2015 Miguel Ortega Moreno
   Copyright 2015 Juan Francisco Salamanca Carmona
-  
+
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -42,15 +42,15 @@ social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", 
 
 class ComponentRatingHandler(SessionHandler):
     """
-    Class that defines the method related to user rating about a certain component 
+    Class that defines the method related to user rating about a certain component
     in the system (componentes/:idComponente/componenteValorado)
     Methods:
-        post - 
+        post -
     """
     # POST Method
     def post(self, component_id):
         """ - Modifies the info about a component
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request build by webapp2
         component_id -- path url directory corresponding to the component id
         """
@@ -69,13 +69,13 @@ class ComponentRatingHandler(SessionHandler):
                 data = []
                 data["comp_name"] = component_id
                 data["rate"] = rate
-                data["optional_evaluation"] = True if optional_form_completed == "true" else False 
+                data["optional_evaluation"] = True if optional_form_completed == "true" else False
                 # We update the user info
                 updated_data = ndb_pb.updateUser(user_id, data)
                 if not updated_data == None:
                     self.response.set_status(200)
                 else:
-                    self.response.set_status(304) 
+                    self.response.set_status(304)
             else:
                 # We invalidate the session cookie received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
@@ -89,7 +89,7 @@ class ComponentRatingHandler(SessionHandler):
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
                         path="/", domain=domain, secure=True, expires=expire_date)
-                
+
                 # We write in the response details about the error
                 response = \
                     {"error": "The cookie session provided does not belongs to any active user"}
@@ -111,14 +111,14 @@ class ComponentListHandler(SessionHandler):
     It acts as the handler of the /components resource
 
     Methods:
-    get -- Gets a filtered list of the components stored in the system  
+    get -- Gets a filtered list of the components stored in the system
     put -- Uploads a component
     """
 
     # GET Method
     def get(self):
         """ Gets a filtered list of the components stored in the system
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request build by webapp2
         """
         # Get the cookies in the request
@@ -127,7 +127,7 @@ class ComponentListHandler(SessionHandler):
         # Social_network,filter_param and list_format are optional params
         social_network = self.request.get("social_network", default_value="")
         filter_param = self.request.get("filter",default_value="general")
-        list_format = self.request.get("list_format", default_value="reduced") 
+        list_format = self.request.get("list_format", default_value="reduced")
 
         # Lists of posible values for each param
         filter_list = ["general","user"]
@@ -152,7 +152,7 @@ class ComponentListHandler(SessionHandler):
                     {"error": "Invalid value for param social_network, filter o list_format"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
-                    self.response.set_status(400)        
+                    self.response.set_status(400)
             else:
                 # We invalidate the session cookie received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
@@ -166,29 +166,29 @@ class ComponentListHandler(SessionHandler):
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
                         path="/", domain=domain, secure=True, expires=expire_date)
-                
+
                 # Response to the client
                 response = \
                     {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)    
+                self.response.set_status(400)
         else:
             response = {"error": "You must provide a session cookie"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(401)
-        
+
 
     # PUT Method
     def put(self):
         """ Uploads a component. The component is stored in the Datastore of the application
         This request does not need to be made along with a cookie identifying the session
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request build by webapp2
         """
         try:
-            # Get the request POST params 
+            # Get the request POST params
             url = self.request.POST["url"] # Url to the component stable repo
             component_id = self.request.POST["component_id"]
             description = self.request.POST["description"]
@@ -241,7 +241,7 @@ class ComponentListHandler(SessionHandler):
                 response = {"error": "Bad value for the social_network param"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)                
+                self.response.set_status(400)
 
         except KeyError:
             response = {"error": "Missing params in the request body"}
@@ -254,7 +254,7 @@ class ComponentHandler(SessionHandler):
     Class that defines the component resource
     It acts as the handler of the /components/{component_id} resource
     Methods:
-    get -- Gets the info about a component 
+    get -- Gets the info about a component
     post -- Modifies the info about a component
     delete -- Deletes a component in the system
     """
@@ -263,7 +263,7 @@ class ComponentHandler(SessionHandler):
     def get(self, component_id):
         """ Gets the info about a component or
         gets a filtered list of the components stored in the system
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request build by webapp2
         component_id -- path url directory corresponding to the component id
         """
@@ -289,7 +289,7 @@ class ComponentHandler(SessionHandler):
                         {"error": "Component not found in the system"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
-                        self.response.set_status(404)    
+                        self.response.set_status(404)
                 else:
                     response = \
                     {"error": "The format param provided is incorrect"}
@@ -309,8 +309,8 @@ class ComponentHandler(SessionHandler):
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
                         path="/", domain=domain, secure=True, expires=expire_date)
-                
-                # We write the response providing details about the error 
+
+                # We write the response providing details about the error
                 response = \
                     {"error": "The session cookie provided is incorrect"}
                 self.response.content_type = "application/json"
@@ -326,7 +326,7 @@ class ComponentHandler(SessionHandler):
     # POST Method
     def post(self, component_id):
         """ - Modifies the info about a component
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request build by webapp2
         component_id -- path url directory corresponding to the component id
         """
@@ -354,11 +354,11 @@ class ComponentHandler(SessionHandler):
                         data["y"] = float(y_axis)
                     if not listening == "none":
                         data["listening"] = listening
-                    
+
                 except ValueError:
                     response = \
                     {"error": "x_axis, y_axis and rating must have a numeric value"}
-                    self.response.content_type = "application/json"                
+                    self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
 
@@ -369,7 +369,7 @@ class ComponentHandler(SessionHandler):
                         if not rating_updated:
                             rating_error = True
                             response = {"error": "The component_id specified does not belong to the user dashboard"}
-                            self.response.content_type = "application/json"                
+                            self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
                             self.response.set_status(400)
                         else:
@@ -378,7 +378,7 @@ class ComponentHandler(SessionHandler):
                         rating_error = True
                         response = \
                         {"error": "Rating must be a numeric value between 0.0 and 5.0"}
-                        self.response.content_type = "application/json"                
+                        self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(400)
 
@@ -390,7 +390,7 @@ class ComponentHandler(SessionHandler):
                 # Compounds the success response if the component has ben updated successfully
                 if component_modified_success:
                     response = {"status": "Component updated succesfully"}
-                    self.response.content_type = "application/json"                
+                    self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(200)
             else:
@@ -406,7 +406,7 @@ class ComponentHandler(SessionHandler):
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
                         path="/", domain=domain, secure=True, expires=expire_date)
-                
+
                 # We write in the response details about the error
                 response = \
                     {"error": "The cookie session provided does not belongs to any active user"}
@@ -423,13 +423,13 @@ class ComponentHandler(SessionHandler):
     # DELETE Method
     def delete(self, component_id):
         """ - Deletes a component in the system
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request build by webapp2
         component_id -- path url directory corresponding to the component id
         """
         scope = self.request.get("scope", default_value="user")
         cookie_value = self.request.cookies.get("session")
-        
+
         if scope=="user":
             if not cookie_value == None:
                 user_logged_key = self.getUserInfo(cookie_value)
@@ -458,11 +458,11 @@ class ComponentHandler(SessionHandler):
                     if not self.request.cookies.get("user") == None:
                         self.response.set_cookie("user", "",
                             path="/", domain=domain, secure=True, expires=expire_date)
-                    
+
                     self.response.content_type = "application/json"
                     response = {"error": "The session cookie header does not belong to an active user in the system"}
                     self.response.write(json.dumps(response))
-                    self.response.set_status(400)    
+                    self.response.set_status(400)
             else:
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps({"error": "To perform this action, you must be authenticated"}))
@@ -485,4 +485,3 @@ class ComponentHandler(SessionHandler):
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(400)
-
