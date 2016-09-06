@@ -221,6 +221,7 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   border:16px solid transparent;
+  border-width:22px 16px;
   background-color:rgba(0,0,0,0.8);
   border-radius: 3px;
 }
