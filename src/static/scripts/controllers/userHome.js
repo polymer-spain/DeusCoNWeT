@@ -29,6 +29,13 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     };
     $backend.getComponentInfo().then(function(res){
       $scope.catalogList = res.data.data;
+      var tokenAttr,social_network;
+      // Add tokens
+      for(var i=0;i <$scope.catalogList.length;i++) {
+        tokenAttr = $scope.catalogList[i].tokenAttr;
+        social_network = $scope.catalogList[i].social_network;
+        $scope.catalogList.attributes[tokenAttr] = $rootScope.user.tokens[social_network];
+      }
     }, function(){
       console.error('Error al pedir datos del componente');
     });
