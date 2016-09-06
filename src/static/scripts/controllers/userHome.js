@@ -44,6 +44,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             attr_value = attr_value.replace(':domain', $scope.domain);
             attr_value = attr_value.replace(':user', 'mortega5');
             attr_value = attr_value.replace(':language', '{{idioma}}');
+	    $scope.catalogList[i].attributes[attr] = attr_value;
           }
         }
 
