@@ -27,78 +27,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
 
     };
-    // TODO se debe coger el catalogo de componentes del servidor
-    $scope.catalogList = [
-      {
-        name:'twitter-timeline',
-        rate:5,
-        img:'images/components/twitter-logo.png',
-        attributes:{
-          "access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
-          "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-          "consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
-          "consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
-          endpoint: $scope.domain + "/api/aux/twitterTimeline",
-          component_base: "bower_components/twitter-timeline/static/",
-          language: "{{idioma}}",
-          count: "200"
-        }
-      },
-      {
-        name:'github-events',
-        rate:4,
-        img:'images/components/github-icon.png',
-        socialNetwork:'github',
-        tokenAttr: 'token',
-        description:'Muestra los eventos sucedidos en github',
-        attributes: {
-          username: "mortega5",
-          token: $rootScope.user ? $rootScope.user.tokens.github:'',
-          mostrar: "10",
-          language: "{{idioma}}",
-          component_directory: 'bower_components/github-events/'
-        }
-      },
-      {
-        name:'instagram-timeline',
-        rate:1,
-        socialNetwork:'instagram',
-        img:'images/components/instagram-icon.png',
-        description:'Muestra las fotos de Instagram',
-        tokenAttr: 'accessToken',
-        attributes: {
-          accessToken: $rootScope.user? $rootScope.user.tokens.googleplus : '',
-          endpoint: "{{domain}}" + "/api/aux/instagramTimeline",
-          language: "{{idioma}}"
-        }
-      },
-      {
-        name: 'googleplus-timeline',
-        rate:4,
-        socialNetwork:'googleplus',
-        tokenAttr: 'token',
-        img:'images/components/google-icon.svg',
-        description:'Muestra las entradas en google+',
-        attributes: {
-          'token': $rootScope.user ? $rootScope.user.tokens.googleplus:'ya29.CjMHAzmtu3cGQaJ77v0nq0xoJ9F_VTNkJWx-mUmQQlyDU4nn8KlTBO3mWyqFw32XTAQofVc',
-          'language':'{{idioma}}'
-        }
-      },
-      {
-        name: 'facebook-wall',
-        rate: 3,
-        socialNetwork:'facebook',
-        img: 'images/components/facebook-icon.png',
-        tokenAttr: 'access_token',
-        attributes: {
-          language: '{{idioma}}',
-          component_directory: 'bower_components/facebook-wall/',
-          access_token: $rootScope.user ? $rootScope.user.tokens.facebook: 'NO IMPLEMENTED',
-        }
-      }
-    ];
     $backend.getComponentInfo().then(function(res){
-      $scope.catalogList = res.data;
+      $scope.catalogList = res.data.data;
     }, function(){
       console.error('Error al pedir datos del componente');
     });
