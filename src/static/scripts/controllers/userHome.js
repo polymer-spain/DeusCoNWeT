@@ -404,10 +404,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           // }
         });
       }
-      $('#login-modal google-login')[0].addEventListener('google-logged', loginCallback);
-      $('#login-modal github-login')[0].addEventListener('github-logged', loginCallback);
-      $('#login-modal instagram-login')[0].addEventListener('instagram-logged', loginCallback);
-      $('#login-modal twitter-login')[0].addEventListener('twitter-logged', loginCallback);
-      $('#login-modal login-facebook')[0].addEventListener('facebook-logged', loginCallback);
+      $('#login-modal google-login').bind('google-logged', loginCallback);
+      $('#login-modal github-login').bind('github-logged', loginCallback);
+      $('#login-modal instagram-login').bind('instagram-logged', loginCallback);
+      $('#login-modal twitter-login').bind('twitter-logged', loginCallback);
+      $('#login-modal login-facebook').bind('facebook-logged', loginCallback);
     })();
   }]);
