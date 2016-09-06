@@ -34,7 +34,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       for(var i=0;i <$scope.catalogList.length;i++) {
         tokenAttr = $scope.catalogList[i].tokenAttr;
         social_network = $scope.catalogList[i].social_network;
-        $scope.catalogList[i].attributes[tokenAttr] = $rootScope.user.tokens[social_network];
+        $scope.catalogList[i].attributes[tokenAttr] = $rootScope.user.tokens[social_network] || "";
 
         // Parse :domain, :user, :language
         for (var attr in $scope.catalogList[i].attributes) {
