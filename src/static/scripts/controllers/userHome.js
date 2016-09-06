@@ -6,14 +6,14 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $scope.listComponentAdded = [];
     $scope.componentsRated = [];
     // loads references for this
-     (function(){
-       if ($scope.user.references){
-         $scope.user.references.forEach(function(value,index){
-           var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
-           $('body').append($link);
-         });
-       }
-     })();
+    (function(){
+      if ($scope.user.references){
+        $scope.user.references.forEach(function(value,index){
+          var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
+          $('body').append($link);
+        });
+      }
+    })();
     //  Logica que dice que botones del a barra lateral estan activos y cuales
     // han de desactivarse
     $scope.selectListButton = function(e){
@@ -27,78 +27,28 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
 
     };
-    // TODO se debe coger el catalogo de componentes del servidor
-    $scope.catalogList = [
-      {
-        name:'twitter-timeline',
-        rate:5,
-        img:'images/components/twitter-logo.png',
-        attributes:{
-          "access-token": $rootScope.user ? $rootScope.user.tokens.twitter : "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf",
-          "secret-token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-          "consumer-key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
-          "consumer-secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
-          endpoint: $scope.domain + "/api/aux/twitterTimeline",
-          component_base: "bower_components/twitter-timeline/static/",
-          language: "{{idioma}}",
-          count: "200"
-        }
-      },
-      {
-        name:'github-events',
-        rate:4,
-        img:'images/components/github-icon.png',
-        socialNetwork:'github',
-        tokenAttr: 'token',
-        description:'Muestra los eventos sucedidos en github',
-        attributes: {
-          username: "mortega5",
-          token: $rootScope.user ? $rootScope.user.tokens.github:'',
-          mostrar: "10",
-          language: "{{idioma}}",
-          component_directory: 'bower_components/github-events/'
-        }
-      },
-      {
-        name:'instagram-timeline',
-        rate:1,
-        socialNetwork:'instagram',
-        img:'images/components/instagram-icon.png',
-        description:'Muestra las fotos de Instagram',
-        tokenAttr: 'accessToken',
-        attributes: {
-          accessToken: $rootScope.user? $rootScope.user.tokens.googleplus : '',
-          endpoint: "{{domain}}" + "/api/aux/instagramTimeline",
-          language: "{{idioma}}"
-        }
-      },
-      {
-        name: 'googleplus-timeline',
-        rate:4,
-        socialNetwork:'googleplus',
-        tokenAttr: 'token',
-        img:'images/components/google-icon.svg',
-        description:'Muestra las entradas en google+',
-        attributes: {
-          'token': $rootScope.user ? $rootScope.user.tokens.googleplus:'ya29.CjMHAzmtu3cGQaJ77v0nq0xoJ9F_VTNkJWx-mUmQQlyDU4nn8KlTBO3mWyqFw32XTAQofVc',
-          'language':'{{idioma}}'
-        }
-      },
-      {
-        name: 'facebook-wall',
-        rate: 3,
-        socialNetwork:'facebook',
-        img: 'images/components/facebook-icon.png',
-        tokenAttr: 'access_token',
-        attributes: {
-          language: '{{idioma}}',
-          component_directory: 'bower_components/facebook-wall/',
-          access_token: $rootScope.user ? $rootScope.user.tokens.facebook: 'NO IMPLEMENTED',
-        }
-      }
-    ];
     $backend.getComponentInfo().then(function(res){
-      $scope.catalogList = res.data;
+      $scope.catalogList = res.data.data;
+      var tokenAttr,social_network;
+      // Add tokens
+      for(var i=0;i <$scope.catalogList.length;i++) {
+        tokenAttr = $scope.catalogList[i].tokenAttr;
+        social_network = $scope.catalogList[i].social_network;
+        $scope.catalogList[i].attributes[tokenAttr] = $rootScope.user.tokens[social_network] || "";
+
+        // Parse :domain, :user, :language
+        for (var attr in $scope.catalogList[i].attributes) {
+          // skip loop if the property is from prototype
+          if ($scope.catalogList[i].attributes.hasOwnProperty(attr)){
+            var attr_value = $scope.catalogList[i].attributes[attr];
+            attr_value = attr_value.replace(':domain', $scope.domain);
+            attr_value = attr_value.replace(':user', 'mortega5');
+            attr_value = attr_value.replace(':language', '{{idioma}}');
+	    $scope.catalogList[i].attributes[attr] = attr_value;
+          }
+        }
+
+      }
     }, function(){
       console.error('Error al pedir datos del componente');
     });
@@ -174,10 +124,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     };
 
 
-    $scope.setToken = function(socialNetwork, value){
+    $scope.setToken = function(social_network, value){
       for(var i = 0; i< $scope.catalogList.length;i++){
         var element = $scope.catalogList[i];
-        if (element.socialNetwork === socialNetwork){
+        if (element.social_network === social_network){
           element.attributes[element.tokenAttr] = value;
         }
       }
@@ -370,44 +320,44 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       function loginCallback(e){
         //falta registralo
         $scope.$apply(function(){
-          var socialNetwork = e.detail.redSocial;
+          var social_network = e.detail.redSocial;
           var token = e.detail.token;
           var registerTokenError = function(){
             $scope.showToastr('error',$scope.language.add_token_error);
-            $rootScope.user.tokens[socialNetwork] = '';
-            $scope.setToken(socialNetwork, '');
+            $rootScope.user.tokens[social_network] = '';
+            $scope.setToken(social_network, '');
           };
           $rootScope.user = $rootScope.user || {tokens:{}};
-          $rootScope.user.tokens[socialNetwork] = token;
-          $scope.setToken(socialNetwork, token);
+          $rootScope.user.tokens[social_network] = token;
+          $scope.setToken(social_network, token);
           $('#login-modal').modal('toggle');
 
-          // switch(socialNetwork) {
+          // switch(social_network) {
           //   case 'googleplus':
           //     var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
           //     $http.get(uri).success(function (responseData) {
-          //       $backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
+          //       $backend.addTokens(social_network, responseData.id, token, $scope.user.user_id).error(registerTokenError);
           //     });
           //     break;
           //   case 'twitter':
           //     uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
           //     $http.get(uri).success(function (responseData) {
           //       e.detail.userId = responseData.token_id;
-          //       $backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
+          //       $backend.addTokens(social_network, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
           //     }).error(function() {
           //       console.log('Problemas al intentar obtener el token_id de un usuario' );
           //     });
           //     break;
           //   default:
-          //     $backend.addTokens(socialNetwork, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
+          //     $backend.addTokens(social_network, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
           //     break;
           // }
         });
       }
-      $('#login-modal google-login')[0].addEventListener('google-logged', loginCallback);
-      $('#login-modal github-login')[0].addEventListener('github-logged', loginCallback);
-      $('#login-modal instagram-login')[0].addEventListener('instagram-logged', loginCallback);
-      $('#login-modal twitter-login')[0].addEventListener('twitter-logged', loginCallback);
-      $('#login-modal login-facebook')[0].addEventListener('facebook-logged', loginCallback);
+      $('#login-modal google-login').bind('google-logged', loginCallback);
+      $('#login-modal github-login').bind('github-logged', loginCallback);
+      $('#login-modal instagram-login').bind('instagram-logged', loginCallback);
+      $('#login-modal twitter-login').bind('twitter-logged', loginCallback);
+      $('#login-modal login-facebook').bind('facebook-logged', loginCallback);
     })();
   }]);
