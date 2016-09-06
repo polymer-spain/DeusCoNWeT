@@ -286,25 +286,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
           reflectToAttribute: true
         },
-        accessToken: {
+        access_token: {
           type: String,
           value: "",
           notify: true,
           reflectToAttribute: true
         },
-        secretToken: {
+        secret_token: {
           type: String,
           value: "",
           notify: true,
           reflectToAttribute: true
         },
-        consumerKey: {
+        consumer_key: {
           type: String,
           value: "",
           notify: true,
           reflectToAttribute: true
         },
-        consumerSecret: {
+        consumer_secret: {
           type: String,
           value: "",
           notify: true,
@@ -321,7 +321,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         timeline_params: {
           type: String,
-          computed: "_calculatetimelineParams(accessToken, secretToken, consumerKey, consumerSecret, count)"
+          computed: "_calculatetimelineParams(access_token, secret_token, consumer_key, consumer_secret, count)"
         },
         events: {
           type: Array,
@@ -508,12 +508,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _calculateLanguageUrl: function(component_directory, file) {
         return component_directory + "language/" + file;
       },
-      _calculatetimelineParams: function(accessToken, secretToken, consumerKey, consumerSecret, count) {
+      _calculatetimelineParams: function(access_token, secret_token, consumer_key, consumer_secret, count) {
         return {
-          access_token: accessToken,
-          secret_token: secretToken,
-          consumer_key: consumerKey,
-          consumer_secret: consumerSecret,
+          access_token: access_token,
+          secret_token: secret_token,
+          consumer_key: consumer_key,
+          consumer_secret: consumer_secret,
           count: count
         };
       },
