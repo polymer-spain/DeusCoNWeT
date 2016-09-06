@@ -6,14 +6,14 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $scope.listComponentAdded = [];
     $scope.componentsRated = [];
     // loads references for this
-     (function(){
-       if ($scope.user.references){
-         $scope.user.references.forEach(function(value,index){
-           var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
-           $('body').append($link);
-         });
-       }
-     })();
+    (function(){
+      if ($scope.user.references){
+        $scope.user.references.forEach(function(value,index){
+          var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
+          $('body').append($link);
+        });
+      }
+    })();
     //  Logica que dice que botones del a barra lateral estan activos y cuales
     // han de desactivarse
     $scope.selectListButton = function(e){
@@ -35,6 +35,18 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         tokenAttr = $scope.catalogList[i].tokenAttr;
         social_network = $scope.catalogList[i].social_network;
         $scope.catalogList[i].attributes[tokenAttr] = $rootScope.user.tokens[social_network];
+
+        // Parse :domain, :user, :language
+        for (var attr in $scope.catalogList[i].attributes) {
+          // skip loop if the property is from prototype
+          if ($scope.catalogList[i].attributes.hasOwnProperty(attr)){
+            var attr_value = $scope.catalogList[i].attributes[attr];
+            attr_value = attr_value.replace(':domain', $scope.domain);
+            attr_value = attr_value.replace(':user', 'mortega5');
+            attr_value = attr_value.replace(':language', '{{idioma}}');
+          }
+        }
+
       }
     }, function(){
       console.error('Error al pedir datos del componente');
