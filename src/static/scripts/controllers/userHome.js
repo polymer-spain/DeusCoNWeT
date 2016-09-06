@@ -34,7 +34,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       for(var i=0;i <$scope.catalogList.length;i++) {
         tokenAttr = $scope.catalogList[i].tokenAttr;
         social_network = $scope.catalogList[i].social_network;
-        $scope.catalogList.attributes[tokenAttr] = $rootScope.user.tokens[social_network];
+        $scope.catalogList[i].attributes[tokenAttr] = $rootScope.user.tokens[social_network];
       }
     }, function(){
       console.error('Error al pedir datos del componente');
@@ -111,10 +111,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     };
 
 
-    $scope.setToken = function(socialNetwork, value){
+    $scope.setToken = function(social_network, value){
       for(var i = 0; i< $scope.catalogList.length;i++){
         var element = $scope.catalogList[i];
-        if (element.socialNetwork === socialNetwork){
+        if (element.social_network === social_network){
           element.attributes[element.tokenAttr] = value;
         }
       }
@@ -307,36 +307,36 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       function loginCallback(e){
         //falta registralo
         $scope.$apply(function(){
-          var socialNetwork = e.detail.redSocial;
+          var social_network = e.detail.redSocial;
           var token = e.detail.token;
           var registerTokenError = function(){
             $scope.showToastr('error',$scope.language.add_token_error);
-            $rootScope.user.tokens[socialNetwork] = '';
-            $scope.setToken(socialNetwork, '');
+            $rootScope.user.tokens[social_network] = '';
+            $scope.setToken(social_network, '');
           };
           $rootScope.user = $rootScope.user || {tokens:{}};
-          $rootScope.user.tokens[socialNetwork] = token;
-          $scope.setToken(socialNetwork, token);
+          $rootScope.user.tokens[social_network] = token;
+          $scope.setToken(social_network, token);
           $('#login-modal').modal('toggle');
 
-          // switch(socialNetwork) {
+          // switch(social_network) {
           //   case 'googleplus':
           //     var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
           //     $http.get(uri).success(function (responseData) {
-          //       $backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
+          //       $backend.addTokens(social_network, responseData.id, token, $scope.user.user_id).error(registerTokenError);
           //     });
           //     break;
           //   case 'twitter':
           //     uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
           //     $http.get(uri).success(function (responseData) {
           //       e.detail.userId = responseData.token_id;
-          //       $backend.addTokens(socialNetwork, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
+          //       $backend.addTokens(social_network, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
           //     }).error(function() {
           //       console.log('Problemas al intentar obtener el token_id de un usuario' );
           //     });
           //     break;
           //   default:
-          //     $backend.addTokens(socialNetwork, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
+          //     $backend.addTokens(social_network, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
           //     break;
           // }
         });
