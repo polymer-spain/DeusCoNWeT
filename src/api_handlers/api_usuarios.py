@@ -130,8 +130,7 @@ class UserHandler(SessionHandler):
             components_list_js = ndb_pb.getComponents()
             components_list = json.loads(components_list_js)
             for comp in components_list["data"]:
-              dict_comp = json.loads(comp)
-              ident = dict_comp["component_id"]
+              ident = comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
               version = component.preasigned_version
               static = "/"
