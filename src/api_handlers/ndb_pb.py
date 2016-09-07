@@ -448,8 +448,7 @@ def getUserTokens(user_id):
 
 
 def searchToken(token_id, rs): #FUNCIONA
-  tokens = Token.query()
-  token = tokens.filter(Token.identifier==token_id).filter(Token.social_name==rs).get()
+  token = Token.query(Token.identifier==token_id).filter(Token.social_name==rs).get()
   if token:
     cipher = getCipher(token.key.id())
     return decodeAES(cipher, token.token)
