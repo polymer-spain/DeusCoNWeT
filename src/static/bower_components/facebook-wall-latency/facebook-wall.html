@@ -369,18 +369,17 @@ Polymer({
     },
     refreshTime: {
       type: Number,
-      value: 60000,
+      value: 5000,
       reflectToAttribute: true
     },
     latency_time: {
       type: Number,
-      value: 60000,
+      value: 5000,
       reflectToAttribute: true
     },
   },
-  sleep: function(milliseconds) {
-    var start = new Date().getTime();
-    while ((new Date().getTime() - start) <= milliseconds);
+  sleep: function(milliseconds,cb) {
+    window.setTimeout(cb, milliseconds);
   },
 
   attached: function(){
@@ -538,7 +537,7 @@ Polymer({
     }
   },
   _dataResponse: function(event, detail){
-    this.sleep(this.latency_time);
+    this.sleep(this.latency_time, function(){;
     if (detail.response) {
       // Support mocked data
       if (detail.response.home) {
@@ -548,7 +547,8 @@ Polymer({
       }
       this._reParserLinked(this.events);
       this._changeTime(this.events);
-    }
+    	}
+	}.bind(this));
   },
   _refreshResponse: function(event, detail){
     var firstId = this.events[0].id;

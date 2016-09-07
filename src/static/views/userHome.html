@@ -1,16 +1,14 @@
-<style>
-body {
-  background-image:url('../images/userhome.jpg');
-}
-paper-toolbar.header {
-  background: -moz-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%, rgba(14,14,14,0.7) 100%);
-  background: -webkit-radial-gradient(center, ellipse cover,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
-  background: radial-gradient(ellipse at center,  rgba(125,126,125,0.7) 0%,rgba(14,14,14,0.7) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b37d7e7d', endColorstr='#b30e0e0e',GradientType=1 );
-}
-.footer {
-  display:none !important;
-}
+<style is="custom-style">
+  body {
+    background-image:url('../images/userhome.jpg');
+  }
+  paper-toolbar.header {
+    background-color: #333;
+    border: 1px solid black;
+  }
+  .footer {
+    display:none !important;
+  }
 </style>
 <div id="userHome" ng-container>
   <!-- Left bar -->
@@ -196,41 +194,41 @@ paper-toolbar.header {
                 <form is="iron-form">
                   <p class="questionText">{{language.questionary.advantage}}</p>
                   <input type="text" class="form-control aditionalQuestion" id="advantage" data-field="advantage" placeholder="{{language.questionary.advantage_sort}}">
-              </form>
-              <form is="iron-form">
-                <p class="questionText">{{language.questionary.drawback}}</p>
-                <input type="text" class="form-control aditionalQuestion" id="drawback" data-field="drawback" placeholder="{{language.questionary.drawback_sort}}">
-              </form>
+                </form>
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.drawback}}</p>
+                  <input type="text" class="form-control aditionalQuestion" id="drawback" data-field="drawback" placeholder="{{language.questionary.drawback_sort}}">
+                </form>
 
-              <!-- Confirmation to take an aditional questionaire about the component-->
-              <form is="iron-form">
-                <p class="questionText">{{language.questionary.share}}</p>
-                <paper-radio-group id="question5" class="aditionalQuestion">
-                  <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
-                  <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
-                </paper-radio-group>
-              </form>
+                <!-- Confirmation to take an aditional questionaire about the component-->
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.share}}</p>
+                  <paper-radio-group id="question5" class="aditionalQuestion">
+                    <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
+                    <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
+                  </paper-radio-group>
+                </form>
 
-              <form is="iron-form">
-                <p class="questionText">{{language.questionary.recommend}}</p>
-                <paper-radio-group id="question6" class="aditionalQuestion">
-                  <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
-                  <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
-                </paper-radio-group>
-              </form>
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.recommend}}</p>
+                  <paper-radio-group id="question6" class="aditionalQuestion">
+                    <paper-radio-button name="Si">{{language.questionary.yes}}</paper-radio-button>
+                    <paper-radio-button name="No">{{language.questionary.no}}</paper-radio-button>
+                  </paper-radio-group>
+                </form>
+              </div>
+              <div id="thanksInfo" style="display:none">
+                <p>{{language.questionary.end}}</p>
+              </div>
             </div>
-            <div id="thanksInfo" style="display:none">
-              <p>{{language.questionary.end}}</p>
+            <div class="modal-footer horizontal">
+              <p>{{language.questionary.emptyQuestions}}</p>
+              <button class="btn btn-danger" data-toggle="modal" data-target="#rate-modal" ng-click="submitRating()">{{language.close}}</button>
+              <button class="btn btn-primary" ng-click="submitRating()">{{language.send}}</button>
+              <button class="btn btn-primary" id="closeRateModal" data-toggle="modal" ng-click="closerating()" data-target="#rate-modal" style="display:none">OK</button>
             </div>
           </div>
-          <div class="modal-footer horizontal">
-            <p>{{language.questionary.emptyQuestions}}</p>
-            <button class="btn btn-danger" data-toggle="modal" data-target="#rate-modal" ng-click="submitRating()">{{language.close}}</button>
-            <button class="btn btn-primary" ng-click="submitRating()">{{language.send}}</button>
-            <button class="btn btn-primary" id="closeRateModal" data-toggle="modal" ng-click="closerating()" data-target="#rate-modal" style="display:none">OK</button>
-          </div>
+
         </div>
-
       </div>
     </div>
-  </div>
