@@ -1,10 +1,14 @@
 angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope','$interval', '$backend','$http', function ($scope, $timeout, $rootScope, $interval,
   $backend, $http) {
     'use strict';
+
+    // Se harcodea twitter por motivos de error en el tokenAttr
+    $rootScope.user.tokens.twitter = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
     // Lista de componentes añadidos
     // TODO se deberan coger de la lista que se registra en usuario
     $scope.listComponentAdded = [];
     $scope.componentsRated = [];
+
     // loads references for this
     (function(){
       if ($scope.user.references){
@@ -35,9 +39,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         tokenAttr = $scope.catalogList[i].tokenAttr;
         social_network = $scope.catalogList[i].social_network;
         $scope.catalogList[i].attributes[tokenAttr] = $rootScope.user.tokens[social_network] || "";
-        if (social_network === 'twitter'){
-          $scope.catalogList[i].attributes[tokenAttr] = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
-        }
         // Parse :domain, :user, :language
         for (var attr in $scope.catalogList[i].attributes) {
           // skip loop if the property is from prototype
