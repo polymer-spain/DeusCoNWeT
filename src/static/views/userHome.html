@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="component-list  bg-primary vertical layaout" data-list>
-      <p class="add-item" data-index="{{$index}}" data-list ng-repeat="item in listComponentAdded" title="{{itemDescription}}" ng-click="blurList($event)">{{item.component_id}}</p>
+      <p class="add-item" data-index="{{$index}}" data-list ng-repeat="item in listComponentAdded" title="{{itemDescription}}" ng-click="blurList($event)">{{item.name}}</p>
       <p data-list  ng-if="listComponentAdded.length == 0" >
         {{language.componentAddedEmpty}}
       </p>
