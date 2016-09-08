@@ -148,6 +148,7 @@
       }
       .singleSharedDescription {
         margin: 10px 5px;
+	word-break: break-all;
       }
       .loading {
         width:50%;
@@ -476,7 +477,7 @@ access_token={{access_token}}&summary=true -->
           id = item.id.split('_')[1];
           url = 'https://graph.facebook.com/' + id + '/picture?access_token=' + this.access_token;
         }
-        return url;
+        return url || item.picture || item.linked.picture;
       },
       _noExist: function(item){
         return !item;
