@@ -506,7 +506,7 @@ width="380px" height="285px" ><google-youtube> -->
           <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
         </div>
 
-        <div class="loading" id="loadingGif">
+        <div class="loading" id="loadingGif" show="">
           <img src="loading.gif">
           <p>Loading...</p>
         </div>
@@ -628,7 +628,8 @@ width="380px" height="285px" ><google-youtube> -->
           value: 15,
           reflectToAttribute: true,
           notify: true
-        }
+        },
+        loading: true
     },
 
     //Functions that add Accuracy defects (user testing purposes)
@@ -750,6 +751,7 @@ width="380px" height="285px" ><google-youtube> -->
         // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
 
         this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken);
+        this.loading = false;
       }
     },
 
