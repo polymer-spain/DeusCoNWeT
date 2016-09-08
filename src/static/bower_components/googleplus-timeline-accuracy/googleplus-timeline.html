@@ -505,11 +505,12 @@ width="380px" height="285px" ><google-youtube> -->
         <div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv" hidden>
           <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
         </div>
-
-        <div class="loading" id="loadingGif" show="">
-          <img src="loading.gif">
-          <p>Loading...</p>
-        </div>
+	<template is="dom-if" if="{{loading}}">
+          <div class="loading" id="loadingGif">
+  	    <img src="loading.gif">
+       	    <p>Loading...</p>
+          </div>
+	</template>
       </div>
     </paper-header-panel>
   </template>
@@ -629,7 +630,12 @@ width="380px" height="285px" ><google-youtube> -->
           reflectToAttribute: true,
           notify: true
         },
-        loading: true
+        loading:{
+	  type: Boolean,
+	  value: true,
+	  reflectToAttribute: true,
+	  notify: true
+	}
     },
 
     //Functions that add Accuracy defects (user testing purposes)
