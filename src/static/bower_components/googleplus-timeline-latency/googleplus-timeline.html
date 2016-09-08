@@ -502,9 +502,11 @@ width="380px" height="285px" ><google-youtube> -->
         </template>
         <!-- "Load More" button -->
 
-        <div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv" hidden>
-          <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
-        </div>
+        <template is="dom-if" if="{{_dataReady()}}">
+          <div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv">
+            <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
+          </div>
+        </template>
 
         <div class="loading" id="loadingGif">
           <img src="loading.gif">
@@ -992,6 +994,9 @@ width="380px" height="285px" ><google-youtube> -->
       }
       return dimension;
     },
+    _dataReady: function(){
+      return !this.loading;
+    }
     // OBSERVERS
       _languageChanged: function(newVal){
         if(newVal === "en"){

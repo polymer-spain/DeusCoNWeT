@@ -490,9 +490,11 @@ a:hover{
 </template>
 <!-- "Load More" button -->
 
-<div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv" hidden>
-  <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
-</div>
+<template is="dom-if" if="{{_dataReady()}}">
+  <div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv">
+    <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
+  </div>
+</template>
 
 <template is="dom-if" if="{{loading}}">
   <div class="loading" id="loadingGif">
@@ -1000,6 +1002,9 @@ a:hover{
           }
           return dimension;
         },
+        _dataReady: function(){
+          return !this.loading;
+        }
         // OBSERVERS
         _languageChanged: function(newVal){
           if(newVal === "en"){
