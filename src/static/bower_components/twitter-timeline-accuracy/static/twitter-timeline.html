@@ -20,156 +20,152 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 <dom-module id="twitter-timeline">
-  <style is="custom-style">
-    @font-face {
-      font-family: HelveticaNeue;
-      src: url('font/HelveticaNeueLTStd-Ex.otf');
-    }
-    :host{
-      display: inline-block;
-      color: black;
-      width: var(--twitter-timeline-width, 350px);
-      height: var(--twitter-timeline-height, 350px);
-      min-height: 350px;
-      min-width: 350px;
-    }
-    .wrapper {
-      width: 100%;
-      height: 100%;
-      margin:0;
-      padding:0;
-    }
-    .box {
-      border: 1px solid #d0f0f0;
-      border-bottom: 1px solid #d0f0f0;
-      border-left: 1px solid #d0f0f0;
-      max-width: 400px;
-      min-width: 350px;
-      padding:7px 5px;
-      margin:0;
-      font-size: 14px;
-      background: #fff; /* Old browsers */
+<style is="custom-style">
+  @font-face {
+    font-family: HelveticaNeue;
+    src: url('font/HelveticaNeueLTStd-Ex.otf');
+  }
+  :host{
+    display: inline-block;
+    color: black;
+    width: var(--twitter-timeline-width, 350px);
+    height: var(--twitter-timeline-height, 350px);
+    min-height: 350px;
+    min-width: 350px;
+  }
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    margin:0;
+    padding:0;
+  }
+  .box {
+    border: 1px solid #d0f0f0;
+    border-bottom: 1px solid #d0f0f0;
+    border-left: 1px solid #d0f0f0;
+    width: 100%;
+    padding:7px 5px;
+    margin:0;
+    font-size: 14px;
+    background: #fff; /* Old browsers */
+    overflow: hidden;
+  }
 
+  #header {
+    background: rgb(5,171,224);
+    background: -moz-linear-gradient(45deg,  rgba(5,171,224,1) 0%, rgba(78,178,224,1) 60%, rgba(5,171,224,1) 100%);
+    background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(5,171,224,1)), color-stop(60%,rgba(78,178,224,1)), color-stop(100%,rgba(5,171,224,1)));
+    background: -webkit-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+    background: -o-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+    background: -ms-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+    background: linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#05abe0', endColorstr='#05abe0',GradientType=1 );
 
+    color:#fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-family: 'Helvetica',sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    padding: 3px 8px;
+  }
 
-    }
+  #header > p {
+    text-align:center;
+    padding-left:50px;
+  }
+  #contain {
+    overflow-y: auto;
+  }
+  #end {
+    background: #55acee;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 2px;
+  }
 
-    #header {
-      background: rgb(5,171,224);
-      background: -moz-linear-gradient(45deg,  rgba(5,171,224,1) 0%, rgba(78,178,224,1) 60%, rgba(5,171,224,1) 100%);
-      background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(5,171,224,1)), color-stop(60%,rgba(78,178,224,1)), color-stop(100%,rgba(5,171,224,1)));
-      background: -webkit-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
-      background: -o-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
-      background: -ms-linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
-      background: linear-gradient(45deg,  rgba(5,171,224,1) 0%,rgba(78,178,224,1) 60%,rgba(5,171,224,1) 100%);
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#05abe0', endColorstr='#05abe0',GradientType=1 );
+  .imgEvent {
+    float: left;
+    width:50px;
+    height:50px;
+    margin: 2px 15px;
+  }
 
-      color:#fff;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      font-family: 'Helvetica',sans-serif;
-      font-weight: 800;
-      font-size: 16px;
-      padding: 3px 8px;
-    }
+  .imgEvent /deep/ img {
+    border-radius: 10%;
+  }
 
-    #header > p {
-      text-align:center;
-      padding-left:50px;
-    }
-    #contain {
-      overflow-y: auto;
-      max-height: 400px;
-    }
-    #end {
-      background: #55acee;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-      height: 2px;
-    }
+  .fullname {
+    font-weight: bold;
+    color: #292f33;
+  }
 
-    .imgEvent {
-      float: left;
-      width:50px;
-      height:50px;
-      margin: 2px 15px;
-    }
+  .fullname:hover{
+    color: #1E9999;
+    text-decoration:underline;
+  }
 
-    .imgEvent /deep/ img {
-      border-radius: 10%;
-    }
+  .username {
+    font-size: 13px;
+    color: #8899a6;
+  }
 
-    .fullname {
-      font-weight: bold;
-      color: #292f33;
-    }
+  .nounderline {
+    text-decoration:none;
+    margin-right: 5px;
+  }
 
-    .fullname:hover{
-      color: #1E9999;
-      text-decoration:underline;
-    }
+  .time {
+    font-size: 13px;
+    color: #8899a6;
+  }
 
-    .username {
-      font-size: 13px;
-      color: #8899a6;
-    }
+  .time:hover{
+    color: #1E9999;
+    text-decoration: underline;
+  }
 
-    .nounderline {
-      text-decoration:none;
-      margin-right: 5px;
-    }
+  .text {
+    font-size: 13px;
+    font-family: HelveticaNeue,Helvetica,Arial,sans-serif;
+    margin:5px 0px;
+  }
 
-    .time {
-      font-size: 13px;
-      color: #8899a6;
-    }
+  .button{
+    background: #fff;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    font-family:'Helvetica','sans-serif';
+    color: #55acee;
+    font-style: oblique;
+    transition: background .2s linear, border-radius 1s ease-in 1s;
+  }
+  .button:hover {
+    background: #55acee;
+    color: #fff;
+  }
+  ::-webkit-scrollbar {
+    width: 4px;
+    background: #b9b9b9;
+  }
 
-    .time:hover{
-      color: #1E9999;
-      text-decoration: underline;
-    }
+  ::-webkit-scrollbar-thumb {
+    background: #55acee;
+    -webkit-border-radius: 1ex;
+  }
+  .refresh {
+    text-align: right;
+  }
 
-    .text {
-      font-size: 13px;
-      font-family: HelveticaNeue,Helvetica,Arial,sans-serif;
-      margin:5px 0px;
-    }
-
-    .button{
-      background: #fff;
-      cursor: pointer;
-      text-align: center;
-      font-size: 14px;
-      font-family:'Helvetica','sans-serif';
-      color: #55acee;
-      font-style: oblique;
-      transition: background .2s linear, border-radius 1s ease-in 1s;
-    }
-    .button:hover {
-      background: #55acee;
-      color: #fff;
-    }
-    ::-webkit-scrollbar {
-      width: 4px;
-      background: #b9b9b9;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #55acee;
-      -webkit-border-radius: 1ex;
-    }
-    .refresh {
-      text-align: right;
-    }
-
-    .refresh_button {
-      cursor: pointer;
-      height: 28px;
-      width: 28px;
-      padding:0;
-      margin:auto;
-    }
-  </style>
+  .refresh_button {
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+    padding:0;
+    margin:auto;
+  }
+</style>
   <template>
     <!-- Request to the API. Tokens are necessary -->
     <iron-ajax
