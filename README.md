@@ -6,8 +6,6 @@ de la Universidad Politécnica de Madrid.
 
 Los miembros de este grupo son:
 
-    · Arato, Razvan (rarato)
-	· Castaño Burgos, Alberto (acburgos)
 	· Gómez Yagüez, Sandra (sandragyaguez)
 	· Herranz Fernández, David (dh1118)
 	· Lizcano Casas, David 

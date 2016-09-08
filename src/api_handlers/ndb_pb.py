@@ -132,19 +132,19 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
 
 class ComponentAttributes(ndb.Model):
   component_id = ndb.StringProperty(required=True)
-  access_token = ndb.StringProperty(default="")
-  secret_token = ndb.StringProperty(default="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock")
-  consumer_key = ndb.StringProperty(default="J4bjMZmJ6hh7r0wlG9H90cgEe")
-  consumer_secret = ndb.StringProperty(default="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf")
+  access_token = ndb.StringProperty()
+  secret_token = ndb.StringProperty()
+  consumer_key = ndb.StringProperty()
+  consumer_secret = ndb.StringProperty()
   endpoint = ndb.StringProperty()
-  component_base = ndb.StringProperty(default="bower_components/twitter-timeline/static/")
+  component_base = ndb.StringProperty()
   language = ndb.StringProperty(default=":language")
-  count = ndb.IntegerProperty(default=200)
-  username = ndb.StringProperty(default=":user")
-  token = ndb.StringProperty(default="")
-  mostrar = ndb.IntegerProperty(default=10)
+  count = ndb.IntegerProperty()
+  username = ndb.StringProperty()
+  token = ndb.StringProperty()
+  mostrar = ndb.IntegerProperty()
   component_directory = ndb.StringProperty()
-  accessToken = ndb.StringProperty(default="")
+  accessToken = ndb.StringProperty()
 
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
@@ -728,19 +728,22 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   # Depending on the social network, different attributes are needed
   attributes = None
   if rs == "twitter":
-    attributes = ComponentAttributes(component_id=name, endpoint=endpoint)
+    attributes = ComponentAttributes(component_id=name, access_token="", secret_token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock", consumer_key="J4bjMZmJ6hh7r0wlG9H90cgEe",
+                  consumer_secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf", 
+                  component_base="bower_components/twitter-timeline/static/", count=200, endpoint=endpoint)
     attributes.put()
   elif rs == "github":
-    attributes = ComponentAttributes(component_id=name, component_directory=component_directory)
+    attributes = ComponentAttributes(component_id=name, component_directory=component_directory, username=":user", 
+                  token="", mostrar=10)
     attributes.put()
   elif rs == "instagram":
-    attributes = ComponentAttributes(component_id=name, endpoint=endpoint)
+    attributes = ComponentAttributes(component_id=name, endpoint=endpoint, accessToken=" ")
     attributes.put()
   elif rs == "googleplus":
-    attributes = ComponentAttributes(component_id=name)
+    attributes = ComponentAttributes(component_id=name, token="")
     attributes.put()
   elif rs == "facebook":
-    attributes = ComponentAttributes(component_id=name, component_directory=component_directory)
+    attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
     attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
