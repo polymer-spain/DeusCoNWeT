@@ -36,6 +36,463 @@ Example:
 @demo demo/index.html
 @hero hero.svg
 -->
+<dom-module id="googleplus-timeline">
+
+<style is="custom-style">
+:host {
+  display: inline-block;
+  width:  --googleplus-timeline-width: 450px;
+  height:  --googleplus-timeline-height: 450px;
+  min-height: 200px;
+  min-width: 200px;
+
+  font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color:#2e2e2e;
+}
+
+/* Header styles */
+paper-header-panel {
+  width: 100%;
+  height: 100%;
+  @apply(--shadow-elevation-3dp);
+  border-radius: 8px;
+  background-color: #fff;
+}
+div.paper-header {
+  height: 60px;
+  font-size: 20px;
+  text-align: center;
+  line-height: 60px;
+  padding: 0 10px;
+  color: white;
+  transition: height 0.2s;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  background-color: var(--google-red-500);
+}
+div.paper-header iron-icon {
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+}
+.title {
+  font-weight: bold;
+  font-size: 1.3em;
+}
+
+#refresh_button{
+  float: right;
+  margin-top: 8px;
+}
+/* Post styles */
+.post {
+  min-height: 100px;
+  padding: 8px;
+  border-radius: 3px;
+  font-size: 13px;
+  background: rgb(238,238,238);
+  background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(233,233,233,1) 52%, rgba(238,238,238,1) 100%);
+  background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+  background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
+}
+
+.post .content {
+  margin: 10px 3px;
+  background-color:red;
+}
+.postShadow{
+  margin: 15px 8px;
+}
+paper-button {
+  background-color:#9e9e9e;
+  text-transform: none;
+  color: #444;
+  margin:0;
+  font-size: 14px;
+}
+.header .header_text {
+  margin: auto 5px;
+}
+.header iron-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+.header iron-icon /deep/ img {
+  border-radius: 50%;
+}
+.header .date {
+  padding-top: 10px;
+}
+
+.header .name{
+  padding-top: 10px;
+}
+
+.header_text{
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+a{
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+a:hover{
+  color: #1976D2;
+}
+
+/* Post content styles */
+.text{
+  padding: 0px 15px 15px 15px;
+}
+/* Attachment styles */
+
+.media_icon{
+  width: 15px;
+  height: 15px;
+  /*padding-left: 10px;*/
+}
+
+#video{
+  padding-bottom: 15px;
+}
+
+.attachment_box_container{
+  border-style: solid;
+  border-width: 1px;
+  border-color: #BDBDBD;
+  margin-bottom: 15px;
+  margin-left: 13px;
+  width: 90%;
+  height: auto;
+}
+#video_caption{
+  width: 100px;
+  height: 75px;
+  border: 1px;
+  border-color: #BDBDBD;
+  padding: 3px 3px 0px 3px;
+}
+#video_title{
+  font: normal 14px Roboto,arial,sans-serif;
+  margin-top: 0px;
+  margin-bottom: 8px;
+  padding-top: 23px;
+  text-decoration: none;
+  color: #404040;
+  display: inline;
+  float: right;
+  width: 70%;
+  vertical-align: middle;
+}
+#video_title:hover{
+  color: #1976D2;
+}
+#article_title_container {
+  padding-left: 15px;
+  padding-top: 10px;
+  float: left;
+}
+.attached_photo{
+  width: 90%;
+  height: auto;
+  padding: 0px 15px 15px 15px;
+}
+
+#article_title{
+  font: normal 14px Roboto, arial, sans-serif;
+  text-decoration: none;
+  color: #404040;
+  vertical-align: middle;
+  padding: 10px 0px 5px 15px;
+}
+
+#article_subtitle{
+  font: normal 13px Roboto,arial,sans-serif;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  padding-left: 15px;
+  text-decoration: none;
+  color: #757575;
+}
+
+#article_title:hover{
+  color: #1976D2;
+  text-decoration: underline;
+}
+#original_post_author{
+  font-weight: bold;
+}
+
+/*.post:hover #article_title{
+  color: #1976D2;
+  }*/
+
+  .post:hover #original-post-link{
+    color: #1976D2;
+  }
+
+  #share_details{
+    padding-left: 15px;
+    padding-bottom: 5px;
+  }
+  #share_details a{
+    color: black;
+    text-decoration: none;
+  }
+  #share_details a:hover{
+    text-decoration: underline;
+  }
+
+  /* Album and caption styles */
+  #album_title_container{
+    padding-bottom: 5px;
+  }
+  #album_title{
+    font: normal 14px Roboto,arial,sans-serif;
+    color: #404040;
+    padding-bottom: 10px;
+  }
+
+  #album_title:hover{
+    color: #1976D2;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: auto;
+  }
+  #albumContainer{
+    padding: 0px 15px 15px 15px;
+  }
+  .imgContainer{
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+  }
+  .album_caption{
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin: 0px;
+    border: 1px;
+    border-style: solid;
+    color: white;
+    font-weight: bold;
+  }
+
+  /* Button styles */
+  #loadMoreDiv{
+    padding-bottom: 10px;
+  }
+  #loadMoreButton{
+    background-color: #BDBDBD;
+    padding-bottom: 10px;
+    font-weight: bold;
+  }
+
+  /* Post Footer styles */
+  #stats_count{
+    color: var(--google-grey-700);
+    /*margin-top: 10px;
+    margin-bottom: 10px;*/
+    font-weight: bold;
+    font-size: 15px;
+    padding-right: 10px;
+    padding-left: 3px;
+  }
+  .share_icon{
+    width: 15px;
+    height: 15px;
+    padding-left: 10px;
+  }
+  #likeContainer span {
+    vertical-align: -1px;
+    margin-left: -5px;
+    margin-top: 20px;
+  }
+  #loadingGif{
+    margin-top:10%;
+    text-align: center;
+  }
+
+  </style>
+
+  <template id="template">
+    <iron-ajax  id="requestFollowing"  url="https://www.googleapis.com/plus/v1/people/me/people/visible"  method="GET"  handleAs='json'  on-response="_responseFollowings">
+    </iron-ajax>
+
+    <iron-ajax  id="requestPosts"  method="GET" handleAs='json'on-response="_responsePosts">
+    </iron-ajax>
+
+    <paper-header-panel mode="waterfall" class="red">
+      <div class="paper-header">
+        <div>
+          <b>Google+</b>
+          <paper-icon-button id="refresh_button" icon="refresh" title="refresh" on-click="_refresh_posts">
+          </paper-icon-button>
+        </div>
+      </div>
+
+      <div class="content">
+        <template is="dom-repeat" items="{{timeline_posts}}" sort="_sortPosts" >
+          <paper-material elevation="2" class="postShadow">
+            <!-- Google+ POST -->
+            <div class="post">
+
+              <!-- HEADER: user's avatar, user identifier and time information -->
+              <div class="header horizontal layout">
+                <a href="{{item.actor.url}}" target="_blank" class="header_text"><iron-icon src="{{item.actor.image.url}}" class="userAvatarPost"></iron-icon></a>
+                <div class="flex name"><a href="{{item.actor.url}}" target="_blank" class="header_text"> {{item.actor.displayName}}</a>
+                </div>
+                <span class="date"><a href="{{item.url}}" target="_blank" class="header_text"> {{item.published_pretty}}</a></span>
+              </div>
+
+              <!-- BODY: text and details about the post itself -->
+              <!-- shared post header -->
+              <template is="dom-if" if="{{_isSharedPost(item)}}">
+                <div id="share_details">
+                  <a href="{{item.object.actor.url}}" target="_blank" id="original_post_author">{{item.object.actor.displayName}}</a>
+                  <a href="{{item.url}}" target="_blank" id="original-post-link"> {{language_data.shared_first}}</a>
+                </div>
+              </template>
+
+              <!-- post content -->
+              <template is="dom-if" if="{{item.object.content}}">
+                <div class="text" inner-h-t-m-l="{{item.object.content}}"></div>
+              </template>
+
+              <!-- post attachments -->
+              <template is="dom-if" if="{{item.object.attachments}}">
+                <!-- post video attachment (if any) -->
+                <template is="dom-if" if="{{_hasVideoAttachment(item)}}">
+                  <!-- <google-youtube video-id="{{_getYoutubeVideoId(item.object.attachments.0.embed.url)}}"
+                  width="380px" height="285px" ><google-youtube> -->
+                  <div class="attachment_box_container">
+                    <span>
+                      <a id="video_title" href="{{item.object.attachments.0.url}}" target="_blank">
+                        <iron-icon class="media_icon" icon="av:play-arrow"></iron-icon>
+                        {{item.object.attachments.0.displayName}}
+                        <!-- <p id="article_subtitle"> {{item.object.attachments.0.content}} </p> -->
+                      </a>
+                    </span>
+                    <a href="{{item.object.attachments.0.url}}" target="_blank">
+                      <img id="video_caption" src="{{item.object.attachments.0.image.url}}">
+                    </a>
+                  </div>
+                </template>
+
+                <!-- post photo attachment (if any) -->
+                <template is="dom-if" if="{{_hasAttachment(item,'photo')}}">
+                  <span class="attached_photo_section">
+                    <a href="{{item.object.attachments.0.url}}" target="_blank" >
+                      <img class="attached_photo" src="{{item.object.attachments.0.image.url}}">
+                    </a>
+                  </span>
+                </template>
+
+                <!-- Link/article attachment (if any) -->
+                <template is="dom-if" if="{{_hasAttachment(item,'article')}}">
+                  <div class="attachment_box_container">
+                    <a id="article_title" class="post-link" target="_blank" href="{{item.object.attachments.0.url}}">
+                      <iron-icon class="media_icon" icon="av:web"></iron-icon> {{item.object.attachments.0.displayName}}
+                    </a>
+                    <p id="article_subtitle"> {{item.object.attachments.0.content}} </p>
+                    <a href="{{item.object.attachments.0.url}}" target="_blank" >
+                      <template is="dom-if" if="{{_hasArticleCaption(item)}}">
+                        <img class="attached_photo" src="{{item.object.attachments.0.image.url}}">
+                      </template>
+                    </a>
+                  </div>
+                </template>
+
+                <!-- Album attachment (if any) -->
+                <template is="dom-if" if="{{_hasAttachment(item,'album')}}">
+                  <!-- Shows up to 4 captions of the album -->
+                  <div id="albumContainer">
+                    <div id="album_title_container">
+                      <a href="{{item.object.attachments.0.url}}" id="album_title" target="_blank">
+                        <iron-icon class="media_icon" icon="image:photo-album"></iron-icon>
+                        {{item.object.attachments.0.displayName}}
+                      </a>
+                    </div>
+
+                    <!-- Album Layout -->
+                    <div class="horizontal layout wrap" style="width:380px">
+                      <!-- Main photo -->
+                      <template is="dom-if" if="{{item.object.attachments.0.thumbnails.0.url}}">
+                        <a href="{{item.object.attachments.0.thumbnails.0.url}}" target="_blank">
+                          <div class=" album_caption"
+                          style$="background-image: url('{{item.object.attachments.0.thumbnails.0.image.url}}');
+                          height:{{_getCaptionDimensions(0,item)}};
+                          width:{{_getCaptionDimensions(0,item)}};" >
+                        </div>
+                      </a>
+                    </template>
+
+                    <!-- Secondary photo(s) -->
+                    <div class="vertical layout secondary imgContainer">
+                      <!-- Second photo (if any) -->
+                      <template is="dom-if" if="{{item.object.attachments.0.thumbnails.1.url}}">
+                        <a href="{{item.object.attachments.0.thumbnails.1.url}}" target="_blank">
+                          <div class="album_caption"
+                          style$="background-image: url('{{item.object.attachments.0.thumbnails.1.image.url}}');
+                          height:{{_getCaptionDimensions(1,item)}};
+                          width:{{_getCaptionDimensions(1,item)}};">
+                        </div>
+                      </a>
+                    </template>
+
+                    <!-- Third photo (if any) -->
+                    <template is="dom-if" if="{{item.object.attachments.0.thumbnails.2.url}}">
+                      <a href="{{item.object.attachments.0.thumbnails.2.url}}" target="_blank">
+                        <div class="album_caption"
+                        style$="background-image: url('{{item.object.attachments.0.thumbnails.2.image.url}}');
+                        height:{{_getCaptionDimensions(2,item)}};
+                        width:{{_getCaptionDimensions(2,item)}};">
+                      </div>
+                    </a>
+                  </template>
+
+                  <!-- Fourth photo (if any) -->
+                  <template is="dom-if" if="{{item.object.attachments.0.thumbnails.3.url}}">
+                    <a href="{{item.object.attachments.0.thumbnails.3.url}}" target="_blank">
+                      <div class="album_caption"
+                      style$="background-image: url('{{item.object.attachments.0.thumbnails.3.image.url}}');
+                      height:{{_getCaptionDimensions(3,item)}};
+                      width:{{_getCaptionDimensions(3,item)}};">
+                    </div>
+                  </a>
+                </template>
+              </div>
+            </div>
+          </div>
+        </template>
+      </template>
+
+      <!-- FOOTER: info about #+1's and #replies to the post -->
+      <div id="likeContainer">
+        <!-- #Plus to the post-->
+        <iron-icon class="share_icon" icon="add"></iron-icon>
+        <span id="stats_count">{{item.object.plusoners.totalItems}}</span>
+        <!-- #Replies to the post-->
+        <iron-icon class="share_icon" icon="reply"></iron-icon>
+        <span id="stats_count">{{item.object.replies.totalItems}}</span>
+        <!-- #Shares of the post-->
+        <iron-icon class="share_icon" icon="social:share"></iron-icon>
+        <span id="stats_count">{{item.object.resharers.totalItems}}</span>
+      </div>
+
+    </div> <!-- END OF POST -->
+  </paper-material>
+</template>
+<!-- "Load More" button -->
+
+<div on-click="_loadMorePosts" class="horizontal center-justified layout" id="loadMoreDiv" hidden>
+  <paper-button id="loadMoreButton">{{language_data.load_more}}</paper-button>
+</div>
 
 <template is="dom-if" if="{{loading}}">
   <div class="loading" id="loadingGif">
