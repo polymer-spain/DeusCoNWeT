@@ -214,104 +214,104 @@ a:hover{
     font-weight: bold;
 }
 /*.post:hover #article_title{
+color: #1976D2;
+}*/
+.post:hover #original-post-link{
     color: #1976D2;
-    }*/
-    .post:hover #original-post-link{
-        color: #1976D2;
-    }
-    #share_details{
-        padding-left: 15px;
-        padding-bottom: 5px;
-    }
-    #share_details a{
-        color: black;
-        text-decoration: none;
-    }
-    #share_details a:hover{
-        text-decoration: underline;
-    }
-    /* Album and caption styles */
-    #album_title_container{
-        padding-bottom: 5px;
-    }
-    #album_title{
-        font: normal 14px Roboto,arial,sans-serif;
-        color: #404040;
-        padding-bottom: 10px;
-    }
-    #album_title:hover{
-        color: #1976D2;
-        font-size: 14px;
-        text-decoration: underline;
-        cursor: auto;
-    }
-    #albumContainer{
-        padding: 0px 15px 15px 15px;
-    }
-    .imgContainer{
-        margin: 0px;
-        padding: 0px;
-        border: 0px;
-    }
-    .album_caption{
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        margin: 0px;
-        border: 1px;
-        border-style: solid;
-        color: white;
-        font-weight: bold;
-    }
-    /* Button styles */
-    #loadMoreDiv{
-        padding-bottom: 10px;
-    }
-    #loadMoreButton{
-        background-color: #BDBDBD;
-        padding-bottom: 10px;
-        font-weight: bold;
-    }
-    /* Post Footer styles */
-    #stats_count{
-        color: var(--google-grey-700);
-        /*margin-top: 10px;
-        margin-bottom: 10px;*/
-        font-weight: bold;
-        font-size: 15px;
-        padding-right: 10px;
-        padding-left: 3px;
-    }
-    .share_icon{
-        width: 15px;
-        height: 15px;
-        padding-left: 10px;
-    }
-    #likeContainer span {
-        vertical-align: -1px;
-        margin-left: -5px;
-        margin-top: 20px;
-    }
-    #loadingGif{
-        margin-top:10%;
-        text-align: center;
-    }
-    </style>
-    <template id="template">
-        <iron-ajax
-        id="requestFollowing"
-        url="https://www.googleapis.com/plus/v1/people/me/people/visible"
-        method="GET"
-        handleAs='json'
-        on-response="_responseFollowings"
-        >
-    </iron-ajax>
-
+}
+#share_details{
+    padding-left: 15px;
+    padding-bottom: 5px;
+}
+#share_details a{
+    color: black;
+    text-decoration: none;
+}
+#share_details a:hover{
+    text-decoration: underline;
+}
+/* Album and caption styles */
+#album_title_container{
+    padding-bottom: 5px;
+}
+#album_title{
+    font: normal 14px Roboto,arial,sans-serif;
+    color: #404040;
+    padding-bottom: 10px;
+}
+#album_title:hover{
+    color: #1976D2;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: auto;
+}
+#albumContainer{
+    padding: 0px 15px 15px 15px;
+}
+.imgContainer{
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+}
+.album_caption{
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin: 0px;
+    border: 1px;
+    border-style: solid;
+    color: white;
+    font-weight: bold;
+}
+/* Button styles */
+#loadMoreDiv{
+    padding-bottom: 10px;
+}
+#loadMoreButton{
+    background-color: #BDBDBD;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+/* Post Footer styles */
+#stats_count{
+    color: var(--google-grey-700);
+    /*margin-top: 10px;
+    margin-bottom: 10px;*/
+    font-weight: bold;
+    font-size: 15px;
+    padding-right: 10px;
+    padding-left: 3px;
+}
+.share_icon{
+    width: 15px;
+    height: 15px;
+    padding-left: 10px;
+}
+#likeContainer span {
+    vertical-align: -1px;
+    margin-left: -5px;
+    margin-top: 20px;
+}
+#loadingGif{
+    margin-top:10%;
+    text-align: center;
+}
+</style>
+<template id="template">
     <iron-ajax
-    id="requestPosts"
+    id="requestFollowing"
+    url="https://www.googleapis.com/plus/v1/people/me/people/visible"
     method="GET"
     handleAs='json'
-    on-response="_responsePosts"
+    on-response="_responseFollowings"
     >
+</iron-ajax>
+
+<iron-ajax
+id="requestPosts"
+method="GET"
+handleAs='json'
+on-response="_responsePosts"
+>
 </iron-ajax>
 
 <paper-header-panel mode="waterfall" class="red">
@@ -359,10 +359,10 @@ a:hover{
                             width="380px" height="285px" ><google-youtube> -->
                             <div class="attachment_box_container horizontal layout center-center">
                                 <a id="video_title" href="{{item.object.attachments.0.url}}" target="_blank">
-                                        <iron-icon class="media_icon" icon="av:play-arrow"></iron-icon>
-                                        {{item.object.attachments.0.displayName}}
-                                        <!-- <p id="article_subtitle"> {{item.object.attachments.0.content}} </p> -->
-                                    </a>
+                                    <iron-icon class="media_icon" icon="av:play-arrow"></iron-icon>
+                                    {{item.object.attachments.0.displayName}}
+                                    <!-- <p id="article_subtitle"> {{item.object.attachments.0.content}} </p> -->
+                                </a>
                                 <a href="{{item.object.attachments.0.url}}" target="_blank">
                                     <img id="video_caption" src="{{item.object.attachments.0.image.url}}">
                                 </a>
@@ -491,356 +491,508 @@ a:hover{
 
 <script>
 
-    Polymer({
+Polymer({
 
-        is: 'googleplus-timeline',
+    is: 'googleplus-timeline',
 
-        properties: {
-            /**
-            * Describes the api-key of the application
-            *
-            * @type {{name: string}}
-            */
-            token: {
-                type: String,
-                reflectToAttribute: true,
-                notify: true
-            },
-            //Posts that will be displayed on the component
-            timeline_posts: {
-                type: Array,
-                value: []
-            },
-            //Represents the post retrieved for any user that cannot
-            //be displayed on the current page of the component
-            next_timeline_posts: {
-                type: Object,
-                value: []
-            },
-            page_timestamp: {
-                type: Number,
-                value: 0
-            },
-            //Represents the desired range of time that will cover a specific page
-            // (one month = 2678400000 millis)
-            millis_range_timestamp: {
-                type: Number,
-                value: 604800000 //One week
-            },
-            /* Object that holds a list of object about the actual page
-            the post list nextpage to obtain about every user that the logged in user follows
-            Also stores other necessary field like the timestamp of the last post retrieved
-            Elements:
-            - author: G+ user id, author of posts
-            - displayName: human readable identifier for the user
-            - timestamp: timestamp of the first post in the page-
-            - nextPageToken: identifier for the next page of post list retrieved by the API
-            */
-            last_retrieved_page: {
-                type: Object,
-                value: []
-            },
-            user_followings: {
-                type: Object,
-                value: []
-            },
-            //Auxiliar param to check if there are new posts loaded when the user wants to see another page of posts
-            post_added_per_page: {
-                type: Number,
-                value: 0
-            },
-            language: {
-                type: String,
-                value: '',
-                notify: true,
-                reflectToAttribute: true,
-                observer: "_languageChanged"
-            },
-            language_en: {
-                type: Object,
-                value: {
-                    "load_more": "Load More",
-                    "shared_first": "has shared first: ",
-                    "months": ["January", "February", "March", "April", "May", "June", "July", "August",
-                    "September", "October", "November", "December"],
-                    "sec": "second",
-                    "secs": "seconds",
-                    "min": "minute",
-                    "mins": "minutes",
-                    "hour": "hour",
-                    "hours": "hours",
-                    "day": "day",
-                    "days":"days",
-                    "user": "User"
-                }
-            },
-            language_es: {
-                type: Object,
-                value: {
-                    "load_more": "Cargar más",
-                    "shared_first": "ha compartido primero: ",
-                    "months": ["enero","febrero","marzo","abril", "mayo","junio","julio","agosto","septiembre",
-                    "octubre","noviembre","diciembre"],
-                    "sec": "segundo",
-                    "secs": "segundos",
-                    "min": "minuto",
-                    "mins": "minutos",
-                    "hour": "hora",
-                    "hours": "horas",
-                    "day": "día",
-                    "days":"días",
-                    "user": "Usuario"
-                }
-            },
-            language_data: {
-                type: Object,
-                value: []
-            },
-            accuracyProbability: {
-                type: Number,
-                value: 15,
-                reflectToAttribute: true,
-                notify: true
+    properties: {
+        /**
+        * Describes the api-key of the application
+        *
+        * @type {{name: string}}
+        */
+        token: {
+            type: String,
+            reflectToAttribute: true,
+            notify: true
+        },
+        //Posts that will be displayed on the component
+        timeline_posts: {
+            type: Array,
+            value: []
+        },
+        //Represents the post retrieved for any user that cannot
+        //be displayed on the current page of the component
+        next_timeline_posts: {
+            type: Object,
+            value: []
+        },
+        page_timestamp: {
+            type: Number,
+            value: 0
+        },
+        //Represents the desired range of time that will cover a specific page
+        // (one month = 2678400000 millis)
+        millis_range_timestamp: {
+            type: Number,
+            value: 604800000 //One week
+        },
+        /* Object that holds a list of object about the actual page
+        the post list nextpage to obtain about every user that the logged in user follows
+        Also stores other necessary field like the timestamp of the last post retrieved
+        Elements:
+        - author: G+ user id, author of posts
+        - displayName: human readable identifier for the user
+        - timestamp: timestamp of the first post in the page-
+        - nextPageToken: identifier for the next page of post list retrieved by the API
+        */
+        last_retrieved_page: {
+            type: Object,
+            value: []
+        },
+        user_followings: {
+            type: Object,
+            value: []
+        },
+        //Auxiliar param to check if there are new posts loaded when the user wants to see another page of posts
+        post_added_per_page: {
+            type: Number,
+            value: 0
+        },
+        language: {
+            type: String,
+            value: '',
+            notify: true,
+            reflectToAttribute: true,
+            observer: "_languageChanged"
+        },
+        language_en: {
+            type: Object,
+            value: {
+                "load_more": "Load More",
+                "shared_first": "has shared first: ",
+                "months": ["January", "February", "March", "April", "May", "June", "July", "August",
+                "September", "October", "November", "December"],
+                "sec": "second",
+                "secs": "seconds",
+                "min": "minute",
+                "mins": "minutes",
+                "hour": "hour",
+                "hours": "hours",
+                "day": "day",
+                "days":"days",
+                "user": "User"
             }
         },
-
-        //Functions that add Accuracy defects (user testing purposes)
-        probability: function(probability){
-            if (probability > 100 || probability < 0 ) {
-                throw "Error: probability must be between 0 and 100"
+        language_es: {
+            type: Object,
+            value: {
+                "load_more": "Cargar más",
+                "shared_first": "ha compartido primero: ",
+                "months": ["enero","febrero","marzo","abril", "mayo","junio","julio","agosto","septiembre",
+                "octubre","noviembre","diciembre"],
+                "sec": "segundo",
+                "secs": "segundos",
+                "min": "minuto",
+                "mins": "minutos",
+                "hour": "hora",
+                "hours": "horas",
+                "day": "día",
+                "days":"días",
+                "user": "Usuario"
             }
-            var number = Math.random();
-            number = Math.trunc(number*100);
-            if (number < probability) {
-                return true;
-            } else {
-                return false;
-            }
         },
+        language_data: {
+            type: Object,
+            value: []
+        },
+        accuracyProbability: {
+            type: Number,
+            value: 15,
+            reflectToAttribute: true,
+            notify: true
+        }
+    },
 
-        _changeUserId: function(item) {
-            userId = item.actor.displayName;
-            if(this.probability(this.accuracyProbability))
-            userId = this.language_data.user;
-            return userId;
-        },
-        _changeText: function(item) {
-            var text = item.object.content;
-            if(this.probability(this.accuracyProbability))
-            text = 'Text fail';
-            return text;
-        },
-        _responseFollowings: function(event, detail){
-            //We generate an ajax request to get the post published by the authenticated user
-            this.push('user_followings', "me");
-            this.$.requestPosts.setAttribute("url", this._getRequestPostsURL("me"));
+    //Functions that add Accuracy defects (user testing purposes)
+    probability: function(probability){
+        if (probability > 100 || probability < 0 ) {
+            throw "Error: probability must be between 0 and 100"
+        }
+        var number = Math.random();
+        number = Math.trunc(number*100);
+        if (number < probability) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    _changeUserId: function(item) {
+        userId = item.actor.displayName;
+        if(this.probability(this.accuracyProbability))
+        userId = this.language_data.user;
+        return userId;
+    },
+    _changeText: function(item) {
+        var text = item.object.content;
+        if(this.probability(this.accuracyProbability))
+        text = 'Text fail';
+        return text;
+    },
+    _responseFollowings: function(event, detail){
+        //We generate an ajax request to get the post published by the authenticated user
+        this.push('user_followings', "me");
+        this.$.requestPosts.setAttribute("url", this._getRequestPostsURL("me"));
+        this.$.requestPosts.generateRequest();
+        //We generate an ajax request for each user that the authenticated user follows
+        for (i=0;i<detail.response.items.length;i++) {
+            user_id = detail.response.items[i].id;
+            //We add the user_id to an auxiliar structure
+            this.push('user_followings', user_id);
+            this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
             this.$.requestPosts.generateRequest();
-            //We generate an ajax request for each user that the authenticated user follows
-            for (i=0;i<detail.response.items.length;i++) {
-                user_id = detail.response.items[i].id;
-                //We add the user_id to an auxiliar structure
-                this.push('user_followings', user_id);
-                this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
-                this.$.requestPosts.generateRequest();
-            }
-        },
+        }
+    },
 
-        _getRequestPostsURL: function(user_id){
-            return "https://www.googleapis.com/plus/v1/people/" + user_id + "/activities/public";
-        },
+    _getRequestPostsURL: function(user_id){
+        return "https://www.googleapis.com/plus/v1/people/" + user_id + "/activities/public";
+    },
 
-        _updateLastRetrievedPage: function(current_user_page){
-            // We add the timestamp of the last post retrieved along with its author to an auxiliary variable
-            found = false;
-            for(i=0; i < this.last_retrieved_page.length && !found;i++){
-                if(this.last_retrieved_page[i].author === current_user_page.author){
-                    found = true;
-                    //If there aren't new pages to be obtained for the user, we don't track it anymore
-                    if(typeof (current_user_page.nextPageToken) == 'undefined'){
-                        this.splice('last_retrieved_page', i, 1);
-                    }
-                    else{
-                        this.set('last_retrieved_page.' + i + '.timestamp', current_user_page.timestamp);
-                        this.set('last_retrieved_page.' + i + '.nextPageToken', current_user_page.nextPageToken);
-                    }
+    _updateLastRetrievedPage: function(current_user_page){
+        // We add the timestamp of the last post retrieved along with its author to an auxiliary variable
+        found = false;
+        for(i=0; i < this.last_retrieved_page.length && !found;i++){
+            if(this.last_retrieved_page[i].author === current_user_page.author){
+                found = true;
+                //If there aren't new pages to be obtained for the user, we don't track it anymore
+                if(typeof (current_user_page.nextPageToken) == 'undefined'){
+                    this.splice('last_retrieved_page', i, 1);
+                }
+                else{
+                    this.set('last_retrieved_page.' + i + '.timestamp', current_user_page.timestamp);
+                    this.set('last_retrieved_page.' + i + '.nextPageToken', current_user_page.nextPageToken);
                 }
             }
-            if(!found && (typeof current_user_page.nextPageToken) != 'undefined')
-            this.push('last_retrieved_page' ,current_user_page);
-        },
+        }
+        if(!found && (typeof current_user_page.nextPageToken) != 'undefined')
+        this.push('last_retrieved_page' ,current_user_page);
+    },
 
-        _obtainNextPagePost: function (user_id, last_post_timestamp, last_post_nextPageToken){
-            // We check if the last user post returned is previous to the page_timestamp
-            // (posts that will be displayed on the current displayed page)
-            // If it is, we'll request the following post from the user until we've reached the reference timestamp for the actual "page"
-            // that displays the component
-            if(last_post_timestamp > this.page_timestamp && (typeof last_post_nextPageToken) != 'undefined'){
-                //We set the next page param in the next request
-                request_params = {"pageToken": last_post_nextPageToken};
-                this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
-                this.$.requestPosts.setAttribute("params", JSON.stringify(request_params));
-                this.$.requestPosts.generateRequest();
+    _obtainNextPagePost: function (user_id, last_post_timestamp, last_post_nextPageToken){
+        // We check if the last user post returned is previous to the page_timestamp
+        // (posts that will be displayed on the current displayed page)
+        // If it is, we'll request the following post from the user until we've reached the reference timestamp for the actual "page"
+        // that displays the component
+        if(last_post_timestamp > this.page_timestamp && (typeof last_post_nextPageToken) != 'undefined'){
+            //We set the next page param in the next request
+            request_params = {"pageToken": last_post_nextPageToken};
+            this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
+            this.$.requestPosts.setAttribute("params", JSON.stringify(request_params));
+            this.$.requestPosts.generateRequest();
+        }
+    },
+
+    //Function _updateTimelinePosts: Check if the post was published inside the period of time
+    // of post expected to be shown by the component
+    _updateTimelinePosts: function(user_post){
+        // If the post was published inside the period fixed for the page, we add it to the
+        // list of post that are being showed to the user
+        user_post.actor.displayName =  this._changeUserId(user_post);
+        user_post.object.content = this._changeText(user_post);
+        if(user_post.published >= this.page_timestamp){
+            this.push('timeline_posts', user_post);
+            console.log('Añadimos : ', user_post);
+            //We increment the var that represents the posts displayed per page
+            this.post_added_per_page++;
+        }
+        // If the post was published previously, we insert it onto an auxiliar object
+        //that holds the components that will be shown in the next pages
+        else{
+            this.push('next_timeline_posts', user_post);
+        }
+    },
+
+    _responsePosts: function(event, detail){
+        // We reset the params field for the next request of requestPost iron-ajax
+        this.$.requestPosts.setAttribute("params", '{}');
+        this.$.loadMoreDiv.removeAttribute('hidden');
+        this.$.loadingGif.setAttribute('hidden',true);
+
+        //Appends all user posts to the user timeline
+        user_posts = detail.response.items;
+        // If the user hasn't posted anything yet, we just ignore it
+        if(user_posts.length != 0){
+            for(i=0; i< user_posts.length; i++){
+                //We transform timestamps to a more manageable format of every post received (published and updated fields)
+                user_posts[i] = this._changeTime(user_posts[i]);
+                // We insert the post into the timeline that holds all posts that will be displayed to the user
+                // (If the published date for the post is in the period of time that shows the actual page of the component)
+                this._updateTimelinePosts(user_posts[i]);
             }
-        },
 
-        //Function _updateTimelinePosts: Check if the post was published inside the period of time
-        // of post expected to be shown by the component
-        _updateTimelinePosts: function(user_post){
-            // If the post was published inside the period fixed for the page, we add it to the
-            // list of post that are being showed to the user
-            user_post.actor.displayName =  this._changeUserId(user_post);
-            user_post.object.content = this._changeText(user_post);
-            if(user_post.published >= this.page_timestamp){
-                this.push('timeline_posts', user_post);
-		console.log('Añadimos : ', user_post);
-                //We increment the var that represents the posts displayed per page
-                this.post_added_per_page++;
-            }
-            // If the post was published previously, we insert it onto an auxiliar object
-            //that holds the components that will be shown in the next pages
-            else{
-                this.push('next_timeline_posts', user_post);
-            }
-        },
+            current_page_details = { "author": user_posts[user_posts.length-1].actor.id,
+            "displayName": user_posts[user_posts.length-1].actor.displayName,
+            "timestamp": user_posts[user_posts.length-1].published,
+            "nextPageToken": detail.response.nextPageToken};
 
-        _responsePosts: function(event, detail){
-            // We reset the params field for the next request of requestPost iron-ajax
-            this.$.requestPosts.setAttribute("params", '{}');
-            this.$.loadMoreDiv.removeAttribute('hidden');
-            this.$.loadingGif.setAttribute('hidden',true);
+            //We update the param that holds the relative fields about the last post retrieved and basic author info
+            this._updateLastRetrievedPage(current_page_details);
 
-            //Appends all user posts to the user timeline
-            user_posts = detail.response.items;
-            // If the user hasn't posted anything yet, we just ignore it
-            if(user_posts.length != 0){
-                for(i=0; i< user_posts.length; i++){
-                    //We transform timestamps to a more manageable format of every post received (published and updated fields)
-                    user_posts[i] = this._changeTime(user_posts[i]);
-                    // We insert the post into the timeline that holds all posts that will be displayed to the user
-                    // (If the published date for the post is in the period of time that shows the actual page of the component)
-                    this._updateTimelinePosts(user_posts[i]);
-                }
+            // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
 
-                current_page_details = { "author": user_posts[user_posts.length-1].actor.id,
-                "displayName": user_posts[user_posts.length-1].actor.displayName,
-                "timestamp": user_posts[user_posts.length-1].published,
-                "nextPageToken": detail.response.nextPageToken};
+            this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken);
 
-                //We update the param that holds the relative fields about the last post retrieved and basic author info
-                this._updateLastRetrievedPage(current_page_details);
+        }
+    },
 
-                // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
+    // Element Lifecycle
 
-                this._obtainNextPagePost(current_page_details.author, current_page_details.timestamp, current_page_details.nextPageToken);
+    ready: function() {
+        // `ready` is called after all elements have been configured, but
+        // propagates bottom-up. This element's children are ready, but parents
+        // are not.
+        //
+        // This is the point where you should make modifications to the DOM (when
+        // necessary), or kick off any processes the element wants to perform.
+    },
 
-            }
-        },
+    attached: function() {
+        // `attached` fires once the element and its parents have been inserted
+        // into a document.
+        //
+        // This is a good place to perform any work related to your element's
+        // visual state or active behavior (measuring sizes, beginning animations,
+        // loading resources, etc).
+        if (this.token) {
+            //We set the language
+            if(this.language == "en")
+            this.set('language_data', this.language_en);
+            else if(this.language == "es")
+            this.set('language_data', this.language_es);
+            else if (this.language === '')
+            this.set('language_data'. this.language_en);
 
-        // Element Lifecycle
-
-        ready: function() {
-            // `ready` is called after all elements have been configured, but
-            // propagates bottom-up. This element's children are ready, but parents
-            // are not.
-            //
-            // This is the point where you should make modifications to the DOM (when
-            // necessary), or kick off any processes the element wants to perform.
-        },
-
-        attached: function() {
-            // `attached` fires once the element and its parents have been inserted
-            // into a document.
-            //
-            // This is a good place to perform any work related to your element's
-            // visual state or active behavior (measuring sizes, beginning animations,
-            // loading resources, etc).
-            if (this.token) {
-                //We set the language
-                if(this.language == "en")
-                  this.set('language_data', this.language_en);
-                else if(this.language == "es")
-                  this.set('language_data', this.language_es);
-		else if (this.language === '')
-		  this.set('language_data'. this.language_en);
-
-                //We set the timestamp per page to a specified range of time
-                var actual_tmp = new Date();
-                this.page_timestamp = actual_tmp.getTime() - this.millis_range_timestamp;
-                //We set the headers for the Google API requests
-                headers = {"Authorization": "Bearer " + this.token,
-                "Timing-Allow-origin": "*"};
-                this.$.requestFollowing.setAttribute("headers", JSON.stringify(headers));
-                this.$.requestPosts.setAttribute("headers", JSON.stringify(headers));
-                this.$.requestFollowing.generateRequest();
-            }
-        },
-
-        detached: function() {
-            // The analog to `attached`, `detached` fires when the element has been
-            // removed from a document.
-            //
-            // Use this to clean up anything you did in `attached`.
-        },
-
-        // ACTION FUNCTIONS FOR BUTTONS
-        _refresh_posts: function(){
-            // We update the actual_timestamp param
             //We set the timestamp per page to a specified range of time
             var actual_tmp = new Date();
             this.page_timestamp = actual_tmp.getTime() - this.millis_range_timestamp;
+            //We set the headers for the Google API requests
+            headers = {"Authorization": "Bearer " + this.token,
+            "Timing-Allow-origin": "*"};
+            this.$.requestFollowing.setAttribute("headers", JSON.stringify(headers));
+            this.$.requestPosts.setAttribute("headers", JSON.stringify(headers));
+            this.$.requestFollowing.generateRequest();
+        }
+    },
 
-            // We reset the timeline_post returned previously
-            this.timeline_posts = [];
-            this.next_timeline_posts = [];
+    detached: function() {
+        // The analog to `attached`, `detached` fires when the element has been
+        // removed from a document.
+        //
+        // Use this to clean up anything you did in `attached`.
+    },
 
-            //We generate an ajax request for each user that the authenticated user follows
-            for (i=0;i<this.user_followings.length;i++) {
-                user_id = this.user_followings[i];
-                this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
-                this.$.requestPosts.generateRequest();
+    // ACTION FUNCTIONS FOR BUTTONS
+    _refresh_posts: function(){
+        // We update the actual_timestamp param
+        //We set the timestamp per page to a specified range of time
+        var actual_tmp = new Date();
+        this.page_timestamp = actual_tmp.getTime() - this.millis_range_timestamp;
+
+        // We reset the timeline_post returned previously
+        this.timeline_posts = [];
+        this.next_timeline_posts = [];
+
+        //We generate an ajax request for each user that the authenticated user follows
+        for (i=0;i<this.user_followings.length;i++) {
+            user_id = this.user_followings[i];
+            this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
+            this.$.requestPosts.generateRequest();
+        }
+    },
+
+    _loadMorePosts: function () {
+        // We decrement the page_timestamp (we will show posts from a longer published date)
+        this.set('page_timestamp', this.page_timestamp - this.millis_range_timestamp);
+        //We reset the post added per page counter
+        this.post_added_per_page = 0;
+        // First, we search for posts suitable to be shown in the auxiliar object
+        // of posts not shown from previous requests
+        user_post = {}
+        i = 0;
+        while(i < this.next_timeline_posts.length){
+            user_post = this.next_timeline_posts[i];
+            if(user_post.published >= this.page_timestamp){
+                this.push('timeline_posts', user_post);
+                this.splice('next_timeline_posts', i, 1);
+                this.post_added_per_page++;
+            }else
+            i++;
+        }
+
+        //Then, we check if we have all the posts of every user in the desired range of time
+        last_post_details = {};
+        for(i=0; i<this.last_retrieved_page.length; i++){
+            // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
+            last_post_details = this.last_retrieved_page[i];
+            this._obtainNextPagePost(last_post_details.author, last_post_details.timestamp, last_post_details.nextPageToken);
+        }
+
+        //We execute recursively the function if we haven't displayed any post in the current page
+        if(this.post_added_per_page<5 && (this.last_retrieved_page.length != 0 || this.next_timeline_posts.length != 0)){
+            this._loadMorePosts();
+        }
+    },
+
+    // AUXILIAR FUNCTIONS
+    /**
+    * Convert a given posts timestamp of post lists to a human readable date
+    *
+    */
+    _changeTime: function(post){
+        updated_post = post;
+        var date = new Date(post.published);
+        var updated_date = new Date(post.updated)
+        var current_date = new Date();
+        var time;
+        var month = this.language_data.months;
+        /* Years*/
+        if ((current_date.getFullYear() - date.getFullYear()) != 0) {
+            var dif = current_date.getFullYear() - date.getFullYear()
+            time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+            /* Months */
+        } else if ((current_date.getMonth() - date.getMonth()) != 0) {
+            var dif = current_date.getMonth() - date.getMonth();
+            time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+            /* Days */
+        } else if((current_date.getDate() - date.getDate()) == 0 ){
+            if((current_date.getHours() - date.getHours()) == 0 ){
+                if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
+                    time = current_date.getSeconds() - date.getSeconds();
+                    time += time == 1? " " + this.language_data.sec : " " + this.language_data.secs;
+                }
+                else{
+                    time = current_date.getMinutes() - date.getMinutes();
+                    time += time == 1? " " + this.language_data.min: " " + this.language_data.mins;
+                }
             }
-        },
-
-        _loadMorePosts: function () {
-            // We decrement the page_timestamp (we will show posts from a longer published date)
-            this.set('page_timestamp', this.page_timestamp - this.millis_range_timestamp);
-            //We reset the post added per page counter
-            this.post_added_per_page = 0;
-            // First, we search for posts suitable to be shown in the auxiliar object
-            // of posts not shown from previous requests
-            user_post = {}
-            i = 0;
-            while(i < this.next_timeline_posts.length){
-                user_post = this.next_timeline_posts[i];
-                if(user_post.published >= this.page_timestamp){
-                    this.push('timeline_posts', user_post);
-                    this.splice('next_timeline_posts', i, 1);
-                    this.post_added_per_page++;
-                }else
-                i++;
+            else{
+                if (current_date.getHours() - date.getHours() == 1) {
+                    time = current_date.getHours() - date.getHours();
+                    time += " " + this.language_data.hour;
+                }else {
+                    time = current_date.getHours() - date.getHours();
+                    time += " " + this.language_data.hours;
+                }
             }
-
-            //Then, we check if we have all the posts of every user in the desired range of time
-            last_post_details = {};
-            for(i=0; i<this.last_retrieved_page.length; i++){
-                // We obtain the next page for the user_posts, in order to obtain all the post in a given period (specified by page_timestamp)
-                last_post_details = this.last_retrieved_page[i];
-                this._obtainNextPagePost(last_post_details.author, last_post_details.timestamp, last_post_details.nextPageToken);
+        }
+        else if( ((current_date.getDate() - date.getDate()) < 8) && ( (current_date.getDate() - date.getDate()) > 0)){
+            if( (current_date.getDate() - date.getDate()) == 1){
+                time = current_date.getDate() - date.getDate();
+                time += " " + this.language_data.day;
             }
-
-            //We execute recursively the function if we haven't displayed any post in the current page
-            if(this.post_added_per_page<5 && (this.last_retrieved_page.length != 0 || this.next_timeline_posts.length != 0)){
-                this._loadMorePosts();
+            else{
+                time = current_date.getDate() - date.getDate();
+                time += " " + this.language_data.days;
             }
-        },
+        }
+        else{
+            time = date.getDate()+ " " + month[date.getMonth()] + " " + date.getFullYear();
+        }
+        // We change the timestamps to millis UTC and we create a field that represents the published
+        // date in a readably format
+        updated_post.published_pretty = time;
+        updated_post.published = date.getTime();
+        updated_post.updated= updated_date.getTime();
+        return updated_post;
+    },
 
-        // AUXILIAR FUNCTIONS
-        /**
-        * Convert a given posts timestamp of post lists to a human readable date
-        *
-        */
-        _changeTime: function(post){
-            updated_post = post;
+    _sortPosts: function(post1, post2) {
+        if (post1.published == post2.published)
+        return 0;
+        else
+        return post1.published > post2.published ? -1 : 1;
+    },
+
+    // AUXILIAR FUNCTIONS FOR DOM-IF CONDITIONS
+
+
+    _thereArePosts: function(value){
+        // Checks if there are remaining posts to be displayed
+        var thereAre = this.timeline_posts && this.timeline_posts.length > 0
+        return value == 'true' ? thereAre :!thereAre;
+    },
+
+    _hasAttachment: function(item, attachmentType){
+        return item.object.attachments[0].objectType === attachmentType;
+    },
+
+    _hasVideoAttachment: function(item){
+        return item.object.attachments[0].objectType === 'video'
+        && item.object.attachments[0].hasOwnProperty('embed');
+    },
+
+    _hasArticleCaption: function(item){
+        return item.object.attachments[0].image.url && item.object.attachments[0].image.width > 360;
+    },
+
+    _isSharedPost: function(item){
+        return item.verb === "share";
+    },
+
+    /* Function getYoutubeVideoId: obtain the youtube video id from an url
+    corresponding to the embed video link that returns Google+ API for a
+    video attachment.
+    */
+    // _getYoutubeVideoId: function (youtube_embed_url){
+    //   splitted_url = youtube_embed_url.split("/");
+    //   // We remove the query params that may appear on the youtube embed url
+    //   video_id = splitted_url[4].split("?");
+    //   return video_id[0];
+    // },
+
+    /* Function _getCaptionDimensions: Adjusts the dimensions of album captions.
+    Given an index inside the album caption List, the function returns a fixed
+    dimension, depending of the image role in the camption collage (main, secondary) */
+    _getCaptionDimensions: function(image_index,item){
+        dimension = "0px";
+        main_photo = (image_index == 0);
+        album_captions_length = item.object.attachments[0].thumbnails.length;
+        if(main_photo){
+            switch(album_captions_length){
+                case 1:
+                dimension = "300px";
+                break;
+                case 2:
+                dimension = "173px";
+                break;
+                case 3:
+                dimension = "200px";
+                break;
+                case 4:
+                dimension = "262px";
+                break;
+                default: /* More than 4 photos*/
+                /* We only show 4 captions of the album, so the main photo will have the same dimension
+                as the previous case */
+                dimension = "262px";
+            }
+        }else{
+            switch(album_captions_length){
+                case 1:
+                dimension = "0px";
+                break;
+                case 2:
+                dimension = "173px";
+                break;
+                case 3:
+                dimension = "100px";
+                break;
+                case 4:
+                dimension = "86px";
+                break;
+                default: /* More than 4 photos*/
+                /* We only show 4 captions of the album, so the secondary photos will have the same dimension
+                as the previous case */
+                dimension = "86px";
+            }
+        }
+        return dimension;
+    },
+    _updateLanguage: function(){
+        for (var i=0;i<this.timeline_posts.length;i++) {
+            updated_post = this.timeline_posts[i];
+            post = this.timeline_posts[i];
             var date = new Date(post.published);
             var updated_date = new Date(post.updated)
             var current_date = new Date();
@@ -891,174 +1043,22 @@ a:hover{
             }
             // We change the timestamps to millis UTC and we create a field that represents the published
             // date in a readably format
-            updated_post.published_pretty = time;
-            updated_post.published = date.getTime();
-            updated_post.updated= updated_date.getTime();
-            return updated_post;
-        },
-
-        _sortPosts: function(post1, post2) {
-            if (post1.published == post2.published)
-            return 0;
-            else
-            return post1.published > post2.published ? -1 : 1;
-        },
-
-        // AUXILIAR FUNCTIONS FOR DOM-IF CONDITIONS
-
-
-        _thereArePosts: function(value){
-            // Checks if there are remaining posts to be displayed
-            var thereAre = this.timeline_posts && this.timeline_posts.length > 0
-            return value == 'true' ? thereAre :!thereAre;
-        },
-
-        _hasAttachment: function(item, attachmentType){
-            return item.object.attachments[0].objectType === attachmentType;
-        },
-
-        _hasVideoAttachment: function(item){
-            return item.object.attachments[0].objectType === 'video'
-            && item.object.attachments[0].hasOwnProperty('embed');
-        },
-
-        _hasArticleCaption: function(item){
-            return item.object.attachments[0].image.url && item.object.attachments[0].image.width > 360;
-        },
-
-        _isSharedPost: function(item){
-            return item.verb === "share";
-        },
-
-        /* Function getYoutubeVideoId: obtain the youtube video id from an url
-        corresponding to the embed video link that returns Google+ API for a
-        video attachment.
-        */
-        // _getYoutubeVideoId: function (youtube_embed_url){
-            //   splitted_url = youtube_embed_url.split("/");
-            //   // We remove the query params that may appear on the youtube embed url
-            //   video_id = splitted_url[4].split("?");
-            //   return video_id[0];
-            // },
-
-            /* Function _getCaptionDimensions: Adjusts the dimensions of album captions.
-            Given an index inside the album caption List, the function returns a fixed
-            dimension, depending of the image role in the camption collage (main, secondary) */
-            _getCaptionDimensions: function(image_index,item){
-                dimension = "0px";
-                main_photo = (image_index == 0);
-                album_captions_length = item.object.attachments[0].thumbnails.length;
-                if(main_photo){
-                    switch(album_captions_length){
-                        case 1:
-                        dimension = "300px";
-                        break;
-                        case 2:
-                        dimension = "173px";
-                        break;
-                        case 3:
-                        dimension = "200px";
-                        break;
-                        case 4:
-                        dimension = "262px";
-                        break;
-                        default: /* More than 4 photos*/
-                        /* We only show 4 captions of the album, so the main photo will have the same dimension
-                        as the previous case */
-                        dimension = "262px";
-                    }
-                }else{
-                    switch(album_captions_length){
-                        case 1:
-                        dimension = "0px";
-                        break;
-                        case 2:
-                        dimension = "173px";
-                        break;
-                        case 3:
-                        dimension = "100px";
-                        break;
-                        case 4:
-                        dimension = "86px";
-                        break;
-                        default: /* More than 4 photos*/
-                        /* We only show 4 captions of the album, so the secondary photos will have the same dimension
-                        as the previous case */
-                        dimension = "86px";
-                    }
-                }
-                return dimension;
-            },
-	    _updateLanguage: function(){
-for (var i=0;i<this.timeline_posts.length;i++) {
-  updated_post = this.timeline_posts[i];
-  post = this.timeline_posts[i];
-  var date = new Date(post.published);
-  var updated_date = new Date(post.updated)
-  var current_date = new Date();
-  var time;
-  var month = this.language_data.months;
-  /* Years*/
-  if ((current_date.getFullYear() - date.getFullYear()) != 0) {
-    var dif = current_date.getFullYear() - date.getFullYear()
-    time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
-  /* Months */
-  } else if ((current_date.getMonth() - date.getMonth()) != 0) {
-    var dif = current_date.getMonth() - date.getMonth();
-    time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
-  /* Days */
-  } else if((current_date.getDate() - date.getDate()) == 0 ){
-    if((current_date.getHours() - date.getHours()) == 0 ){
-      if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
-        time = current_date.getSeconds() - date.getSeconds();
-        time += time == 1? " " + this.language_data.sec : " " + this.language_data.secs;
-      }
-      else{
-        time = current_date.getMinutes() - date.getMinutes();
-        time += time == 1? " " + this.language_data.min: " " + this.language_data.mins;
-      }
-    }
-    else{
-      if (current_date.getHours() - date.getHours() == 1) {
-        time = current_date.getHours() - date.getHours();
-        time += " " + this.language_data.hour;
-      }else {
-        time = current_date.getHours() - date.getHours();
-        time += " " + this.language_data.hours;
-      }
-    }
-  }
-  else if( ((current_date.getDate() - date.getDate()) < 8) && ( (current_date.getDate() - date.getDate()) > 0)){
-    if( (current_date.getDate() - date.getDate()) == 1){
-      time = current_date.getDate() - date.getDate();
-      time += " " + this.language_data.day;
-    }
-    else{
-      time = current_date.getDate() - date.getDate();
-      time += " " + this.language_data.days;
-    }
-  }
-  else{
-    time = date.getDate()+ " " + month[date.getMonth()] + " " + date.getFullYear();
-  }
-  // We change the timestamps to millis UTC and we create a field that represents the published
-  // date in a readably format
-    this.set('timeline_posts.' + i + '.published_pretty', time);
-    this.set('timeline_posts.' + i + '.published', date.getTime());
-    this.set('timeline_posts.' + i + '.updated', updated_date.getTime());
-  }
-	    },
-            // OBSERVERS
-            _languageChanged: function(newVal, oldVal){
-                if(newVal === "en"){
-                    this.language = "en";
-                    this.set('language_data', this.language_en);
-                }
-                else if(newVal === "es"){
-                    this.language = "es";
-                    this.set('language_data', this.language_es);
-                }
-		this._updateLanguage();
-            },
-        });
-    </script>
+            this.set('timeline_posts.' + i + '.published_pretty', time);
+            this.set('timeline_posts.' + i + '.published', date.getTime());
+            this.set('timeline_posts.' + i + '.updated', updated_date.getTime());
+        }
+    },
+    // OBSERVERS
+    _languageChanged: function(newVal, oldVal){
+        if(newVal === "en"){
+            this.language = "en";
+            this.set('language_data', this.language_en);
+        }
+        else if(newVal === "es"){
+            this.language = "es";
+            this.set('language_data', this.language_es);
+        }
+        this._updateLanguage();
+    },
+});
+</script>

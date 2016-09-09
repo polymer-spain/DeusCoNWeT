@@ -39,198 +39,198 @@ Example:
 
 <dom-module id="googleplus-timeline">
 
-  <style is="custom-style">
-    :host {
-      display: inline-block;
-      width:  --googleplus-timeline-width: 450px;
-      height:  --googleplus-timeline-height: 450px;
-      min-width: 300px;
-      min-height: 350px;
-      font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      color:#2e2e2e;
-    }
+<style is="custom-style">
+:host {
+  display: inline-block;
+  width:  --googleplus-timeline-width: 450px;
+  height:  --googleplus-timeline-height: 450px;
+  min-width: 300px;
+  min-height: 350px;
+  font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color:#2e2e2e;
+}
 
-    /* Header styles */
-    paper-header-panel {
-      width: 100%;
-      height: 100%;
-      @apply(--shadow-elevation-3dp);
-      border-radius: 8px;
-      background-color: #fff;
-    }
-    div.paper-header {
-      height: 60px;
-      font-size: 20px;
-      text-align: center;
-      line-height: 60px;
-      padding: 0 10px;
-      color: white;
-      transition: height 0.2s;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-      background-color: var(--google-red-500);
-    }
-    div.paper-header iron-icon {
-      border-radius: 5px;
-      width: 40px;
-      height: 40px;
-    }
-    .title {
-      font-weight: bold;
-      font-size: 1.3em;
-    }
+/* Header styles */
+paper-header-panel {
+  width: 100%;
+  height: 100%;
+  @apply(--shadow-elevation-3dp);
+  border-radius: 8px;
+  background-color: #fff;
+}
+div.paper-header {
+  height: 60px;
+  font-size: 20px;
+  text-align: center;
+  line-height: 60px;
+  padding: 0 10px;
+  color: white;
+  transition: height 0.2s;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  background-color: var(--google-red-500);
+}
+div.paper-header iron-icon {
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+}
+.title {
+  font-weight: bold;
+  font-size: 1.3em;
+}
 
-    #refresh_button{
-      float: right;
-      margin-top: 8px;
-    }
-    /* Post styles */
-    .post {
-      min-height: 100px;
-      padding: 8px;
-      border-radius: 3px;
-      font-size: 13px;
-      background: rgb(238,238,238);
-      background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(233,233,233,1) 52%, rgba(238,238,238,1) 100%);
-      background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
-      background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
-    }
+#refresh_button{
+  float: right;
+  margin-top: 8px;
+}
+/* Post styles */
+.post {
+  min-height: 100px;
+  padding: 8px;
+  border-radius: 3px;
+  font-size: 13px;
+  background: rgb(238,238,238);
+  background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(233,233,233,1) 52%, rgba(238,238,238,1) 100%);
+  background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+  background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(233,233,233,1) 52%,rgba(238,238,238,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
+}
 
-    .post .content {
-      margin: 10px 3px;
-      background-color:red;
-    }
-    .postShadow{
-      margin: 15px 8px;
-    }
-    paper-button {
-      background-color:#9e9e9e;
-      text-transform: none;
-      color: #444;
-      margin:0;
-      font-size: 14px;
-    }
-    .header .header_text {
-      margin: auto 5px;
-    }
-    .header iron-icon {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 10px;
-    }
-    .header iron-icon /deep/ img {
-      border-radius: 50%;
-    }
-    .header .date {
-      padding-top: 10px;
-    }
+.post .content {
+  margin: 10px 3px;
+  background-color:red;
+}
+.postShadow{
+  margin: 15px 8px;
+}
+paper-button {
+  background-color:#9e9e9e;
+  text-transform: none;
+  color: #444;
+  margin:0;
+  font-size: 14px;
+}
+.header .header_text {
+  margin: auto 5px;
+}
+.header iron-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+.header iron-icon /deep/ img {
+  border-radius: 50%;
+}
+.header .date {
+  padding-top: 10px;
+}
 
-    .header .name{
-      padding-top: 10px;
-    }
+.header .name{
+  padding-top: 10px;
+}
 
-    .header_text{
-      text-decoration: none;
-      color: black;
-      font-weight: bold;
-    }
+.header_text{
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
 
-    a{
-      text-decoration: none;
-      color: black;
-      font-weight: bold;
-    }
+a{
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
 
-    a:hover{
-      color: #1976D2;
-    }
+a:hover{
+  color: #1976D2;
+}
 
-    /* Post content styles */
-    .text{
-      padding: 0px 15px 15px 15px;
-    }
-    /* Attachment styles */
+/* Post content styles */
+.text{
+  padding: 0px 15px 15px 15px;
+}
+/* Attachment styles */
 
-    .media_icon{
-      width: 15px;
-      height: 15px;
-      /*padding-left: 10px;*/
-    }
+.media_icon{
+  width: 15px;
+  height: 15px;
+  /*padding-left: 10px;*/
+}
 
-    #video{
-      padding-bottom: 15px;
-    }
+#video{
+  padding-bottom: 15px;
+}
 
-    .attachment_box_container{
-      border-style: solid;
-      border-width: 1px;
-      border-color: #BDBDBD;
-      margin-bottom: 15px;
-      margin-left: 13px;
-      width: 90%;
-      height: auto;
-    }
-    #video_caption{
-      width: 100px;
-      height: 75px;
-      border: 1px;
-      border-color: #BDBDBD;
-      padding: 3px 3px 0px 3px;
-    }
-    #video_title{
-      font: normal 14px Roboto,arial,sans-serif;
-      margin-top: 0px;
-      margin-bottom: 8px;
-      padding-top: 23px;
-      text-decoration: none;
-      color: #404040;
-      display: inline;
-      float: right;
-      width: 70%;
-      vertical-align: middle;
-    }
-    #video_title:hover{
-      color: #1976D2;
-    }
-    #article_title_container {
-      padding-left: 15px;
-      padding-top: 10px;
-      float: left;
-    }
-    .attached_photo{
-      width: 90%;
-      height: auto;
-      padding: 0px 15px 15px 15px;
-    }
+.attachment_box_container{
+  border-style: solid;
+  border-width: 1px;
+  border-color: #BDBDBD;
+  margin-bottom: 15px;
+  margin-left: 13px;
+  width: 90%;
+  height: auto;
+}
+#video_caption{
+  width: 100px;
+  height: 75px;
+  border: 1px;
+  border-color: #BDBDBD;
+  padding: 3px 3px 0px 3px;
+}
+#video_title{
+  font: normal 14px Roboto,arial,sans-serif;
+  margin-top: 0px;
+  margin-bottom: 8px;
+  padding-top: 23px;
+  text-decoration: none;
+  color: #404040;
+  display: inline;
+  float: right;
+  width: 70%;
+  vertical-align: middle;
+}
+#video_title:hover{
+  color: #1976D2;
+}
+#article_title_container {
+  padding-left: 15px;
+  padding-top: 10px;
+  float: left;
+}
+.attached_photo{
+  width: 90%;
+  height: auto;
+  padding: 0px 15px 15px 15px;
+}
 
-    #article_title{
-      font: normal 14px Roboto, arial, sans-serif;
-      text-decoration: none;
-      color: #404040;
-      vertical-align: middle;
-      padding: 10px 0px 5px 15px;
-    }
+#article_title{
+  font: normal 14px Roboto, arial, sans-serif;
+  text-decoration: none;
+  color: #404040;
+  vertical-align: middle;
+  padding: 10px 0px 5px 15px;
+}
 
-    #article_subtitle{
-      font: normal 13px Roboto,arial,sans-serif;
-      margin-top: 0px;
-      margin-bottom: 10px;
-      padding-left: 15px;
-      text-decoration: none;
-      color: #757575;
-    }
+#article_subtitle{
+  font: normal 13px Roboto,arial,sans-serif;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  padding-left: 15px;
+  text-decoration: none;
+  color: #757575;
+}
 
-    #article_title:hover{
-      color: #1976D2;
-      text-decoration: underline;
-    }
-    #original_post_author{
-      font-weight: bold;
-    }
+#article_title:hover{
+  color: #1976D2;
+  text-decoration: underline;
+}
+#original_post_author{
+  font-weight: bold;
+}
 
-    /*.post:hover #article_title{
-    color: #1976D2;
+/*.post:hover #article_title{
+  color: #1976D2;
   }*/
 
   .post:hover #original-post-link{
@@ -318,24 +318,24 @@ Example:
     text-align: center;
   }
 
-</style>
+  </style>
 
-<template id="template">
+  <template id="template">
+    <iron-ajax
+    id="requestFollowing"
+    url="https://www.googleapis.com/plus/v1/people/me/people/visible"
+    method="GET"
+    handleAs='json'
+    on-response="_responseFollowings"
+    >
+  </iron-ajax>
+
   <iron-ajax
-  id="requestFollowing"
-  url="https://www.googleapis.com/plus/v1/people/me/people/visible"
+  id="requestPosts"
   method="GET"
   handleAs='json'
-  on-response="_responseFollowings"
+  on-response="_responsePosts"
   >
-</iron-ajax>
-
-<iron-ajax
-id="requestPosts"
-method="GET"
-handleAs='json'
-on-response="_responsePosts"
->
 </iron-ajax>
 
 <paper-header-panel mode="waterfall" class="red">
@@ -1010,8 +1010,67 @@ on-response="_responsePosts"
       _dataReady: function(){
         return !this.loading;
       },
+      _updateLanguage: function(){
+        for (var i=0;i<this.timeline_posts.length;i++) {
+          updated_post = this.timeline_posts[i];
+          post = this.timeline_posts[i];
+          var date = new Date(post.published);
+          var updated_date = new Date(post.updated)
+          var current_date = new Date();
+          var time;
+          var month = this.language_data.months;
+          /* Years*/
+          if ((current_date.getFullYear() - date.getFullYear()) != 0) {
+            var dif = current_date.getFullYear() - date.getFullYear()
+            time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+            /* Months */
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) {
+            var dif = current_date.getMonth() - date.getMonth();
+            time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+            /* Days */
+          } else if((current_date.getDate() - date.getDate()) == 0 ){
+            if((current_date.getHours() - date.getHours()) == 0 ){
+              if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
+                time = current_date.getSeconds() - date.getSeconds();
+                time += time == 1? " " + this.language_data.sec : " " + this.language_data.secs;
+              }
+              else{
+                time = current_date.getMinutes() - date.getMinutes();
+                time += time == 1? " " + this.language_data.min: " " + this.language_data.mins;
+              }
+            }
+            else{
+              if (current_date.getHours() - date.getHours() == 1) {
+                time = current_date.getHours() - date.getHours();
+                time += " " + this.language_data.hour;
+              }else {
+                time = current_date.getHours() - date.getHours();
+                time += " " + this.language_data.hours;
+              }
+            }
+          }
+          else if( ((current_date.getDate() - date.getDate()) < 8) && ( (current_date.getDate() - date.getDate()) > 0)){
+            if( (current_date.getDate() - date.getDate()) == 1){
+              time = current_date.getDate() - date.getDate();
+              time += " " + this.language_data.day;
+            }
+            else{
+              time = current_date.getDate() - date.getDate();
+              time += " " + this.language_data.days;
+            }
+          }
+          else{
+            time = date.getDate()+ " " + month[date.getMonth()] + " " + date.getFullYear();
+          }
+          // We change the timestamps to millis UTC and we create a field that represents the published
+          // date in a readably format
+          this.set('timeline_posts.' + i + '.published_pretty', time);
+          this.set('timeline_posts.' + i + '.published', date.getTime());
+          this.set('timeline_posts.' + i + '.updated', updated_date.getTime());
+        }
+      },
       // OBSERVERS
-      _languageChanged: function(newVal){
+      _languageChanged: function(newVal, oldVal){
         if(newVal === "en"){
           this.language = "en";
           this.set('language_data', this.language_en);
@@ -1020,8 +1079,7 @@ on-response="_responsePosts"
           this.language = "es";
           this.set('language_data', this.language_es);
         }
-        //Re-renders the component
-        this._refresh_posts();
-      }
+        this._updateLanguage();
+      },
     });
   </script>
