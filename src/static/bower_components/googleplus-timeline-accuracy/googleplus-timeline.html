@@ -171,7 +171,6 @@ a:hover{
     font: normal 14px Roboto,arial,sans-serif;
     margin-top: 0px;
     margin-bottom: 8px;
-    padding-top: 23px;
     text-decoration: none;
     color: #404040;
     display: inline;
@@ -358,14 +357,12 @@ a:hover{
                         <template is="dom-if" if="{{_hasVideoAttachment(item)}}">
                             <!-- <google-youtube video-id="{{_getYoutubeVideoId(item.object.attachments.0.embed.url)}}"
                             width="380px" height="285px" ><google-youtube> -->
-                            <div class="attachment_box_container">
-                                <span>
-                                    <a id="video_title" href="{{item.object.attachments.0.url}}" target="_blank">
+                            <div class="attachment_box_container horizontal layout center-center">
+                                <a id="video_title" href="{{item.object.attachments.0.url}}" target="_blank">
                                         <iron-icon class="media_icon" icon="av:play-arrow"></iron-icon>
                                         {{item.object.attachments.0.displayName}}
                                         <!-- <p id="article_subtitle"> {{item.object.attachments.0.content}} </p> -->
                                     </a>
-                                </span>
                                 <a href="{{item.object.attachments.0.url}}" target="_blank">
                                     <img id="video_caption" src="{{item.object.attachments.0.image.url}}">
                                 </a>
@@ -554,7 +551,7 @@ a:hover{
             },
             language: {
                 type: String,
-                value: 'en',
+                value: '',
                 notify: true,
                 reflectToAttribute: true,
                 observer: "_languageChanged"
@@ -695,6 +692,7 @@ a:hover{
             user_post.object.content = this._changeText(user_post);
             if(user_post.published >= this.page_timestamp){
                 this.push('timeline_posts', user_post);
+		console.log('Añadimos : ', user_post);
                 //We increment the var that represents the posts displayed per page
                 this.post_added_per_page++;
             }
@@ -759,9 +757,11 @@ a:hover{
             if (this.token) {
                 //We set the language
                 if(this.language == "en")
-                this.set('language_data', this.language_en);
+                  this.set('language_data', this.language_en);
                 else if(this.language == "es")
-                this.set('language_data', this.language_es);
+                  this.set('language_data', this.language_es);
+		else if (this.language === '')
+		  this.set('language_data'. this.language_en);
 
                 //We set the timestamp per page to a specified range of time
                 var actual_tmp = new Date();
@@ -989,8 +989,67 @@ a:hover{
                 }
                 return dimension;
             },
+	    _updateLanguage: function(){
+for (var i=0;i<this.timeline_posts.length;i++) {
+  updated_post = this.timeline_posts[i];
+  post = this.timeline_posts[i];
+  var date = new Date(post.published);
+  var updated_date = new Date(post.updated)
+  var current_date = new Date();
+  var time;
+  var month = this.language_data.months;
+  /* Years*/
+  if ((current_date.getFullYear() - date.getFullYear()) != 0) {
+    var dif = current_date.getFullYear() - date.getFullYear()
+    time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+  /* Months */
+  } else if ((current_date.getMonth() - date.getMonth()) != 0) {
+    var dif = current_date.getMonth() - date.getMonth();
+    time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+  /* Days */
+  } else if((current_date.getDate() - date.getDate()) == 0 ){
+    if((current_date.getHours() - date.getHours()) == 0 ){
+      if( (current_date.getMinutes() - date.getMinutes()) == 0 ){
+        time = current_date.getSeconds() - date.getSeconds();
+        time += time == 1? " " + this.language_data.sec : " " + this.language_data.secs;
+      }
+      else{
+        time = current_date.getMinutes() - date.getMinutes();
+        time += time == 1? " " + this.language_data.min: " " + this.language_data.mins;
+      }
+    }
+    else{
+      if (current_date.getHours() - date.getHours() == 1) {
+        time = current_date.getHours() - date.getHours();
+        time += " " + this.language_data.hour;
+      }else {
+        time = current_date.getHours() - date.getHours();
+        time += " " + this.language_data.hours;
+      }
+    }
+  }
+  else if( ((current_date.getDate() - date.getDate()) < 8) && ( (current_date.getDate() - date.getDate()) > 0)){
+    if( (current_date.getDate() - date.getDate()) == 1){
+      time = current_date.getDate() - date.getDate();
+      time += " " + this.language_data.day;
+    }
+    else{
+      time = current_date.getDate() - date.getDate();
+      time += " " + this.language_data.days;
+    }
+  }
+  else{
+    time = date.getDate()+ " " + month[date.getMonth()] + " " + date.getFullYear();
+  }
+  // We change the timestamps to millis UTC and we create a field that represents the published
+  // date in a readably format
+    this.set('timeline_posts.' + i + '.published_pretty', time);
+    this.set('timeline_posts.' + i + '.published', date.getTime());
+    this.set('timeline_posts.' + i + '.updated', updated_date.getTime());
+  }
+	    },
             // OBSERVERS
-            _languageChanged: function(newVal){
+            _languageChanged: function(newVal, oldVal){
                 if(newVal === "en"){
                     this.language = "en";
                     this.set('language_data', this.language_en);
@@ -999,8 +1058,7 @@ a:hover{
                     this.language = "es";
                     this.set('language_data', this.language_es);
                 }
-                //Re-renders the component
-                this._refresh_posts();
+		this._updateLanguage();
             },
         });
     </script>
