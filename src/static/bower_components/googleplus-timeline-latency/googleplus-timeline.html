@@ -998,7 +998,7 @@ width="380px" height="285px" ><google-youtube> -->
       return !this.loading;
     },
     // OBSERVERS
-      _languageChanged: function(newVal){
+      _languageChanged: function(newVal, oldVal){
         if(newVal === "en"){
           this.language = "en";
           this.set('language_data', this.language_en);
@@ -1008,7 +1008,9 @@ width="380px" height="285px" ><google-youtube> -->
           this.set('language_data', this.language_es);
         }
         //Re-renders the component
-        this._refresh_posts();
+        if (oldVal){
+          this._refresh_posts();
+        }
       },
   });
 </script>
