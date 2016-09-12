@@ -167,7 +167,7 @@ class Component(ndb.Model):
   # Represents if the component will served in a predetermined way to every new user in the system
   predetermined = ndb.BooleanProperty(default=False)
   # Preasigned version to load the component. It needs to be confirmed
-  preasigned_version = ndb.StringProperty()
+  #preasigned_version = ndb.StringProperty()
   attributes = ndb.StructuredProperty(ComponentAttributes)
 
 class UserComponent(ndb.Model):
@@ -332,12 +332,12 @@ def assignPredeterminedComponentsToUser(entity_key):
     activateComponentToUser(comp.component_id, entity_key)
 
 # Set the version for the component in the case it will be added to the user dashboard
-def setPreasignedVersion(component_id):
-  comp = Component.query(Component.component_id == component_id).get()
-  version = setComponentVersion(comp)
-  comp.preasigned_version = version
-  comp.put()
-  return version
+# def setPreasignedVersion(component_id):
+#  comp = Component.query(Component.component_id == component_id).get()
+#  version = setComponentVersion(comp)
+#  comp.preasigned_version = version
+#  comp.put()
+#  return version
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
@@ -757,7 +757,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   # Saves the changes to the entity
   component.put()
 
-  setPreasignedVersion(name)
+  component.version = setComponentVersion(name)
 
 
 # Modifies the related info about a General component in the system (ComponentEntity)
