@@ -600,11 +600,15 @@ Element providing solution to no problem in particular.
           this.$.refresh.setAttribute("headers", '{"Authorization":"token '+this.token + '"}');
         }
         var back = this;
-        window.setInterval(function(){back.$.request.generateRequest();}, back.refresh_time);
+        this._interval = window.setInterval(function(){back.$.request.generateRequest();}, back.refresh_time);
 
         this.$.requestLanguage.generateRequest();
       },
-
+      detached: function(){
+        if (this._interval){
+          window.clearInterval(this._interval);
+        }
+      },
       // AJAX RESPONSE
       _response: function(event,detail){
         this.$.panelHeader.style.cursor = "default";

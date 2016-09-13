@@ -332,6 +332,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     attached: function(){
       this.$.requestLanguage.generateRequest();
     },
+    detached: function(){
+      if (this._interval){
+        window.clearInterval(this._interval);
+      }
+    },
     /* Language observer */
     languageChanged: function(newVal, oldValue) {
       if(newVal === "en"){
@@ -361,7 +366,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if(this.events.length === 0){
         this.$.requesttimeline.generateRequest();
         var back = this
-        window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
+        this._interval = window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
       } else{
         /* Else we had elements, we change events.*.time*/
         this._changeTime(this.events);

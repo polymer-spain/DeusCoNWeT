@@ -340,6 +340,11 @@ Polymer({
   attached: function(){
     this.$.requestLanguage.generateRequest();
   },
+  detached: function(){
+    if(this._interval){
+      window.clearInterval(this._interval);
+    }
+  },
   /* Language observer */
   languageChanged: function(newVal, oldValue) {
     if(newVal === "en"){

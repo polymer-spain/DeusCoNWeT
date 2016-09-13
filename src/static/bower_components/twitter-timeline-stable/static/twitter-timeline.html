@@ -333,7 +333,11 @@ Polymer({
   attached: function(){
     this.$.requestLanguage.generateRequest();
   },
-
+  detached: function(){
+    if (this._interval){
+      window.clearInterval(this._interval);
+    }
+  },
   _calculateLanguageUrl: function(component_directory, file) {
     return component_directory + "language/" + file;
   },
@@ -405,7 +409,7 @@ Polymer({
     if(this.events.length === 0){
       this.$.requesttimeline.generateRequest();
       var back = this
-      window.setInterval(function(){
+      this._interval = window.setInterval(function(){
         back.$.requesttimeline.generateRequest();
       }, back.refresh_time);
     } else{

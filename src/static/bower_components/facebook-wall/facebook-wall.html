@@ -375,11 +375,15 @@ access_token={{access_token}}&summary=true -->
       },
       attached: function(){
         this.$.requestLanguage.generateRequest();
-        setInterval(function(){
+        this._interval = window.setInterval(function(){
           this.refresh();
         }.bind(this),this.refreshTime)
       },
-
+      detached: function(){
+        if (this._interval){
+          window.clearInterval(this._interval);
+        }
+      },
       refresh: function(){
         this.$.requestData.generateRequest();
       },
