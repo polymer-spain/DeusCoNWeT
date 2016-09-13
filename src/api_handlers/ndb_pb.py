@@ -167,7 +167,7 @@ class Component(ndb.Model):
   # Represents if the component will served in a predetermined way to every new user in the system
   predetermined = ndb.BooleanProperty(default=False)
   # Preasigned version to load the component. It needs to be confirmed
-  preasigned_version = ndb.StringProperty()
+  version = ndb.StringProperty()
   attributes = ndb.StructuredProperty(ComponentAttributes)
 
 class UserComponent(ndb.Model):
@@ -332,12 +332,12 @@ def assignPredeterminedComponentsToUser(entity_key):
     activateComponentToUser(comp.component_id, entity_key)
 
 # Set the version for the component in the case it will be added to the user dashboard
-def setPreasignedVersion(component_id):
-  comp = Component.query(Component.component_id == component_id).get()
-  version = setComponentVersion(comp)
-  comp.preasigned_version = version
-  comp.put()
-  return version
+# def setPreasignedVersion(component_id):
+#  comp = Component.query(Component.component_id == component_id).get()
+#  version = setComponentVersion(comp)
+#  comp.preasigned_version = version
+#  comp.put()
+#  return version
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
@@ -368,7 +368,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
       else:
         # We set the version of the component
         general_component = getComponentEntity(component_id)
-        version = general_component["preasigned_version"]
+        version = general_component["version"]
         # We create a new UserComponent entity
         user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
         # We add the component to the component_list of the user
@@ -377,7 +377,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
 
         # We increase the counters that represents the times that a given component has been tested (general and versioned)
         new_version = setComponentVersion(general_component)
-        general_component["preasigned_version"] = new_version
+        general_component["version"] = new_version
         general_component.test_count += 1
         general_component.put()
         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
@@ -757,7 +757,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   # Saves the changes to the entity
   component.put()
 
-  setPreasignedVersion(name)
+  component.version = setComponentVersion(name)
 
 
 # Modifies the related info about a General component in the system (ComponentEntity)
@@ -1173,7 +1173,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["url"] = str(component.url)
           general_comp["social_network"] = str(component.rs)
           general_comp["description"] = str(component.description)
-          general_comp["preversion"] = str(component.preasigned_version)
+          general_comp["version"] = str(component.version)
           general_comp["attributes"] = {}
           if general_comp["social_network"] == "twitter":
             general_comp["attributes"]["access_token"] = str(attributes.access_token)
@@ -1229,7 +1229,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["url"] = str(comp.url)
           general_comp["social_network"] = str(comp.rs)
           general_comp["description"] = str(comp.description)
-          eneral_comp["preversion"] = str(component.preasigned_version)
+          eneral_comp["version"] = str(component.version)
           general_comp["attributes"] = {}
           if general_comp["social_network"] == "twitter":
             general_comp["attributes"]["access_token"] = str(attributes.access_token)
