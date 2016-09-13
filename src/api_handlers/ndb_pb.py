@@ -368,7 +368,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
       else:
         # We set the version of the component
         general_component = getComponentEntity(component_id)
-        version = general_component["preasigned_version"]
+        version = general_component["version"]
         # We create a new UserComponent entity
         user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
         # We add the component to the component_list of the user
@@ -377,7 +377,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
 
         # We increase the counters that represents the times that a given component has been tested (general and versioned)
         new_version = setComponentVersion(general_component)
-        general_component["preasigned_version"] = new_version
+        general_component["version"] = new_version
         general_component.test_count += 1
         general_component.put()
         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
@@ -1173,7 +1173,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["url"] = str(component.url)
           general_comp["social_network"] = str(component.rs)
           general_comp["description"] = str(component.description)
-          general_comp["preversion"] = str(component.preasigned_version)
+          general_comp["version"] = str(component.version)
           general_comp["attributes"] = {}
           if general_comp["social_network"] == "twitter":
             general_comp["attributes"]["access_token"] = str(attributes.access_token)
@@ -1229,7 +1229,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["url"] = str(comp.url)
           general_comp["social_network"] = str(comp.rs)
           general_comp["description"] = str(comp.description)
-          eneral_comp["preversion"] = str(component.preasigned_version)
+          eneral_comp["version"] = str(component.version)
           general_comp["attributes"] = {}
           if general_comp["social_network"] == "twitter":
             general_comp["attributes"]["access_token"] = str(attributes.access_token)
