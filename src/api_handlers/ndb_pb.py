@@ -167,7 +167,7 @@ class Component(ndb.Model):
   # Represents if the component will served in a predetermined way to every new user in the system
   predetermined = ndb.BooleanProperty(default=False)
   # Preasigned version to load the component. It needs to be confirmed
-  #preasigned_version = ndb.StringProperty()
+  version = ndb.StringProperty()
   attributes = ndb.StructuredProperty(ComponentAttributes)
 
 class UserComponent(ndb.Model):
