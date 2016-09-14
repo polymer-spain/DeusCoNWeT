@@ -224,7 +224,7 @@ class ComponentListHandler(SessionHandler):
                         if component_stored == None:
                             # Adds the component to datastore
                             ndb_pb.insertComponent(component_id, url=url, description=description, rs=social_network, input_t=input_type, output_t=output_type, 
-                                                   version_list=version_list, predetermined=predetermined, endpoint=endpoint, component_directory=component_directory)
+                                                    version_list=version_list, predetermined=predetermined, endpoint=endpoint, component_directory=component_directory)
                             response = {"status": "Component uploaded succesfully"}
                             self.response.write(json.dumps(response))
                             self.response.set_status(201)
