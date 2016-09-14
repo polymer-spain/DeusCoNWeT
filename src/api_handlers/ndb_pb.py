@@ -722,7 +722,7 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
+def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
   # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
   # Depending on the social network, different attributes are needed
