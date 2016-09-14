@@ -755,9 +755,9 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
   #   versionedComponent.put()
   created = True
   # Saves the changes to the entity
-  component.put()
 
-  component.version = setComponentVersion(name)
+  component.version = setComponentVersion(component)
+  component.put()
 
 
 # Modifies the related info about a General component in the system (ComponentEntity)
