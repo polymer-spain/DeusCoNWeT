@@ -746,7 +746,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
     attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
     attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
-  component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
+  component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
    attributes=attributes)
   # We create a new VersionedComponent Entity for each version_added to the version_list
