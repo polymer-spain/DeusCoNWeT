@@ -277,31 +277,22 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
     $scope._submitExtendedQuestionaire = function(){
       // We get the responses for every question
-      var aditional_questions = document.querySelector(".aditionalQuestion");
+
+      var aditional_questions = $('#aditionalForm paper-radio-group, #aditionalForm input');
       var mixpanel_event_list = [];
       var mixpanel_event = {};
-      var answer = "";
-      var question_text = "";
-      Array.prototype.forEach.call(aditional_questions, function(question){
-        answer = question.selected || "";
-        if ($(question).hasClass('form-control')){
-          question_text = $(question).value();
-        } else {
-          question_text = $(question).children('.iron-selected').html() || "";
+      var i;
+      for (i = 0; i< aditional_questions.length;i++){
+        var question = aditional_questions[i];
+        var answer = question.selected || question.value;
+        if (answer){
+          mixpanel_event_list.push({"event_name": question.id,"selection": answer}); // qué hace exactamente el push?
         }
-        if (answer !== "" && question_text !== ""){
-          mixpanel_event = {
-            "event_name": question.id,
-            "selection": answer,
-            "question": question_text
-          };
-          mixpanel_event_list.push(mixpanel_event); // qué hace exactamente el push?
-        }
-      });
+      }
       // We check if the user has anwered all questions
       var mixpanel_properties = {};
       if (mixpanel_event_list.length === aditional_questions.length){
-        for (var i = 0; i< mixpanel_event_list.length; i++) {
+        for (i = 0; i< mixpanel_event_list.length; i++) {
           // We send the responses to Mixpanel
           mixpanel_event = mixpanel_event_list[i];
           mixpanel_properties = {
@@ -325,11 +316,11 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $scope.$apply(function(){
           var social_network = e.detail.redSocial;
           var token = e.detail.token;
-          var registerTokenError = function(){
-            $scope.showToastr('error',$scope.language.add_token_error);
-            $rootScope.user.tokens[social_network] = '';
-            $scope.setToken(social_network, '');
-          };
+          // var registerTokenError = function(){
+          //   $scope.showToastr('error',$scope.language.add_token_error);
+          //   $rootScope.user.tokens[social_network] = '';
+          //   $scope.setToken(social_network, '');
+          // };
           $rootScope.user = $rootScope.user || {tokens:{}};
           $rootScope.user.tokens[social_network] = token;
           $scope.setToken(social_network, token);
