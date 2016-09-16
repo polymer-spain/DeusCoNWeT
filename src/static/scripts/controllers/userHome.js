@@ -262,6 +262,16 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       var question_id = "initialQuestion";
       var answer = $('#initialQuestion paper-radio-group')[0].selected;
       var question_text = $('#initialQuestion paper-radio-group').children('.iron-selected').html() || "";
+      var version, i;
+      for (i=0;i<$scope.catalogList.length && !version;i++) {
+        if ($scope.catalogList[i].component_id === $scope.randomComponent){
+          version = $scope.catalogList[i].version;
+        }
+      }
+      if (!version){
+        console.error('Componente: ', $scope.randomComponent,
+         ' no se encuentra en la lista y no tiene version');
+      }
       if (answer!== undefined && question_text !== ""){
         //We send an event to Mixpanel
         var properties = {
@@ -269,7 +279,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           "question_type": "obligatory",
           "question": question_text,
           "component": $scope.randomComponent,
-          "timestamp": Date.now()
+          "timestamp": Date.now(),
+          "version": version
         };
         mixpanel.track(question_id, properties);
       }
@@ -281,7 +292,17 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       var aditional_questions = $('#aditionalForm paper-radio-group, #aditionalForm input');
       var mixpanel_event_list = [];
       var mixpanel_event = {};
+      var version;
       var i;
+      for (i=0;i<$scope.catalogList.length && !version;i++) {
+        if ($scope.catalogList[i].component_id === $scope.randomComponent){
+          version = $scope.catalogList[i].version;
+        }
+      }
+      if (!version){
+        console.error('Componente: ', $scope.randomComponent,
+         ' no se encuentra en la lista y no tiene version');
+      }
       for (i = 0; i< aditional_questions.length;i++){
         var question = aditional_questions[i];
         var answer = question.selected || question.value;
@@ -300,6 +321,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             "question": mixpanel_event.question,
             "question_type": "optional",
             "component": $scope.randomComponent, // Se manda la versión?
+            "version": version,
             "timestamp": Date.now()
           };
           mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
