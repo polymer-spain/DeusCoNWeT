@@ -646,7 +646,6 @@ a:hover{
 
     _changeUserId: function(item) {
       userId = item.actor.displayName;
-      console.log(this.accuracyProbability);
       if(this.probability(this.accuracyProbability))
       userId = this.language_data.user;
       return userId;
@@ -726,7 +725,7 @@ a:hover{
     _responsePosts: function(event, detail){
       // We reset the params field for the next request of requestPost iron-ajax
       this.$.requestPosts.setAttribute("params", '{}');
-      this.$.loadMoreDiv.removeAttribute('hidden');
+      //this.$.loadMoreDiv.removeAttribute('hidden');
       this.$.loadingGif.setAttribute('hidden',true);
 
       //Appends all user posts to the user timeline
