@@ -722,7 +722,7 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
+def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
   # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
   # Depending on the social network, different attributes are needed
@@ -746,7 +746,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
     attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
     attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
-  component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
+  component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
    attributes=attributes)
   # We create a new VersionedComponent Entity for each version_added to the version_list
@@ -755,9 +755,9 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output=No
   #   versionedComponent.put()
   created = True
   # Saves the changes to the entity
-  component.put()
 
-  component.version = setComponentVersion(name)
+  component.version = setComponentVersion(component)
+  component.put()
 
 
 # Modifies the related info about a General component in the system (ComponentEntity)

@@ -132,7 +132,7 @@ class UserHandler(SessionHandler):
             for comp in components_list["data"]:
               ident = comp["component_id"]
               component = ndb_pb.getComponentEntity(ident)
-              version = component.preasigned_version
+              version = component.version
               static = "/"
               if str(ident) == "twitter-timeline": static = "/static/"
               ref = "/bower_components/" + \
@@ -162,7 +162,7 @@ class UserHandler(SessionHandler):
               dict_comp = json.loads(comp)
               ident = dict_comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])
-              version = preversion.preasigned_version
+              version = preversion.version
               static = "/"
               if ident == "twitter-timeline": static = "/static/"
               ref = "/bower_components/" + \
