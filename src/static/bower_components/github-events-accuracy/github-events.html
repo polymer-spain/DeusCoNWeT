@@ -84,6 +84,8 @@ Element providing solution to no problem in particular.
 	.title {
 		font-weight: bold;
 		font-size: 1.3em;
+		margin:0;
+		text-align:center;
 	}
 	.event {
 		min-height: 100px;
@@ -154,6 +156,8 @@ Element providing solution to no problem in particular.
 	}
 	.loading {
 		margin:auto;
+		width: 50%;
+		height: auto;
 	}
 	.deletedBranch{
 		font-weight: bold;
@@ -575,8 +579,8 @@ Element providing solution to no problem in particular.
 				</template>
 				<!-- loading screen-->
 				<template is="dom-if" if="{{_noEvents(events.length)}}">
-					<div class="vertical center-justified layout">
-						<img class="loading" src="loading-gif.gif">
+					<div class="vertical center-center layout">
+						<img class="loading" src="loading.gif">
 					</div>
 				</template>
 			</div>

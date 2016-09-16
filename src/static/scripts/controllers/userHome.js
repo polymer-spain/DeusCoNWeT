@@ -1,5 +1,5 @@
 angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout','$rootScope','$interval', '$backend','$http', function ($scope, $timeout, $rootScope, $interval,
-  $backend, $http) {
+  $backend/*, $http*/) {
     'use strict';
 
     // Se harcodea twitter por motivos de error en el tokenAttr
