@@ -90,11 +90,6 @@ class UserHandler(SessionHandler):
   post -- Modifies the info related to an user
   """
   def get(self, user_id):
-    tok_a = "a8fdb2b7e5b463220df"
-    tok_b = "396af2c2f3b041237ba01"
-    token = tok_a + tok_b
-    git = ndb_pb.GitHubAPIKey(token=token)
-    git.put()
     cookie_value = self.request.cookies.get("session")
     component_info = self.request.get("component_info", default_value="reduced")
     if not cookie_value == None:
