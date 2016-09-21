@@ -40,7 +40,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       var traffic = {
         component_id: 'traffic-incidents',
         description: "Show the traffic issues in any city",
-        img: '',
+        img: 'http://www.estatesofbrentwood.org/wp-content/uploads/2013/01/Live_Traffic_NSW_logoNoText.png',
         rate: '0',
         attributes: {
           city: 'Madrid',

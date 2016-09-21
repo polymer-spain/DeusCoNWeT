@@ -92,11 +92,11 @@
               </div>
               <div id="listCatalog" class="flex" >
                 <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{user.tokens[item.social_network]}}">
-                  <span class="label label-warning warning" ng-hide="user.tokens[item.social_network]">{{language.noToken}}</span>
-                  <button ng-hide="user.tokens[item.social_network]" ng-click="login(item.component_id, $event)" class="tokenDisabled">
+                  <span class="label label-warning warning" ng-hide="item.token.social_network && user.tokens[item.social_network]">{{language.noToken}}</span>
+                  <button ng-hide="item.token.social_network || user.tokens[item.social_network]" ng-click="login(item.component_id, $event)" class="tokenDisabled">
                     {{language.noTokenDescription}}
                   </button>
-                  <div ng-show="user.tokens[item.social_network]" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
+                  <div ng-show="!item.token.social_network || user.tokens[item.social_network]" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
                     {{item.description}}
                   </div>
                   <div class="componentData horizontal layout">
