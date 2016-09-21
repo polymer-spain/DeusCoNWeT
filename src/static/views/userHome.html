@@ -91,7 +91,7 @@
                 </div>
               </div>
               <div id="listCatalog" class="flex" >
-                <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{user.tokens[item.social_network]}}">
+                <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{need_token(item.social_network)}}">
                   <span class="label label-warning warning" ng-hide="item.token.social_network && user.tokens[item.social_network]">{{language.noToken}}</span>
                   <button ng-hide="item.token.social_network || user.tokens[item.social_network]" ng-click="login(item.component_id, $event)" class="tokenDisabled">
                     {{language.noTokenDescription}}

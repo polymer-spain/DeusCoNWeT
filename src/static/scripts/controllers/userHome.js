@@ -111,6 +111,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $(id.name).parent().remove();
     };
 
+    $scope.need_token = function(item){
+
+      return item.social_network ? $rootScope.user.tokens[item.social_network] : true;
+    };
     // Cierra las listas cuando se pulsa sobro cualquier otro lado del dashboard
     $('#userHome').click(function(event){
       if (!event.target.hasAttribute('data-button') && !event.target.hasAttribute('data-list')){
@@ -143,7 +147,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $('#store-modal').modal('toggle');
     };
 
-
     $scope.setToken = function(social_network, value){
       for(var i = 0; i< $scope.catalogList.length;i++){
         var element = $scope.catalogList[i];
@@ -159,6 +162,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $scope.loginSelected = name.split('-')[0];
       $('#login-modal').modal('toggle');
     };
+
+
+
+    /// FORMS FUNCTIONS
 
     // Watcher that controls whether the form should be showed to the user or not
     $scope.platformUsedTime = 0;
