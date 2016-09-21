@@ -306,14 +306,14 @@ Polymer({
       notify: true,
       reflectToAttribute: true
     },
-    component_directory: {
+    component_base: {
       type: String,
       value:"",
       reflectToAttribute: true
     },
     language_url: {
       type: String,
-      computed: "_calculateLanguageUrl(component_directory, idiom)"
+      computed: "_calculateLanguageUrl(component_base, idiom)"
     },
     timeline_params: {
       type: String,
@@ -338,8 +338,8 @@ Polymer({
       window.clearInterval(this._interval);
     }
   },
-  _calculateLanguageUrl: function(component_directory, file) {
-    return component_directory + "language/" + file;
+  _calculateLanguageUrl: function(component_base, file) {
+    return component_base + "language/" + file;
   },
 
   _calculatetimelineParams: function(access_token, secret_token, consumer_key, consumer_secret, count) {
@@ -387,7 +387,7 @@ Polymer({
       this.language = "es";
       this.idiom = "es_es.json"
     }
-    if (this.component_directory || this.component_directory == "") {
+    if (this.component_base || this.component_base == "") {
       this.$.requestLanguage.generateRequest();
     }
   },
