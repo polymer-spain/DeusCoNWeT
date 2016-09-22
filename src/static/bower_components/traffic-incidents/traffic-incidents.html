@@ -48,7 +48,24 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
 <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
-
+<style>
+  @font-face {
+    font-family: "Flaticon";
+    src: url("fonts/Flaticon.eot");
+    src: url("fonts/Flaticon.eot?#iefix") format("embedded-opentype"),
+    url("fonts/Flaticon.woff") format("woff"),
+    url("fonts/Flaticon.ttf") format("truetype"),
+    url("fonts/Flaticon.svg#Flaticon") format("svg");
+    font-weight: normal;
+    font-style: normal;
+  }
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    @font-face {
+      font-family: "Flaticon";
+      src: url("./fonts/Flaticon.svg#Flaticon") format("svg");
+    }
+  }
+</style>
 
 
 <dom-module id="traffic-incidents">
@@ -59,6 +76,8 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
     box-sizing: border-box;
     width: var(--ti-width, 400px);
     height: var(--ti-height, 450px);
+    min-width:300px;
+    min-height:250px;
   }
   paper-header-panel {
     width: 100%;
@@ -76,7 +95,6 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
     font-weight: bold;
     transition: height 0.2s;
     background-color:#B2002F;
-    z-index:10;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     @apply(--ti-header);
@@ -165,17 +183,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
   paper-spinner[active]{
     display:inline-block;
   }
-  @font-face {
-    font-family: "Flaticon";
-    src: url("./fonts/Flaticon.eot");
-    src: url("./fonts/Flaticon.eot?#iefix") format("embedded-opentype"),
-    url("./fonts/Flaticon.woff") format("woff"),
-    url("./fonts/Flaticon.ttf") format("truetype"),
-    url("./fonts/Flaticon.svg#Flaticon") format("svg");
-    font-weight: normal;
-    font-style: normal;
-  }
-  @media screen and (-webkit-min-device-pixel-ratio:0) {
+  @media screen and (-webkit-min-device-pixel-ratio:-1) {
     @font-face {
       font-family: "Flaticon";
       src: url("./fonts/Flaticon.svg#Flaticon") format("svg");
