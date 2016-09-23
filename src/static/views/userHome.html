@@ -91,12 +91,12 @@
                 </div>
               </div>
               <div id="listCatalog" class="flex" >
-                <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{item.social_network?user.tokens[item.social_network]:true}}">
-                  <span class="label label-warning warning" ng-hide="!item.social_network || user.tokens[item.social_network]">{{language.noToken}}</span>
-                  <button ng-hide="!item.social_network || user.tokens[item.social_network]" ng-click="login(item.component_id, $event)" class="tokenDisabled">
+                <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" pre="{{user.tokens[item.social_network]}}">
+                  <span class="label label-warning warning" ng-hide="user.tokens[item.social_network]">{{language.noToken}}</span>
+                  <button ng-hide="user.tokens[item.social_network]" ng-click="login(item.component_id, $event)" class="tokenDisabled">
                     {{language.noTokenDescription}}
                   </button>
-                  <div ng-show="!item.social_network || user.tokens[item.social_network]" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
+                  <div ng-show="user.tokens[item.social_network]" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
                     {{item.description}}
                   </div>
                   <div class="componentData horizontal layout">
@@ -210,7 +210,7 @@
                 </form>
 
                 <form is="iron-form">
-                  <p class="questionText">{{language.questionary.recommend}}</p>
+                  <p class="questionText">{eu language.questionary.recommend}}</p>
                   <paper-radio-group id="question6" class="aditionalQuestion">
                     <paper-radio-button name="1">{{language.questionary.yes}}</paper-radio-button>
                     <paper-radio-button name="0">{{language.questionary.no}}</paper-radio-button>
