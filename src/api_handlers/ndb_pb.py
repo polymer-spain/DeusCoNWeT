@@ -368,7 +368,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
       else:
         # We set the version of the component
         general_component = getComponentEntity(component_id)
-        version = general_component["version"]
+        version = general_component.version
         # We create a new UserComponent entity
         user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
         # We add the component to the component_list of the user
@@ -376,10 +376,10 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
         user.put()
 
         # We increase the counters that represents the times that a given component has been tested (general and versioned)
-        # new_version = setComponentVersion(general_component)
-        # general_component["version"] = new_version
-        # general_component.test_count += 1
-        # general_component.put()
+        new_version = setComponentVersion(general_component)
+        general_component["version"] = new_version
+        general_component.test_count += 1
+        general_component.put()
         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
         # versionedComponent.version == version)).get()
         # versioned_component.test_count = versioned_component.test_count + 1
@@ -503,11 +503,11 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
     # Componemos la lista de componentes de usuario, detallada o reducida
     user_component_list = getUserComponentList(user_id, component_detailed_info)
 
-    for component in user_component_list:
-      comp = Component.query(Component.component_id == component["component_id"]).get()
-      comp.version = setComponentVersion(component["component_id"])
-      comp.test_count += 1
-      comp.put()
+    # for component in user_component_list:
+    #   comp = Component.query(Component.component_id == component["component_id"]).get()
+    #   comp.version = setComponentVersion(component["component_id"])
+    #   comp.test_count += 1
+    #   comp.put()
 
     # Obtenemos la lista de credenciales de usuario
     credential_list = getUserCredentialList(user_id)
