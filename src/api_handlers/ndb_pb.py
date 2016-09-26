@@ -377,7 +377,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
 
         # We increase the counters that represents the times that a given component has been tested (general and versioned)
         new_version = setComponentVersion(general_component)
-        general_component["version"] = new_version
+        general_component.version = new_version
         general_component.test_count += 1
         general_component.put()
         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
