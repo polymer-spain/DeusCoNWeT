@@ -732,11 +732,6 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
   # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
   # Depending on the social network, different attributes are needed
-  git = "f29c1c0dbec65afb4c8"
-  git1 = "c225f07c6aba2513dfbba"
-  git_token = git + git1
-  token = GitHubAPIKey(token=git_token)
-  token.put()
   attributes = None
   if rs == "twitter":
     attributes = ComponentAttributes(component_id=name, access_token="", secret_token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock", consumer_key="J4bjMZmJ6hh7r0wlG9H90cgEe",
