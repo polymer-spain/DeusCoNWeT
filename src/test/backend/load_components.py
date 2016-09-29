@@ -42,7 +42,8 @@ params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline'
         'input_type': 'None',
         'output_type': 'tweet',
         'versions': versions_list,
-        'endpoint': ':domain/api/aux/twitterTimeline'
+        'endpoint': ':domain/api/aux/twitterTimeline',
+        'predetermined': 'True'
         }, doseq=True)
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
@@ -53,7 +54,8 @@ params = urllib.urlencode({'url': 'https://github.com/ailopera/googleplus-timeli
         'social_network': 'googleplus',
         'input_type': 'None',
         'output_type': 'tweet',
-        'versions': versions_list
+        'versions': versions_list,
+        'predetermined': 'True'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
@@ -64,7 +66,8 @@ params = urllib.urlencode({'url': 'https://github.com/Mortega5/github-events',
         'input_type': 'None',
         'output_type': 'tweet',
         'versions': versions_list,
-        'component_directory': 'bower_components/github-events/'
+        'component_directory': 'bower_components/github-events/',
+        'predetermined': 'True'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
@@ -75,7 +78,8 @@ params = urllib.urlencode({'url': 'https://github.com/Mortega5/facebook-wall',
         'input_type': 'None',
         'output_type': 'tweet',
         'versions': versions_list,
-        'component_directory': 'bower_components/facebook-wall/'
+        'component_directory': 'bower_components/facebook-wall/',
+        'predetermined': 'True'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 

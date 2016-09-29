@@ -126,7 +126,7 @@ class OauthSignUpHandler(SessionHandler):
                     user_key = ndb_pb.insertUser(social_network,
                             token_id, access_token, user_data)
                     # Assigns to the user a predetermined set of components
-                    # ndb_pb.assignPredeterminedComponentsToUser(user_key)
+                    ndb_pb.assignPredeterminedComponentsToUser(user_key)
                     # Creates the session
                     session_id = self.login(user_key)
 
