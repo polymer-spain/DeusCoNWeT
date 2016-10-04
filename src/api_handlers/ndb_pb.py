@@ -328,6 +328,10 @@ def assignPredeterminedComponentsToUser(entity_key):
   # Obtains the predetermined components of the system and adds it to the User
   # We consider that we will have at most 10 predetermined components in our system
   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
+  print "======================================"
+  print "Components asigned to be predetermined"
+  print predetermined_comps
+  print "======================================"
   for comp in predetermined_comps:
     activateComponentToUser(comp.component_id, entity_key)
 
