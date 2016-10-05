@@ -333,7 +333,11 @@ def assignPredeterminedComponentsToUser(entity_key):
   print predetermined_comps
   print "======================================"
   for comp in predetermined_comps:
-    activateComponentToUser(comp.component_id, entity_key)
+    st = activateComponentToUser(comp.component_id, entity_key)
+    print "**************************"
+    print "Estado de la llamada: (must be True)"
+    print st
+    print "**************************"
 
 # Set the version for the component in the case it will be added to the user dashboard
 # def setPreasignedVersion(component_id):
