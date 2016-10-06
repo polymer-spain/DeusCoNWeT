@@ -1,0 +1,238 @@
+<!--
+@license
+Copyright (c) 2015 Javier Caballero Abenza. All rights reserved.
+This access_code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+access_code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-card/paper-card.html">
+
+<!--
+Component that allow users to login in pinterest trough your app
+
+Example:
+
+    <pinterest-login></pinterest-login>
+
+@group Seed Elements
+@element pinterest-login
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="pinterest-login">
+
+<template>
+
+  <iron-ajax
+     id="request_token" 
+     url="https://api.pinterest.com/v1/oauth/token" 
+     method="POST" 
+     params="{{request_params}}" 
+     handleAs='json' 
+     on-response="token_received" 
+     >
+  </iron-ajax>
+
+  <iron-ajax
+     id="request_user" 
+     url="https://api.pinterest.com/v1/me/" 
+     method="GET" 
+     params="{{get_user_param}}" 
+     handleAs='json' 
+     on-response="_user_received" 
+     >
+  </iron-ajax>
+
+  <style is="custom-style">
+    :host {
+      display: block;
+    }
+
+    .sort{
+      background: red;
+      border-radius: 3px;
+      cursor: pointer;
+      text-transform: none;
+      vertical-align: center;
+      height: 46px;
+      width: 82px;
+    }
+
+    .icon{
+      --iron-icon-width: 82px;
+      --iron-icon-height: 46px;
+    }
+
+    .disconnect{
+      background: grey;
+    }
+
+  </style>
+
+<!-- When the user is not logged this template is used-->
+  <template is="dom-if" if="{{!logged}}">
+      <paper-button raised class="sort" title="Pinterest" on-click="login">
+        <iron-icon src="logo-pinterest.png" class="icon"></iron-icon>
+      </paper-button>   
+  </template>
+
+<!-- When the user is logged this template is used-->
+  <template is="dom-if" if="{{logged}}">
+    <paper-button raised class="sort disconnect" title="Pinterest" on-click="logout">
+      <iron-icon src="logo-pinterest.png" class="icon"></iron-icon>
+    </paper-button>  
+  </template>
+
+</template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'pinterest-login',
+
+    properties: {
+
+      logged: {
+          type: Boolean,
+          value: false
+        },
+
+      loginURL:{
+          type: String,
+          value: "https://api.pinterest.com/oauth/"
+        },
+
+        scope:{
+          type: String,
+          value: "read_public,read_relationships"
+        },
+
+        client_id: String,
+
+        client_secret: String,
+
+        redirect_uri: String,
+
+        state:{
+          type: String,
+          value: "yolo11235"
+        },
+
+        access_code: String,
+
+        access_token: String,
+
+
+        request_params:{
+          type: String,
+          computed: "get_params(client_id, client_secret, access_code)"
+        },
+
+        get_user_param: {
+          type: String,
+          computed: "_get_user_param(access_token)"
+        },
+    },
+
+    login: function(){
+      //Building URI
+      var oauthURL = this.loginURL + "?" +
+      "response_type=code" + "&" +
+      "redirect_uri="+ this.redirect_uri + "&" +
+      "client_id="+ this.client_id + "&" +
+      "scope=" + this.scope + "&" +
+      "state=" + this.state;
+      //GET to the Pinterest oauth URI to obtain the access_code
+      // Uncomment in production
+      var win = window.open(oauthURL,"Autoriza la app",'width=800, height=600');
+      
+      //Catching the access_code from the response URL
+      var back = this;
+
+      var loop = window.setInterval(function(){
+
+        try {
+
+          var url = win.document.URL;
+
+          if(url.indexOf('state') != -1 && url.indexOf('code') != -1){
+            window.clearInterval(loop);
+            
+            //access_code from URL
+            var patron = "code"+"=([^&#]*)";
+            var exp = new RegExp(patron);
+            back.access_code = exp.exec(url)[1];
+            //State from URL
+            patron = "state"+"=([^&#]*)";
+            exp = new RegExp(patron);
+            var new_state = exp.exec(url)[1];
+
+            //State received must be equal to local state
+            if(new_state != back.state){
+              /*TODO control de errores*/
+              console.log("Different state received from the pinterest server, watch out");
+            }
+            //Ask for the access token
+            else{
+              back.$.request_token.generateRequest();
+              win.close();
+            }
+          }
+            
+        }catch(e){
+          console.log(e);
+        }
+      }, 100);
+    },
+
+    /*
+      Load parameters to bind to the token petition
+    */
+    get_params: function(client_id, client_secret, access_code){
+      return { grant_type : "authorization_code", client_id : client_id,client_secret : client_secret, code : access_code }
+    },
+
+    _get_user_param: function(token){
+      return {access_token: token, fields: "id,username"};
+    },
+
+    /*
+      Handler who gets the response from the token petition, saves the token and fires the event "pinterest-logged" with it
+    */
+    token_received: function(event, detail){
+      this.access_token = detail.response.access_token;
+      //console.log(this.access_token);
+      this.$.request_user.generateRequest();
+    },
+
+    _user_received: function(event, detail){
+      this.logged = true;
+      this.username = detail.response.data.username;
+      //console.log("logged as: "+this.username);
+      this.fire('pinterest-logged',
+        {
+          token:this.access_token, 
+          redSocial:'pinterest',
+          userId:this.username
+        });
+    },
+
+    logout: function(){
+      this.access_token="";
+      this.access_code = "";
+      this.request_params = "";
+      this.logged = false;
+    },
+
+  });
+
+</script>
