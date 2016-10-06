@@ -13,7 +13,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     (function(){
       // TODO borrar esto, es para probar traffic
       if ($scope.user.references){
-        $scope.user.references.push('/bower_components/traffic-incidents/traffic-incidents.html');
         $scope.user.references.forEach(function(value,index){
           var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
           $('body').append($link);
@@ -36,19 +35,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $backend.getComponentInfo().then(function(res){
       $scope.catalogList = res.data.data;
       var tokenAttr,social_network;
-      // TODO borrar esto es para pruebas con traffic-incidents
-      var traffic = {
-        component_id: 'traffic-incidents',
-        description: "Show the traffic issues in any city",
-        img: 'http://www.estatesofbrentwood.org/wp-content/uploads/2013/01/Live_Traffic_NSW_logoNoText.png',
-        rate: '0',
-        attributes: {
-          city: 'Madrid',
-          api_key_geocoding: "AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM",
-          app_key_traffic:"AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"
-        }
-      };
-      $scope.catalogList.push(traffic);
       // Add tokens
       for(var i=0;i <$scope.catalogList.length;i++) {
         tokenAttr = $scope.catalogList[i].tokenAttr;
