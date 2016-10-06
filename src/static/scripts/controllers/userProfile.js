@@ -127,27 +127,27 @@ function ($scope, $rootScope, $backend, $http) {
 			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;
 
-			// switch(socialNetwork) {
-			// 	case 'googleplus':
-			// 	var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
-			// 	$http.get(uri).success(function (responseData) {
-			// 		$backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
-			// 	});
-			// 	break;
-			// 	case 'twitter':
-			// 	uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-			// 	$http.get(uri).success(function (responseData) {
-			// 		e.detail.userId = responseData.token_id;
-			// 		$backend.addTokens(socialNetwork, responseData.token_id, token,
-			// 			$scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
-			// 		}).error(function() {
-			// 			console.log('Problemas al intentar obtener el token_id de un usuario' );
-			// 		});
-			// 		break;
-			// 		default:
-			// 		$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
-			// 		break;
-			// 	}
+			switch(socialNetwork) {
+				case 'googleplus':
+				var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
+				$http.get(uri).success(function (responseData) {
+					$backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
+				});
+				break;
+				case 'twitter':
+				uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+				$http.get(uri).success(function (responseData) {
+					e.detail.userId = responseData.token_id;
+					$backend.addTokens(socialNetwork, responseData.token_id, token,
+						$scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
+					}).error(function() {
+						console.log('Problemas al intentar obtener el token_id de un usuario' );
+					});
+					break;
+					default:
+					$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
+					break;
+				}
 		});
 	}
 	(function(){
