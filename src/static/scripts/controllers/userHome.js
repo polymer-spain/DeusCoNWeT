@@ -13,7 +13,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     (function(){
       if ($scope.user.references){
         // TODO testing pinterest
-        $scope.user.push('pinterest-timeline-stable');
+        $scope.user.references.push('bower_components/pinterest-timeline-stable/pinterest-timeline.html');
         $scope.user.references.forEach(function(value,index){
           var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
           $('body').append($link);
