@@ -42,7 +42,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           language: ":language",
           component_base:"./"
         },
-        component_id:'pinterest',
+        component_id:'pinterest-timeline',
         description:"Web component to obtain the timeline of pinterest",
         img: "https://cdn0.iconfinder.com/data/icons/Pinterest/512/Pinterest_Favicon.png",
         rate:3,
@@ -387,6 +387,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
                 console.log('Problemas al intentar obtener el token_id de un usuario' );
               });
               break;
+	    case 'pinterest':break;
             default:
               $backend.addTokens(social_network, e.detail.userId, token, $scope.user.user_id).error(registerTokenError);
               break;
@@ -398,5 +399,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $('#login-modal instagram-login').bind('instagram-logged', loginCallback);
       $('#login-modal twitter-login').bind('twitter-logged', loginCallback);
       $('#login-modal login-facebook').bind('facebook-logged', loginCallback);
+      $('#login-modal pinterest-login').bind('pinterest-logged', loginCallback);
+
     })();
   }]);
