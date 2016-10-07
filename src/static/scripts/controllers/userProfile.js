@@ -19,10 +19,25 @@ function ($scope, $rootScope, $backend, $http) {
 	// Permite cambiar la imagen de un usuario, basandose
 	// en el input que ha dado
 	$scope.changePicture = function(event){
+		var generateThumbnail = function(element) {
+			var canvasHeight = 100;
+			var canvas = document.createElement('canvas');
+
+			var ratio = canvasHeight / element.height;
+			var canvasWidth = element.width * ratio;
+			canvas.width = canvasWidth;
+			canvas.height = canvasHeight;
+			var context = canvas.getContext('2d');
+			context.drawImage(element, 0, 0, canvasWidth, canvasHeight);
+
+			var dataURL = canvas.toDataURL();
+			//var thumb = dataURItoBlob(dataURL);
+			return dataURL;
+		};
 		if (event.files && event.files[0].type.indexOf('image') !== -1){
 			$scope._uploadFile = event.files[0];
 			var reader = new FileReader();
-			reader.onload = function (e){
+			reader.onload = function (){
 				var image = new Image();
 				image.onload = function(){
 					$scope._uploadFile = generateThumbnail(image);
@@ -34,42 +49,7 @@ function ($scope, $rootScope, $backend, $http) {
 			reader.readAsDataURL(event.files[0]);
 		}
 	};
-	var dataURItoBlob = function(dataURI) {
-		// convert base64/URLEncoded data component to raw binary data held in a string
-		var byteString;
-		if (dataURI.split(',')[0].indexOf('base64') >= 0){
-			byteString = atob(dataURI.split(',')[1]);
-		}	else{
-			byteString = unescape(dataURI.split(',')[1]);
-		}
-		// separate out the mime component
-		var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-		// write the bytes of the string to a typed array
-		var ia = new Uint8Array(byteString.length);
-		for (var i = 0; i < byteString.length; i++) {
-			ia[i] = byteString.charCodeAt(i);
-		}
-
-		return new Blob([ia], {type:mimeString});
-	};
-
 	// Envia los datos del usuario al servidor
-	var generateThumbnail = function(element) {
-		var canvasHeight = 100;
-		var canvas = document.createElement('canvas');
-
-		var ratio = canvasHeight / element.height;
-		var canvasWidth = element.width * ratio;
-		canvas.width = canvasWidth;
-		canvas.height = canvasHeight;
-		var context = canvas.getContext('2d');
-		context.drawImage(element, 0, 0, canvasWidth, canvasHeight);
-
-		var dataURL = canvas.toDataURL();
-		//var thumb = dataURItoBlob(dataURL);
-		return dataURL;
-	};
 	$scope.submitForm = function(){
 		$('html').css('cursor','wait');
 		var values = '';
@@ -119,42 +99,42 @@ function ($scope, $rootScope, $backend, $http) {
 		$scope.$apply(function(){
 			var socialNetwork = e.detail.redSocial;
 			var token = e.detail.token;
-			var registerTokenError = function(){
-				$scope.showToastr('error',$scope.language.add_token_error);
-				$rootScope.user.tokens[socialNetwork] = '';
-				$scope.setToken(socialNetwork, '');
-			};
 			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;
 
+			var registerTokenError = function(){
+				$scope.showToastr('error',$scope.language.add_token_error);
+				$rootScope.user.tokens[socialNetwork] = '';
+			};
+
 			switch(socialNetwork) {
 				case 'googleplus':
-				var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
-				$http.get(uri).success(function (responseData) {
-					$backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
-				});
-				break;
-				case 'twitter':
-				uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-				$http.get(uri).success(function (responseData) {
-					e.detail.userId = responseData.token_id;
-					$backend.addTokens(socialNetwork, responseData.token_id, token,
-						$scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
-					}).error(function() {
-						console.log('Problemas al intentar obtener el token_id de un usuario' );
+					var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
+					$http.get(uri).success(function (responseData) {
+						$backend.addTokens(socialNetwork, responseData.id, token, $scope.user.user_id).error(registerTokenError);
 					});
 					break;
-					default:
-					$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
+				case 'twitter':
+					uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+					$http.get(uri).success(function (responseData) {
+						e.detail.userId = responseData.token_id;
+						$backend.addTokens(socialNetwork, responseData.token_id, token,
+							$scope.user.user_id, e.detail.oauth_verifier).error(registerTokenError);
+						}).error(function() {
+							console.log('Problemas al intentar obtener el token_id de un usuario' );
+						});
 					break;
+				default:
+					$backend.addTokens(socialNetwork, '', token, $scope.user.user_id).error(registerTokenError);
+				break;
 				}
-		});
-	}
-	(function(){
-		$('#socialNetwork google-login')[0].addEventListener('google-logged', loginCallback);
-		$('#socialNetwork github-login')[0].addEventListener('github-logged', loginCallback);
-		$('#socialNetwork instagram-login')[0].addEventListener('instagram-logged', loginCallback);
-		$('#socialNetwork twitter-login')[0].addEventListener('twitter-logged', loginCallback);
-		$('#socialNetwork login-facebook')[0].addEventListener('facebook-logged', loginCallback);
-	})();
-}]);
+			});
+		}
+		(function(){
+			$('#socialNetwork google-login').bind('google-logged', loginCallback);
+			$('#socialNetwork github-login').bind('github-logged', loginCallback);
+			$('#socialNetwork instagram-login').bind('instagram-logged', loginCallback);
+			$('#socialNetwork twitter-login').bind('twitter-logged', loginCallback);
+			$('#socialNetwork login-facebook').bind('facebook-logged', loginCallback);
+		})();
+	}]);
