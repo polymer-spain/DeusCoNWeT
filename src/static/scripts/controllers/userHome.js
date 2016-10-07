@@ -12,6 +12,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // loads references for this
     (function(){
       if ($scope.user.references){
+        // TODO testing pinterest
+        $scope.user.push('pinterest-timeline-stable');
         $scope.user.references.forEach(function(value,index){
           var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
           $('body').append($link);
@@ -76,6 +78,23 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // Elimina un componente añadido
     $scope.removeElement = function(id){
       var finded = false;
+      // TODO testing pinterest
+      var pinterest = {
+        attributes: {
+          token: undefined,
+          language: ":language",
+          component_base:"./"
+        },
+        component_id:'pinterest',
+        description:"Web component to obtain the timeline of pinterest",
+        img: "https://cdn0.iconfinder.com/data/icons/Pinterest/512/Pinterest_Favicon.png",
+        rate:3,
+        social_network:"pinterest",
+        tokenAttr:"token",
+        url:"https://github.com/Mortega5/github-events",
+        version:"stable"
+      };
+      $scope.listComponentAdded.push(pinterest);
 
       for (var i = 0;i< $scope.listComponentAdded.length && !finded;i++){
         if ($scope.listComponentAdded[i].name === id){
