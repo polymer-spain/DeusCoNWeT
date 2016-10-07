@@ -35,6 +35,23 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     };
     $backend.getComponentInfo().then(function(res){
       $scope.catalogList = res.data.data;
+      // TODO remove, its a pinterest test
+      var pinterest = {
+        attributes: {
+          token: undefined,
+          language: ":language",
+          component_base:"./"
+        },
+        component_id:'pinterest',
+        description:"Web component to obtain the timeline of pinterest",
+        img: "https://cdn0.iconfinder.com/data/icons/Pinterest/512/Pinterest_Favicon.png",
+        rate:3,
+        social_network:"pinterest",
+        tokenAttr:"token",
+        url:"https://github.com/Mortega5/github-events",
+        version:"stable"
+      };
+      $scope.catalogList.push(pinterest);
       var tokenAttr,social_network;
       // Add tokens
       for(var i=0;i <$scope.catalogList.length;i++) {
@@ -78,24 +95,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // Elimina un componente añadido
     $scope.removeElement = function(id){
       var finded = false;
-      // TODO testing pinterest
-      var pinterest = {
-        attributes: {
-          token: undefined,
-          language: ":language",
-          component_base:"./"
-        },
-        component_id:'pinterest',
-        description:"Web component to obtain the timeline of pinterest",
-        img: "https://cdn0.iconfinder.com/data/icons/Pinterest/512/Pinterest_Favicon.png",
-        rate:3,
-        social_network:"pinterest",
-        tokenAttr:"token",
-        url:"https://github.com/Mortega5/github-events",
-        version:"stable"
-      };
-      $scope.listComponentAdded.push(pinterest);
-
       for (var i = 0;i< $scope.listComponentAdded.length && !finded;i++){
         if ($scope.listComponentAdded[i].name === id){
           finded = true;
