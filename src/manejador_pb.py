@@ -4,7 +4,7 @@
   Copyright 2015 Ana Isabel Lopera Martínez
   Copyright 2015 Miguel Ortega Moreno
   Copyright 2015 Juan Francisco Salamanca Carmona
-  
+
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,18 +34,19 @@ app = webapp2.WSGIApplication([
     (r'/api/componentes', api_componentes.ComponentListHandler),
     (r'/api/componentes/(.*)', api_componentes.ComponentHandler),
     (r'/api/componentes/(.*)/valoracionComponente', api_componentes.ComponentRatingHandler),
-    
+
     (r'/api/usuarios', api_usuarios.UserListHandler),
     (r'/api/usuarios/(.*)', api_usuarios.UserHandler),
     (r'/api/usuarios/(.*)/profile', api_usuarios.ProfileHandler),
     (r'/api/usuarios/(.*)/credentials', api_usuarios.UserCredentialsHandler),
-    
+
     (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
     (r'/api/aux/instagramTimeline', api_auxiliar.instagramRequest),
-    
+
     (r'/api/oauth/twitter/signup',api_oauth.TwitterSignUpHandler),
     (r'/api/oauth/twitter/login', api_oauth.TwitterLoginHandler),
     (r'/api/oauth/twitter/logout', api_oauth.TwitterLogoutHandler),
+    (r'/api/oauth/twitter/credenciales', api_oauth.TwitterCredentialsHandler),
     (r'/api/oauth/twitter/credenciales/(.*)', api_oauth.TwitterHandler),
 
     # Special URIs to perform the Server-side Twitter login flow
@@ -57,13 +58,15 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/facebook/signup',api_oauth.FacebookSignUpHandler),
     (r'/api/oauth/facebook/login', api_oauth.FacebookLoginHandler),
     (r'/api/oauth/facebook/logout', api_oauth.FacebookLogoutHandler),
+    (r'/api/oauth/facebook/credenciales', api_oauth.FacebookCredentialsHandler),
     (r'/api/oauth/facebook/credenciales/(.*)', api_oauth.FacebookHandler),
-    
+
     (r'/api/oauth/googleplus/signup',api_oauth.GooglePlusSignUpHandler),
     (r'/api/oauth/googleplus/login', api_oauth.GooglePlusLoginHandler),
     (r'/api/oauth/googleplus/logout', api_oauth.GooglePlusLogoutHandler),
+    (r'/api/oauth/googleplus/credenciales', api_oauth.GooglePlusHandler),
     (r'/api/oauth/googleplus/credenciales/(.*)', api_oauth.GooglePlusHandler),
-    
+
     (r'/api/oauth/stackoverflow/credenciales', api_oauth.StackOverflowContainerHandler),
     (r'/api/oauth/stackoverflow/credenciales/(.*)', api_oauth.StackOverflowCredentialHandler),
 
@@ -79,4 +82,3 @@ app = webapp2.WSGIApplication([
     (r'/api/subscriptions', api_contacto.SubscriptionHandler),
 
     ], debug=True)
-
