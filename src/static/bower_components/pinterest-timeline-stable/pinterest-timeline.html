@@ -103,7 +103,9 @@ Example:
         min-width: 470px;
         width: 470px;
         height: 400px;
-        margin:5px;
+        background-color: white;
+        overflow: hidden;
+        position: relative;
       }
 
       paper-toolbar.red {
@@ -145,18 +147,21 @@ Example:
           background: -webkit-linear-gradient(top,#BC3E3E,#EF3838);
       }
 
-      .menu{
-        margin-right: 0px !important;
-      }
-
       .dropdown-content{
         background: -webkit-linear-gradient(top,#EC1515,#CB2C2C);
+        width: 150px;
         max-width: 150px;
         text-align: center;
         font-family: arial;
         font-size: 14px;
         padding: 2px;
         color: white;
+
+        position: absolute;
+        z-index: 1;
+        float: right;
+        right: -155px;
+        transition: .5s ease;
       }
 
       .pin{
@@ -173,6 +178,7 @@ Example:
         text-align: center;  
         overflow-y: scroll;
         max-height: calc( 100% - 70px );
+        width: 100%;
         position: relative;       
       }​
     </style>
@@ -187,29 +193,27 @@ Example:
           {{get_index}}
         </p>
         <paper-icon-button icon="icons:arrow-forward" on-click="next"></paper-icon-button>
-        <paper-menu-button vertical-offset="56" horizontal-offset="-82">
-          <paper-icon-button icon="menu" class="menu dropdown-trigger"></paper-icon-button>
-          <paper-menu class="dropdown-content" role="listbox">
-            <hr>
-            <b>{{words.following-boards}}:</b>
-            <hr>
-            <template is="dom-repeat" items="[[following_boards]]">
-
-                <paper-button raised class="item" on-click="get_pins">{{item.name}}</paper-button>
-
-            </template>
-            <hr>
-            <b>{{words.my-boards}}:</b>
-            <hr>
-            <template is="dom-repeat" items="[[boards]]">
-
-                <paper-button raised class="item" on-click="get_pins">{{item.name}}</paper-button>
-
-            </template>
-          </paper-menu>
-        </paper-menu-button>
+        <paper-icon-button icon="menu" class="menu" on-click="toggle"></paper-icon-button>
       </paper-toolbar>
     </paper-header-panel>
+    <paper-menu id="dropdown-content" class="dropdown-content" role="listbox">
+      <hr>
+      <b>{{words.following-boards}}:</b>
+      <hr>
+      <template is="dom-repeat" items="[[following_boards]]">
+
+          <paper-button raised class="item" on-click="get_pins">{{item.name}}</paper-button>
+
+      </template>
+      <hr>
+      <b>{{words.my-boards}}:</b>
+      <hr>
+      <template is="dom-repeat" items="[[boards]]">
+
+          <paper-button raised class="item" on-click="get_pins">{{item.name}}</paper-button>
+
+      </template>
+    </paper-menu>
     <div class="content">
       <!-- PINS -->
       <template is="dom-repeat" items="{{pins}}">
@@ -467,6 +471,16 @@ Example:
         
       },
 
+      toggle: function(){
+        if(this.$['dropdown-content'].style.right=="-155px"){
+          this.$['dropdown-content'].style.right="0";
+        }
+        else{
+          this.$['dropdown-content'].style.right="-155px";
+        }
+        
+      },
+
       // Element Lifecycle
 
       attached: function() {
@@ -477,6 +491,7 @@ Example:
         // visual state or active behavior (measuring sizes, beginning animations,
         // loading resources, etc).
         this.get_user();
+        this.$['dropdown-content'].style.right="-155px";
 
       },
 
