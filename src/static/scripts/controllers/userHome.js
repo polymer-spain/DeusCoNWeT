@@ -388,7 +388,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
               });
               break;
             default:
-              $backend.addTokens(social_network, e.datail.userId, token, $scope.user.user_id).error(registerTokenError);
+              $backend.addTokens(social_network, e.detail.userId, token, $scope.user.user_id).error(registerTokenError);
               break;
           }
         });

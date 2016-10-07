@@ -147,7 +147,10 @@ function ($http, $location, $rootScope, $cookies) {
   // Añade un token de una recial al sistema
   this.addTokens = function(socialNetwork, token_id, access_token, user_id, oauth_verifier){
     var uri,
-    data = 'token_id=' + token_id + '&access_token=' + access_token,
+    data = {
+      token_id:token_id,
+      access_token:access_token
+    },
     request, verb;
 
     switch (socialNetwork) {
