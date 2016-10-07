@@ -82,7 +82,7 @@ picbit.directive("ngContainer", function () {
 				$(newTimeline[0]).addClass('context-menu');
 				newTimeline.css({width:'100%',height:'100%'});
 				$.contextMenu({
-					selector: '.context-menu', 
+					selector: '.context-menu',
 					callback: function(key, options) {
 						options.$trigger.parent().remove();
 						element.scope().removeElement(id);
@@ -153,7 +153,7 @@ picbit.directive("ngCreateElement", function () {
 			/* Evitamos la accion por defecto y la propagacion a los hijos*/
 			e.preventDefault();
 			e.stopPropagation();
-			var attributes, newTimeline, injector, $compile, key;
+			var newTimeline, injector, $compile, key;
 			/* Cogemos el objeto que tuvo lugar en el intercambio de datos */
 
 			/* Si no esta repetido, lo añadimos al dashboard */
@@ -191,7 +191,7 @@ picbit.directive("ngCreateElement", function () {
 				$(newTimeline[0]).addClass('context-menu');
 				newTimeline.css({width:'100%',height:'100%'});
 				$.contextMenu({
-					selector: '.context-menu', 
+					selector: '.context-menu',
 					callback: function(key, options) {
 						options.$trigger.parent().remove();
 						element.scope().removeElement(scope.idElement);
@@ -208,7 +208,7 @@ picbit.directive("ngCreateElement", function () {
 				/* Forzamos la fase de compile de angular para que cargue las directivas del
          * nuevo elemento
          */
-				
+
 				element[0].setAttribute('disabled', true);
 				injector = container.injector();
 				$compile = injector.get("$compile");
@@ -238,15 +238,15 @@ picbit.directive("ngCreateElement", function () {
 		};
 		element.attr("draggable", "true");
 		element.on("dragstart", function(e){
-			var canExecute = $(element)[0].getAttribute('disabled') == "false" || !element.attr('disabled');
-			canExecute &= scope.condition && scope.condition !== 'false';
+			var canExecute = $(element)[0].getAttribute('disabled') === "false" || !element.attr('disabled');
+			canExecute = canExecute && scope.condition && scope.condition !== 'false';
 			if (canExecute){
 				scope.comienzo(e);
 			}
 		});
 		element.on('dblclick', function(e){
-			var canExecute = $(element)[0].getAttribute('disabled') == "false" || !element.attr('disabled');
-			canExecute &= scope.condition && scope.condition !== 'false';
+			var canExecute = $(element)[0].getAttribute('disabled') === "false" || !element.attr('disabled');
+			canExecute = canExecute && scope.condition && scope.condition !== 'false';
 			if (canExecute){
 				scope.click(e);
 			}

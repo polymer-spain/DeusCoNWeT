@@ -11,7 +11,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
     // loads references for this
     (function(){
-      // TODO borrar esto, es para probar traffic
       if ($scope.user.references){
         $scope.user.references.forEach(function(value,index){
           var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);

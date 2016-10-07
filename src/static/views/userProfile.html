@@ -78,10 +78,6 @@
           <login-facebook data-role="login" sort key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
           <hr>
         </div>
-        <div class="horizontal center layout loginSection" ng-class="{logged: existToken('instagram')}">
-          <p>{{language.user_profile.permission}}</p>
-          <instagram-login data-role="login" sort client_id="34af286560fc492cbabc62285f098047" redirect_uri="{{domain}}"></instagram-login>
-        </div>
         <div class="horizontal center layout loginSection" ng-class="{logged: existToken('twitter')}">
           <p>{{language.user_profile.permission}}</p>
           <twitter-login data-role="login" sort endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
