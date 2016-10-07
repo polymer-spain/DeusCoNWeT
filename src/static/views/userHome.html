@@ -94,12 +94,12 @@
                 <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter"
                  pre="{{item.socialNetwork && user.tokens[item.social_network]}}">
                   <!-- token required-->
-                  <span class="label label-warning warning" ng-hide="need_token(item.socialNetwork, user.tokens[item.social_network])">{{language.noToken}}</span>
-                  <button ng-hide="need_token(item.socialNetwork, user.tokens[item.social_network])" ng-click="login(item.component_id, $event)" class="tokenDisabled">
+                  <span class="label label-warning warning" ng-hide="user.tokens[item.social_network]">{{language.noToken}}</span>
+                  <button ng-hide="user.tokens[item.social_network]" ng-click="login(item.component_id, $event)" class="tokenDisabled">
                     {{language.noTokenDescription}}
                   </button>
                   <!-- token not required -->
-                  <div ng-show="need_token(item.socialNetwork, user.tokens[item.social_network])" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
+                  <div ng-show="user.tokens[item.social_network]" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
                     {{item.description}}
                   </div>
                   <div class="componentData horizontal layout">

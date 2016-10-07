@@ -96,10 +96,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $(id.name).parent().remove();
     };
 
-    $scope.need_token = function(social_network,token){
-      var need = !social_network || token? true:false;
-      return need;
-    };
     // Cierra las listas cuando se pulsa sobro cualquier otro lado del dashboard
     $('#userHome').click(function(event){
       if (!event.target.hasAttribute('data-button') && !event.target.hasAttribute('data-list')){
