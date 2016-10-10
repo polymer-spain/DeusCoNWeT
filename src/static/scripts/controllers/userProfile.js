@@ -99,7 +99,7 @@ function ($scope, $rootScope, $backend, $http) {
 		$scope.$apply(function(){
 			var socialNetwork = e.detail.redSocial;
 			var token = e.detail.token;
-			var token_id = e.detail.token_id || undefined;
+			var token_id = e.detail.userId || undefined;
 			$rootScope.user = $rootScope.user || {tokens:{}};
 			$rootScope.user.tokens[socialNetwork] = token;
 
