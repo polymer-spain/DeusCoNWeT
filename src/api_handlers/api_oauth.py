@@ -582,6 +582,15 @@ class FacebookLogoutHandler(OauthLogoutHandler):
     def post(self):
         self.post_logout("facebook")
 
+class FacebookCredentialsHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Facebook credentials resource.
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in Facebook)
+    """
+    def put(self):
+        self.put_credentials("facebook")
+
 # HANDLERS FOR RESOURCES RELATED TO GITHUB
 class GitHubCredentialHandler(OAuthCredentialProviderHandler):
     """
@@ -714,6 +723,14 @@ class GooglePlusLogoutHandler(OauthLogoutHandler):
     def post(self):
         self.post_logout("googleplus")
 
+class GooglePlusCredentialsHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Googleplus credentials resource.
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in Googleplus)
+    """
+    def put(self):
+        self.put_credentials("googleplus")
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
 class InstagramCredentialHandler(OAuthCredentialProviderHandler):
@@ -740,7 +757,7 @@ class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Instagram credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+        post -- Adds a new set of credentials (token_id and access_token in Instagram)
     """
     def put(self):
         self.put_credentials("instagram")
@@ -771,7 +788,7 @@ class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Linkedin credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+        post -- Adds a new set of credentials (token_id and access_token in Linkedin)
     """
     def put(self):
         self.put_credentials("linkedin")
@@ -802,7 +819,7 @@ class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Stackoverflow credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+        post -- Adds a new set of credentials (token_id and access_token in Stackoverflow)
     """
     def put(self):
         self.put_credentials("stackoverflow")
@@ -898,6 +915,14 @@ class TwitterHandler(OauthCredentialsHandler):
     def delete(self, token_id):
         self.delete_credentials("twitter", token_id)
 
+class TwitterCredentialsHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Twitter credentials resource.
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in Twitter)
+    """
+    def put(self):
+        self.put_credentials("twitter")
 
 class TwitterSignUpHandler(SessionHandler):
     """ This class is a resource that represents the sign-up
