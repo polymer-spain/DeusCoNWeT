@@ -15,7 +15,6 @@
     $routeProvider
     .when('/', {
       templateUrl: 'views/landingPage.html',
-      //controller: 'MainController',
       resolve: {
         auth: ['$cookies', '$backend', '$rootScope', '$q', '$location', function ($cookies, $backend, $rootScope, $q, $location) {
           var cookieSession = $cookies.get('session');

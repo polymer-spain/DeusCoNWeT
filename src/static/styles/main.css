@@ -45,7 +45,14 @@ paper-toolbar.header .title {
 	cursor: pointer;
 }
 .dropdown {
-	padding: 0px;
+	padding: 0;
+}
+.dropdown > .dropdown-toggle{
+	border:none;
+	background-color:transparent;
+	text-shadow:none;
+	box-shadow: none;
+	color:white;
 }
 .dropdown-menu {
 	min-width: inherit;
