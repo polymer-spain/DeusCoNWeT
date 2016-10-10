@@ -227,5 +227,21 @@ function ($http, $location, $rootScope, $cookies) {
     };
     return $http(request);
   };
+
+  this.setNewNetwork = function(access_token, token_id,social_network){
+    var uri = this.endpoint + '/api/oauth/' + social_network + '/credenciales';
+    var params = {
+      access_token: access_token,
+      token_id: token_id
+    };
+    var request = {
+      method: 'PUT',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      data: params
+    };
+    return $http(request);
+
+  };
 }
 ]);
