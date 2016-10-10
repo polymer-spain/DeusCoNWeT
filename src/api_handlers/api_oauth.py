@@ -586,7 +586,7 @@ class FacebookCredentialsHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Facebook credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in Facebook)
+        put -- Adds a new set of credentials (token_id and access_token in Facebook)
     """
     def put(self):
         self.put_credentials("facebook")
@@ -727,7 +727,7 @@ class GooglePlusCredentialsHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Googleplus credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in Googleplus)
+        put -- Adds a new set of credentials (token_id and access_token in Googleplus)
     """
     def put(self):
         self.put_credentials("googleplus")
@@ -757,7 +757,7 @@ class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Instagram credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in Instagram)
+        put -- Adds a new set of credentials (token_id and access_token in Instagram)
     """
     def put(self):
         self.put_credentials("instagram")
@@ -921,7 +921,7 @@ class TwitterCredentialsHandler(OAuthCredentialsContainerHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in Twitter)
     """
-    def put(self):
+    def post(self):
         self.put_credentials("twitter")
 
 class TwitterSignUpHandler(SessionHandler):
