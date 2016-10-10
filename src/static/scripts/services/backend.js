@@ -241,7 +241,6 @@ function ($http, $location, $rootScope, $cookies) {
       data: params
     };
     return $http(request);
-
   };
 }
 ]);
