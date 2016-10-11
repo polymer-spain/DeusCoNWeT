@@ -230,12 +230,9 @@ function ($http, $location, $rootScope, $cookies) {
 
   this.setNewNetwork = function(access_token, token_id,social_network){
     var uri = this.endpoint + '/api/oauth/' + social_network + '/credenciales';
-    var params = {
-      access_token: access_token,
-      token_id: token_id
-    };
+    var params = 'access_token=' + access_token + '&token_id=' + token_id
     var request = {
-      method: 'PUT',
+      method: social_network === 'github'? 'POST': 'PUT',
       url: uri,
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       data: params

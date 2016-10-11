@@ -40,7 +40,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         attributes: {
           token: undefined,
           language: ":language",
-          component_base:"./"
+          component_base:"./bower_components/pinterest-timeline-stable/"
         },
         component_id:'pinterest-timeline',
         description:"Web component to obtain the timeline of pinterest",

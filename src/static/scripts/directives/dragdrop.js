@@ -137,8 +137,7 @@ picbit.directive("ngContainer", function () {
 
 picbit.directive("ngCreateElement", function () {
 	"use strict";
-	function link(scope, element) {
-
+	function link(scope, element,attrs) {
 		scope.comienzo = function (evento) {
 
 			$('#store-modal').modal('toggle');
