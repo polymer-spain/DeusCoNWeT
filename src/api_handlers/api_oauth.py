@@ -683,7 +683,7 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         self.response.write(json.dumps(response))
         if stored_credentials == None:
             # Almacena las credenciales en una entidad Token
-            user_credentials = ndb_pb.insertUser(user, "github", access_token,
+            user_credentials = ndb_pb.insertToken(user, "github", access_token,
                                 user_details["login"])
             self.response.set_status(201)
         else:
