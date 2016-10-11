@@ -660,6 +660,12 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         # connection.close()
         # self.response.set_status(200)
 
+        """# Obtenemos la informacion del usuario registrado para 
+                                        # almacenar correctamente la informacion
+                                
+                                        cookie_value = self.request.cookies.get("session")
+                                        user = self.getUserInfo(cookie_value)"""
+
         # Obtenemos los detalles del usuario autenticado
         connectionAPI = httplib.HTTPSConnection("api.github.com")
         headers = {"Accept": "application/vnd.github.v3+json",
@@ -677,8 +683,8 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         self.response.write(json.dumps(response))
         if stored_credentials == None:
             # Almacena las credenciales en una entidad Token
-            user_credentials = ndb_pb.insertUser("github",
-                    str(user_details["login"]), access_token)
+            user_credentials = ndb_pb.insertUser(user, "github", access_token,
+                                user_details["login"])
             self.response.set_status(201)
         else:
             # Almacenamos el access token recibido
