@@ -247,7 +247,7 @@ class User(ndb.Model):
   tech_exp = ndb.StringProperty() # This field is set through the cuestionaire
   social_nets_use = ndb.StringProperty() # This field is set through the cuestionaire
   gender = ndb.StringProperty() # This field is set through the cuestionaire
-  # new = ndb.IntegerProperty(default=0)
+  new = ndb.IntegerProperty(default=0)
 
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
@@ -496,9 +496,11 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
 
-  # if not user == None:
-  #   if user.new == 0:
-  #     assignPredeterminedComponentsToUser(user.)
+  if not user == None:
+    if user.new == 0:
+      assignPredeterminedComponentsToUser(user.id())
+      user.new = 1
+      user.put()
     rates = user.rates; nets = user.net_list
     user_component_list = [];  net_names = []
     # Componemos la lista de redes a la que está suscrito un usuario

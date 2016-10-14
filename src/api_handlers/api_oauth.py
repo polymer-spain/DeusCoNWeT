@@ -125,8 +125,6 @@ class OauthSignUpHandler(SessionHandler):
                     # Generate a valid username for a new user
                     user_key = ndb_pb.insertUser(social_network,
                             token_id, access_token, user_data)
-                    # Assigns to the user a predetermined set of components
-                    ndb_pb.assignPredeterminedComponentsToUser(user_key)
                     # Creates the session
                     session_id = self.login(user_key)
 
@@ -718,7 +716,7 @@ class GitHubContainerHandler(webapp2.RequestHandler):
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(401)
-            
+
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):
     """
