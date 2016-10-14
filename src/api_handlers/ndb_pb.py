@@ -498,7 +498,7 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
 
   if not user == None:
     if user.new == 0:
-      assignPredeterminedComponentsToUser(user.id())
+      assignPredeterminedComponentsToUser(user.key)
       user.new = 1
       user.put()
     rates = user.rates; nets = user.net_list
