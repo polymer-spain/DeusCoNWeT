@@ -329,16 +329,10 @@ def assignPredeterminedComponentsToUser(entity_key):
   # Obtains the predetermined components of the system and adds it to the User
   # We consider that we will have at most 10 predetermined components in our system
   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
-  print "======================================"
-  print "Components asigned to be predetermined"
-  print predetermined_comps
-  print "======================================"
+  
   for comp in predetermined_comps:
     st = activateComponentToUser(comp.component_id, entity_key)
-    print "**************************"
-    print "Estado de la llamada: (must be True)"
-    print st
-    print "**************************"
+    
 
 # Set the version for the component in the case it will be added to the user dashboard
 # def setPreasignedVersion(component_id):
@@ -502,7 +496,9 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
 
-  if not user == None:
+  # if not user == None:
+  #   if user.new == 0:
+  #     assignPredeterminedComponentsToUser(user.)
     rates = user.rates; nets = user.net_list
     user_component_list = [];  net_names = []
     # Componemos la lista de redes a la que está suscrito un usuario
