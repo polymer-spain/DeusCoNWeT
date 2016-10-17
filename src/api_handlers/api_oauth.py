@@ -638,84 +638,91 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         connection = httplib.HTTPSConnection(url)
         # Cogemos el codigo de la peticion
         body = json.loads(self.request.body)
-        code = self.request.POST['code']
-        params_token = urllib.urlencode({"client_id": client_id,
-                "client_secret": client_secret, "code": code})
-        # Realizamos la peticion en la conexion
-        connection.request("POST", access_token_url, params_token)
-        # Cogemos la respuesta de la peticion y realizamos un split
-        # para coger el valor del token
-        response_token = connection.getresponse()
-        data_token = response_token.read()
-        print "===========================================================" + data_token
-        access_token = data_token.split("&")
-        access_token = access_token[0].split("=")[1]
-        logging.info('Ya tiene codigo: ' + access_token)
-        # Gestion de la respuesta de webapp
-        # self.response.content_type = "application/json"
-        # response = {"token": "" + access_token + ""}
-        # self.response.write(json.dumps(response))
-        # connection.close()
-        # self.response.set_status(200)
+        try:
+            code = self.request.POST['code']
+            params_token = urllib.urlencode({"client_id": client_id,
+                    "client_secret": client_secret, "code": code})
+            # Realizamos la peticion en la conexion
+            connection.request("POST", access_token_url, params_token)
+            # Cogemos la respuesta de la peticion y realizamos un split
+            # para coger el valor del token
+            response_token = connection.getresponse()
+            data_token = response_token.read()
+            print "===========================================================" + data_token
+            access_token = data_token.split("&")
+            access_token = access_token[0].split("=")[1]
+            logging.info('Ya tiene codigo: ' + access_token)
+            # Gestion de la respuesta de webapp
+            # self.response.content_type = "application/json"
+            # response = {"token": "" + access_token + ""}
+            # self.response.write(json.dumps(response))
+            # connection.close()
+            # self.response.set_status(200)
 
-        # Obtenemos la informacion del usuario registrado para 
-        # almacenar correctamente la informacion
+            # Obtenemos la informacion del usuario registrado para 
+            # almacenar correctamente la informacion
            
-        cookie_value = self.request.cookies.get("session")
-        if not cookie_value == None:
-            user = self.getUserInfo(cookie_value)
-            if not user == None:
-                # Obtenemos los detalles del usuario autenticado
-                connectionAPI = httplib.HTTPSConnection("api.github.com")
-                headers = {"Accept": "application/vnd.github.v3+json",
-                            "User-Agent": "PicBit-App",
-                            "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
-                connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
-                response = connectionAPI.getresponse()
-                aux = response.read()
-                user_details = json.loads(aux)
-                # Buscamos el par id usuario/token autenticado en la base
-                stored_credentials = ndb_pb.searchToken(str(user_details["login"
-                        ]), "github")
-                response = {"token": access_token}
-                self.response.content_type = "application/json"
-                self.response.write(json.dumps(response))
-                if stored_credentials == None:
-                    # Almacena las credenciales en una entidad Token
-                    user_credentials = ndb_pb.insertToken(user, "github", access_token,
-                                        user_details["login"])
-                    self.response.set_status(201)
+            cookie_value = self.request.cookies.get("session")
+            if not cookie_value == None:
+                user = self.getUserInfo(cookie_value)
+                if not user == None:
+                    # Obtenemos los detalles del usuario autenticado
+                    connectionAPI = httplib.HTTPSConnection("api.github.com")
+                    headers = {"Accept": "application/vnd.github.v3+json",
+                                "User-Agent": "PicBit-App",
+                                "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
+                    connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
+                    response = connectionAPI.getresponse()
+                    aux = response.read()
+                    user_details = json.loads(aux)
+                    # Buscamos el par id usuario/token autenticado en la base
+                    stored_credentials = ndb_pb.searchToken(str(user_details["login"
+                            ]), "github")
+                    response = {"token": access_token}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    if stored_credentials == None:
+                        # Almacena las credenciales en una entidad Token
+                        user_credentials = ndb_pb.insertToken(user, "github", access_token,
+                                            user_details["login"])
+                        self.response.set_status(201)
+                    else:
+                        # Almacenamos el access token recibido
+                        user_id = ndb_pb.modifyToken(str(user_details["login"]),
+                                access_token, "github")
+                        self.response.set_status(200)
                 else:
-                    # Almacenamos el access token recibido
-                    user_id = ndb_pb.modifyToken(str(user_details["login"]),
-                            access_token, "github")
-                    self.response.set_status(200)
-            else:
-                # We invalidate the session cookies received
-                expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", "",
-                    path="/", domain=domain, secure=True, expires=expire_date)
-                # We delete and invalidate other cookies received, like the user logged nickname
-                # and social network in which the user performed the login
-                if not self.request.cookies.get("social_network") == None:
-                    self.response.set_cookie("social_network", "",
+                    # We invalidate the session cookies received
+                    expire_date = datetime.datetime(1970,1,1,0,0,0)
+                    self.response.set_cookie("session", "",
                         path="/", domain=domain, secure=True, expires=expire_date)
-                if not self.request.cookies.get("user") == None:
-                    self.response.set_cookie("user", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                    # We delete and invalidate other cookies received, like the user logged nickname
+                    # and social network in which the user performed the login
+                    if not self.request.cookies.get("social_network") == None:
+                        self.response.set_cookie("social_network", "",
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                    if not self.request.cookies.get("user") == None:
+                        self.response.set_cookie("user", "",
+                            path="/", domain=domain, secure=True, expires=expire_date)
 
-                # Builds the response
+                    # Builds the response
+                    response = \
+                        {"error": "The cookie session provided does not belongs to any active user"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
+            else:
                 response = \
-                    {"error": "The cookie session provided does not belongs to any active user"}
+                    {"error": "You must provide a session cookie"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        else:
+                self.response.set_status(401)
+        except:
             response = \
-                {"error": "You must provide a session cookie"}
+                {"error": "You must provide a valid pair of access_token and token_id in the request"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
-            self.response.set_status(401)
+            self.response.set_status(400)
 
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):
