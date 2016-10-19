@@ -610,7 +610,7 @@ class GitHubCredentialHandler(OAuthCredentialProviderHandler):
     def post(self,token_id):
         self.update_credentials("github", token_id)
 
-class GitHubContainerHandler(webapp2.RequestHandler):
+class GitHubContainerHandler(SessionHandler):
     """
     Class that represents the List of Github credentials resource.
     Methods:
