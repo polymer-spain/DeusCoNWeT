@@ -637,8 +637,8 @@ class GitHubContainerHandler(SessionHandler):
         print "=================================="
         connection = httplib.HTTPSConnection(url)
         # Cogemos el codigo de la peticion
+        body = json.loads(self.request.body)
         try:
-            body = json.loads(self.request.body)
             code = self.request.get('code')
             params_token = urllib.urlencode({"client_id": client_id,
                     "client_secret": client_secret, "code": code})
@@ -675,12 +675,12 @@ class GitHubContainerHandler(SessionHandler):
                     response = connectionAPI.getresponse()
                     aux = response.read()
                     user_details = json.loads(aux)
-                    # Buscamos el par id usuario/token autenticado en la base
-                    stored_credentials = ndb_pb.searchToken(str(user_details["login"
-                            ]), "github")
                     response = {"token": access_token}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
+                    # Buscamos el par id usuario/token autenticado en la base
+                    stored_credentials = ndb_pb.searchToken(str(user_details["login"
+                            ]), "github")
                     if stored_credentials == None:
                         # Almacena las credenciales en una entidad Token
                         user_credentials = ndb_pb.insertToken(user, "github", access_token,
