@@ -300,6 +300,10 @@ def getCipher(token_entity_key):
 # Returns: string that represents the version that will be served to the user
 @ndb.transactional()
 def setComponentVersion(general_component):
+  print "====================================="
+  print "Valor a la entrada del componente " + general_component.component_id
+  print general_component.version_index
+  print "-------------------------------------"
   version = ""
   if component_versioning == "dynamic":
     # We set the version that will be served to the user
@@ -308,7 +312,10 @@ def setComponentVersion(general_component):
     general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
     # Update the info about the component changed
     general_component.put()
-
+  print "====================================="
+  print "Valor a la salida del componente " + general_component.component_id
+  print general_component.version_index
+  print "-------------------------------------"
   # If the component versioning is set as static, we always set the stable version for the component
   elif component_versioning == "static":
     version="stable"
