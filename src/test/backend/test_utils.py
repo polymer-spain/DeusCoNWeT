@@ -33,7 +33,7 @@ def openConnection(remote=True):
     if remote:
         connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
     else:
-        connection = httplib.HTTPConnection("centauro.ls.fi.upm.es")
+        connection = httplib.HTTPConnection("localhost:8001")
         remoteConnection = False
 
 def closeConnection():
@@ -134,7 +134,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
     # We introduce a sligth latency (1 second) in order to emulate a "remote" behavior of the tests against the dev_server
     if not remoteConnection:
         time.sleep(1)
-    
+
     # We return the session cookie of the request, useful for the subsequent calls to the PicBit REST API
     return session_cookie
 
@@ -147,4 +147,3 @@ def tests_status():
     print 'Test Ok: ', nTestOK
     print "Tests Erróneos: ", nTestError, bcolors.ENDC
     print '==============================='
-

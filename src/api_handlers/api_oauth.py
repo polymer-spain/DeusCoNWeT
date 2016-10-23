@@ -490,6 +490,7 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     # Checks if the username was stored previously
                     stored_credentials = ndb_pb.getToken(token_id,
                             social_network)
+                    print "DEBUG: stored_credentials: " + str(stored_credentials)
                     if stored_credentials == None:
                         # Adds the token to the user credentials list
                         ndb_pb.insertToken(user, social_network, access_token, token_id)
@@ -659,9 +660,9 @@ class GitHubContainerHandler(SessionHandler):
             # connection.close()
             # self.response.set_status(200)
 
-            # Obtenemos la informacion del usuario registrado para 
+            # Obtenemos la informacion del usuario registrado para
             # almacenar correctamente la informacion
-           
+
             cookie_value = self.request.cookies.get("session")
             if not cookie_value == None:
                 user = self.getUserInfo(cookie_value)
