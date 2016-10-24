@@ -300,10 +300,6 @@ def getCipher(token_entity_key):
 # Returns: string that represents the version that will be served to the user
 @ndb.transactional()
 def setComponentVersion(general_component):
-  print "====================================="
-  print "Valor a la entrada del componente " + general_component.component_id
-  print general_component.version_index
-  print "-------------------------------------"
   version = ""
   if component_versioning == "dynamic":
     # We set the version that will be served to the user
@@ -315,10 +311,6 @@ def setComponentVersion(general_component):
   # If the component versioning is set as static, we always set the stable version for the component
   elif component_versioning == "static":
     version="stable"
-  print "====================================="
-  print "Valor a la salida del componente " + general_component.component_id
-  print general_component.version_index
-  print "-------------------------------------"
 
   return version
 
@@ -502,43 +494,36 @@ def getUserCredentialList(user_id):
 def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
+  rates = user.rates; nets = user.net_list
+  user_component_list = [];  net_names = []
+  # Componemos la lista de redes a la que está suscrito un usuario
+  for net in nets:
+    net_names.append(net.social_name)
 
-  if not user == None:
-    if user.new == 0:
-      assignPredeterminedComponentsToUser(user.key)
-      user.new = 1
-      user.put()
-    rates = user.rates; nets = user.net_list
-    user_component_list = [];  net_names = []
-    # Componemos la lista de redes a la que está suscrito un usuario
-    for net in nets:
-      net_names.append(net.social_name)
+  # Componemos la lista de componentes de usuario, detallada o reducida
+  user_component_list = getUserComponentList(user_id, component_detailed_info)
 
-    # Componemos la lista de componentes de usuario, detallada o reducida
-    user_component_list = getUserComponentList(user_id, component_detailed_info)
-
-    # for component in user_component_list:
-    #   comp = Component.query(Component.component_id == component["component_id"]).get()
-    #   comp.version = setComponentVersion(component["component_id"])
-    #   comp.test_count += 1
-    #   comp.put()
-
-    # Obtenemos la lista de credenciales de usuario
-    credential_list = getUserCredentialList(user_id)
-    print "respuesta de getUserCredentialList: "
-    print credential_list
-    # Componemos el diccionario con la info relativa al usuario
-    user_info = {"user_id": user.user_id,
-                "description": user.description,
-                "image": user.image,
-                "website": user.website,
-                "private_email": user.private_email,
-                "private_phone": user.private_phone,
-                "email": user.email,
-                "phone": user.phone,
-                "nets": net_names,
-                "token_ids": credential_list,
-                "components": user_component_list}
+  # for component in user_component_list:
+  #   comp = Component.query(Component.component_id == component["component_id"]).get()
+  #   comp.version = setComponentVersion(component["component_id"])
+  #   comp.test_count += 1
+  #   comp.put()
+  # Obtenemos la lista de credenciales de usuario
+  credential_list = getUserCredentialList(user_id)
+  print "respuesta de getUserCredentialList: "
+  print credential_list
+  # Componemos el diccionario con la info relativa al usuario
+  user_info = {"user_id": user.user_id,
+              "description": user.description,
+              "image": user.image,
+              "website": user.website,
+              "private_email": user.private_email,
+              "private_phone": user.private_phone,
+              "email": user.email,
+              "phone": user.phone,
+              "nets": net_names,
+              "token_ids": credential_list,
+              "components": user_component_list}
 
   return user_info
 
