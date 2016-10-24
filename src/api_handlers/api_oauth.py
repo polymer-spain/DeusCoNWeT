@@ -1104,3 +1104,4 @@ class TwitterLogoutHandler(OauthLogoutHandler):
     """
     def post(self):
         self.post_logout("twitter")
+
