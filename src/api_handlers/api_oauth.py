@@ -486,12 +486,9 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     # Gets the data from the request form
                     access_token = self.request.POST["access_token"]
                     token_id = self.request.POST["token_id"]
-                    print "DEBUG: access_token: " + access_token
-                    print "DEBUG: token_id: " + token_id
                     # Checks if the username was stored previously
                     stored_credentials = ndb_pb.getToken(token_id,
                             social_network)
-                    print "DEBUG: stored_credentials: " + str(stored_credentials)
                     if stored_credentials == None:
                         # Adds the token to the user credentials list
                         ndb_pb.insertToken(user, social_network, access_token, token_id)
