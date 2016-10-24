@@ -247,7 +247,6 @@ class User(ndb.Model):
   tech_exp = ndb.StringProperty() # This field is set through the cuestionaire
   social_nets_use = ndb.StringProperty() # This field is set through the cuestionaire
   gender = ndb.StringProperty() # This field is set through the cuestionaire
-  new = ndb.IntegerProperty(default=0)
 
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
