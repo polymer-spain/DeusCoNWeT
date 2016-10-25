@@ -674,7 +674,7 @@ class GitHubContainerHandler(SessionHandler):
                     response = connectionAPI.getresponse()
                     response_content = response.read()
                     user_details = json.loads(response_content)
-                    logging.info("User details: " + user_details)
+                    logging.info("User details: " + str(user_details.keys()))
                     if 'error' in user_details.keys() and user_details["error"] == 'bad_verification_code':
                         response = {"error": "The code passed is incorrect or expired."}
                         self.response.content_type = "application/json"
