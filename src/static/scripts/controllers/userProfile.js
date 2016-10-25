@@ -113,18 +113,20 @@ function ($scope, $rootScope, $backend, $http) {
 					var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
 					$http.get(uri).success(function (responseData) {
 						token_id = responseData.id;
+            $backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
 					});
 					break;
 				case 'twitter':
 					uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
 					$http.get(uri).success(function (responseData) {
 						token_id = responseData.token_id;
+            $backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
 					});
 					break;
 				default:
+          $backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
 					break;
 				}
-				$backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
 			});
 		}
 		(function(){
