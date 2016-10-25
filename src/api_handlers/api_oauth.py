@@ -672,24 +672,30 @@ class GitHubContainerHandler(SessionHandler):
                                 "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
                     connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
                     response = connectionAPI.getresponse()
-                    aux = response.read()
-                    user_details = json.loads(aux)
-                    response = {"token": access_token}
-                    self.response.content_type = "application/json"
-                    self.response.write(json.dumps(response))
-                    # Buscamos el par id usuario/token autenticado en la base
-                    stored_credentials = ndb_pb.searchToken(str(user_details["login"
-                            ]), "github")
-                    if stored_credentials == None:
-                        # Almacena las credenciales en una entidad Token
-                        user_credentials = ndb_pb.insertToken(user, "github", access_token,
-                                            user_details["login"])
-                        self.response.set_status(201)
+                    response_content = response.read()
+                    user_details = json.loads(response_content)
+                    if 'error' in user_details.keys() and user_details["error"] == 'bad_verification_code':
+                        response = {"error": "The code passed is incorrect or expired."}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        self.response.set_status(400)
                     else:
-                        # Almacenamos el access token recibido
-                        user_id = ndb_pb.modifyToken(str(user_details["login"]),
-                                access_token, "github")
-                        self.response.set_status(200)
+                        response = {"token": access_token}
+                        self.response.content_type = "application/json"
+                        self.response.write(json.dumps(response))
+                        # Buscamos el par id usuario/token autenticado en la base
+                        stored_credentials = ndb_pb.searchToken(str(user_details["login"
+                                ]), "github")
+                        if stored_credentials == None:
+                            # Almacena las credenciales en una entidad Token
+                            user_credentials = ndb_pb.insertToken(user, "github", access_token,
+                                                user_details["login"])
+                            self.response.set_status(201)
+                        else:
+                            # Almacenamos el access token recibido
+                            user_id = ndb_pb.modifyToken(str(user_details["login"]),
+                                    access_token, "github")
+                            self.response.set_status(200)
                 else:
                     # We invalidate the session cookies received
                     expire_date = datetime.datetime(1970,1,1,0,0,0)
