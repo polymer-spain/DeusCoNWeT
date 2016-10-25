@@ -500,8 +500,16 @@ class AssignComponentsHandler(SessionHandler):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
             user = self.getUserInfo(cookie_value)
+            print "==========================="
+            print "Valor de usuario manejado: "
+            print user.user_id
+            print "                           "
             if not user == None:
                 ndb_pb.assignPredeterminedComponentsToUser(user)
+                resp = {"resp": "OK"}
+                self.response.content_type = "application/json"
+                self.response.write(resp)
+                self.response.set_status(200)
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
