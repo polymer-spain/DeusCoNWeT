@@ -958,7 +958,7 @@ class TwitterCredentialsHandler(OAuthCredentialsContainerHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in Twitter)
     """
-    def post(self):
+    def put(self):
         self.put_credentials("twitter")
 
 class TwitterSignUpHandler(SessionHandler):
@@ -1103,4 +1103,3 @@ class TwitterLogoutHandler(OauthLogoutHandler):
     """
     def post(self):
         self.post_logout("twitter")
-
