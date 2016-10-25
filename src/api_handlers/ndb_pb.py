@@ -504,6 +504,16 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
     # Componemos la lista de componentes de usuario, detallada o reducida
     user_component_list = getUserComponentList(user_id, component_detailed_info)
 
+    # for component in user_component_list:
+    #   comp = Component.query(Component.component_id == component["component_id"]).get()
+    #   comp.version = setComponentVersion(component["component_id"])
+    #   comp.test_count += 1
+    #   comp.put()
+    # Obtenemos la lista de credenciales de usuario
+    credential_list = getUserCredentialList(user_id)
+    print "respuesta de getUserCredentialList: "
+    print credential_list
+
     # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
                 "description": user.description,
