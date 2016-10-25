@@ -94,6 +94,11 @@ function ($scope, $rootScope, $backend, $http) {
 	$scope.existToken = function(socialNetwork){
 		return $scope.user && $scope.user.tokens[socialNetwork];
 	};
+	$scope.closeForm = function(){
+		$backend.assignComponent($rootScope.user.userId).then(function(){
+			$scope.goto('user/:user');
+		});
+	};
 	function loginCallback(e){
 		//falta registralo
 		$scope.$apply(function(){
@@ -110,30 +115,30 @@ function ($scope, $rootScope, $backend, $http) {
 
 			switch(socialNetwork) {
 				case 'googleplus':
-					var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
-					$http.get(uri).success(function (responseData) {
-						token_id = responseData.id;
-            $backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
-					});
-					break;
+				var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
+				$http.get(uri).success(function (responseData) {
+					token_id = responseData.id;
+					$backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
+				});
+				break;
 				case 'twitter':
-					uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-					$http.get(uri).success(function (responseData) {
-						token_id = responseData.token_id;
-            $backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
-					});
-					break;
+				uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+				$http.get(uri).success(function (responseData) {
+					token_id = responseData.token_id;
+					$backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
+				});
+				break;
 				default:
-          $backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
-					break;
-				}
-			});
-		}
-		(function(){
-			$('#socialNetwork google-login').bind('google-logged', loginCallback);
-			$('#socialNetwork github-login').bind('github-logged', loginCallback);
-			$('#socialNetwork instagram-login').bind('instagram-logged', loginCallback);
-			$('#socialNetwork twitter-login').bind('twitter-logged', loginCallback);
-			$('#socialNetwork login-facebook').bind('facebook-logged', loginCallback);
-		})();
-	}]);
+				$backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
+				break;
+			}
+		});
+	}
+	(function(){
+		$('#socialNetwork google-login').bind('google-logged', loginCallback);
+		$('#socialNetwork github-login').bind('github-logged', loginCallback);
+		$('#socialNetwork instagram-login').bind('instagram-logged', loginCallback);
+		$('#socialNetwork twitter-login').bind('twitter-logged', loginCallback);
+		$('#socialNetwork login-facebook').bind('facebook-logged', loginCallback);
+	})();
+}]);

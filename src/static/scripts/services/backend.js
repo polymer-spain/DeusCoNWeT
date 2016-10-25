@@ -239,5 +239,16 @@ function ($http, $location, $rootScope, $cookies) {
     };
     return $http(request);
   };
+// /api/usuarios/{user_id}/assign
+  this.assignComponent = function(user_id){
+    var uri = this.endpoint + '/api/usuarios/' + user_id + 'assign';
+    var request = {
+      method: 'GET',
+      url: uri,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    };
+
+    return $http(request);
+  };
 }
 ]);

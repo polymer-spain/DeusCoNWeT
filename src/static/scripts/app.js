@@ -75,7 +75,7 @@
        }
     }).when('/user/:user_id/profile', {
       templateUrl: 'views/userProfile.html',
-       controller: 'UserProfileController',
+      controller: 'UserProfileController',
       resolve: {
         auth: ['$q', '$cookies', '$backend', '$rootScope', '$route', function ($q, $cookies, $backend, $rootScope, $route) {
            var responseUser, tokens;

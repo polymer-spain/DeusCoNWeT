@@ -29,12 +29,12 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
       element.invalid = false;
     }
   };
-  
+
   /* Clear the input camp*/
   $scope.clearInput = function () {
     document.querySelector('#username_input').value = "";
   };
-  
+
   /* Show button only when the input isn't void */
   document.querySelector("paper-input").addEventListener("bind-value-changed", function(event) {
       $scope.showSendButton = event.detail.value !== "" ? true : false;
