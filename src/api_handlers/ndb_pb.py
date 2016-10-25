@@ -514,6 +514,7 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
                 "email": user.email,
                 "phone": user.phone,
                 "nets": net_names,
+                "token_ids": credential_list,
                 "components": user_component_list}
 
   return user_info
