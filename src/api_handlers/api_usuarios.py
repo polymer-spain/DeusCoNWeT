@@ -496,43 +496,43 @@ class UserCredentialsHandler(SessionHandler):
 
 # Additional classes for handling resources
 class AssignComponentsHandler(SessionHandler):
-    def get(self):
-        cookie_value = self.request.cookies.get("session")
-        if not cookie_value == None:
-            user = self.getUserInfo(cookie_value)
-            print "==========================="
-            print "Valor de usuario manejado: "
-            print user.user_id
-            print "                           "
-            if not user == None:
-                ndb_pb.assignPredeterminedComponentsToUser(user)
-                resp = {"resp": "OK"}
-                self.response.content_type = "application/json"
-                self.response.write(resp)
-                self.response.set_status(200)
-            else:
-                # We invalidate the session cookies received
-                expire_date = datetime.datetime(1970,1,1,0,0,0)
-                self.response.set_cookie("session", "",
-                    path="/", domain=domain, secure=True, expires=expire_date)
-                # We delete and invalidate other cookies received, like the user logged nickname
-                # and social network in which the user performed the login
-                if not self.request.cookies.get("social_network") == None:
-                    self.response.set_cookie("social_network", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
-                if not self.request.cookies.get("user") == None:
-                    self.response.set_cookie("user", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+  def get(self):
+    cookie_value = self.request.cookies.get("session")
+    if not cookie_value == None:
+      user = self.getUserInfo(cookie_value)
+      print "==========================="
+      print "Valor de usuario manejado: "
+      print user.user_id
+      print "                           "
+      if not user == None:
+        ndb_pb.assignPredeterminedComponentsToUser(user)
+        resp = {"resp": "OK"}
+        self.response.content_type = "application/json"
+        self.response.write(resp)
+        self.response.set_status(200)
+      else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", "",
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+          self.response.set_cookie("social_network", "",
+              path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+          self.response.set_cookie("user", "",
+              path="/", domain=domain, secure=True, expires=expire_date)
 
-                # Builds the response
-                response = \
-                    {"error": "The cookie session provided does not belongs to any active user"}
-                self.response.content_type = "application/json"
-                self.response.write(json.dumps(response))
-                self.response.set_status(400)
-        else:
-            response = \
-                {"error": "You must provide a session cookie"}
-            self.response.content_type = "application/json"
-            self.response.write(json.dumps(response))
-            self.response.set_status(401)
+        # Builds the response
+        response = \
+          {"error": "The cookie session provided does not belongs to any active user"}
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps(response))
+        self.response.set_status(400)
+    else:
+      response = \
+          {"error": "You must provide a session cookie"}
+      self.response.content_type = "application/json"
+      self.response.write(json.dumps(response))
+      self.response.set_status(401)
