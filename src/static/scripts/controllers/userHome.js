@@ -387,7 +387,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
                 console.log('Problemas al intentar obtener el token_id de un usuario' );
               });
               break;
-	    case 'pinterest':break;
+      	    case 'pinterest':break;
+            case 'github':break;
             default:
               $backend.addTokens(social_network, e.detail.userId, token, $scope.user.user_id).error(registerTokenError);
               break;
