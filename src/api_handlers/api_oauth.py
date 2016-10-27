@@ -641,9 +641,11 @@ class GitHubContainerHandler(SessionHandler):
         try:
             body = json.loads(self.request.body)
             code = body["code"]
+            """
             print "===================================="
             print "Valor de code: " + code
             print "===================================="
+            """
             params_token = urllib.urlencode({"client_id": client_id,
                     "client_secret": client_secret, "code": code})
             # Realizamos la peticion en la conexion
