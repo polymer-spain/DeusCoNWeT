@@ -640,7 +640,7 @@ class GitHubContainerHandler(SessionHandler):
         # Cogemos el codigo de la peticion
         try:
             #body = json.loads(self.request.body)
-            code = self.request.body["code"]
+            code = self.request.body.POST["code"]
             print "===================================="
             print "Valor de code: " + code
             print "===================================="
