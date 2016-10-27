@@ -640,10 +640,10 @@ class GitHubContainerHandler(SessionHandler):
         # Cogemos el codigo de la peticion
         try:
             #body = json.loads(self.request.body)
-            code = self.request.get('code')
-            print "========================================"
+            code = self.request.body["code"]
+            print "===================================="
             print "Valor de code: " + code
-            print "========================================"
+            print "===================================="
             params_token = urllib.urlencode({"client_id": client_id,
                     "client_secret": client_secret, "code": code})
             # Realizamos la peticion en la conexion
