@@ -639,8 +639,8 @@ class GitHubContainerHandler(SessionHandler):
         connection = httplib.HTTPSConnection(url)
         # Cogemos el codigo de la peticion
         try:
-            #body = json.loads(self.request.body)
-            code = self.request.body.POST["code"]
+            body = json.loads(self.request.body)
+            code = body["code"]
             print "===================================="
             print "Valor de code: " + code
             print "===================================="
