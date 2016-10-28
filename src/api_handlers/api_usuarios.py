@@ -496,20 +496,23 @@ class UserCredentialsHandler(SessionHandler):
 
 # Additional classes for handling resources
 class AssignComponentsHandler(SessionHandler):
-  def get(self):
+  def get(self, user_id):
     cookie_value = self.request.cookies.get("session")
     if not cookie_value == None:
       user = self.getUserInfo(cookie_value)
-      print "==========================="
-      print "Valor de usuario manejado: "
-      print user.user_id
-      print "                           "
       if not user == None:
-        ndb_pb.assignPredeterminedComponentsToUser(user)
-        resp = {"resp": "OK"}
-        self.response.content_type = "application/json"
-        self.response.write(resp)
-        self.response.set_status(200)
+        user_logged = ndb_pb.getUserId(user)
+        user_info = ndb_pb.getUser(user_id)
+        if user_info == None:
+          self.response.content_type = "application/json"
+          self.response.write({"error": "The requested user does not exist"})
+          self.response.set_status(404)
+        elif not user_info == None and user_info == user_id:
+          ndb_pb.assignPredeterminedComponentsToUser(user)
+          resp = {"resp": "OK"}
+          self.response.content_type = "application/json"
+          self.response.write(resp)
+          self.response.set_status(200)
       else:
         # We invalidate the session cookies received
         expire_date = datetime.datetime(1970,1,1,0,0,0)
