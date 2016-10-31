@@ -97,9 +97,7 @@
           <div class="modal-body vertical layout center-center">
             <!-- Modal login -->
             <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" callback="{{domain}}" static="true"></google-login>
-            <br>
             <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
-            <br>
             <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
           </div>
         </div>
@@ -118,7 +116,17 @@
     </script>
     <!-- vendor -->
     <script src="vendor/jquery-2.2.3.min.js"></script>
-    <script src="vendor/bootstrap.min.js"></script>
+    <script>
+      jQuery.ajax({
+        url: 'vendor/bootstrap.min.js',
+        success: function (data) {
+          (new Function('document', 'window', data))
+            .call({}, wrap(document), wrap(window));
+          },
+        dataType: 'text'
+       });
+    </script>
+    <!-- <script src="vendor/bootstrap.min.js"></script>-->
     <script src="vendor/jquery-ui.min.js"></script>
     <script src="vendor/jquery.contextmenu.js"></script>
     <script src="vendor/toastr.min.js"></script>

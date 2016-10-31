@@ -241,7 +241,7 @@ function ($http, $location, $rootScope, $cookies) {
   };
 // /api/usuarios/{user_id}/assign
   this.assignComponent = function(user_id){
-    var uri = this.endpoint + '/api/usuarios/' + user_id + 'assign';
+    var uri = this.endpoint + '/api/usuarios/' + user_id + '/assign';
     var request = {
       method: 'GET',
       url: uri,

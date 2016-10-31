@@ -128,6 +128,7 @@ function ($scope, $rootScope, $backend, $http) {
 					$backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
 				});
 				break;
+        case 'github':break;
 				default:
 				$backend.setNewNetwork(token, token_id, socialNetwork).error(registerTokenError);
 				break;
