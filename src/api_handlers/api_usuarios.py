@@ -498,6 +498,9 @@ class UserCredentialsHandler(SessionHandler):
 class AssignComponentsHandler(SessionHandler):
   def get(self, user_id):
     cookie_value = self.request.cookies.get("session")
+    print "==========================================="
+    print "Valor de usuario recibido: " + user_id
+    print "==========================================="
     if not cookie_value == None:
       user = self.getUserInfo(cookie_value)
       if not user == None:
