@@ -99,7 +99,9 @@ paper-toolbar.footer {
 #landing-page paper-button{
 	margin-top:50px;
 }
-
+.button-login {
+  margin:8px 0;
+}
 .footer > paper-button:hover{
 	color: cadetblue;
 }
@@ -115,4 +117,3 @@ paper-button >a:hover{
 .toast.success {
 	opacity: 1 !important;
 }
-.toast
