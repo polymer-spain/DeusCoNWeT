@@ -508,7 +508,7 @@ class AssignComponentsHandler(SessionHandler):
         user_info = ndb_pb.getUser(user_id)
         if user_info == None:
           self.response.content_type = "application/json"
-          self.response.write({"error": "The requested user does not exist"})
+          self.response.write({"error": "The user does not exist"})
           self.response.set_status(404)
         elif not user_info == None and user_info == user_id:
           ndb_pb.assignPredeterminedComponentsToUser(user)
