@@ -32,8 +32,8 @@ import api_usuarios, api_componentes, api_contacto, api_oauth, api_auxiliar
 
 app = webapp2.WSGIApplication([
     (r'/api/componentes', api_componentes.ComponentListHandler),
-    (r'/api/componentes/(.*)', api_componentes.ComponentHandler),
     (r'/api/componentes/(.*)/valoracionComponente', api_componentes.ComponentRatingHandler),
+    (r'/api/componentes/(.*)', api_componentes.ComponentHandler),
 
     (r'/api/usuarios', api_usuarios.UserListHandler),
     (r'/api/usuarios/(.*)/profile', api_usuarios.ProfileHandler),
