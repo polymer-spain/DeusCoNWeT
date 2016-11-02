@@ -377,7 +377,15 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
         user.put()
 
         # We increase the counters that represents the times that a given component has been tested (general and versioned)
+        print "============================================="
+        print "El numero de indice antes de llamar a setComponentVersion: " 
+        print general_component.version_index
+        print "============================================="
         new_version = setComponentVersion(general_component)
+        print "============================================="
+        print "El numero de indice despues de llamar a setComponentVersion: " 
+        print general_component.version_index
+        print "============================================="
         general_component.version = new_version
         general_component.test_count += 1
         general_component.put()
