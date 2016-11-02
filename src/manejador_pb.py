@@ -36,9 +36,9 @@ app = webapp2.WSGIApplication([
     (r'/api/componentes/(.*)', api_componentes.ComponentHandler),
 
     (r'/api/usuarios', api_usuarios.UserListHandler),
-    (r'/api/usuarios/(\s)/profile', api_usuarios.ProfileHandler),
-    (r'/api/usuarios/(\s)/credentials', api_usuarios.UserCredentialsHandler),
-    (r'/api/usuarios/(\s)/assign', api_usuarios.AssignComponentsHandler),
+    (r'/api/usuarios/(\S)/profile', api_usuarios.ProfileHandler),
+    (r'/api/usuarios/(\S)/credentials', api_usuarios.UserCredentialsHandler),
+    (r'/api/usuarios/(\S)/assign', api_usuarios.AssignComponentsHandler),
     (r'/api/usuarios/(.*)', api_usuarios.UserHandler),
 
     (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
