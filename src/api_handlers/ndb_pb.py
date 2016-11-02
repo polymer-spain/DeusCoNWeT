@@ -299,6 +299,9 @@ def getCipher(token_entity_key):
 # Returns: string that represents the version that will be served to the user
 @ndb.transactional()
 def setComponentVersion(general_component):
+  print "====================================================="
+  print "Entrada en la llamada de setting"
+  print "====================================================="
   version = ""
   if component_versioning == "dynamic":
     # We set the version that will be served to the user
@@ -326,6 +329,9 @@ def getComponentEntity(component_id):
 def assignPredeterminedComponentsToUser(entity_key):
   # Obtains the predetermined components of the system and adds it to the User
   # We consider that we will have at most 10 predetermined components in our system
+  print "====================================================="
+  print "Entrada en la primera llamada de la asignacion"
+  print "====================================================="
   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
   
   for comp in predetermined_comps:
@@ -343,6 +349,9 @@ def assignPredeterminedComponentsToUser(entity_key):
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
 def activateComponentToUser(component_id, entity_key): #No entiendo lo que pretende hacer
+  print "====================================================="
+  print "Entrada en la llamada de la activacion"
+  print "====================================================="
   user = entity_key.get()
   general_component = Component.query(Component.component_id == component_id).get()
   user_component = None

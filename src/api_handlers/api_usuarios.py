@@ -508,6 +508,9 @@ class AssignComponentsHandler(SessionHandler):
           self.response.write({"error": "The user does not exist"})
           self.response.set_status(404)
         elif not user_info == None and user_info == user_id:
+          print "========================================="
+          print "Va a realizarse la llamada para la asignacion"
+          print "========================================="
           ndb_pb.assignPredeterminedComponentsToUser(user)
           resp = {"resp": "OK"}
           self.response.content_type = "application/json"
