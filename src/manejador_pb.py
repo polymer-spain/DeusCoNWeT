@@ -36,7 +36,7 @@ app = webapp2.WSGIApplication([
     (r'/api/componentes/(.*)', api_componentes.ComponentHandler),
 
     (r'/api/usuarios', api_usuarios.UserListHandler),
-    (r'/api/usuarios/([a-z][0-9]*)/profile', api_usuarios.ProfileHandler),
+    (r'/api/usuarios/(^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$)/profile', api_usuarios.ProfileHandler),
     (r'/api/usuarios/([])/credentials', api_usuarios.UserCredentialsHandler),
     (r'/api/usuarios/([])/assign', api_usuarios.AssignComponentsHandler),
     (r'/api/usuarios/(.*)', api_usuarios.UserHandler),
