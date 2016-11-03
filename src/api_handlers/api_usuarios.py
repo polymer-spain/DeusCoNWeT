@@ -519,6 +519,10 @@ class AssignComponentsHandler(SessionHandler):
           self.response.content_type = "application/json"
           self.response.write(resp)
           self.response.set_status(200)
+        else:
+          print "======================================="
+          print "Entro por donde me sale el bolo"
+          print "======================================="
       else:
         # We invalidate the session cookies received
         expire_date = datetime.datetime(1970,1,1,0,0,0)
