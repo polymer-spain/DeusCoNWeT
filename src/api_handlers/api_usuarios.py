@@ -515,10 +515,10 @@ class AssignComponentsHandler(SessionHandler):
           print "Va a realizarse la llamada para la asignacion"
           print "========================================="
           ndb_pb.assignPredeterminedComponentsToUser(user)
-          resp = {"resp": "OK"}
-          self.response.content_type = "application/json"
-          self.response.write(resp)
-          self.response.set_status(200)
+          # resp = {"resp": "OK"}
+          # self.response.content_type = "application/json"
+          # self.response.write(resp)
+          # self.response.set_status(200)
         else:
           print "======================================="
           print "Entro por donde me sale el bolo"
