@@ -504,7 +504,7 @@ class AssignComponentsHandler(SessionHandler):
         user_logged = ndb_pb.getUserId(user)
         user_info = ndb_pb.getUser(user_id)
         print "========================================="
-        print "Respuesta de getUser: " + user_info==None
+        print "Respuesta de getUser: " + str(user_info == None)
         print "========================================="
         if user_info == None:
           self.response.content_type = "application/json"
