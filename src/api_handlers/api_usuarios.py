@@ -510,7 +510,7 @@ class AssignComponentsHandler(SessionHandler):
           self.response.content_type = "application/json"
           self.response.write({"error": "The user does not exist"})
           self.response.set_status(404)
-        elif not user_info == None and user_info == user_id:
+        elif not user_info == None and user_logged == user_id:
           print "========================================="
           print "Va a realizarse la llamada para la asignacion"
           print "========================================="
