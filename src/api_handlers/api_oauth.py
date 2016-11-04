@@ -688,9 +688,6 @@ class GitHubContainerHandler(SessionHandler):
                     # Buscamos el par id usuario/token autenticado en la base
                     stored_credentials = ndb_pb.searchToken(str(user_details["login"
                             ]), "github")
-                    print "============================"
-                    print "Valor de stored_credentials: " + stored_credentials
-                    print "============================"
                     if stored_credentials == None:
                         print "============================="
                         print "Voy a hacer el insertToken"
