@@ -665,7 +665,8 @@ def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
   # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
   # We add the social network to the user's nets list
-  if not social_name in user.net_list:
+  social_aux = SocialUser(social_name="social_name")
+  if not social_aux in user.net_list:
     social_network = SocialUser(social_name=social_name)
     user.net_list.append(social_network)
   # Updates the user
