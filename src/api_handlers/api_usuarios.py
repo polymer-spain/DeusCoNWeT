@@ -215,7 +215,7 @@ class UserHandler(SessionHandler):
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
           self.response.set_status(404)
-        elif not user_info == None and user_logged_id==user_id: 
+        elif not user_info == None and user_logged_id == user_id: 
           values = self.request.POST
           # Dict that contains the user values and fields to be updated
           update_data = {}
@@ -377,7 +377,7 @@ class ProfileHandler(SessionHandler):
           self.response.content_type = "application/json"
           self.response.write({"error": "The requested user does not exist"})
           self.response.set_status(404)
-        elif not user_info == None and user_info == user_id:
+        elif not user_info == None and user_logged_id == user_id:
           values = self.request.POST
           # Dictionary in which the updated data will be stored
           updated_data = {}

@@ -718,21 +718,21 @@ def searchGroups(entity_key): #FUNCIONA
 
   return json.dumps(ans)
 
-def insertNetwork(entity_key, name, data=None): # FUNCIONA
-  user = entity_key.get()
-  user_social = SocialUser(social_name=name)
-  if not data == None:
-    if data.has_key("following"):
-      user_social.following = data["following"]
-    if data.has_key("followers"):
-      user_social.followers = data["followers"]
-    if data.has_key("followers_url"):
-      user_social.followers_url = data["followers_url"]
-    if data.has_key("following_url"):
-      user_social.following_url = data["url_sig"]
+# def insertNetwork(entity_key, name, data=None): # FUNCIONA
+#   user = entity_key.get()
+#   user_social = SocialUser(social_name=name)
+#   if not data == None:
+#     if data.has_key("following"):
+#       user_social.following = data["following"]
+#     if data.has_key("followers"):
+#       user_social.followers = data["followers"]
+#     if data.has_key("followers_url"):
+#       user_social.followers_url = data["followers_url"]
+#     if data.has_key("following_url"):
+#       user_social.following_url = data["url_sig"]
 
-  user.net_list.append(user_social)
-  user.put()
+#   user.net_list.append(user_social)
+#   user.put()
 
 
 def searchNetwork(entity_key): # FUNCIONA
