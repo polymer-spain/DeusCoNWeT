@@ -503,26 +503,26 @@ class AssignComponentsHandler(SessionHandler):
       if not user == None:
         user_logged = ndb_pb.getUserId(user)
         user_info = ndb_pb.getUser(user_id)
-        print "========================================="
-        print "Respuesta de getUser: " + str(user_info == None)
-        print "========================================="
+        # print "========================================="
+        # print "Respuesta de getUser: " + str(user_info == None)
+        # print "========================================="
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write({"error": "The user does not exist"})
           self.response.set_status(404)
         elif not user_info == None and user_logged == user_id:
-          print "========================================="
-          print "Va a realizarse la llamada para la asignacion"
-          print "========================================="
+          # print "========================================="
+          # print "Va a realizarse la llamada para la asignacion"
+          # print "========================================="
           ndb_pb.assignPredeterminedComponentsToUser(user)
           # resp = {"resp": "OK"}
           # self.response.content_type = "application/json"
           # self.response.write(resp)
           # self.response.set_status(200)
-        else:
-          print "======================================="
-          print "Entro por donde me sale el bolo"
-          print "======================================="
+        # else:
+        #   print "======================================="
+        #   print "Entro por donde me sale el bolo"
+        #   print "======================================="
       else:
         # We invalidate the session cookies received
         expire_date = datetime.datetime(1970,1,1,0,0,0)
