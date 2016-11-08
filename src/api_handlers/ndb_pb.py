@@ -299,9 +299,9 @@ def getCipher(token_entity_key):
 # Returns: string that represents the version that will be served to the user
 @ndb.transactional()
 def setComponentVersion(general_component):
-  print "====================================================="
-  print "Entrada en la llamada de setting"
-  print "====================================================="
+  # print "====================================================="
+  # print "Entrada en la llamada de setting"
+  # print "====================================================="
   version = ""
   if component_versioning == "dynamic":
     # We set the version that will be served to the user
