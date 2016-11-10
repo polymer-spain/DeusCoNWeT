@@ -58,6 +58,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" ng-click="submitForm()" class="btn btn-primary">{{language.send}}</button>
+        <button type="button" ng-click="closeForm()" class="btn btn-default">{{language.close}}</button>
       </div>
     </div>
     <div id="socialNetwork">
@@ -83,6 +84,9 @@
           <twitter-login data-role="login" sort endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
           <hr>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="closeForm()" class="btn btn-default">{{language.close}}</button>
       </div>
     </div>
   </div>
