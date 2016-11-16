@@ -113,9 +113,9 @@ class OauthSignUpHandler(SessionHandler):
             token_id = self.request.POST["token_id"]
             user_identifier = self.request.POST["user_identifier"]
             # Checks if the username was stored previously
-            logging.info('access_token: ' +access_token)
-            logging.info('token_id: ' +token_id)
-            logging.info('user_identifier: ' +user_identifier)
+            # logging.info('access_token: ' +access_token)
+            # logging.info('token_id: ' +token_id)
+            # logging.info('user_identifier: ' +user_identifier)
             stored_credentials = ndb_pb.searchToken(token_id, social_network)
             if stored_credentials == None: # Not found
                 user_data = {}
@@ -654,10 +654,10 @@ class GitHubContainerHandler(SessionHandler):
             # para coger el valor del token
             response_token = connection.getresponse()
             data_token = response_token.read()
-            print "===========================================================" + data_token
+            # print "===========================================================" + data_token
             access_token = data_token.split("&")
             access_token = access_token[0].split("=")[1]
-            logging.info('Ya tiene codigo: ' + access_token)
+            # logging.info('Ya tiene codigo: ' + access_token)
             # Gestion de la respuesta de webapp
             # self.response.content_type = "application/json"
             # response = {"token": "" + access_token + ""}
@@ -681,7 +681,7 @@ class GitHubContainerHandler(SessionHandler):
                     response = connectionAPI.getresponse()
                     response_content = response.read()
                     user_details = json.loads(response_content)
-                    logging.info("User details: " + str(user_details))
+                    # logging.info("User details: " + str(user_details))
                     response = {"token": access_token}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
@@ -689,9 +689,9 @@ class GitHubContainerHandler(SessionHandler):
                     stored_credentials = ndb_pb.searchToken(str(user_details["login"
                             ]), "github")
                     if stored_credentials == None:
-                        print "============================="
-                        print "Voy a hacer el insertToken"
-                        print "============================="
+                        # print "============================="
+                        # print "Voy a hacer el insertToken"
+                        # print "============================="
                         # Almacena las credenciales en una entidad Token
                         user_credentials = ndb_pb.insertToken(user, "github", access_token,
                                             user_details["login"])

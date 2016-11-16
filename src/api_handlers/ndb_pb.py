@@ -329,9 +329,9 @@ def getComponentEntity(component_id):
 def assignPredeterminedComponentsToUser(entity_key):
   # Obtains the predetermined components of the system and adds it to the User
   # We consider that we will have at most 10 predetermined components in our system
-  print "====================================================="
-  print "Entrada en la primera llamada de la asignacion"
-  print "====================================================="
+  # print "====================================================="
+  # print "Entrada en la primera llamada de la asignacion"
+  # print "====================================================="
   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
   
   for comp in predetermined_comps:
@@ -349,9 +349,9 @@ def assignPredeterminedComponentsToUser(entity_key):
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
 def activateComponentToUser(component_id, entity_key): #No entiendo lo que pretende hacer
-  print "====================================================="
-  print "Entrada en la llamada de la activacion"
-  print "====================================================="
+  # print "====================================================="
+  # print "Entrada en la llamada de la activacion"
+  # print "====================================================="
   user = entity_key.get()
   general_component = Component.query(Component.component_id == component_id).get()
   user_component = None
@@ -386,15 +386,15 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
         user.put()
 
         # We increase the counters that represents the times that a given component has been tested (general and versioned)
-        print "============================================="
-        print "El numero de indice antes de llamar a setComponentVersion: " 
-        print general_component.version_index
-        print "============================================="
+        # print "============================================="
+        # print "El numero de indice antes de llamar a setComponentVersion: " 
+        # print general_component.version_index
+        # print "============================================="
         new_version = setComponentVersion(general_component)
-        print "============================================="
-        print "El numero de indice despues de llamar a setComponentVersion: " 
-        print general_component.version_index
-        print "============================================="
+        # print "============================================="
+        # print "El numero de indice despues de llamar a setComponentVersion: " 
+        # print general_component.version_index
+        # print "============================================="
         general_component.version = new_version
         general_component.test_count += 1
         general_component.put()
@@ -528,8 +528,8 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
     #   comp.put()
     # Obtenemos la lista de credenciales de usuario
     credential_list = getUserCredentialList(user_id)
-    print "respuesta de getUserCredentialList: "
-    print credential_list
+    # print "respuesta de getUserCredentialList: "
+    # print credential_list
 
     # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
@@ -1303,7 +1303,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           else:
             general_comp["rate"] = 0
           ans.append(json.dumps(general_comp))
-	loggin.info(ans)
+	# loggin.info(ans)
   return json.dumps({'data':[json.loads(el) for el in ans]})
   # return json.dumps({'data':})
 
