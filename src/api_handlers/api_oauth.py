@@ -697,6 +697,9 @@ class GitHubContainerHandler(SessionHandler):
                                             user_details["login"])
                         self.response.set_status(201)
                     else:
+                        print "=========================="
+                        print "Se llama a modifyToken"
+                        print "=========================="
                         # Almacenamos el access token recibido
                         user_id = ndb_pb.modifyToken(str(user_details["login"]),
                                 access_token, "github")
