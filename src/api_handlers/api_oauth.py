@@ -689,7 +689,7 @@ class GitHubContainerHandler(SessionHandler):
                     stored_credentials = ndb_pb.searchToken(str(user_details["login"
                             ]), "github")
                     print "================================="
-                    print stored_credentials
+                    print user_details["login"]
                     print "================================="
                     if stored_credentials == None:
                         print "============================="
