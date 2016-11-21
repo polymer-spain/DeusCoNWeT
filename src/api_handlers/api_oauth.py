@@ -689,9 +689,9 @@ class GitHubContainerHandler(SessionHandler):
                     stored_credentials = ndb_pb.searchToken(str(user_details["login"
                             ]), "github")
                     if stored_credentials == None:
-                        # print "============================="
-                        # print "Voy a hacer el insertToken"
-                        # print "============================="
+                        print "============================="
+                        print "Voy a hacer el insertToken"
+                        print "============================="
                         # Almacena las credenciales en una entidad Token
                         user_credentials = ndb_pb.insertToken(user, "github", access_token,
                                             user_details["login"])
