@@ -11,3 +11,5 @@ file.log
 readlog.sh
 database
 mongo.yaml
+.vscode
+
