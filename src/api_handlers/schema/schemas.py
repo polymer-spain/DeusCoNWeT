@@ -334,7 +334,8 @@ def activateComponentToUser(component_id, user): #No entiendo lo que pretende ha
 # Removes the component from the user's dashboard
 # It turns the field active to False, thus the component will not be listed as a
 # component included in the user's dashboard
-def deactivateUserComponent(user, component_id):
+def deactivateUserComponent(document_id, component_id):
+  user = User.objects(id=document_id)[0]
   status = False
   # We check if the component provided is in the user component list
   for comp in user.components:
@@ -595,7 +596,8 @@ def insertToken(document_id, social_name, access_token, user_id):
   user.save()
 
 
-def insertGroup(user, name, data=None):
+def insertGroup(document_id, name, data=None):
+  user = User.objects(id=document_id)[0]
   group = Group(group_name=name).save()
   users = ""
 
@@ -610,7 +612,8 @@ def insertGroup(user, name, data=None):
   user.save()
 
 
-def addUserToGroup(user, group_name, username):
+def addUserToGroup(document_id, group_name, username):
+  user = User.objects(id=document_id)[0]
   groups = user.group_list
 
   for group in groups:
@@ -618,7 +621,8 @@ def addUserToGroup(user, group_name, username):
       group.user_list += username
       group.save()
 
-def addDescriptionToGroup(user, group_name, description):
+def addDescriptionToGroup(document_id, group_name, description):
+  user = User.objects(id=document_id)[0]
   groups = user.group_list
 
   for group in groups:
@@ -627,7 +631,8 @@ def addDescriptionToGroup(user, group_name, description):
 
   user.save()
 
-def searchGroups(user):
+def searchGroups(document_id):
+  user = User.objects(id=document_id)[0]
   ans = {}
   counter = 1
   if user.group_list:
@@ -653,13 +658,13 @@ def searchNetwork(user):
   :param name: Identifier of the component
   :param url: ??
   :param description: Description of the components
-  :param rs: 
-  :param input_t:
-  :param output_t:
-  :param version_list:
-  :param predeterminated:
-  :param endpoint:
-  :param component_directory:
+  :param rs: Social network needed
+  :param input_t: Input attributes
+  :param output_t: Output attributes
+  :param version_list: List of versions
+  :param predeterminated: ??
+  :param endpoint: ???
+  :param component_directory: Base directory of the component
 """
 def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
   # Generates a random initial value that represents the version of the component that will be
@@ -718,14 +723,16 @@ def updateComponent(component_id, url="", description="", rs="", input_t=None, o
     component.save()
 
 
-def insertUserComponent(user, name, x=0, y=0, height="", width="", listening=""):
+def insertUserComponent(document_id, name, x=0, y=0, height="", width="", listening=""):
+  user = User.objects(id=document_id)[0]
   component = UserComponent(name=name, x=x, y=y, height=height, width=width, listening=listening).save()
   user.components.append(component)
   user.save()
 
 
 # Modifies the user's preferences stored related to a component
-def modifyUserComponent(user, name, data):
+def modifyUserComponent(document_id, name, data):
+  user = User.objects(id=document_id)[0]
   comps = user.components
   for comp in comps:
     if comp.name == name:
@@ -741,7 +748,8 @@ def modifyUserComponent(user, name, data):
         comp.listening += data["listening"]
   user.save()
 
-def addListening(user, name, events):
+def addListening(document_id, name, events):
+  user = User.objects(id=document_id)[0]
   comps = user.components
   for comp in comps:
     if comp.component_id == name:
@@ -792,7 +800,8 @@ def getComponent(document_id, name, all_info=False):
   return ans
 
 # Retorna los detalles sobre un componente del usuario en particular
-def getUserComponent(user, component_id):
+def getUserComponent(document_id, component_id):
+  user = User.objects(id=document_id)[0]
   result = None
   user_comps = user.components
   for comp in user_comps:
@@ -1273,8 +1282,15 @@ def subscribedUser(email):
   else:
     return False
 
-
-def addRate(user, component_id, value):
+"""
+  Add the user rate of a component_versioning
+  :param document_id: Document ID of the user
+  :param component_id: Id of the component was rated
+  :param value: Rate value
+  :return satatus: True if the component was rated
+"""
+def addRate(document_id, component_id, value):
+  user = User.objects(id=document_id)[0]
   rate = UserRating(component_id=component_id, rating_value=value).save()
   status = False
   for comp_rate in user.rates:
@@ -1284,11 +1300,12 @@ def addRate(user, component_id, value):
       status = True
   return status
 
-def deleteUser(user):
+def deleteUser(document_id):
+  user = User.objects(id=document_id)[0]
   token_list = user.tokens
   # We delete the user tokens
   for token in token_list:
-    deleteCredentials(user, token.social_name, token.identifier)
+    deleteCredentials(document_id, token.social_name, token.identifier)
   # We delete the user
   user.delete()
 
@@ -1313,8 +1330,9 @@ def deleteComponent(component_name):
 
   return status
 
-def deleteCredentials(user, rs, id_rs):
+def deleteCredentials(document_id, rs, id_rs):
   status = False
+  user = User.objects(id=document_id)[0]
   tok = Token.objects(identifier=id_rs, social_name=rs)[0]
   if not tok == None:
     # We delete the token if it is not the only token stored for the user and

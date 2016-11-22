@@ -25,10 +25,6 @@ class TestMongoDB(unittest.TestCase):
 
     tok_f = schemas.getToken('lrr9204', "facebook")
     self.assertTrue(tok_f, 'Existe el token de facebook')
-  """
-   TODO List of method doesnot tested
-    * updateUser
-  """
   
   def tearDown(self):
     schemas.dropDB()
