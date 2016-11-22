@@ -249,7 +249,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             $('#aditionalForm').fadeIn('easing', function(){
             });
           });
-          console.log('TODO registrar datos en algun lado');
+          //console.log('TODO registrar datos en algun lado');
         } else {
           $('#rate-modal .modal-footer p').show();
         }

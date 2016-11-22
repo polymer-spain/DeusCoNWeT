@@ -692,7 +692,6 @@ Polymer({
         user_post.object.content = this._changeText(user_post);
         if(user_post.published >= this.page_timestamp){
             this.push('timeline_posts', user_post);
-            console.log('Añadimos : ', user_post);
             //We increment the var that represents the posts displayed per page
             this.post_added_per_page++;
         }

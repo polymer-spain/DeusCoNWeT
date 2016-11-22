@@ -376,7 +376,7 @@ Polymer({
     if(this.events.length === 0){
       this.$.requesttimeline.generateRequest();
       var back = this
-      window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);
+      /*window.setInterval(function(){back.$.requesttimeline.generateRequest();}, back.refresh_time);*/
     } else{
       /* Else we had elements, we change events.*.time*/
       this._changeTime(this.events);
