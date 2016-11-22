@@ -53,7 +53,7 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
 
 # Connect to mongo
 # ENV_MODE = os.environ.get('ENV_MODE',None)
-database = mongoCfg['database_test']
+database = mongoCfg['database']
 
 # if ENV_MODE == 'test':
 #     database = mongoCfg['database_test']
