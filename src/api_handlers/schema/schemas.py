@@ -59,7 +59,7 @@ database = mongoCfg['database_test']
 #     database = mongoCfg['database_test']
 
 logging.info('Connecting to ' + database + ' database')
-connect(database, host=mongoCfg['host'], port=mongoCfg['port'], password=mongoCfg['pwd'])
+db = connect(database, host=mongoCfg['host'], port=mongoCfg['port'], password=mongoCfg['pwd'], username=mongoCfg['user'])
 
 #####################################################################################
 # Definicion de entidades de la base de datos
@@ -241,7 +241,7 @@ def setComponentVersion(general_component):
   return version
 
 def getComponentEntity(component_id):
-  general_component = Component.objects(component_id=component_id)
+  general_component = Component.objects(component_id=component_id)[0]
   return general_component
 
 #########################################################################################
@@ -272,7 +272,7 @@ def assignPredeterminedComponentsToUser(entity_key):
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
 def activateComponentToUser(component_id, user): #No entiendo lo que pretende hacer
-  general_component = Component.objects(component_id=component_id)
+  general_component = Component.objects(component_id=component_id)[0]
   user_component = None
   status = False
   # We check if the user has added the corresponding social network to his/her profile
@@ -313,7 +313,7 @@ def activateComponentToUser(component_id, user): #No entiendo lo que pretende ha
         status = True
 
       # We store in a ComponentTested entity the new version tested by the user
-      user_component_tested = ComponentTested.objects(component_id=component_id, user_id=user.user_id)
+      user_component_tested = ComponentTested.objects(component_id=component_id, user_id=user.user_id)[0]
       if not user_component_tested == None:
         # We update the field that represents the actual version that is being tested
         user_component_tested.actual_version = version
@@ -353,8 +353,8 @@ def deactivateUserComponent(user, component_id):
 ## Metodos asociados a la entidad Token
 def getToken(id_rs, social_net):  
   ans = None
-  token = Token.objects(identifier=id_rs, social_name=social_net)
-  user = User.objects(tokens=token)
+  token = Token.objects(identifier=id_rs, social_name=social_net)[0]
+  user = User.objects(tokens=token.id)[0]
   if not user == None:
     cipher = getCipher(str(token.id))
     ans = {"token": decodeAES(cipher, token.token),
@@ -365,7 +365,7 @@ def getToken(id_rs, social_net):
 def getUserTokens(user_id):
   token_aux = {}
   ans = None
-  user = User.objects(user_id=user_id)
+  user = User.objects(user_id=user_id)[0]
   if not user == None:
     for token in user.tokens:
       cipher = getCipher(str(token.id)) # coger el id 
@@ -374,7 +374,7 @@ def getUserTokens(user_id):
   return ans
 
 def searchToken(token_id, rs):
-  token = Token.objects(identifier=token_id, social_name=rs)
+  token = Token.objects(identifier=token_id, social_name=rs)[0]
   if token:
     cipher = getCipher(str(token.id))
     return decodeAES(cipher, token.token)
@@ -382,7 +382,7 @@ def searchToken(token_id, rs):
     return None
 
 def modifyToken(user_id, new_token, rs):
-  tok = Token.objects(identifier=user_id, social_name=rs)
+  tok = Token.objects(identifier=user_id, social_name=rs)[0]
 
   # Ciphers the token
   cipher = getCipher(str(tok.id))
@@ -394,7 +394,7 @@ def modifyToken(user_id, new_token, rs):
 
   # Updates the token in the user credential list
   token_aux = Token(identifier=user_id, social_name=rs).save()
-  user = User.objects(tokens=token_aux)
+  user = User.objects(tokens=token_aux)[0]
   tokens = user.tokens
   for token in tokens:
     if token.identifier==user_id and token.social_name==rs:
@@ -405,7 +405,7 @@ def modifyToken(user_id, new_token, rs):
 ## Metodos asociados a la entidad Usuario
 # Obtiene la lista de credenciales (token_id, red_social) de un usuario en el sistema
 def getUserCredentialList(user_id):
-  user = User.objects(user_id=user_id)
+  user = User.objects(user_id=user_id)[0]
   credential_list = []
   for token in user.tokens:
     credential = {"token_id": token.identifier,
@@ -415,7 +415,7 @@ def getUserCredentialList(user_id):
 
 
 def getUser(user_id, component_detailed_info = False):
-  user = User.objects(user_id=user_id)
+  user = User.objects(user_id=user_id)[0]
   user_info = None
   
   if not user == None:
@@ -488,7 +488,7 @@ def insertUser(rs, ide, access_token, data=None):
   # Updates the user entity
   user.save()
 
-  return user_key
+  return str(user_key.id), user_key
 
 
 # Actualiza la info de usuario proporcionada y retorna una lista de los elementos actualizados
@@ -654,7 +654,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
 
 # Modifies the related info about a General component in the system (ComponentEntity)
 def updateComponent(component_id, url="", description="", rs="", input_t=None, output_t=None, version_list=None):
-  component = Component.objects(component_id=component_id)
+  component = Component.objects(component_id=component_id)[0]
   if not component == None:
     if not url == "":
       component.url = url
@@ -709,14 +709,14 @@ def addListening(user, name, events):
 
 
 def searchComponent(component_id):
-  return Component.objects(component_id=component_id)
+  return Component.objects(component_id=component_id)[0]
 
 def getComponent(user, name, all_info=False):
-  comp = Component.objects(component_id=name)
+  comp = Component.objects(component_id=name)[0]
   if comp == None:
     ans = None
   else:
-    rate = UserRating.objects(component_id=name)
+    rate = UserRating.objects(component_id=name)[0]
     user_comp = [cte for cte in user.components if cte.component_id == name]
     general_comp = {"component_id": name}
     general_comp["url"] = comp.url
@@ -751,7 +751,7 @@ def getUserComponent(user, component_id):
 def getUserComponentList(user_id, component_detailed_info=False):
   # Obtenemos la valoración del componente en particular
   component_list = []
-  user = User.objects(user_id=user_id)
+  user = User.objects(user_id=user_id)[0]
   user_comps = user.components
   for comp in user_comps:
     # Returns only the components active in the user's dashboard
@@ -789,9 +789,9 @@ def getComponents(user=None, rs="", all_info=False, filter_by_user=False):
         for comp in user_comps:
           # Returns the info about the active components in the user dashboard
           if comp.active:
-            info_comp = Component.objects(component_id=comp.component_id)
-            rate = UserRating.objects(component_id=comp.component_id)
-            attributes = ComponentAttributes.objects(component_id=comp.component_id)
+            info_comp = Component.objects(component_id=comp.component_id)[0]
+            rate = UserRating.objects(component_id=comp.component_id)[0]
+            attributes = ComponentAttributes.objects(component_id=comp.component_id)[0]
             general_comp["component_id"] = str(comp.component_id)
             general_comp["url"] = str(info_comp.url)
             general_comp["social_network"] = str(info_comp.rs)
@@ -859,8 +859,8 @@ def getComponents(user=None, rs="", all_info=False, filter_by_user=False):
         # Now we get the general info about the components used by the user
         for comp in user_comps:
           if comp.active:
-            info_comp = Component.objects(component_id=comp.component_id)
-            rate = UserRating.objects(component_id=comp.component_id)
+            info_comp = Component.objects(component_id=comp.component_id)[0]
+            rate = UserRating.objects(component_id=comp.component_id)[0]
             general_comp["component_id"] = str(info_comp.component_id)
             general_comp["url"] = str(info_comp.url)
             general_comp["social_network"] = str(info_comp.rs)
@@ -919,8 +919,8 @@ def getComponents(user=None, rs="", all_info=False, filter_by_user=False):
         user_comps = user.components
         for comp in user_comps:
           if comp.active:
-            info_comp = Component.objects(component_id=comp.component_id, rs=rs)
-            rate = UserRating.objects(component_id=comp.component_id)
+            info_comp = Component.objects(component_id=comp.component_id, rs=rs)[0]
+            rate = UserRating.objects(component_id=comp.component_id)[0]
             if not info_comp == None:
               general_comp["component_id"] = str(comp.component_id)
               general_comp["url"] = str(info_comp.url)
@@ -986,8 +986,8 @@ def getComponents(user=None, rs="", all_info=False, filter_by_user=False):
         # Now we get the general info about the components used by the user
         for comp in user_comps:
           if comp.active:
-            info_comp = Component.objects(component_id=comp.component_id, rs=rs)
-            rate = UserRating.objects(component_id=comp.component_id)
+            info_comp = Component.objects(component_id=comp.component_id, rs=rs)[0]
+            rate = UserRating.objects(component_id=comp.component_id)[0]
             if not info_comp == None:
               general_comp["component_id"] = str(info_comp.component_id)
               general_comp["url"] = str(info_comp.url)
@@ -1045,10 +1045,10 @@ def getComponents(user=None, rs="", all_info=False, filter_by_user=False):
     # Not user id. In this case, the info returned will be always reduced
     if not all_info:
       if rs == "":
-        components = Component.object().limit(20)
+        components = Component.objects().limit(20)
         for component in components:
-          rate = UserRating.objects(component_id=component.component_id)
-          attributes = ComponentAttributes.objects(component_id=component.component_id)
+          rate = UserRating.objects(component_id=component.component_id)[0]
+          attributes = ComponentAttributes.objects(component_id=component.component_id)[0]
           general_comp["component_id"] = str(component.component_id)
           general_comp["url"] = str(component.url)
           general_comp["social_network"] = str(component.rs)
@@ -1104,7 +1104,7 @@ def getComponents(user=None, rs="", all_info=False, filter_by_user=False):
       else:
         components = Component.objects(rs=rs).limit(20)
         for comp in components:
-          rate = UserRating.objects(component_id=comp.component_id)
+          rate = UserRating.objects(component_id=comp.component_id)[0]
           general_comp["component_id"] = str(comp.component_id)
           general_comp["url"] = str(comp.url)
           general_comp["social_network"] = str(comp.rs)
@@ -1171,7 +1171,7 @@ def getEmails():
   return email_list
 
 def updateProfile(user_id, data):
-  user = User.objects(user_id=user_id)
+  user = User.objects(user_id=user_id)[0]
   updated_data = []
   if data.hasKey("age"):
     user["age"] = data.age
@@ -1193,7 +1193,7 @@ def updateProfile(user_id, data):
 
 def getProfile(user_id):
   ans = None
-  user = User.objects(user_id=user_id)
+  user = User.objects(user_id=user_id)[0]
   if not user == None:
     user_info = {"age": user.age,
                   "studies": user.studies,
@@ -1232,7 +1232,7 @@ def deleteUser(user):
 
 def deleteComponent(component_name):
   status = False
-  component = Component.objects(component_id=component_name)
+  component = Component.objects(component_id=component_name)[0]
   if not component == None:
     status = True
 
@@ -1241,7 +1241,7 @@ def deleteComponent(component_name):
 
     # Now, it's necessary to delete this component from all the users
     comp = UserComponent(component_id=component_name).save()
-    users = User.objects(components__component_id=component_name).litmit(100)
+    users = User.objects(components__component_id=component_name).litmit(100)[0]
     for user in users:
       for comp in user.components:
         # We delete the component from the user's component list
@@ -1253,7 +1253,7 @@ def deleteComponent(component_name):
 
 def deleteCredentials(user, rs, id_rs):
   status = False
-  tok = Token.objects(identifier=id_rs, social_name=rs)
+  tok = Token.objects(identifier=id_rs, social_name=rs)[0]
   if not tok == None:
     # We delete the token if it is not the only token stored for the user and
     # does not belong to a social network to perform login in our system
@@ -1294,14 +1294,14 @@ def getUsers():
   return users_list
 
 def searchUserById(user_id):
-  user = User.objects(id_usuario=user_id)
+  user = User.objects(id_usuario=user_id)[0]
   if user:
     return True
   else:
     return False
 
 def getGitHubAPIKey():
-  githubKey = GitHubAPIKey.objects()
+  githubKey = GitHubAPIKey.objects()[0]
   return githubKey.token
 
 # METHODS FOR SESSION SUPPORT
@@ -1309,7 +1309,7 @@ def getGitHubAPIKey():
 # If the user has an active session in the system, we delete the previous session
 # and we create a new one (we only support single login per user)
 def createSession(user_key, hashed_id):
-  stored_session = Session.objects(user_key=user_key)
+  stored_session = Session.objects(user_key=user_key)[0]
   if not stored_session == None:
     stored_session.key.delete()
   # We create a new session assigned to the user
@@ -1317,14 +1317,14 @@ def createSession(user_key, hashed_id):
 
 def getSessionOwner(hashed_id):
   user_key = None
-  session = Session.objects(hashed_id=hashed_id)
+  session = Session.objects(hashed_id=hashed_id)[0]
   if not session == None:
     user_key = session.user_key
   return user_key
 
 def deleteSession(hashed_id):
   deleted = False
-  session = Session.objects(hashed_id=hashed_id)
+  session = Session.objects(hashed_id=hashed_id)[0]
   if not session == None:
     session.key.delete()
     deleted = True
