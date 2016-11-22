@@ -351,6 +351,14 @@ def deactivateUserComponent(user, component_id):
 #####################################################################################
 
 ## Metodos asociados a la entidad Token
+
+"""
+Get access token of a social network
+:param id_rs: user identifier Ex: lrr9204
+:param social_net: social network to look for access_token
+:return ans: And dictionary: {token:access_token of the social network, user_id: user name in picbit, token_id:Name in the social network}
+"""
+
 def getToken(id_rs, social_net):  
   ans = None
   token = Token.objects(identifier=id_rs, social_name=social_net)[0]
@@ -449,7 +457,14 @@ def getUserId(user):
   if not user == None:
     user_id = user.user_id
   return user_id
-
+"""
+  Insert a user in database
+  :param rs: The name of the social network. Ex: twitter
+  :param ide: Identifier of the user in a social network. Ex: lrr9204
+  :param access_token: Access_token's social nertork
+  :param data: Data about the User
+  :return key, user: Key is the document ID and User is the document (Document ~= Entity)
+"""
 def insertUser(rs, ide, access_token, data=None):
   user = User()
   # We add to the user's net list the social network used to sign up to the system
@@ -458,8 +473,8 @@ def insertUser(rs, ide, access_token, data=None):
 
   # We store the user info passed in the data argument
   if not data == None:
-    if data.has_key("user_id"):
-      user.user_id = data["user_id"]
+    if ide:
+      user.user_id = ide
     if data.has_key("email"):
       user.email = data["email"]
     if data.has_key("private_email"):
@@ -492,7 +507,15 @@ def insertUser(rs, ide, access_token, data=None):
 
 
 # Actualiza la info de usuario proporcionada y retorna una lista de los elementos actualizados
-def updateUser(user, data):
+"""
+  Update the user information provided
+
+  :param user_id: username's picbit
+  :param data: Field will be updated 
+  :return updated_data: updated fields
+"""
+def updateUser(user_id, data):
+  user = User.objects(user_id=user_id)[0]
   updated_data = []
   if data.has_key("email"):
     user.email = data["email"]
@@ -545,15 +568,22 @@ def updateUser(user, data):
   # Returns the list that represents the data that was updated
   return updated_data
 
-
-def insertToken(user, social_name, access_token, user_id):
+"""
+Insert a new token in the database
+:param user_id: Id of the user in the social network
+:param social_name: Name of the social network of the new token
+:param access_token: new access_token ValueError
+:param user_id: username's Picbit 
+"""
+def insertToken(document_id, social_name, access_token, user_id):
   # We create a Token Entity in the datastore
+  user = User.objects(id=document_id)[0]
   tok_aux = Token(identifier=user_id, token="", social_name=social_name).save()
   # Ciphers access token that will be stored in the datastore
   cipher = getCipher(str(tok_aux.id))
   access_token = encodeAES(cipher, access_token)
   tok_aux.token = access_token
-  tok_aux.put()
+  tok_aux.save()
   # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
   # We add the social network to the user's nets list
@@ -618,6 +648,19 @@ def searchNetwork(user):
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
+"""
+  Insert a component in the database
+  :param name: Identifier of the component
+  :param url: ??
+  :param description: Description of the components
+  :param rs: 
+  :param input_t:
+  :param output_t:
+  :param version_list:
+  :param predeterminated:
+  :param endpoint:
+  :param component_directory:
+"""
 def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
   # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
@@ -707,11 +750,21 @@ def addListening(user, name, events):
 
   user.save()
 
-
+"""
+Search a compoent by component_id
+:param component_id: identifier of a component
+:return document: the document found of a component
+"""
 def searchComponent(component_id):
   return Component.objects(component_id=component_id)[0]
-
-def getComponent(user, name, all_info=False):
+"""
+  Get a component from user
+:param document_id: Document id of the user 
+:param name: name of the component 
+:param all_info:
+"""
+def getComponent(document_id, name, all_info=False):
+  user = User.objects(id=document_id)[0]
   comp = Component.objects(component_id=name)[0]
   if comp == None:
     ans = None
@@ -775,7 +828,15 @@ def getUserComponentList(user_id, component_detailed_info=False):
       component_list.append(component_info)
   return component_list
 
-def getComponents(user=None, rs="", all_info=False, filter_by_user=False):
+"""
+  Get list of components
+  :param document_id: Document identifier
+  :param rs: Name of the social network
+  :param all_info: Get all the information of the User
+  :param filter_by_user: ???
+  :return json: Component information in JSON format
+"""
+def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False):
   ans = []
   general_comp = {}
   if filter_by_user:
@@ -785,6 +846,7 @@ def getComponents(user=None, rs="", all_info=False, filter_by_user=False):
       if all_info:
         # complete information
         # Info for the components used by the specified user
+        user = User.objects(id=document_id)[0]
         user_comps = user.components
         for comp in user_comps:
           # Returns the info about the active components in the user dashboard
@@ -1329,3 +1391,8 @@ def deleteSession(hashed_id):
     session.key.delete()
     deleted = True
   return deleted
+
+def dropDB():
+  User.objects().delete()
+  Token.objects().delete()
+  SocialUser.objects().delete()

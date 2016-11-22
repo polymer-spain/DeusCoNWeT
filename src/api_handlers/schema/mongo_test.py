@@ -21,13 +21,17 @@ class TestMongoDB(unittest.TestCase):
     
     tok = schemas.getToken('lrr9204', "twitter")
     self.assertTrue(tok,'Existe un token');
-    schemas.insertToken('lrr9294', "facebook", "poiuytrewq12345", "Luis Ruiz")
+    schemas.insertToken(id, "facebook", "poiuytrewq12345", 'lrr9204')
 
-    tok_f = schemas.getToken('lrr9294', "facebook")
+    tok_f = schemas.getToken('lrr9204', "facebook")
     self.assertTrue(tok_f, 'Existe el token de facebook')
-
-  #def tearDown(self):
-    # TODO drop database
-    
+  """
+   TODO List of method doesnot tested
+    * updateUser
+  """
+  
+  def tearDown(self):
+    schemas.dropDB()
+  
 if __name__ == '__main__':
         unittest.main()
