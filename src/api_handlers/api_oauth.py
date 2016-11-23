@@ -74,7 +74,7 @@ class SessionHandler(webapp2.RequestHandler):
     """
 
     def login(self, user_key):
-        message = str(user_key.id()) + str(time.time())
+        message = str(user_key.id) + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
         # Store in memcache hash-user_id pair
