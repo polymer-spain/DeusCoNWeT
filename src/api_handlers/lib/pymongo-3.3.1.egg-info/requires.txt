@@ -1,0 +1,7 @@
+
+
+[tls]
+certifi
+
+[gssapi]
+pykerberos
