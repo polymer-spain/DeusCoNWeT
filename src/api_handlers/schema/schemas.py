@@ -362,9 +362,12 @@ Get access token of a social network
 
 def getToken(id_rs, social_net):  
   ans = None
-  token = Token.objects(identifier=id_rs, social_name=social_net)[0]
-  user = User.objects(tokens=token.id)[0]
-  if not user == None:
+  token = Token.objects(identifier=id_rs, social_name=social_net)
+  if token.count() > 0:
+    token = token[0]
+  user = User.objects(tokens=token.id)
+  if user.count() > 0:
+    user = user[0]
     cipher = getCipher(str(token.id))
     ans = {"token": decodeAES(cipher, token.token),
           "user_id": user.user_id,
@@ -374,8 +377,9 @@ def getToken(id_rs, social_net):
 def getUserTokens(user_id):
   token_aux = {}
   ans = None
-  user = User.objects(user_id=user_id)[0]
-  if not user == None:
+  user = User.objects(user_id=user_id)
+  if user.count() > 0:
+    user = user[0]
     for token in user.tokens:
       cipher = getCipher(str(token.id)) # coger el id 
       token_aux[token.social_name] = decodeAES(cipher, token.token)
@@ -383,16 +387,18 @@ def getUserTokens(user_id):
   return ans
 
 def searchToken(token_id, rs):
-  token = Token.objects(identifier=token_id, social_name=rs)[0]
-  if token:
+  token = Token.objects(identifier=token_id, social_name=rs)
+  if token.count() > 0:
+    token = token[0]
     cipher = getCipher(str(token.id))
     return decodeAES(cipher, token.token)
   else:
     return None
 
 def modifyToken(user_id, new_token, rs):
-  tok = Token.objects(identifier=user_id, social_name=rs)[0]
-
+  tok = Token.objects(identifier=user_id, social_name=rs)
+  if tok.count() > 0:
+    tok = tok[0]
   # Ciphers the token
   cipher = getCipher(str(tok.id))
   new_token = encodeAES(cipher, new_token)
@@ -414,7 +420,9 @@ def modifyToken(user_id, new_token, rs):
 ## Metodos asociados a la entidad Usuario
 # Obtiene la lista de credenciales (token_id, red_social) de un usuario en el sistema
 def getUserCredentialList(user_id):
-  user = User.objects(user_id=user_id)[0]
+  user = User.objects(user_id=user_id)
+  if user.count()>0:
+    user = user[0]
   credential_list = []
   for token in user.tokens:
     credential = {"token_id": token.identifier,
@@ -424,10 +432,11 @@ def getUserCredentialList(user_id):
 
 
 def getUser(user_id, component_detailed_info = False):
-  user = User.objects(user_id=user_id)[0]
+  user = User.objects(user_id=user_id)
   user_info = None
   
-  if not user == None:
+  if user.count() > 0:
+    user = user[0]
     rates = user.rates; nets = user.net_list
     user_component_list = [];  net_names = []
     # Componemos la lista de redes a la que está suscrito un usuario
@@ -516,7 +525,9 @@ def insertUser(rs, ide, access_token, data=None):
   :return updated_data: updated fields
 """
 def updateUser(user_id, data):
-  user = User.objects(user_id=user_id)[0]
+  user = User.objects(user_id=user_id)
+  if user.count()>0:
+    user = user[0]
   updated_data = []
   if data.has_key("email"):
     user.email = data["email"]
@@ -578,7 +589,9 @@ Insert a new token in the database
 """
 def insertToken(document_id, social_name, access_token, user_id):
   # We create a Token Entity in the datastore
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+    user = user[0]
   tok_aux = Token(identifier=user_id, token="", social_name=social_name).save()
   # Ciphers access token that will be stored in the datastore
   cipher = getCipher(str(tok_aux.id))
@@ -597,7 +610,9 @@ def insertToken(document_id, social_name, access_token, user_id):
 
 
 def insertGroup(document_id, name, data=None):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+      user = user[0]
   group = Group(group_name=name).save()
   users = ""
 
@@ -613,7 +628,9 @@ def insertGroup(document_id, name, data=None):
 
 
 def addUserToGroup(document_id, group_name, username):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+      user = user[0]
   groups = user.group_list
 
   for group in groups:
@@ -622,7 +639,9 @@ def addUserToGroup(document_id, group_name, username):
       group.save()
 
 def addDescriptionToGroup(document_id, group_name, description):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+        user = user[0]
   groups = user.group_list
 
   for group in groups:
@@ -633,6 +652,8 @@ def addDescriptionToGroup(document_id, group_name, description):
 
 def searchGroups(document_id):
   user = User.objects(id=document_id)[0]
+  if user.count() > 0:
+        user = user[0]
   ans = {}
   counter = 1
   if user.group_list:
@@ -702,8 +723,9 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
 
 # Modifies the related info about a General component in the system (ComponentEntity)
 def updateComponent(component_id, url="", description="", rs="", input_t=None, output_t=None, version_list=None):
-  component = Component.objects(component_id=component_id)[0]
-  if not component == None:
+  component = Component.objects(component_id=component_id)
+  if component.count() > 0:
+    component = component[0]
     if not url == "":
       component.url = url
     if not description == "":
@@ -724,7 +746,9 @@ def updateComponent(component_id, url="", description="", rs="", input_t=None, o
 
 
 def insertUserComponent(document_id, name, x=0, y=0, height="", width="", listening=""):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+        user = user[0]
   component = UserComponent(name=name, x=x, y=y, height=height, width=width, listening=listening).save()
   user.components.append(component)
   user.save()
@@ -733,6 +757,8 @@ def insertUserComponent(document_id, name, x=0, y=0, height="", width="", listen
 # Modifies the user's preferences stored related to a component
 def modifyUserComponent(document_id, name, data):
   user = User.objects(id=document_id)[0]
+  if user.count() > 0:
+        user = user[0]
   comps = user.components
   for comp in comps:
     if comp.name == name:
@@ -749,7 +775,9 @@ def modifyUserComponent(document_id, name, data):
   user.save()
 
 def addListening(document_id, name, events):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+        user = user[0]
   comps = user.components
   for comp in comps:
     if comp.component_id == name:
@@ -772,7 +800,9 @@ def searchComponent(component_id):
 :param all_info:
 """
 def getComponent(document_id, name, all_info=False):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+        user = user[0]
   comp = Component.objects(component_id=name)[0]
   if comp == None:
     ans = None
@@ -801,7 +831,9 @@ def getComponent(document_id, name, all_info=False):
 
 # Retorna los detalles sobre un componente del usuario en particular
 def getUserComponent(document_id, component_id):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+        user = user[0]
   result = None
   user_comps = user.components
   for comp in user_comps:
@@ -813,7 +845,9 @@ def getUserComponent(document_id, component_id):
 def getUserComponentList(user_id, component_detailed_info=False):
   # Obtenemos la valoración del componente en particular
   component_list = []
-  user = User.objects(user_id=user_id)[0]
+  user = User.objects(user_id=user_id)
+  if user.count() > 0:
+        user = user[0]
   user_comps = user.components
   for comp in user_comps:
     # Returns only the components active in the user's dashboard
@@ -855,7 +889,9 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
       if all_info:
         # complete information
         # Info for the components used by the specified user
-        user = User.objects(id=document_id)[0]
+        user = User.objects(id=document_id)
+        if user.count() > 0:
+          user = user[0]
         user_comps = user.components
         for comp in user_comps:
           # Returns the info about the active components in the user dashboard
@@ -1242,7 +1278,9 @@ def getEmails():
   return email_list
 
 def updateProfile(user_id, data):
-  user = User.objects(user_id=user_id)[0]
+  user = User.objects(user_id=user_id)
+  if user.count() > 0:
+    user = user[0]
   updated_data = []
   if data.hasKey("age"):
     user["age"] = data.age
@@ -1264,8 +1302,9 @@ def updateProfile(user_id, data):
 
 def getProfile(user_id):
   ans = None
-  user = User.objects(user_id=user_id)[0]
-  if not user == None:
+  user = User.objects(user_id=user_id)
+  if user.count() > 0:
+    user = user[0]
     user_info = {"age": user.age,
                   "studies": user.studies,
                   "tech_exp": user.tech_exp,
@@ -1290,7 +1329,9 @@ def subscribedUser(email):
   :return satatus: True if the component was rated
 """
 def addRate(document_id, component_id, value):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+    user = user[0]
   rate = UserRating(component_id=component_id, rating_value=value).save()
   status = False
   for comp_rate in user.rates:
@@ -1301,7 +1342,9 @@ def addRate(document_id, component_id, value):
   return status
 
 def deleteUser(document_id):
-  user = User.objects(id=document_id)[0]
+  user = User.objects(id=document_id)
+  if user.count() > 0:
+    user = user[0]
   token_list = user.tokens
   # We delete the user tokens
   for token in token_list:
@@ -1311,8 +1354,9 @@ def deleteUser(document_id):
 
 def deleteComponent(component_name):
   status = False
-  component = Component.objects(component_id=component_name)[0]
-  if not component == None:
+  component = Component.objects(component_id=component_name)
+  if component.count() > 0:
+    component = component[0]
     status = True
 
     # We delete the component entity from the datastore
@@ -1320,7 +1364,7 @@ def deleteComponent(component_name):
 
     # Now, it's necessary to delete this component from all the users
     comp = UserComponent(component_id=component_name).save()
-    users = User.objects(components__component_id=component_name).litmit(100)[0]
+    users = User.objects(components__component_id=component_name).litmit(100)
     for user in users:
       for comp in user.components:
         # We delete the component from the user's component list
@@ -1333,8 +1377,11 @@ def deleteComponent(component_name):
 def deleteCredentials(document_id, rs, id_rs):
   status = False
   user = User.objects(id=document_id)[0]
-  tok = Token.objects(identifier=id_rs, social_name=rs)[0]
-  if not tok == None:
+  if user.count() > 0:
+    user = user[0]
+  tok = Token.objects(identifier=id_rs, social_name=rs)
+  if tok.count() > 0:
+    tok = tok[0]
     # We delete the token if it is not the only token stored for the user and
     # does not belong to a social network to perform login in our system
     if not rs in ['googleplus', 'facebook', 'twitter'] and not len(user.tokens) == 1:
@@ -1374,8 +1421,8 @@ def getUsers():
   return users_list
 
 def searchUserById(user_id):
-  user = User.objects(id_usuario=user_id)[0]
-  if user:
+  user = User.objects(id_usuario=user_id)
+  if user.count() > 0:
     return True
   else:
     return False
@@ -1389,23 +1436,26 @@ def getGitHubAPIKey():
 # If the user has an active session in the system, we delete the previous session
 # and we create a new one (we only support single login per user)
 def createSession(user_key, hashed_id):
-  stored_session = Session.objects(user_key=user_key)[0]
-  if not stored_session == None:
+  stored_session = Session.objects(user_key=user_key)
+  if stored_session.count() > 0:
+    stored_session = stored_session[0]
     stored_session.key.delete()
   # We create a new session assigned to the user
   session = Session(user_key=user_key, hashed_id=hashed_id).save()
 
 def getSessionOwner(hashed_id):
   user_key = None
-  session = Session.objects(hashed_id=hashed_id)[0]
-  if not session == None:
+  session = Session.objects(hashed_id=hashed_id)
+  if session.count() > 0:
+    session = session[0]
     user_key = session.user_key
   return user_key
 
 def deleteSession(hashed_id):
   deleted = False
-  session = Session.objects(hashed_id=hashed_id)[0]
-  if not session == None:
+  session = Session.objects(hashed_id=hashed_id)
+  if session.count() > 0:
+    session = session[0]
     session.key.delete()
     deleted = True
   return deleted
