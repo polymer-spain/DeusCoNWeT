@@ -1116,3 +1116,34 @@ class TwitterLogoutHandler(OauthLogoutHandler):
     """
     def post(self):
         self.post_logout("twitter")
+
+
+# HANDLERS FOR RESOURCES RELATED TO PINTEREST
+class PinterestCredentialHandler(OAuthCredentialProviderHandler):
+    """
+    Class that represents the Pinterest token resource.
+    Methods:
+        get -- Returns the Pinterest access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Pinterest for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Pinterest for the user authenticated
+    """
+    def get(self, token_id):
+        self.get_credentials("pinterest", token_id)
+
+    def delete(self, token_id):
+        self.delete_credentials("pinterest", token_id)
+
+    def post(self, token_id):
+        self.update_credentials("pinterest", token_id)
+
+class PinterestContainerHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Instagram credentials resource.
+    Methods:
+        put -- Adds a new set of credentials (token_id and access_token in Instagram)
+    """
+    def put(self):
+        self.put_credentials("pinterest")

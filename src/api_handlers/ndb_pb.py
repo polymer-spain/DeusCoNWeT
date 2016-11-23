@@ -38,6 +38,7 @@ social_list = [
     'linkedin',
     'googleplus',
     'github',
+    'pinterest',
     ]
 
 
