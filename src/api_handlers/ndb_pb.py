@@ -771,6 +771,8 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
   elif rs == "facebook":
     attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
     attributes.put()
+  elif rs == "pinterest":
+    attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest/')
   initial_index = random.randint(0, len(version_list)-1)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
