@@ -31,7 +31,7 @@ class bcolors:
 def openConnection(remote=True):
     global connection,remoteConnection
     if remote:
-        connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
+        connection = httplib.HTTPSConnection("centauro.ls.fi.upm.es")
     else:
         connection = httplib.HTTPConnection("localhost:8001")
         remoteConnection = False

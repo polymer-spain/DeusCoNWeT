@@ -990,6 +990,13 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               json.dumps(general_comp["attributes"])
               general_comp["img"] = str('images/components/facebook-icon.png')
               general_comp["tokenAttr"] = str('access_token')
+            elif general_comp["social_network"] == "pinterest":
+              general_comp["attributes"]["language"] = str(attributes.language)
+              general_comp["attributes"]["component_base"] = str(attributes.component_base)
+              general_comp["attributes"]["access_token"] = str(attributes.access_token)
+              json.dumps(general_comp["attributes"])
+              general_comp["img"] = str('images/components/pinterest.png')
+              general_comp["tokenAttr"] = str('token')
             if not rate == None:
               general_comp["rate"] = str(rate.rating_value)
             else:

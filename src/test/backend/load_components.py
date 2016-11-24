@@ -33,7 +33,7 @@ import test_utils
 uri = "htpps://centauro.ls.fi.upm.es"
 basepath = "/api/componentes"
 request_uri = uri + basepath
-test_utils.openConnection(False)
+test_utils.openConnection(True)
 versions_list = ["stable", "accuracy", "latency"]
 params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
         'component_id': 'twitter-timeline',
@@ -83,3 +83,14 @@ params = urllib.urlencode({'url': 'https://github.com/Mortega5/facebook-wall',
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
+params = urllib.urlencode({'url': 'https://github.com/polymer-spain/DeusCoNWeT/tree/redesign/src/static/bower_components/pinterest-timeline-stable',
+        'component_id': 'pinterest-timeline',
+        'description': 'Web component to obtain the timeline of Pinterest messages using Polymer',
+        'social_network': 'pinterest',
+        'input_type': 'None',
+        'output_type': 'tweet',
+        'versions': versions_list,
+        'component_directory': 'bower_components/pinterest/',
+        'predetermined': 'True'
+        }, doseq=True)
+test_utils.make_request("PUT", request_uri, params, 201, None)
