@@ -149,7 +149,7 @@ div#userProfile {
 	cursor: inherit;
 	display: block;
 }
-#userProfile [data-role="login"][sort] {
+#userProfile [data-role="login"] {
 	margin-left:10px;
 }
 #userProfile [data-role="login"][sort] /deep/ paper-button {

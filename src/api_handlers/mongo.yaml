@@ -1,0 +1,7 @@
+host: localhost
+pwd: euser:7394
+user: deusConwet
+port: 27017
+database: picbit
+database_test: picbitTest 
+

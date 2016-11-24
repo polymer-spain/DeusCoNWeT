@@ -84,6 +84,13 @@
           <twitter-login data-role="login" sort endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
           <hr>
         </div>
+        <div class="horizontal center layout loginSection" ng-class="{logged: existToken('pinterest')}">
+          <p>{{language.user_profile.permission}}</p>
+          <pinterest-login class="component" client_id="4856565396624387542" client_secret="434d62e800a84d63dbf8a608e1a8410df2383723d7c50b8053f58ebd04ef8308" 
+          redirect_uri="https://centauro.ls.fi.upm.es" data-role="login"></pinterest-login>
+          <hr>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="button" ng-click="closeForm()" class="btn btn-default">{{language.close}}</button>

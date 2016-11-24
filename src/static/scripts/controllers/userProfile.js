@@ -141,5 +141,6 @@ function ($scope, $rootScope, $backend, $http) {
 		$('#socialNetwork instagram-login').bind('instagram-logged', loginCallback);
 		$('#socialNetwork twitter-login').bind('twitter-logged', loginCallback);
 		$('#socialNetwork login-facebook').bind('facebook-logged', loginCallback);
+    $('#socialNetwork pinterest-login').bind('pinterest-logged',loginCallback);
 	})();
 }]);
