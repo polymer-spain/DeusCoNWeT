@@ -90,7 +90,6 @@ params = urllib.urlencode({'url': 'https://github.com/polymer-spain/DeusCoNWeT/t
         'input_type': 'None',
         'output_type': 'tweet',
         'versions': versions_list,
-        'component_directory': 'bower_components/pinterest/',
         'predetermined': 'True'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
