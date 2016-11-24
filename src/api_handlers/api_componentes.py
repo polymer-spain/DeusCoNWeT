@@ -38,7 +38,7 @@ with open(configFile, "r") as ymlfile:
 domain = cfg["domain"]
 
 
-social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github"]
+social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest"]
 
 class ComponentRatingHandler(SessionHandler):
     """
