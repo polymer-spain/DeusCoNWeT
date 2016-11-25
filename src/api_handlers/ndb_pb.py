@@ -773,6 +773,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
     attributes.put()
   elif rs == "pinterest":
     attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest/')
+    attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
@@ -932,6 +933,9 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         user = entity_key.get()
         # Info for the components used by the specified user
         user_comps = user.components
+        print "========================="
+        print user_comps
+        print "========================="
         for comp in user_comps:
           # Returns the info about the active components in the user dashboard
           if comp.active:
