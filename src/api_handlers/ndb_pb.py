@@ -933,9 +933,6 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         user = entity_key.get()
         # Info for the components used by the specified user
         user_comps = user.components
-        print "========================="
-        print user_comps
-        print "========================="
         for comp in user_comps:
           # Returns the info about the active components in the user dashboard
           if comp.active:
@@ -1066,6 +1063,13 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               json.dumps(general_comp["attributes"])
               general_comp["img"] = str('images/components/facebook-icon.png')
               general_comp["tokenAttr"] = str('access_token')
+            elif general_comp["social_network"] == "pinterest":
+              general_comp["attributes"]["language"] = str(attributes.language)
+              general_comp["attributes"]["component_base"] = str(attributes.component_base)
+              general_comp["attributes"]["access_token"] = str(attributes.access_token)
+              json.dumps(general_comp["attributes"])
+              general_comp["img"] = str('images/components/pinterest.png')
+              general_comp["tokenAttr"] = str('token')
             if not rate == None:
               general_comp["rate"] = str(rate.rating_value)
             else:
@@ -1135,6 +1139,13 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
                 json.dumps(general_comp["attributes"])
                 general_comp["img"] = str('images/components/facebook-icon.png')
                 general_comp["tokenAttr"] = str('access_token')
+              elif general_comp["social_network"] == "pinterest":
+                general_comp["attributes"]["language"] = str(attributes.language)
+                general_comp["attributes"]["component_base"] = str(attributes.component_base)
+                general_comp["attributes"]["access_token"] = str(attributes.access_token)
+                json.dumps(general_comp["attributes"])
+                general_comp["img"] = str('images/components/pinterest.png')
+                general_comp["tokenAttr"] = str('token')
               if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
@@ -1196,6 +1207,13 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
                 json.dumps(general_comp["attributes"])
                 general_comp["img"] = 'images/components/facebook-icon.png'
                 general_comp["tokenAttr"] = 'access_token'
+              elif general_comp["social_network"] == "pinterest":
+                general_comp["attributes"]["language"] = str(attributes.language)
+                general_comp["attributes"]["component_base"] = str(attributes.component_base)
+                general_comp["attributes"]["access_token"] = str(attributes.access_token)
+                json.dumps(general_comp["attributes"])
+                general_comp["img"] = str('images/components/pinterest.png')
+                general_comp["tokenAttr"] = str('token')
               if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
@@ -1256,6 +1274,13 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             json.dumps(general_comp["attributes"])
             general_comp["img"] = str('images/components/facebook-icon.png')
             general_comp["tokenAttr"] = str('access_token')
+          elif general_comp["social_network"] == "pinterest":
+            general_comp["attributes"]["language"] = str(attributes.language)
+            general_comp["attributes"]["component_base"] = str(attributes.component_base)
+            general_comp["attributes"]["access_token"] = str(attributes.access_token)
+            json.dumps(general_comp["attributes"])
+            general_comp["img"] = str('images/components/pinterest.png')
+            general_comp["tokenAttr"] = str('token')
           if not rate == None:
             general_comp["rate"] = str(rate.rating_value)
           else:
@@ -1312,6 +1337,13 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             json.dumps(general_comp["attributes"])
             general_comp["img"] = str('images/components/facebook-icon.png')
             general_comp["tokenAttr"] = str('access_token')
+          elif general_comp["social_network"] == "pinterest":
+            general_comp["attributes"]["language"] = str(attributes.language)
+            general_comp["attributes"]["component_base"] = str(attributes.component_base)
+            general_comp["attributes"]["access_token"] = str(attributes.access_token)
+            json.dumps(general_comp["attributes"])
+            general_comp["img"] = str('images/components/pinterest.png')
+            general_comp["tokenAttr"] = str('token')
           if not rate == None:
             general_comp["rate"] = str(rate.rating_value)
           else:
