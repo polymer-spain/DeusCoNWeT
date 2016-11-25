@@ -1,11 +1,15 @@
 <!--
 @license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+@author Javier Caballero Abenza. All rights reserved.
+
+Component that shows your feed from Pinterest
+
+Example:
+
+    <pinterest-timeline token="Your token"></pinterest-timeline>
+
+@element pinterest-timeline
+@demo demo/index.html
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
@@ -21,19 +25,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../paper-material/paper-material.html">
 
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Aclonica" />
 
-<!--
-Component that shows your feed from Pinterest
-
-Example:
-
-    <pinterest-timeline token="Your token"></pinterest-timeline>
-
-@group Seed Elements
-@element pinterest-timeline
-@demo demo/index.html
-@hero hero.svg
--->
 <dom-module id="pinterest-timeline">
 
   <template>
@@ -136,15 +129,57 @@ Example:
         text-transform: none;
         background: -webkit-linear-gradient(top,#BA1010,#EC1515);
         padding-top: 1px;
-        margin: 3px;
-        margin-bottom: 5px;
-        min-height: 30px;
+        margin-bottom: 7px;
         width: 90%;
         font-size: 12px !important;
-        
+        padding: 5px;
       }
+
       .item:hover{
           background: -webkit-linear-gradient(top,#BC3E3E,#EF3838);
+      }
+
+      .pin{
+        border-radius: 8px;
+        width: 200px;
+        height: 250px;
+      }
+
+      ​.header{
+        min-height: 60px;
+        max-height: 60px;
+      }
+
+      .content{
+        padding-top: 10px;
+        height: calc(100% - 70px);
+        text-align: center;
+        overflow-y: scroll; 
+      }
+
+      .home{
+        text-transform: none;
+        font-size: 24px;
+        font-family: Aclonica;
+        color: var(--paper-red-700);
+      }
+
+      .itemBig{
+        display: inline-block;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        background: -webkit-linear-gradient(top,#BA1010,#EC1515);
+        color: #ffffff;
+        margin-top: 5px; 
+        margin-bottom: 5px;
+
+        text-transform: none;
+        font: 16px Roboto, arial, sans-serif;
+      }
+
+      .itemBig:hover{
+        background: -webkit-linear-gradient(top,#BC3E3E,#EF3838);
       }
 
       .dropdown-content{
@@ -164,35 +199,29 @@ Example:
         transition: .5s ease;
       }
 
-      .pin{
-        border-radius: 8px;
-        width: 200px;
-        height: 250px;
+      .menu{
+        margin-right: 0 !important;
       }
-      ​.header{
-        min-height: 60px;
-        max-height:60px;
+
+      .dropdown-content b{
+        font-family: Aclonica;
+        font-weight: lighter;
       }
-      .content{
-        margin-top: 10px;
-        text-align: center;  
-        overflow-y: scroll;
-        max-height: calc( 100% - 70px );
-        width: 100%;
-        position: relative;       
-      }​
+
+
+
     </style>
     
     <paper-header-panel mode="seamed" class="header">
       <paper-toolbar class="paper-header red">
         <iron-icon src="logo-pinterest.png" class="icon"></iron-icon>
         <span class="title flex">{{words.title}}</span>
-        <paper-icon-button icon="refresh" on-click="refresh"></paper-icon-button>
-        <paper-icon-button icon="icons:arrow-back" on-click="before"></paper-icon-button>
+        <paper-icon-button icon="refresh" on-click="refresh" hidden="{{!hide_home}}"></paper-icon-button>
+        <paper-icon-button icon="icons:arrow-back" on-click="before" hidden="{{!hide_home}}"></paper-icon-button>
         <p>
           {{get_index}}
         </p>
-        <paper-icon-button icon="icons:arrow-forward" on-click="next"></paper-icon-button>
+        <paper-icon-button icon="icons:arrow-forward" on-click="next" hidden="{{!hide_home}}"></paper-icon-button>
         <paper-icon-button icon="menu" class="menu" on-click="toggle"></paper-icon-button>
       </paper-toolbar>
     </paper-header-panel>
@@ -214,7 +243,22 @@ Example:
 
       </template>
     </paper-menu>
+
     <div class="content">
+      <!-- Home -->
+      <div class="home" hidden="{{hide_home}}">
+        {{words.following-boards}}:
+        <template is="dom-repeat" items="[[following_boards]]">
+          <paper-button raised class="itemBig" on-click="get_pins">{{item.name}}</paper-button>
+        </template>
+        <hr>
+        {{words.my-boards}}:
+        <template is="dom-repeat" items="[[boards]]">
+            <paper-button raised class="itemBig" on-click="get_pins">{{item.name}}</paper-button>
+        </template>
+      </div>
+      
+
       <!-- PINS -->
       <template is="dom-repeat" items="{{pins}}">
         <a href="{{item.url}}" target="_blank">
@@ -380,6 +424,7 @@ Example:
       },
 
       _pins_received: function(event, detail){
+        if(!this.hide_home)this.hide_home=true;
         var pins = detail.response.data;
         this.cursor = 0;
         this.next_url = "";
@@ -492,6 +537,7 @@ Example:
         // loading resources, etc).
         this.get_user();
         this.$['dropdown-content'].style.right="-155px";
+        this.hide_home=false;
 
       },
 
