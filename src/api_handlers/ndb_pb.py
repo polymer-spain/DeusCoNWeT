@@ -775,7 +775,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
     # print "=========================="
     # print "Entro a la parte de pinterest"
     # print "=========================="
-    attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest-timeline/')
+    attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest-timeline-stable/')
     attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
