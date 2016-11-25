@@ -222,9 +222,9 @@ class ComponentListHandler(SessionHandler):
                         # We check if the component exists in our system
                         component_stored = ndb_pb.searchComponent(component_id)
                         if component_stored == None:
-                            print "=========================="
-                            print "Voy a insertar el componente de " + social_network
-                            print "=========================="
+                            # print "=========================="
+                            # print "Voy a insertar el componente de " + social_network
+                            # print "=========================="
                             # Adds the component to datastore
                             ndb_pb.insertComponent(component_id, url=url, description=description, rs=social_network, input_t=input_type, output_t=output_type, 
                                                     version_list=version_list, predetermined=predetermined, endpoint=endpoint, component_directory=component_directory)
