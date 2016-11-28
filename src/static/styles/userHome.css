@@ -284,7 +284,9 @@
   font-size:14px;
 
 }
-
+#login-modal .login-body pinterest-login {
+  margin:auto;
+}
 #rate-modal .questionText{
   margin:5px;
   font-size:16px;

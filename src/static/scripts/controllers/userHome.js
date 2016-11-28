@@ -284,7 +284,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           "question": question_text,
           "component": $scope.randomComponent,
           "timestamp": Date.now(),
-          "version": version
+          "version": version,
+          "user": $scope.user.user_id
         };
         mixpanel.track(question_id, properties);
       }
@@ -326,7 +327,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             "question_type": "optional",
             "component": $scope.randomComponent, // Se manda la versión?
             "version": version,
-            "timestamp": Date.now()
+            "timestamp": Date.now(),
+            "user":$scope.user.user_id
           };
           mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
           // We hide the user form
