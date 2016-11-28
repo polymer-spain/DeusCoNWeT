@@ -469,6 +469,8 @@ def getUser(user_id, component_detailed_info = False):
   return user_info
 
 def getUserId(user_id):
+  if not user_id:
+    return None
   user = User.objects(id=user_id)
   user_id = None
   if user.count() > 0:
