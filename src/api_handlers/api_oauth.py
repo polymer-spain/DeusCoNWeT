@@ -26,7 +26,6 @@ import yaml
 import httplib
 import hashlib
 import urllib
-from google.appengine.ext import ndb
 from google.appengine.api import memcache
 import time
 import ndb_pb

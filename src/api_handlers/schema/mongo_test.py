@@ -3,7 +3,9 @@
 
 import schemas
 import unittest
-
+import sys
+sys.path.insert(0, '../')
+import api_oauth.py
 # Probar a Insertar un usuario
 
 #def setUp(self):
@@ -25,6 +27,7 @@ class TestMongoDB(unittest.TestCase):
 
     tok_f = schemas.getToken('lrr9204', "facebook")
     self.assertTrue(tok_f, 'Existe el token de facebook')
+  
   
   def tearDown(self):
     schemas.dropDB()

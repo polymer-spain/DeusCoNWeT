@@ -242,8 +242,11 @@ def setComponentVersion(general_component):
   return version
 
 def getComponentEntity(component_id):
-  general_component = Component.objects(component_id=component_id)[0]
-  return general_component
+  general_component = Component.objects(component_id=component_id)
+  if general_component.count() > 0:
+    return general_component[0]
+  else:
+    return general_component
 
 #########################################################################################
 # Definicion de metodos relacionados con operaciones de alto nivel sobre la base de datos
@@ -397,9 +400,6 @@ def searchToken(token_id, rs):
     return None
 
 def modifyToken(user_id, new_token, rs):
-  logging.info('User_id: ' + user_id)
-  logging.info('new_token: ' + new_token)
-  logging.info('rs: ' + rs)
   tok = Token.objects(identifier=user_id, social_name=rs)
   if tok.count() > 0:
     tok = tok[0]
@@ -421,7 +421,7 @@ def modifyToken(user_id, new_token, rs):
         token.token = new_token
 
     user.save()
-  return user.key
+  return str(user.id)
 ## Metodos asociados a la entidad Usuario
 # Obtiene la lista de credenciales (token_id, red_social) de un usuario en el sistema
 def getUserCredentialList(user_id):
@@ -467,10 +467,11 @@ def getUser(user_id, component_detailed_info = False):
 
   return user_info
 
-def getUserId(user):
+def getUserId(user_id):
+  user = User.objects(id=user_id)
   user_id = None
-  if not user == None:
-    user_id = user.user_id
+  if user.count() > 0:
+    user_id = str(user[0].id)
   return user_id
 """
   Insert a user in database
@@ -518,7 +519,7 @@ def insertUser(rs, ide, access_token, data=None):
   # Updates the user entity
   user.save()
 
-  return str(user_key.id), user_key
+  return user_key
 
 
 # Actualiza la info de usuario proporcionada y retorna una lista de los elementos actualizados
