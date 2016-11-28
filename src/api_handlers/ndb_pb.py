@@ -421,7 +421,8 @@ def modifyToken(user_id, new_token, rs):
         token.token = new_token
 
     user.save()
-  return str(user.id)
+    return str(user.id)
+  return None
 ## Metodos asociados a la entidad Usuario
 # Obtiene la lista de credenciales (token_id, red_social) de un usuario en el sistema
 def getUserCredentialList(user_id):
@@ -507,7 +508,7 @@ def insertUser(rs, ide, access_token, data=None):
       user.website = data["website"]
 
   # Inserts the user entity
-  user_key = user.save()
+  user.save()
 
   token = Token(identifier=ide, token="", social_name=rs).save()
   # Ciphers the access token and stores in the datastore
@@ -517,9 +518,7 @@ def insertUser(rs, ide, access_token, data=None):
   user.tokens.append(token)
 
   # Updates the user entity
-  user.save()
-
-  return user_key
+  return user.save()
 
 
 # Actualiza la info de usuario proporcionada y retorna una lista de los elementos actualizados

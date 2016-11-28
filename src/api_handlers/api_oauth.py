@@ -76,10 +76,11 @@ class SessionHandler(webapp2.RequestHandler):
         message = str(user_key.id) + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
+        logging.info(hash_id)
         # Store in memcache hash-user_id pair
         # memcache.add(hash_id, user_key)
         # Create a new session in the system
-        ndb_pb.createSession(user_key, hash_id)
+        ndb_pb.createSession(str(user_key.id), hash_id)
         return hash_id
 
     def getUserInfo(self, hashed_id):
