@@ -202,7 +202,7 @@ class OauthLoginHandler(SessionHandler):
                 {"error": "The token_id provided does not belong to any user in the system. Consider perform a signup request instead"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)
+                self.response.set_status(401)
         except KeyError:
             response = \
                 {"error": "You must provide a valid pair of access_token and token_id in the request"}

@@ -1446,7 +1446,7 @@ def createSession(user_key, hashed_id):
   stored_session = Session.objects(user_key=user_key)
   if stored_session.count() > 0:
     stored_session = stored_session[0]
-    stored_session.key.delete()
+    stored_session.delete()
   # We create a new session assigned to the user
   session = Session(user_key=user_key, hashed_id=hashed_id).save()
 
@@ -1463,7 +1463,7 @@ def deleteSession(hashed_id):
   session = Session.objects(hashed_id=hashed_id)
   if session.count() > 0:
     session = session[0]
-    session.key.delete()
+    session.delete()
     deleted = True
   return deleted
 

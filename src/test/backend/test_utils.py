@@ -28,12 +28,12 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def openConnection(remote=True):
+def openConnection(remote=False):
     global connection,remoteConnection
     if remote:
         connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
     else:
-        connection = httplib.HTTPConnection("localhost:8001")
+        connection = httplib.HTTPConnection("localhost:8080")
         remoteConnection = False
 
 def closeConnection():
@@ -89,7 +89,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
     """
     global connection, nTest, nTestOK, nTestError, remoteConnection, nPreTest
     nTest += 1
-    print "Realizando petición ", method, " ", request_uri
+    print "Realizando petición ", method, " ", request_uri, " ", params
     headers = {"User-Agent": "PicBit-App"}
     session_cookie = None
     # Adds the cookie session header
@@ -113,6 +113,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
 
         # We print a Log for the response obtained from the server
         print bcolors.FAIL + "\t!!! STATUS: ERROR (STATUS " + str(response.status) + ")"
+        print response.read()
         print "\tDatos de la respuesta: " + responseData + bcolors.ENDC +"\n"
 
     else:
