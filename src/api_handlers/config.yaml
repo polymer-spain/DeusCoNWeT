@@ -4,6 +4,6 @@
 # 	- Component_versioning: Sets if the components will be served in a static (always serve stable version of the component) 
 #						   or dynamic (serve random version of the component) basis. Posible values: static | dynamic
 
-domain: centauro.ls.fi.upm.es
-#domain: localhost
+#domain: centauro.ls.fi.upm.es
+domain: localhost
 component_versioning: dynamic
