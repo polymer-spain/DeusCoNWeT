@@ -19,11 +19,11 @@
 """
 
 import webapp2, json
-import ndb_pb
 from google.appengine.api import memcache
 from api_oauth import SessionHandler
 import logging
-
+import ndb_pb
+#import pdb; pdb.set_trace(); # comando para depurar
 # Import config vars and datetime package (to manage request/response cookies)
 import datetime, os, yaml
 basepath = os.path.dirname(__file__)
@@ -32,7 +32,6 @@ with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
 domain = cfg["domain"]
-
 class UserListHandler(SessionHandler):
 
   """
@@ -92,6 +91,7 @@ class UserHandler(SessionHandler):
   def get(self, user_id):
     cookie_value = self.request.cookies.get("session")
     component_info = self.request.get("component_info", default_value="reduced")
+    refs_list = []
     if not cookie_value == None:
       # Obtains info related to the user authenticated in the system
       user_logged_key = self.getUserInfo(cookie_value)
@@ -107,6 +107,7 @@ class UserHandler(SessionHandler):
           # Obtains the user_id to check if the user active is the resource owner
           user_logged_id = ndb_pb.getUserId(user_logged_key)
           # Depending on the user making the request, the info returned will be one or another
+
           if user_id == user_logged_id:
             user_profile = ndb_pb.getProfile(user_id)
             if user_profile == None:
@@ -126,7 +127,6 @@ class UserHandler(SessionHandler):
               user_info["gender"] = user_profile["gender"]
               user_info["name"] = user_profile["name"]
               user_info["surname"] = user_profile["surname"]
-            refs_list = []
             components_list_js = ndb_pb.getComponents()
             components_list = json.loads(components_list_js)
             for comp in components_list["data"]:
@@ -139,6 +139,8 @@ class UserHandler(SessionHandler):
                     str(ident) + "-" + str(version) + static + str(ident) + ".html"
               refs_list.append(ref)
             user_info["references"] = refs_list
+            logging.info('Se va a contesta y cerrar la conexión')
+            logging.info(json.dumps(user_info))
             self.response.content_type = "application/json"
             self.response.write(json.dumps(user_info))
             self.response.set_status(200)
@@ -158,7 +160,7 @@ class UserHandler(SessionHandler):
               user_dict["email"] = user_info["email"]
             if user_info["private_phone"] == False:
               user_dict["phone"] = user_info["phone"]
-            for comp in user_info.components:
+            for comp in user_info["components"]:
               dict_comp = json.loads(comp)
               ident = dict_comp["component_id"]
               preversion = ndb_pb.getComponentEntity(comp["component_id"])

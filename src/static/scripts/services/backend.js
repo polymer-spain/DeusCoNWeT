@@ -5,8 +5,12 @@ function ($http, $location, $rootScope, $cookies) {
   'use strict';
 
   if ($location.host() === "localhost"){
-    this.endpoint = "http://" + $location.host() + ":" + $location.port();
-  }else {
+    if ($location.port() === 443) {
+      this.endpoint = "https://" + $location.host();
+    } else {
+      this.endpoint = "http://" + $location.host() + ":" + $location.port();
+    }
+  } else {
     this.endpoint = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
   }
 

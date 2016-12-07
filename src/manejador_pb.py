@@ -28,8 +28,6 @@ sys.path.insert(1, 'api_handlers/')
 sys.path.insert(1, 'api_handlers/lib/')
 
 import api_usuarios, api_componentes, api_contacto, api_oauth, api_auxiliar
-
-
 app = webapp2.WSGIApplication([
     (r'/api/componentes', api_componentes.ComponentListHandler),
     (r'/api/componentes/(.*)/valoracionComponente', api_componentes.ComponentRatingHandler),
@@ -83,3 +81,4 @@ app = webapp2.WSGIApplication([
     (r'/api/subscriptions', api_contacto.SubscriptionHandler),
 
     ], debug=True)
+

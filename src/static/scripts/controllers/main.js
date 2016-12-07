@@ -3,7 +3,11 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 	'use strict';
 
 	if ($location.host() === "localhost"){
-		$scope.domain = "http://" + $location.host() + ":" + $location.port();
+		if ($location.port() === 443){
+			$scope.domain = "https://" + $location.host();
+		} else {
+			$scope.domain = "http://" + $location.host() + ":" + $location.port();
+		}
 	}else {
 		$scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
 	}

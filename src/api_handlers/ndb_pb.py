@@ -23,6 +23,8 @@ import os
 import yaml
 import logging
 import sys
+import random
+import json
 from Crypto.Cipher import AES
 import base64
 sys.path.insert(0, 'api_handlers/lib')
@@ -55,13 +57,9 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
 # Connect to mongo
 # ENV_MODE = os.environ.get('ENV_MODE',None)
 database = mongoCfg['database']
-
-# if ENV_MODE == 'test':
-#     database = mongoCfg['database_test']
-
 logging.info('Connecting to ' + database + ' database')
 db = connect(database, host=mongoCfg['host'], port=mongoCfg['port'], password=mongoCfg['pwd'], username=mongoCfg['user'])
-
+print db
 #####################################################################################
 # Definicion de entidades de la base de datos
 #####################################################################################
@@ -158,7 +156,7 @@ class User(Document):
   private_phone = BooleanField(default=False)
   description = StringField()
   website = StringField()
-  image = StringField()
+  image = StringField() 
   tokens = ListField(ReferenceField(Token))
   net_list = ListField(ReferenceField(SocialUser))
   group_list = ListField(ReferenceField(Group)) 
@@ -275,59 +273,64 @@ def assignPredeterminedComponentsToUser(entity_key):
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
-def activateComponentToUser(component_id, user): #No entiendo lo que pretende hacer
+def activateComponentToUser(component_id, mongo_user_id): #No entiendo lo que pretende hacer
+  user_query = User.objects(id=mongo_user_id)
+  print component_id
   general_component = Component.objects(component_id=component_id)[0]
   user_component = None
   status = False
-  # We check if the user has added the corresponding social network to his/her profile
-  for social_network in user.net_list:
-    if general_component.rs == social_network.social_name:
-      #We check if the component provided is in the user component list
-      # If not, we create a new UserComponent Entity, setting the component version the user will use
-      for comp in user.components:
-        if comp.component_id == component_id:
-          user_component = comp
+  if user_query.count() > 0:
+    user = user_query[0]
+    # We check if the user has added the corresponding social network to his/her profile
+    for social_network in user.net_list:
+      if general_component.rs == social_network.social_name:
+        #We check if the component provided is in the user component list
+        # If not, we create a new UserComponent Entity, setting the component version the user will use
+        for comp in user.components:
+          if comp.component_id == component_id:
+            user_component = comp
 
-      if not user_component == None:
-        # We set the field to active
-        # The user's preferences (heigh, width) does not change
-        # We get the version of the component that will be served to the user
-        # (the same version than the setted when the user activated the component for the first time)
-        version = user_component.version
-        if not user_component.active:
-          user_component.active = True
+        if not user_component == None:
+          # We set the field to active
+          # The user's preferences (heigh, width) does not change
+          # We get the version of the component that will be served to the user
+          # (the same version than the setted when the user activated the component for the first time)
+          version = user_component.version
+          if not user_component.active:
+            user_component.active = True
+            user.save()
+            status = True
+        else:
+          # We set the version of the component
+          general_component = getComponentEntity(component_id)
+          version = general_component.version
+          # We create a new UserComponent entity
+          user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version).save()
+          # We add the component to the component_list of the user
+          user.components.append(user_component)
           user.save()
+
+          # We increase the counters that represents the times that a given component has been tested (general and versioned)
+          new_version = setComponentVersion(general_component)
+          # print "============================================="
+          general_component.version = new_version
+          general_component.test_count += 1
+          general_component.save()
           status = True
-      else:
-        # We set the version of the component
-        general_component = getComponentEntity(component_id)
-        version = general_component.version
-        # We create a new UserComponent entity
-        user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version).save()
-        # We add the component to the component_list of the user
-        user.components.append(user_component)
-        user.save()
 
-        # We increase the counters that represents the times that a given component has been tested (general and versioned)
-        new_version = setComponentVersion(general_component)
-        # print "============================================="
-        general_component.version = new_version
-        general_component.test_count += 1
-        general_component.save()
-        status = True
-
-      # We store in a ComponentTested entity the new version tested by the user
-      user_component_tested = ComponentTested.objects(component_id=component_id, user_id=user.user_id)[0]
-      if not user_component_tested == None:
-        # We update the field that represents the actual version that is being tested
-        user_component_tested.actual_version = version
-        # We add the version to the versions tested list, if is not was added previously
-        if not version in user_component_tested.versions_tested:
-          user_component_tested.versions_tested.append(version)
-          user_component_tested.save()
-      else:
-        # We create a new ComponentTested entity to store the versions of a component tested by the user
-        component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version).save()
+        # We store in a ComponentTested entity the new version tested by the user
+        user_component_tested = ComponentTested.objects(component_id=component_id, user_id=user.user_id)
+        if user_component_tested.count() > 0:
+          user_component_tested = user_component_tested[0]
+          # We update the field that represents the actual version that is being tested
+          user_component_tested.actual_version = version
+          # We add the version to the versions tested list, if is not was added previously
+          if not version in user_component_tested.versions_tested:
+            user_component_tested.versions_tested.append(version)
+            user_component_tested.save()
+        else:
+          # We create a new ComponentTested entity to store the versions of a component tested by the user
+          component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version).save()
   return status
 
 
@@ -400,6 +403,7 @@ def searchToken(token_id, rs):
     return None
 
 def modifyToken(user_id, new_token, rs):
+  logging.info('Intentado modificar un token de ' + user_id + ' con ' + new_token + ' de la red social ' + rs )
   tok = Token.objects(identifier=user_id, social_name=rs)
   if tok.count() > 0:
     tok = tok[0]
@@ -409,19 +413,11 @@ def modifyToken(user_id, new_token, rs):
 
   # Updates the token
   tok.token = new_token
-  token_key = tok.save()
+  tok = tok.save()
 
-  # Updates the token in the user credential list
-  token_aux = Token(identifier=user_id, social_name=rs).save()
-  user = User.objects(tokens=token_aux)
+  user = User.objects(tokens=tok)
   if user.count() > 0:
-    tokens = user.tokens
-    for token in tokens:
-      if token.identifier==user_id and token.social_name==rs:
-        token.token = new_token
-
-    user.save()
-    return str(user.id)
+    return str(user[0].id)
   return None
 ## Metodos asociados a la entidad Usuario
 # Obtiene la lista de credenciales (token_id, red_social) de un usuario en el sistema
@@ -465,7 +461,6 @@ def getUser(user_id, component_detailed_info = False):
                 "nets": net_names,
                 "token_ids": credential_list,
                 "components": user_component_list}
-
   return user_info
 
 def getUserId(user_id):
@@ -474,7 +469,7 @@ def getUserId(user_id):
   user = User.objects(id=user_id)
   user_id = None
   if user.count() > 0:
-    user_id = str(user[0].id)
+    user_id = str(user[0].user_id)
   return user_id
 """
   Insert a user in database
@@ -492,8 +487,8 @@ def insertUser(rs, ide, access_token, data=None):
 
   # We store the user info passed in the data argument
   if not data == None:
-    if ide:
-      user.user_id = ide
+    if data.has_key("user_id"):
+      user.user_id = data["user_id"]
     if data.has_key("email"):
       user.email = data["email"]
     if data.has_key("private_email"):
@@ -722,7 +717,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
   #   versionedComponent.save()
   created = True
   # Saves the changes to the entity
-
+  component.save()
   component.version = setComponentVersion(component)
   component.test_count += 1
   component.save()
@@ -799,7 +794,11 @@ Search a compoent by component_id
 :return document: the document found of a component
 """
 def searchComponent(component_id):
-  return Component.objects(component_id=component_id)[0]
+  query = Component.objects(component_id=component_id)
+  if query.count() > 0:
+    return query[0]
+  else:
+    return None
 """
   Get a component from user
 :param document_id: Document id of the user 
@@ -860,7 +859,11 @@ def getUserComponentList(user_id, component_detailed_info=False):
     # Returns only the components active in the user's dashboard
     if comp.active:
       # Obtains the user's rating relative to the component
-      rating = UserRating.query(UserRating.component_id == comp.component_id).get()
+      rating = UserRating.objects(UserRating.component_id == comp.component_id)
+      if rating.count() > 0:
+        rating = rating[0]
+      else:
+        rating = None
       component_rate = rating if not rating == None else 0.0
       if component_detailed_info:
         component_info = {"component_id": comp.component_id,
@@ -1161,8 +1164,14 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
       if rs == "":
         components = Component.objects().limit(20)
         for component in components:
-          rate = UserRating.objects(component_id=component.component_id)[0]
-          attributes = ComponentAttributes.objects(component_id=component.component_id)[0]
+          rates = UserRating.objects(component_id=component.component_id)
+          rate = None
+          if rates.count() > 0:
+            rate = rates[0]
+          attributesList = ComponentAttributes.objects(component_id=component.component_id)
+          attributes = None
+          if attributesList.count() > 0:
+            attributes = attributesList[0]
           general_comp["component_id"] = str(component.component_id)
           general_comp["url"] = str(component.url)
           general_comp["social_network"] = str(component.rs)
@@ -1471,3 +1480,6 @@ def dropDB():
   User.objects().delete()
   Token.objects().delete()
   SocialUser.objects().delete()
+def close():
+  db.close()
+

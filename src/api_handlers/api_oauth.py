@@ -42,7 +42,6 @@ basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
-
 domain = cfg["domain"]
 
 client = None
@@ -73,14 +72,15 @@ class SessionHandler(webapp2.RequestHandler):
     """
 
     def login(self, user_key):
-        message = str(user_key.id) + str(time.time())
+        print 'User_key: %s' % user_key
+        message = user_key + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
         logging.info(hash_id)
         # Store in memcache hash-user_id pair
         # memcache.add(hash_id, user_key)
         # Create a new session in the system
-        ndb_pb.createSession(str(user_key.id), hash_id)
+        ndb_pb.createSession(user_key, hash_id)
         return hash_id
 
     def getUserInfo(self, hashed_id):

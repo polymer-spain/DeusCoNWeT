@@ -19,11 +19,9 @@
 import sys
 import httplib, urllib, json
 import ndb_pb
-
 basePath = "" # Path for the repo (:user/:repo)
 connection = None
 params = urllib.urlencode({})
-
 headers = {"Accept": "application/vnd.github.v3+json",
 "User-Agent": "PicBit-App"}
 

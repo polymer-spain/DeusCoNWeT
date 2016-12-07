@@ -26,8 +26,6 @@ import ndb_pb
 
 # Imports for ContactHandler
 from google.appengine.api import mail
-
-
 class ContactHandler(webapp2.RequestHandler):
     """ Class that represent the contact resource, used for customer support.
     Method:
