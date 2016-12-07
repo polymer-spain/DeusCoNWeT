@@ -454,12 +454,14 @@ Polymer({
   },
   /* URLs parser */
   parseURL: function(tweet) {
+    tweet = tweet || "";
     return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
       return '<a style="color:rgb(57, 145, 212)" href='+url+' target="_blank">'+url+'</a>'
     })
   },
   /* Usernames parser */
   parseUsername: function(tweet) {
+    tweet = tweet || "";
     return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
       var username = u.replace("@","")
       return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
@@ -467,6 +469,7 @@ Polymer({
   },
   /* Hashtags parser */
   parseHashtag: function(tweet) {
+    tweet = tweet || "";
     return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
       var tag = t.replace("#","")
       return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
