@@ -63,7 +63,7 @@ function ($scope, $rootScope, $backend, $http) {
 			if ($target.attr('data-field') !== 'image'){
 				values += $target.attr('data-field') + '=' + $target.val();
 
-				if ($scope.user[$target.attr('data-field') !== $target.val()]){
+				if ($scope.user[$target.attr('data-field')] !== $target.val()){
 					changes = true;
 				}
 			}

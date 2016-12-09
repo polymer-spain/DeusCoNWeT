@@ -22,13 +22,13 @@
   </div>
   <div class="information  vertical layout">
     <span class="glyphicon glyphicon-remove" ng-click="closeForm()"></span>
-    <div id="userInformation" class="active">
+    <div id="userInformation" class="active flex">
       <div class="header">{{language.user_profile.user_information}}</div>
       <div class="content">
         <div class="form-group">
           <label for="picture">{{language.user_profile.picture}}</label>
           <div class="">
-            <img id="userPicture" src="http://www.eluniversal.com.co/sites/default/files/201506/minions.jpg" class="user-picture">
+            <img id="userPicture" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" class="user-picture">
             <span class="btn btn-default btn-file">
               {{language.user_profile.upload}} <input type="file" data-field="image" accept="image/*" onchange="angular.element(this).scope().changePicture(this)">
             </span>
@@ -51,14 +51,10 @@
           <label for="profession">{{language.user_profile.profession}}</label>
           <input type="text" class="form-control" id="profession" data-field="profession" placeholder="{{language.user_profile.profession}}" value="{{user.tech_exp}}">
         </div>
-        <div class="form-group">
-          <label for="phone">{{language.user_profile.phone}}</label>
-          <input type="text" class="form-control" id="telefono" data-field="phone" placeholder="{{language.user_profile.phone}}" value="{{user.phone}}">
-        </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" ng-click="submitForm()" class="btn btn-primary">{{language.send}}</button>
         <button type="button" ng-click="closeForm()" class="btn btn-default">{{language.close}}</button>
+        <button type="submit" ng-click="submitForm()" class="btn btn-primary">{{language.send}}</button>
       </div>
     </div>
     <div id="socialNetwork">
