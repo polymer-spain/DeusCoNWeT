@@ -507,18 +507,21 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(201)
+                        print "Responde 201"
                     else:
                         response = \
                         {"error": "This set of credentials already exists in the system"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(400)
+                        print "Responde 400 credentials"
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
+                    print "Responde 400 valid pair"
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
@@ -539,12 +542,15 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
+                print "Responde 400 cookie"
         else:
             response = \
                 {"error": "You must provide a session cookie"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(401)
+            print "Responde 401"
+
 
 
 ##################################################################################
