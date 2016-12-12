@@ -30,7 +30,7 @@
 import urllib
 import test_utils
 
-uri = "htpps://centauro.ls.fi.upm.es"
+uri = "https://centauro.ls.fi.upm.es"
 basepath = "/api/componentes"
 request_uri = uri + basepath
 test_utils.openConnection(False)

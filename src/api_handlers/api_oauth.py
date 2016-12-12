@@ -36,7 +36,7 @@ import logging
 # Imports for TwitterHandler
 import oauth
 from google.appengine.api import channel
-
+#import pdb; pdb.set_trace(); # comando para depurar
 # Import config vars
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
@@ -72,7 +72,6 @@ class SessionHandler(webapp2.RequestHandler):
     """
 
     def login(self, user_key):
-        print 'User_key: %s' % user_key
         message = user_key + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
@@ -126,8 +125,7 @@ class OauthSignUpHandler(SessionHandler):
                     user_key = ndb_pb.insertUser(social_network,
                             token_id, access_token, user_data)
                     # Creates the session
-                    session_id = self.login(user_key)
-
+                    session_id = self.login(str(user_key.id))
                     # Returns the session, user_id and social_network cookie
                     self.response.set_cookie("session", session_id,
                             path="/", domain=domain, secure=True)
@@ -278,31 +276,42 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
+                loggin.info('Se pide a ndb_pb.getUserId')
                 logged_user_id = ndb_pb.getUserId(logged_user)
+                loggin.info('Responde ndb_pb.getUserId')
 
                 # Obtains user credentials
+                loggin.info('Se pide a ndb_pb.getToken')
                 user_credentials = ndb_pb.getToken(token_id, social_network)
+                loggin.info('Se pide a ndb_pb.getToken')
                 if not user_credentials == None:
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],
                             "access_token": user_credentials["token"],
                             "token_id": user_credentials["token_id"]}
+                        loggin.info('Se intenta responde: ya existe el usuario')
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
+                        loggin.info('Se ha respondido: 200')
+
                     else:
                         response = {"user_id": user_credentials["user_id"]}
+                        loggin.info('Se intenta responde: ya existe el usuario: el usuario de las credencialeses igual al recibido: 200')
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
+                        loggin.info('Se ha respondido: 200')
                 else:
                     response = \
                         {"error": "The active user does not have a pair of token_id" \
                          + " and access_token in " + social_network + " stored in the system"}
                     self.response.content_type = "application/json"
+                    loggin.info('Se responde que no existe en el sistema')
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
+                    logging.info('Se ha respondido: 400')
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)

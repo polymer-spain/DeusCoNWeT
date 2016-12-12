@@ -49,6 +49,5 @@ class TestMongoDB(unittest.TestCase):
       rs = 'googleplus'
       user_key = ndb_pb.modifyToken(token_id,token,rs)
       self.assertIsNotNone(user_key)
-  
 if __name__ == '__main__':
         unittest.main()

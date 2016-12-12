@@ -144,8 +144,10 @@ class ComponentListHandler(SessionHandler):
                     if not len(component_list_aux["data"]) == 0:
                         self.response.content_type = "application/json"
                         self.response.write(component_list)
+
                         self.response.set_status(200)
                     else:
+
                         self.response.set_status(204)
                 else:
                     response = \
@@ -227,12 +229,15 @@ class ComponentListHandler(SessionHandler):
                                                     version_list=version_list, predetermined=predetermined, endpoint=endpoint, component_directory=component_directory)
                             response = {"status": "Component uploaded succesfully"}
                             self.response.write(json.dumps(response))
+    
                             self.response.set_status(201)
                         else:
+    
                             self.response.set_status(403)
                     else:
                         response = {"error": "Bad value for 'predetermined' param (it must be 'True' or 'False')"}
                         self.response.write(json.dumps(response))
+
                         self.response.set_status(400)
                 else:
                     response = {"error": "The versions param must contains stable as one of its values"}
@@ -284,12 +289,14 @@ class ComponentHandler(SessionHandler):
                         component = json.dumps(comp_aux)
                         self.response.content_type = "application/json"
                         self.response.write(component)
+
                         self.response.set_status(200)
                     else:
                         response = \
                         {"error": "Component not found in the system"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
+
                         self.response.set_status(404)
                 else:
                     response = \
@@ -372,6 +379,7 @@ class ComponentHandler(SessionHandler):
                             response = {"error": "The component_id specified does not belong to the user dashboard"}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
+    
                             self.response.set_status(400)
                         else:
                             component_modified_success = True
@@ -381,6 +389,7 @@ class ComponentHandler(SessionHandler):
                         {"error": "Rating must be a numeric value between 0.0 and 5.0"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
+
                         self.response.set_status(400)
 
                 # Updates the info about the component
@@ -440,11 +449,13 @@ class ComponentHandler(SessionHandler):
                         response = {"status": "Component deleted succesfully"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
+
                         self.response.set_status(200)
                     else:
                         response = {"error": "The component does not correspond to the user's dashboard"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
+
                         self.response.set_status(404)
                 else:
                     # We invalidate the session cookie received

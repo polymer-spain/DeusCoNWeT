@@ -23,7 +23,6 @@ from google.appengine.api import memcache
 from api_oauth import SessionHandler
 import logging
 import ndb_pb
-#import pdb; pdb.set_trace(); # comando para depurar
 # Import config vars and datetime package (to manage request/response cookies)
 import datetime, os, yaml
 basepath = os.path.dirname(__file__)

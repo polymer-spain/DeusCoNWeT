@@ -28,7 +28,8 @@ import json
 from Crypto.Cipher import AES
 import base64
 sys.path.insert(0, 'api_handlers/lib')
-from mongoengine import * 
+from mongoengine import *
+#import pdb; pdb.set_trace(); # comando para depurar 
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
     'twitter',
@@ -54,12 +55,6 @@ with open(mongoOptions, "r") as ymlfile:
 # If the param is set wrong, we configure component versioning as static
 component_versioning = cfg["component_versioning"] if cfg["component_versioning"] in ["static", "dynamic"] else "static"
 
-# Connect to mongo
-# ENV_MODE = os.environ.get('ENV_MODE',None)
-database = mongoCfg['database']
-logging.info('Connecting to ' + database + ' database')
-db = connect(database, host=mongoCfg['host'], port=mongoCfg['port'], password=mongoCfg['pwd'], username=mongoCfg['user'])
-print db
 #####################################################################################
 # Definicion de entidades de la base de datos
 #####################################################################################
@@ -369,6 +364,7 @@ Get access token of a social network
 
 def getToken(id_rs, social_net):  
   ans = None
+  return ans
   token = Token.objects(identifier=id_rs, social_name=social_net)
   if token.count() > 0:
     token = token[0]
@@ -464,6 +460,7 @@ def getUser(user_id, component_detailed_info = False):
   return user_info
 
 def getUserId(user_id):
+  return user_id
   if not user_id:
     return None
   user = User.objects(id=user_id)
@@ -1480,6 +1477,3 @@ def dropDB():
   User.objects().delete()
   Token.objects().delete()
   SocialUser.objects().delete()
-def close():
-  db.close()
-
