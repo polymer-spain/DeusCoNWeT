@@ -23,7 +23,7 @@ import webapp2
 import string
 import json
 
-import ndb_pb
+import mongoDB
 from api_oauth import SessionHandler
 
 # import cliente_gitHub
@@ -71,7 +71,7 @@ class ComponentRatingHandler(SessionHandler):
                 data["rate"] = rate
                 data["optional_evaluation"] = True if optional_form_completed == "true" else False
                 # We update the user info
-                updated_data = ndb_pb.updateUser(user_id, data)
+                updated_data = mongoDB.updateUser(user_id, data)
                 if not updated_data == None:
                     self.response.set_status(200)
                 else:
@@ -139,7 +139,7 @@ class ComponentListHandler(SessionHandler):
                     format_flag = True if list_format == "complete" and filter_param == "user" else False
                     user_filter = True if filter_param == "user" else False
                     # Get the component list, according to the filters given
-                    component_list = ndb_pb.getComponents(user_id, social_network, format_flag, user_filter)
+                    component_list = mongoDB.getComponents(user_id, social_network, format_flag, user_filter)
                     component_list_aux = json.loads(component_list)
                     if not len(component_list_aux["data"]) == 0:
                         self.response.content_type = "application/json"
@@ -222,10 +222,10 @@ class ComponentListHandler(SessionHandler):
                     # We check if "predetermined" has a boolean value
                     if not predetermined == None: #isinstance(predetermined,bool):
                         # We check if the component exists in our system
-                        component_stored = ndb_pb.searchComponent(component_id)
+                        component_stored = mongoDB.searchComponent(component_id)
                         if component_stored == None:
                             # Adds the component to datastore
-                            ndb_pb.insertComponent(component_id, url=url, description=description, rs=social_network, input_t=input_type, output_t=output_type, 
+                            mongoDB.insertComponent(component_id, url=url, description=description, rs=social_network, input_t=input_type, output_t=output_type, 
                                                     version_list=version_list, predetermined=predetermined, endpoint=endpoint, component_directory=component_directory)
                             response = {"status": "Component uploaded succesfully"}
                             self.response.write(json.dumps(response))
@@ -282,7 +282,7 @@ class ComponentHandler(SessionHandler):
             if not user_id == None:
                 if format == "reduced" or format == "complete":
                     format_flag = True if format == "complete" else False
-                    component = ndb_pb.getComponent(user_id, component_id, format_flag)
+                    component = mongoDB.getComponent(user_id, component_id, format_flag)
                     if not component == None:
                         comp_aux = json.load(component)
                         comp_aux["ref"] = "centauro.ls.fi.upm.es/bower_components/" + comp_aux["component_id"] + "-" + comp_aux["version"]
@@ -373,7 +373,7 @@ class ComponentHandler(SessionHandler):
                 # Updates the component rating
                 if not rating == "none":
                     if rating_value > 0 and rating_value < 5:
-                        rating_updated = ndb_pb.addRate(user_id, component_id, rating_value)
+                        rating_updated = mongoDB.addRate(user_id, component_id, rating_value)
                         if not rating_updated:
                             rating_error = True
                             response = {"error": "The component_id specified does not belong to the user dashboard"}
@@ -394,7 +394,7 @@ class ComponentHandler(SessionHandler):
 
                 # Updates the info about the component
                 if not len(data) == 0 and not rating_error:
-                    ndb_pb.modifyUserComponent(user_id, component_id, data)
+                    mongoDB.modifyUserComponent(user_id, component_id, data)
                     component_modified_success = True
 
                 # Compounds the success response if the component has ben updated successfully
@@ -444,7 +444,7 @@ class ComponentHandler(SessionHandler):
             if not cookie_value == None:
                 user_logged_key = self.getUserInfo(cookie_value)
                 if not user_logged_key == None:
-                    deactivated = ndb_pb.deactivateUserComponent(user_logged_key, component_id)
+                    deactivated = mongoDB.deactivateUserComponent(user_logged_key, component_id)
                     if deactivated:
                         response = {"status": "Component deleted succesfully"}
                         self.response.content_type = "application/json"
@@ -481,7 +481,7 @@ class ComponentHandler(SessionHandler):
                 self.response.set_status(401)
         elif scope=="global":
             # Deletes the component in the datastore
-            deleted = ndb_pb.deleteComponent(component_id)
+            deleted = mongoDB.deleteComponent(component_id)
             if deleted:
                 response = {"status": "Component deleted succesfully"}
                 self.response.content_type = "application/json"

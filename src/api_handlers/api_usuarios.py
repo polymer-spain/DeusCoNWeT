@@ -22,7 +22,7 @@ import webapp2, json
 from google.appengine.api import memcache
 from api_oauth import SessionHandler
 import logging
-import ndb_pb
+import mongoDB
 # Import config vars and datetime package (to manage request/response cookies)
 import datetime, os, yaml
 basepath = os.path.dirname(__file__)
@@ -47,7 +47,7 @@ class UserListHandler(SessionHandler):
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
-        users_list = ndb_pb.getUsers()
+        users_list = mongoDB.getUsers()
         if len(users_list) == 0:
           self.response.set_status(204)
         else:
@@ -97,18 +97,18 @@ class UserHandler(SessionHandler):
       if not user_logged_key == None:
         # Obtains the info related to the resource requested
         component_detailed_info = True if component_info == "detailed" else False
-        user_info = ndb_pb.getUser(user_id, component_detailed_info)
+        user_info = mongoDB.getUser(user_id, component_detailed_info)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
           self.response.set_status(404)
         else:
           # Obtains the user_id to check if the user active is the resource owner
-          user_logged_id = ndb_pb.getUserId(user_logged_key)
+          user_logged_id = mongoDB.getUserId(user_logged_key)
           # Depending on the user making the request, the info returned will be one or another
 
           if user_id == user_logged_id:
-            user_profile = ndb_pb.getProfile(user_id)
+            user_profile = mongoDB.getProfile(user_id)
             if user_profile == None:
               user_info["age"] = ""
               user_info["studies"] = ""
@@ -126,11 +126,11 @@ class UserHandler(SessionHandler):
               user_info["gender"] = user_profile["gender"]
               user_info["name"] = user_profile["name"]
               user_info["surname"] = user_profile["surname"]
-            components_list_js = ndb_pb.getComponents()
+            components_list_js = mongoDB.getComponents()
             components_list = json.loads(components_list_js)
             for comp in components_list["data"]:
               ident = comp["component_id"]
-              component = ndb_pb.getComponentEntity(ident)
+              component = mongoDB.getComponentEntity(ident)
               version = component.version
               static = "/"
               if str(ident) == "twitter-timeline": static = "/static/"
@@ -162,7 +162,7 @@ class UserHandler(SessionHandler):
             for comp in user_info["components"]:
               dict_comp = json.loads(comp)
               ident = dict_comp["component_id"]
-              preversion = ndb_pb.getComponentEntity(comp["component_id"])
+              preversion = mongoDB.getComponentEntity(comp["component_id"])
               version = preversion.version
               static = "/"
               if ident == "twitter-timeline": static = "/static/"
@@ -196,7 +196,7 @@ class UserHandler(SessionHandler):
     # (We only return an object verifying that the user_id requested exists in the system)
     else:
       self.response.content_type = "application/json"
-      user = ndb_pb.getUser(user_id)
+      user = mongoDB.getUser(user_id)
       if not user == None:
         self.response.set_status(200)
       else:
@@ -209,8 +209,8 @@ class UserHandler(SessionHandler):
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
-        user_logged_id = ndb_pb.getUserId(user_logged_key)
-        user_info = ndb_pb.getUser(user_id)
+        user_logged_id = mongoDB.getUserId(user_logged_key)
+        user_info = mongoDB.getUser(user_id)
         # Checks if the user active is the owner of the resource (if exists)
         if user_info == None:
           self.response.content_type = "application/json"
@@ -250,7 +250,7 @@ class UserHandler(SessionHandler):
               update_data["private_email"] = private_email
           if values.has_key("component"):
             component_id = values.get("component")      
-            component = ndb_pb.getComponent(user_logged_key, component_id)
+            component = mongoDB.getComponent(user_logged_key, component_id)
             # If the component_id provided in the request exists in the system and the user has not added it previously,
             # we add the component_id provided to the list of user's data to be updated
             if not component == None:
@@ -258,7 +258,7 @@ class UserHandler(SessionHandler):
           
           # Updates the resource and return the proper response to the client
           if not len(update_data) == 0:
-            updated_info = ndb_pb.updateUser(user_logged_key, update_data)    
+            updated_info = mongoDB.updateUser(user_logged_key, update_data)    
             if not len(updated_info) == 0:
               self.response.content_type = "application/json"
               self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
@@ -313,9 +313,9 @@ class UserHandler(SessionHandler):
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
-        user_logged_id = ndb_pb.getUserId(user_logged_key)
+        user_logged_id = mongoDB.getUserId(user_logged_key)
         # It is neccesary to get the parameters from the request
-        user_info = ndb_pb.getUser(user_id)
+        user_info = mongoDB.getUser(user_id)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
@@ -327,7 +327,7 @@ class UserHandler(SessionHandler):
           self.response.delete_cookie("session")
 
           # Deletes the user from the datastore
-          ndb_pb.deleteUser(user_logged_key)
+          mongoDB.deleteUser(user_logged_key)
           
           # Builds the response
           self.response.set_status(204)
@@ -372,8 +372,8 @@ class ProfileHandler(SessionHandler):
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
-        users_logged_id = ndb_pb.getUserId(user_logged_key)
-        user_info = ndb_pb.getUser(user_id)
+        users_logged_id = mongoDB.getUserId(user_logged_key)
+        user_info = mongoDB.getUser(user_id)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write({"error": "The requested user does not exist"})
@@ -399,7 +399,7 @@ class ProfileHandler(SessionHandler):
             updated_data["surname"] = values.get("surname")
 
           if not len(updated_data) == 0:
-            updated_info = ndb_pb.updateProfile(user_id, updated_data)
+            updated_info = mongoDB.updateProfile(user_id, updated_data)
             if not len(updated_info) == 0:
               self.response.content_type = "application/json"
               self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
@@ -450,15 +450,15 @@ class UserCredentialsHandler(SessionHandler):
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
-        user_logged_id = ndb_pb.getUserId(user_logged_key)
-        user_info = ndb_pb.getUser(user_id)
+        user_logged_id = mongoDB.getUserId(user_logged_key)
+        user_info = mongoDB.getUser(user_id)
         # Checks if the user active is the owner of the resource (if exists)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
           self.response.set_status(404)
         elif not user_info == None and user_logged_key == user_id:
-          cred_info = ndb_pb.getUserTokens(user_id)
+          cred_info = mongoDB.getUserTokens(user_id)
           if cred_info == None:
             self.response.content_type = "application/json"
             self.response.write(json.dumps({"error": "The user has not credentials added to his profile"}))
@@ -502,8 +502,8 @@ class AssignComponentsHandler(SessionHandler):
     if not cookie_value == None:
       user = self.getUserInfo(cookie_value)
       if not user == None:
-        user_logged = ndb_pb.getUserId(user)
-        user_info = ndb_pb.getUser(user_id)
+        user_logged = mongoDB.getUserId(user)
+        user_info = mongoDB.getUser(user_id)
         # print "========================================="
         # print "Respuesta de getUser: " + str(user_info == None)
         # print "========================================="
@@ -515,7 +515,7 @@ class AssignComponentsHandler(SessionHandler):
           # print "========================================="
           # print "Va a realizarse la llamada para la asignacion"
           # print "========================================="
-          ndb_pb.assignPredeterminedComponentsToUser(user)
+          mongoDB.assignPredeterminedComponentsToUser(user)
           # resp = {"resp": "OK"}
           # self.response.content_type = "application/json"
           # self.response.write(resp)

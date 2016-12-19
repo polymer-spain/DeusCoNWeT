@@ -28,8 +28,8 @@ import hashlib
 import urllib
 from google.appengine.api import memcache
 import time
-import ndb_pb
-from ndb_pb import Token, User
+import mongoDB
+from mongoDb import Token, User
 import datetime
 import logging
 
@@ -79,18 +79,18 @@ class SessionHandler(webapp2.RequestHandler):
         # Store in memcache hash-user_id pair
         # memcache.add(hash_id, user_key)
         # Create a new session in the system
-        ndb_pb.createSession(user_key, hash_id)
+        mongoDB.createSession(user_key, hash_id)
         return hash_id
 
     def getUserInfo(self, hashed_id):
         # user = memcache.get(hashed_id)
-        user_key = ndb_pb.getSessionOwner(hashed_id)
+        user_key = mongoDB.getSessionOwner(hashed_id)
         return user_key
 
     def logout(self, hashed_id):
         logout_status = False
         # status = memcache.delete(hashed_id)
-        status = ndb_pb.deleteSession(hashed_id)
+        status = mongoDB.deleteSession(hashed_id)
         if status == 2:
             logout_status = True
         return logout_status
@@ -115,14 +115,14 @@ class OauthSignUpHandler(SessionHandler):
             # logging.info('access_token: ' +access_token)
             # logging.info('token_id: ' +token_id)
             # logging.info('user_identifier: ' +user_identifier)
-            stored_credentials = ndb_pb.searchToken(token_id, social_network)
+            stored_credentials = mongoDB.searchToken(token_id, social_network)
             if stored_credentials == None: # Not found
                 user_data = {}
-                user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
+                user_id_repeated = True if not mongoDB.getUser(user_identifier) == None else False
                 if not user_id_repeated:
                     user_data["user_id"] = user_identifier
                     # Generate a valid username for a new user
-                    user_key = ndb_pb.insertUser(social_network,
+                    user_key = mongoDB.insertUser(social_network,
                             token_id, access_token, user_data)
                     # Creates the session
                     session_id = self.login(str(user_key.id))
@@ -174,17 +174,17 @@ class OauthLoginHandler(SessionHandler):
             token_id = self.request.POST["token_id"]
 
             # Checks if the username was stored previously
-            stored_credentials = ndb_pb.searchToken(token_id,
+            stored_credentials = mongoDB.searchToken(token_id,
                     social_network)
             if not stored_credentials == None:
                 # We store the new set of credentials
-                user_key = ndb_pb.modifyToken(token_id,
+                user_key = mongoDB.modifyToken(token_id,
                         access_token, social_network)
-                user_id = ndb_pb.getUserId(user_key)
+                user_id = mongoDB.getUserId(user_key)
                 session_id = self.login(user_key)
 
                 # Gets the user_id to generate the user cookie
-                user_id = ndb_pb.getUserId(user_key)
+                user_id = mongoDB.getUserId(user_key)
                 # Returns the session cookie
                 self.response.set_cookie("session", session_id, path="/", domain=domain, secure=True)
                 self.response.set_cookie("social_network", social_network, path="/", domain=domain, secure=True)
@@ -276,14 +276,14 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
-                loggin.info('Se pide a ndb_pb.getUserId')
-                logged_user_id = ndb_pb.getUserId(logged_user)
-                loggin.info('Responde ndb_pb.getUserId')
+                loggin.info('Se pide a mongoDB.getUserId')
+                logged_user_id = mongoDB.getUserId(logged_user)
+                loggin.info('Responde mongoDB.getUserId')
 
                 # Obtains user credentials
-                loggin.info('Se pide a ndb_pb.getToken')
-                user_credentials = ndb_pb.getToken(token_id, social_network)
-                loggin.info('Se pide a ndb_pb.getToken')
+                loggin.info('Se pide a mongoDB.getToken')
+                user_credentials = mongoDB.getToken(token_id, social_network)
+                loggin.info('Se pide a mongoDB.getToken')
                 if not user_credentials == None:
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
@@ -336,7 +336,7 @@ class OauthCredentialsHandler(SessionHandler):
         # If we don't provide a cookie in the request, we search for the token in the system
         # and return a 200 o 404 status. It is a request included in the login flow of the system
         else:
-            user_credentials = ndb_pb.getToken(token_id,social_network)
+            user_credentials = mongoDB.getToken(token_id,social_network)
             if not user_credentials == None:
                 response = {"user_id": user_credentials["user_id"]}
                 self.response.content_type = "application/json"
@@ -355,13 +355,13 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             logged_user_key = self.getUserInfo(cookie_value)
             if not logged_user_key == None:
-                logged_user_id = ndb_pb.getUserId(logged_user_key)
-                token = ndb_pb.getToken(token_id, social_network)
+                logged_user_id = mongoDB.getUserId(logged_user_key)
+                token = mongoDB.getToken(token_id, social_network)
                 if not token == None:
                     token_owner_id = token['user_id']
                     if logged_user_id == token_owner_id:
                         # Deletes the token from the user
-                        token_deleted = ndb_pb.deleteCredentials(logged_user_key, social_network, token_id)
+                        token_deleted = mongoDB.deleteCredentials(logged_user_key, social_network, token_id)
                         if token_deleted:
                             response = \
                                 {"status": "Credentials deleted successfully"}
@@ -420,19 +420,19 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
         if not cookie_value == None:
             user = self.getUserInfo(cookie_value)
             if not user == None:
-                logged_user_id = ndb_pb.getUserId(user)
+                logged_user_id = mongoDB.getUserId(user)
                 try:
                     # Gets the data from the request form
                     access_token = self.request.POST["access_token"]
 
                     # Checks if the username was stored previously
-                    stored_credentials = ndb_pb.getToken(token_id,
+                    stored_credentials = mongoDB.getToken(token_id,
                             social_network)
                     if not stored_credentials == None:
                         token_owner_id = stored_credentials['user_id']
                         if token_owner_id == logged_user_id:
                             # We update the user credentials
-                            user_id = ndb_pb.modifyToken(token_id, access_token,
+                            user_id = mongoDB.modifyToken(token_id, access_token,
                                     social_network)
                             # Builds the response
                             response = {"user_id": stored_credentials["user_id"]}
@@ -496,13 +496,13 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     access_token = self.request.POST["access_token"]
                     token_id = self.request.POST["token_id"]
                     # Checks if the username was stored previously
-                    stored_credentials = ndb_pb.getToken(token_id,
+                    stored_credentials = mongoDB.getToken(token_id,
                             social_network)
                     if stored_credentials == None:
                         # Adds the token to the user credentials list
-                        ndb_pb.insertToken(user, social_network, access_token, token_id)
+                        mongoDB.insertToken(user, social_network, access_token, token_id)
                         #Builds the response
-                        user_id = ndb_pb.getUserId(user)
+                        user_id = mongoDB.getUserId(user)
                         response = {"user_id": user_id}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
@@ -636,7 +636,7 @@ class GitHubContainerHandler(SessionHandler):
         # tok3 = "b8d18cc8a"
         # tok4 = "489646d3c"
         # tok5 = "8457"
-        # git_tok = ndb_pb.GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
+        # git_tok = mongoDB.GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
         # git_tok.put()
         url = "github.com"
         # authorize_url = \
@@ -691,7 +691,7 @@ class GitHubContainerHandler(SessionHandler):
                     connectionAPI = httplib.HTTPSConnection("api.github.com")
                     headers = {"Accept": "application/vnd.github.v3+json",
                                 "User-Agent": "PicBit-App",
-                                "Authorization": "token " + ndb_pb.getGitHubAPIKey()}
+                                "Authorization": "token " + mongoDB.getGitHubAPIKey()}
                     connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
                     response = connectionAPI.getresponse()
                     response_content = response.read()
@@ -701,19 +701,19 @@ class GitHubContainerHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     # Buscamos el par id usuario/token autenticado en la base
-                    stored_credentials = ndb_pb.searchToken(str(user_details["login"
+                    stored_credentials = mongoDB.searchToken(str(user_details["login"
                             ]), "github")
                     if stored_credentials == None:
                         # print "============================="
                         # print "Voy a hacer el insertToken"
                         # print "============================="
                         # Almacena las credenciales en una entidad Token
-                        user_credentials = ndb_pb.insertToken(user, "github", access_token,
+                        user_credentials = mongoDB.insertToken(user, "github", access_token,
                                             user_details["login"])
                         self.response.set_status(201)
                     else:
                         # Almacenamos el access token recibido
-                        user_id = ndb_pb.modifyToken(str(user_details["login"]),
+                        user_id = mongoDB.modifyToken(str(user_details["login"]),
                                 access_token, "github")
                         self.response.set_status(200)
                 else:
@@ -1003,15 +1003,15 @@ class TwitterSignUpHandler(SessionHandler):
             twitter_user_data = memcache.get(key_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter")
+                stored_credentials = mongoDB.searchToken(twitter_user_data["token_id"], "twitter")
                 if stored_credentials == None:
                     user_info = {}
                     if not user_identifier == "":
                         # Checks if the user_id taken exists in the system
-                        user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
+                        user_id_repeated = True if not mongoDB.getUser(user_identifier) == None else False
                         if not user_id_repeated:
                             user_info["user_id"] = user_identifier
-                            user_key = ndb_pb.insertUser("twitter",
+                            user_key = mongoDB.insertUser("twitter",
                             twitter_user_data["token_id"], twitter_user_data["access_token"], user_info)
 
                             # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
@@ -1078,16 +1078,16 @@ class TwitterLoginHandler(SessionHandler):
             twitter_user_data = memcache.get(key_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter")
+                stored_credentials = mongoDB.searchToken(twitter_user_data["token_id"], "twitter")
                 if not stored_credentials == None:
                     # We store the new set of credentials
-                    user_key = ndb_pb.modifyToken(twitter_user_data["token_id"],
+                    user_key = mongoDB.modifyToken(twitter_user_data["token_id"],
                             twitter_user_data["access_token"], "twitter")
-                    user_id = ndb_pb.getUserId(user_key)
+                    user_id = mongoDB.getUserId(user_key)
                     session_id = self.login(user_key)
 
                     # Gets the user_id to generate the user cookie
-                    user_id = ndb_pb.getUserId(user_key)
+                    user_id = mongoDB.getUserId(user_key)
 
                     # Returns the session, social_network and user cookie
                     self.response.set_cookie("session", session_id,

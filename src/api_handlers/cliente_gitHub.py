@@ -18,7 +18,7 @@
 # -*- coding: utf8 -*-
 import sys
 import httplib, urllib, json
-import ndb_pb
+import mongoDB
 basePath = "" # Path for the repo (:user/:repo)
 connection = None
 params = urllib.urlencode({})
@@ -29,7 +29,7 @@ headers = {"Accept": "application/vnd.github.v3+json",
 def openConnection(basePathRepo):
   global basePath, repoId, connection, headers
   basePath = basePathRepo
-  githubToken = ndb_pb.getGitHubAPIKey()
+  githubToken = mongoDB.getGitHubAPIKey()
   headers["Authorization"] = "token " + githubToken
   connection = httplib.HTTPSConnection("api.github.com")
   

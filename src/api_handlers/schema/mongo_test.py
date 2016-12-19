@@ -6,7 +6,7 @@ import sys
 import time
 import hashlib
 sys.path.insert(0, '../')
-import ndb_pb
+import mongoDB
 # Probar a Insertar un usuario
 
 #def setUp(self):
@@ -47,7 +47,7 @@ class TestMongoDB(unittest.TestCase):
       token_id = '100649675761516434025'
       token = 'ya29.Gl-tAy7c18Xo_XtZ_J9Y_49Tmef3M76li-NpHppshAED7s-WkBEycYj3lAryoJl1ZeXtS8rJu31oRJj0w-n8YDvkwRPAM7wsXIvSRcQqTcN0NW3xuCWDs1dHL8exF-bllw'
       rs = 'googleplus'
-      user_key = ndb_pb.modifyToken(token_id,token,rs)
+      user_key = mongoDB.modifyToken(token_id,token,rs)
       self.assertIsNotNone(user_key)
 if __name__ == '__main__':
         unittest.main()
