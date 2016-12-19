@@ -109,37 +109,45 @@ static_url = [ url for url in cfg['handlers'] if url.has_key('static_files')]
 static_url = [createStatic(handler) for handler in static_url]
 ## LOAD APP
 full_url = api_url + static_url
-web_app = webapp2.WSGIApplication(full_url, debug=True)
+app = webapp2.WSGIApplication(full_url, debug=True)
 
 ## MAIN
-def main():
-    from paste import httpserver
-    from paste.cascade import Cascade
-    from paste.urlparser import StaticURLParser
-    import threading
+# def main():
+#     from paste import httpserver
+#     from paste.cascade import Cascade
+#     from paste.urlparser import StaticURLParser
+#     import threading
+#     import signal
     
-    threads = list()
+#     threads = list()
 
-    # Deploy app
-    ssl = os.path.abspath(os.path.join(basepath, 'ssl/ssl.pem'))
-    static_app = StaticURLParser("static/")
-    app = Cascade([static_app,web_app])
+#     # Deploy app
+#     ssl = os.path.abspath(os.path.join(basepath, 'ssl/ssl.pem'))
+#     static_app = StaticURLParser("static/")
+#     app = Cascade([static_app,app])
     
-    # thread worker
-    def worker(server_type):
-        if server_type == 'http':
-            http_app = webapp2.WSGIApplication([(r'*', redirect)])
-            httpserver.serve(http_app, host='0.0.0.0', port=80 , server_version=1.0)
-        else:
-            httpserver.serve(app, host='0.0.0.0', port=443 , server_version=1.0,ssl_pem=ssl)
+#     # thread worker
+#     def worker(server_type):
+#         if server_type == 'http':
+#             http_app = webapp2.WSGIApplication([(r'*', redirect)])
+#             httpserver.serve(http_app, host='0.0.0.0', port=80 , server_version=1.0)
+#         else:
+#             httpserver.serve(app, host='0.0.0.0', port=443 , server_version=1.0,ssl_pem=ssl)
     
-    # Define threads: http and https server
-    t_http = threading.Thread(target=worker,args=('http',))
-    t_https = threading.Thread(target=worker, args=('https',))
-    print t_http
-    print t_https
-    # Init threads
-    t_http.start()
-    t_https.start()
-if __name__ == '__main__':
-    main()
+#     # Define threads: http and https server
+#     t_http = threading.Thread(target=worker,args=('http',))
+#     t_https = threading.Thread(target=worker, args=('https',))
+#     print t_http
+#     print t_https
+#     # Init threads
+#     t_http.start()
+#     t_https.start()
+
+#     def signal_handler(signal, frame):
+#         print('You pressed Ctrl+C!')
+#         sys.exit(0)
+#     signal.signal(signal.SIGINT, signal_handler)
+#     print('Press Ctrl+C')
+#     signal.pause()
+# if __name__ == '__main__':
+#     main()
