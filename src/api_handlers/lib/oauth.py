@@ -43,9 +43,18 @@ A typical use case inside an AppEngine controller would be:
 note however this software is unsupported. Please don't email me about it. :)
 """
 
-from google.appengine.api import memcache
-from google.appengine.api import urlfetch
-from google.appengine.ext import db
+import memcache as mc
+import urlfetch
+memcache = mc.Client(['127.0.0.1:11211'], debug=0)
+
+GET = 1
+POST = 2
+HEAD = 3
+PUT = 4
+DELETE = 5
+PATCH = 6
+
+from mongoDB import AuthToken
 
 from cgi import parse_qs
 #ImportError: No module named django.utils
@@ -95,23 +104,6 @@ def get_oauth_client(service, key, secret, callback_url):
   else:
     raise Exception, "Unknown OAuth service %s" % service
 
-
-class AuthToken(db.Model):
-  """Auth Token.
-
-  A temporary auth token that we will use to authenticate a user with a
-  third party website. (We need to store the data while the user visits
-  the third party website to authenticate themselves.)
-
-  TODO: Implement a cron to clean out old tokens periodically.
-  """
-
-  service = db.StringProperty(required=True)
-  token = db.StringProperty(required=True)
-  secret = db.StringProperty(required=True)
-  created = db.DateTimeProperty(auto_now_add=True)
-
-
 class OAuthClient():
 
   def __init__(self, service_name, consumer_key, consumer_secret, request_url,
@@ -126,7 +118,7 @@ class OAuthClient():
     self.callback_url = callback_url
 
   def prepare_request(self, url, token="", secret="", additional_params=None,
-                      method=urlfetch.GET, t=None, nonce=None):
+                      method=GET, t=None, nonce=None):
     """Prepare Request.
 
     Prepares an authenticated request to any OAuth protected resource.
@@ -162,7 +154,7 @@ class OAuthClient():
                            for k in sorted(params)])
 
     # Join the entire message together per the OAuth specification.
-    message = "&".join(["GET" if method == urlfetch.GET else "POST",
+    message = "&".join(["GET" if method == GET else "POST",
                        encode(url), encode(params_str)])
 
     # Create a HMAC-SHA1 signature of the message.
@@ -175,7 +167,7 @@ class OAuthClient():
     return urlencode(params)
 
   def make_async_request(self, url, token="", secret="", additional_params=None,
-                         protected=False, method=urlfetch.GET, headers={}):
+                         protected=False, method=GET, headers={}):
     """Make Request.
 
     Make an authenticated request to any OAuth protected resource.
@@ -188,7 +180,7 @@ class OAuthClient():
     payload = self.prepare_request(url, token, secret, additional_params,
                                    method)
 
-    if method == urlfetch.GET:
+    if method == GET:
       url = "%s?%s" % (url, payload)
       payload = None
 
@@ -201,7 +193,7 @@ class OAuthClient():
     return rpc
 
   def make_request(self, url, token="", secret="", additional_params=None,
-                   protected=False, method=urlfetch.GET, headers={}):
+                   protected=False, method=GET, headers={}):
 
     return self.make_async_request(url, token, secret, additional_params,
                                    protected, method, headers).get_result()

@@ -26,16 +26,17 @@ import yaml
 import httplib
 import hashlib
 import urllib
-from google.appengine.api import memcache
+import sys
+import memcache as mc
+memcache = mc.Client(['127.0.0.1:11211'], debug=0)
 import time
 import mongoDB
-from mongoDb import Token, User
+from mongoDB import Token, User
 import datetime
 import logging
 
 # Imports for TwitterHandler
 import oauth
-from google.appengine.api import channel
 #import pdb; pdb.set_trace(); # comando para depurar
 # Import config vars
 basepath = os.path.dirname(__file__)

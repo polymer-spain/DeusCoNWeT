@@ -17,9 +17,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 """
-
+import sys
+sys.path.insert(1, 'api_handlers/')
 import webapp2, json
-from google.appengine.api import memcache
+import memcache as mc
+memcache = mc.Client(['127.0.0.1:11211'], debug=0)
 from api_oauth import SessionHandler
 import logging
 import mongoDB

@@ -25,6 +25,7 @@ import logging
 import sys
 import random
 import json
+import datetime
 from Crypto.Cipher import AES
 import base64
 sys.path.insert(0, 'api_handlers/lib')
@@ -68,6 +69,24 @@ connect(mongoCfg['database'], port=mongoCfg['port'], host=mongoCfg['host'], user
 # Definicion de entidades de la base de datos
 #####################################################################################
 
+class AuthToken(Document):
+  """Auth Token.
+
+  A temporary auth token that we will use to authenticate a user with a
+  third party website. (We need to store the data while the user visits
+  the third party website to authenticate themselves.)
+
+  TODO: Implement a cron to clean out old tokens periodically.
+  """
+  service = StringField(required=True)
+  token = StringField(required=True)
+  secret = StringField(required=True)
+  created = DateTimeField(auto_now_add=True)
+  def save(self, *args, **kwargs):
+    ''' On save, update timestamps '''
+    if not self.id:
+        self.created = datetime.datetime.now()
+    return super(AuthToken, self).save(*args, **kwargs)
 
 class ComponentAttributes(Document):
   component_id =StringField(required=True)
