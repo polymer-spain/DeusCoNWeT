@@ -1,5 +1,4 @@
 application: example-project-13
-
 version: stable
 runtime: python27
 threadsafe: true

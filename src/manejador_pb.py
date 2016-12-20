@@ -24,12 +24,12 @@ import re
 # Import API handlers
 import sys
 import os
-import re
 import pprint as pp
-sys.path.insert(1, 'api_handlers/')
-sys.path.insert(1, 'api_handlers/lib/')
+sys.path.insert(0, '/var/www/src/api_handlers/')
+sys.path.insert(0, '/var/www/src/api_handlers/lib/')
 import yaml
 import api_usuarios, api_componentes, api_oauth, api_auxiliar
+import mimetypes
 api_url =[
     (r'/api/componentes', api_componentes.ComponentListHandler),
     (r'/api/componentes/(.*)/valoracionComponente', api_componentes.ComponentRatingHandler),
@@ -80,7 +80,6 @@ api_url =[
     (r'/api/oauth/instagram/credenciales', api_oauth.InstagramContainerHandler),
     (r'/api/oauth/instagram/credenciales/(.*)', api_oauth.InstagramCredentialHandler),
     #(r'/api/subscriptions', api_contacto.SubscriptionHandler),
-
     ]
 
 
@@ -89,65 +88,46 @@ basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "app.yaml"))
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
-class redirect(webapp2.RequestHandler):
-    def get(self):
-        print self.request
-def handlerStaticUrl(file):
-    class handler(webapp2.RequestHandler):
-        def get(self):
-            path = os.path.join(basepath,file)
-            f = open(path,'r')
-            self.response.out.write(f.read())
-    return handler  
-    
+class handler(webapp2.RequestHandler):
+  def get(self, path):
+    if not path:
+      path = 'index.html'
+    static_folder = self.app.config.get('static_folder', 'static')
+    abspath = os.path.join(basepath, static_folder, path)
+    print 'Base path: ' + abspath + ', path: ' + path + ', basepath: ' + basepath + ', static:' + static_folder
+    try:
+      f = open(abspath,'r')
+      self.response.out.write(f.read())
+      self.response.headers.add_header('Content-Type', mimetypes.guess_type(abspath)[0])
+    except:
+      self.response.set_status(404)
+
+
 def createStatic(handler):
     url = handler['url']
     file = handler['static_files']
     return (url, handlerStaticUrl(file))
 
-static_url = [ url for url in cfg['handlers'] if url.has_key('static_files')]
-static_url = [createStatic(handler) for handler in static_url]
 ## LOAD APP
+static_url = [(r'/(.*)',handler)]
 full_url = api_url + static_url
 app = webapp2.WSGIApplication(full_url, debug=True)
 
-## MAIN
-# def main():
-#     from paste import httpserver
-#     from paste.cascade import Cascade
-#     from paste.urlparser import StaticURLParser
-#     import threading
-#     import signal
+# MAIN
+def main():
+    from paste import httpserver
+    from paste.cascade import Cascade
+    from paste.urlparser import StaticURLParser
+    import threading
+    import signal
     
-#     threads = list()
+    threads = list()
 
-#     # Deploy app
-#     ssl = os.path.abspath(os.path.join(basepath, 'ssl/ssl.pem'))
-#     static_app = StaticURLParser("static/")
-#     app = Cascade([static_app,app])
-    
-#     # thread worker
-#     def worker(server_type):
-#         if server_type == 'http':
-#             http_app = webapp2.WSGIApplication([(r'*', redirect)])
-#             httpserver.serve(http_app, host='0.0.0.0', port=80 , server_version=1.0)
-#         else:
-#             httpserver.serve(app, host='0.0.0.0', port=443 , server_version=1.0,ssl_pem=ssl)
-    
-#     # Define threads: http and https server
-#     t_http = threading.Thread(target=worker,args=('http',))
-#     t_https = threading.Thread(target=worker, args=('https',))
-#     print t_http
-#     print t_https
-#     # Init threads
-#     t_http.start()
-#     t_https.start()
+    # Deploy app
+    ssl = os.path.abspath(os.path.join(basepath, '../ssl/ssl.pem'))
+    static_app = StaticURLParser("static/")
+    application = Cascade([static_app,app])
+    httpserver.serve(application, host='0.0.0.0', port=443 , server_version=1.0,ssl_pem=ssl)
 
-#     def signal_handler(signal, frame):
-#         print('You pressed Ctrl+C!')
-#         sys.exit(0)
-#     signal.signal(signal.SIGINT, signal_handler)
-#     print('Press Ctrl+C')
-#     signal.pause()
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()

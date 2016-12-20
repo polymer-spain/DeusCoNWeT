@@ -28,7 +28,7 @@ import json
 import datetime
 from Crypto.Cipher import AES
 import base64
-sys.path.insert(0, 'api_handlers/lib')
+sys.path.insert(1, 'lib')
 from mongoengine import *
 #import pdb; pdb.set_trace(); # comando para depurar 
 # Definimos la lista de redes sociales con las que trabajamos

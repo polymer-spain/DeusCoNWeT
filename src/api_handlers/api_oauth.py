@@ -36,6 +36,7 @@ import datetime
 import logging
 
 # Imports for TwitterHandler
+sys.path.insert(1, 'api_handlers/lib')
 import oauth
 #import pdb; pdb.set_trace(); # comando para depurar
 # Import config vars
