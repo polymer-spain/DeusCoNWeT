@@ -88,7 +88,12 @@ basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "app.yaml"))
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
-class handler(webapp2.RequestHandler):
+
+
+
+
+
+class staticFiles(webapp2.RequestHandler):
   def get(self, path):
     if not path:
       path = 'index.html'
@@ -102,15 +107,27 @@ class handler(webapp2.RequestHandler):
     except:
       self.response.set_status(404)
 
-
+def handlerHelper(files):
+  class handler(webapp2.RequestHandler):
+    def get(self):
+      abspath = os.path.join(basepath, files)
+      try:
+        f = open(abspath,'r')
+        self.response.out.write(f.read())
+        self.response.headers.add_header('Content-Type', mimetypes.guess_type(abspath)[0])
+      except:
+        self.response.set_status(404)
+  return handler
 def createStatic(handler):
     url = handler['url']
-    file = handler['static_files']
-    return (url, handlerStaticUrl(file))
+    files = handler['static_files']
+    return (url, handlerHelper(files))
 
 ## LOAD APP
-static_url = [(r'/(.*)',handler)]
-full_url = api_url + static_url
+defined_url = [ url for url in cfg['handlers'] if url.has_key('static_files')]
+defined_url = [createStatic(handler) for handler in defined_url]
+static_url = [(r'/(.*)',staticFiles)]
+full_url = api_url + defined_url + static_url
 app = webapp2.WSGIApplication(full_url, debug=True)
 
 # MAIN
