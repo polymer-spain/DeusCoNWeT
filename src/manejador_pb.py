@@ -30,6 +30,26 @@ sys.path.insert(0, '/var/www/src/api_handlers/lib/')
 import yaml
 import api_usuarios, api_componentes, api_oauth, api_auxiliar
 import mimetypes
+import apache, logging
+class ApacheLogHandler(logging.Handler):
+    LEVEL_MAP = {
+        logging.DEBUG: apache.APLOG_DEBUG,
+        logging.INFO: apache.APLOG_INFO,
+        logging.WARNING: apache.APLOG_WARNING,
+        logging.ERROR: apache.APLOG_ERR,
+        logging.CRITICAL: apache.APLOG_CRIT,
+        }
+    def __init__(self, request=None):
+        self.log_error = apache.log_error
+        if request is not None:
+            self.log_error = request.log_error
+    def emit(self,record):
+        apacheLevel = apache.APLOG_DEBUG
+        if record.levelno in ApacheLogHandler.LEVEL_MAP:
+            apacheLevel = ApacheLogHandler.LEVEL_MAP[record.levelno]
+        self.log_error(record.getMessage(), apacheLevel)
+
+
 ## API URLS and handlers
 api_url =[
     (r'/api/componentes', api_componentes.ComponentListHandler),
