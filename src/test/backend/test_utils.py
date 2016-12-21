@@ -7,7 +7,7 @@ import httplib
 import urllib
 import json
 import time
-
+import ssl
 # Global vars
 connection = None
 remoteConnection = True
@@ -31,7 +31,7 @@ class bcolors:
 def openConnection(remote=True):
     global connection,remoteConnection
     if remote:
-        connection = httplib.HTTPSConnection("centauro.ls.fi.upm.es")
+        connection = httplib.HTTPSConnection("centauro.ls.fi.upm.es",443,context=ssl._create_unverified_context())
     else:
         connection = httplib.HTTPConnection("localhost:8001")
         remoteConnection = False
@@ -90,7 +90,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
     global connection, nTest, nTestOK, nTestError, remoteConnection, nPreTest
     nTest += 1
     print "Realizando petición ", method, " ", request_uri
-    headers = {"User-Agent": "PicBit-App"}
+    headers = {"User-Agent": "PicBit-App","Content-Type":"application/x-www-form-urlencoded"}
     session_cookie = None
     # Adds the cookie session header
     if not session == None:
