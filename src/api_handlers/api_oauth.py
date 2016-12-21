@@ -278,39 +278,39 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
-                loggin.info('Se pide a mongoDB.getUserId')
+                logging.info('Se pide a mongoDB.getUserId')
                 logged_user_id = mongoDB.getUserId(logged_user)
-                loggin.info('Responde mongoDB.getUserId')
+                logging.info('Responde mongoDB.getUserId')
 
                 # Obtains user credentials
-                loggin.info('Se pide a mongoDB.getToken')
+                logging.info('Se pide a mongoDB.getToken')
                 user_credentials = mongoDB.getToken(token_id, social_network)
-                loggin.info('Se pide a mongoDB.getToken')
+                logging.info('Se pide a mongoDB.getToken')
                 if not user_credentials == None:
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],
                             "access_token": user_credentials["token"],
                             "token_id": user_credentials["token_id"]}
-                        loggin.info('Se intenta responde: ya existe el usuario')
+                        logging.info('Se intenta responde: ya existe el usuario')
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
-                        loggin.info('Se ha respondido: 200')
+                        logging.info('Se ha respondido: 200')
 
                     else:
                         response = {"user_id": user_credentials["user_id"]}
-                        loggin.info('Se intenta responde: ya existe el usuario: el usuario de las credencialeses igual al recibido: 200')
+                        logging.info('Se intenta responde: ya existe el usuario: el usuario de las credencialeses igual al recibido: 200')
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
-                        loggin.info('Se ha respondido: 200')
+                        logging.info('Se ha respondido: 200')
                 else:
                     response = \
                         {"error": "The active user does not have a pair of token_id" \
                          + " and access_token in " + social_network + " stored in the system"}
                     self.response.content_type = "application/json"
-                    loggin.info('Se responde que no existe en el sistema')
+                    logging.info('Se responde que no existe en el sistema')
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
                     logging.info('Se ha respondido: 400')

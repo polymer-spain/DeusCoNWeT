@@ -25,6 +25,7 @@ memcache = mc.Client(['127.0.0.1:11211'], debug=0)
 from api_oauth import SessionHandler
 import logging
 import mongoDB
+import pprint
 # Import config vars and datetime package (to manage request/response cookies)
 import datetime, os, yaml
 basepath = os.path.dirname(__file__)
@@ -108,7 +109,6 @@ class UserHandler(SessionHandler):
           # Obtains the user_id to check if the user active is the resource owner
           user_logged_id = mongoDB.getUserId(user_logged_key)
           # Depending on the user making the request, the info returned will be one or another
-
           if user_id == user_logged_id:
             user_profile = mongoDB.getProfile(user_id)
             if user_profile == None:

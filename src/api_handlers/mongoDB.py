@@ -392,7 +392,6 @@ Get access token of a social network
 
 def getToken(id_rs, social_net):  
   ans = None
-  return ans
   token = Token.objects(identifier=id_rs, social_name=social_net)
   if token.count() > 0:
     token = token[0]
@@ -488,7 +487,6 @@ def getUser(user_id, component_detailed_info = False):
   return user_info
 
 def getUserId(user_id):
-  return user_id
   if not user_id:
     return None
   user = User.objects(id=user_id)
@@ -1477,9 +1475,10 @@ def getGitHubAPIKey():
 # If the user has an active session in the system, we delete the previous session
 # and we create a new one (we only support single login per user)
 def createSession(user_key, hashed_id):
-  stored_session = Session.objects(user_key=user_key)
-  if stored_session.count() > 0:
-    stored_session = stored_session[0]
+  stored_session_query = Session.objects(user_key=user_key)
+  if stored_session_query.count() > 0:
+    print "Session encontrada: " + str(stored_session_query.count())
+    stored_session = stored_session_query[0]
     stored_session.delete()
   # We create a new session assigned to the user
   session = Session(user_key=user_key, hashed_id=hashed_id).save()

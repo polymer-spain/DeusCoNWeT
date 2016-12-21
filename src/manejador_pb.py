@@ -30,6 +30,7 @@ sys.path.insert(0, '/var/www/src/api_handlers/lib/')
 import yaml
 import api_usuarios, api_componentes, api_oauth, api_auxiliar
 import mimetypes
+## API URLS and handlers
 api_url =[
     (r'/api/componentes', api_componentes.ComponentListHandler),
     (r'/api/componentes/(.*)/valoracionComponente', api_componentes.ComponentRatingHandler),
@@ -85,6 +86,7 @@ api_url =[
 
 ## LOAD STATIC URL FROM app.yaml
 basepath = os.path.dirname(__file__)
+# Load app.yaml
 configFile = os.path.abspath(os.path.join(basepath, "app.yaml"))
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
@@ -92,21 +94,23 @@ with open(configFile, "r") as ymlfile:
 
 
 
-
+# Handler for static files. config={static_folder:"STATIC_DIR"} set static folder. Default static
 class staticFiles(webapp2.RequestHandler):
   def get(self, path):
+    # If url is base (/) load index.html. (Depecrated?)
     if not path:
       path = 'index.html'
     static_folder = self.app.config.get('static_folder', 'static')
+    # Get abs path to file
     abspath = os.path.join(basepath, static_folder, path)
-    print 'Base path: ' + abspath + ', path: ' + path + ', basepath: ' + basepath + ', static:' + static_folder
+    # Try to load the file. If error, throw 404
     try:
       f = open(abspath,'r')
       self.response.out.write(f.read())
       self.response.headers.add_header('Content-Type', mimetypes.guess_type(abspath)[0])
     except:
       self.response.set_status(404)
-
+## Return a handler for URL defined on app.yaml like static
 def handlerHelper(files):
   class handler(webapp2.RequestHandler):
     def get(self):
@@ -118,6 +122,8 @@ def handlerHelper(files):
       except:
         self.response.set_status(404)
   return handler
+
+# Load URL from app.yaml
 def createStatic(handler):
     url = handler['url']
     files = handler['static_files']
@@ -126,25 +132,51 @@ def createStatic(handler):
 ## LOAD APP
 defined_url = [ url for url in cfg['handlers'] if url.has_key('static_files')]
 defined_url = [createStatic(handler) for handler in defined_url]
+
+# Static folder
 static_url = [(r'/(.*)',staticFiles)]
+# api_urls + app.yaml urls + static_folder
 full_url = api_url + defined_url + static_url
+
 app = webapp2.WSGIApplication(full_url, debug=True)
 
+
+
 # MAIN
-def main():
+def main(argv, name, app):
     from paste import httpserver
     from paste.cascade import Cascade
     from paste.urlparser import StaticURLParser
-    import threading
-    import signal
+    import sys, getopt
     
-    threads = list()
-
+    PORT = 8080
+    HOST = 'localhost'
+    SSL = None
+    STATIC = 'static/'
+    # Load config from arguments
+    try:
+        opts, args = getopt.getopt(argv,"", ["port=", "host=", "ssl=", "static="])
+    except getopt.GetoptError:
+        print name + ' [--port PORT] [--host HOST] [--ssl SSL_FILE] [--static STATIC_FOLDER]'
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '--port':
+            PORT = arg
+        elif opt == "--host":
+            HOST = arg
+        elif opt == "--ssl":
+            SSL = arg
+        elif opt == "--static":
+            STATIC = arg
     # Deploy app
-    ssl = os.path.abspath(os.path.join(basepath, '../ssl/ssl.pem'))
-    static_app = StaticURLParser("static/")
-    application = Cascade([static_app,app])
-    httpserver.serve(application, host='0.0.0.0', port=443 , server_version=1.0,ssl_pem=ssl)
+    if STATIC:
+        static_app = StaticURLParser("static/")
+        app = Cascade([static_app,app])
+    if SSL:
+        ssl_dir = os.path.abspath(os.path.join(basepath, '../ssl/ssl.pem'))
+        httpserver.serve(app, host=HOST, port=PORT , server_version=1.0,ssl_pem=ssl_dir)
+    else:
+        httpserver.serve(app, host=HOST, port=PORT , server_version=1.0)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:], sys.argv[0], app)
