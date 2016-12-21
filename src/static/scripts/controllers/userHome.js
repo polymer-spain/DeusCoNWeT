@@ -12,8 +12,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     // loads references for this
     (function(){
       if ($scope.user.references){
-        // TODO testing pinterest
-        $scope.user.references.push('bower_components/pinterest-timeline-stable/pinterest-timeline.html');
         $scope.user.references.forEach(function(value,index){
           var $link = $('<link rel="import">').attr('href',$scope.user.references[index]);
           $('body').append($link);
@@ -35,23 +33,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     };
     $backend.getComponentInfo().then(function(res){
       $scope.catalogList = res.data.data;
-      // TODO remove, its a pinterest test
-      var pinterest = {
-        attributes: {
-          token: undefined,
-          language: ":language",
-          component_base:"./bower_components/pinterest-timeline-stable/"
-        },
-        component_id:'pinterest-timeline',
-        description:"Web component to obtain the timeline of pinterest",
-        img: "https://cdn0.iconfinder.com/data/icons/Pinterest/512/Pinterest_Favicon.png",
-        rate:3,
-        social_network:"pinterest",
-        tokenAttr:"token",
-        url:"https://github.com/Mortega5/github-events",
-        version:"stable"
-      };
-      $scope.catalogList.push(pinterest);
       var tokenAttr,social_network;
       // Add tokens
       for(var i=0;i <$scope.catalogList.length;i++) {
@@ -249,7 +230,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             $('#aditionalForm').fadeIn('easing', function(){
             });
           });
-          console.log('TODO registrar datos en algun lado');
+          //console.log('TODO registrar datos en algun lado');
         } else {
           $('#rate-modal .modal-footer p').show();
         }
@@ -303,7 +284,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           "question": question_text,
           "component": $scope.randomComponent,
           "timestamp": Date.now(),
-          "version": version
+          "version": version,
+          "user": $scope.user.user_id
         };
         mixpanel.track(question_id, properties);
       }
@@ -345,7 +327,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             "question_type": "optional",
             "component": $scope.randomComponent, // Se manda la versión?
             "version": version,
-            "timestamp": Date.now()
+            "timestamp": Date.now(),
+            "user":$scope.user.user_id
           };
           mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
           // We hide the user form

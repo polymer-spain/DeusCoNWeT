@@ -647,22 +647,18 @@ class GitHubContainerHandler(SessionHandler):
         client_id = "ae271d42c068cae023b9"
         client_secret = "7834524345411e5b112c9715949ba33861db61a4"
         access_token = ""
-        """
-        print "=================================="
-        print "Body de la peticion a Github"
-        print self.request.body
-        print "=================================="
-        """
+        # print "=================================="
+        # print "Body de la peticion a Github"
+        # print self.request.body
+        # print "=================================="
         connection = httplib.HTTPSConnection(url)
         # Cogemos el codigo de la peticion
         try:
             body = json.loads(self.request.body)
             code = body["code"]
-            """
-            print "===================================="
-            print "Valor de code: " + code
-            print "===================================="
-            """
+            # print "===================================="
+            # print "Valor de code: " + code
+            # print "===================================="
             params_token = urllib.urlencode({"client_id": client_id,
                     "client_secret": client_secret, "code": code})
             # Realizamos la peticion en la conexion
@@ -705,15 +701,21 @@ class GitHubContainerHandler(SessionHandler):
                     # Buscamos el par id usuario/token autenticado en la base
                     stored_credentials = mongoDB.searchToken(str(user_details["login"
                             ]), "github")
+                    print "================================="
+                    print user_details["login"]
+                    print "================================="
                     if stored_credentials == None:
-                        # print "============================="
-                        # print "Voy a hacer el insertToken"
-                        # print "============================="
+                        print "============================="
+                        print "Voy a hacer el insertToken"
+                        print "============================="
                         # Almacena las credenciales en una entidad Token
                         user_credentials = mongoDB.insertToken(user, "github", access_token,
                                             user_details["login"])
                         self.response.set_status(201)
                     else:
+                        print "=========================="
+                        print "Se llama a modifyToken"
+                        print "=========================="
                         # Almacenamos el access token recibido
                         user_id = mongoDB.modifyToken(str(user_details["login"]),
                                 access_token, "github")
@@ -1131,3 +1133,34 @@ class TwitterLogoutHandler(OauthLogoutHandler):
     """
     def post(self):
         self.post_logout("twitter")
+
+
+# HANDLERS FOR RESOURCES RELATED TO PINTEREST
+class PinterestCredentialHandler(OAuthCredentialProviderHandler):
+    """
+    Class that represents the Pinterest token resource.
+    Methods:
+        get -- Returns the Pinterest access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Pinterest for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Pinterest for the user authenticated
+    """
+    def get(self, token_id):
+        self.get_credentials("pinterest", token_id)
+
+    def delete(self, token_id):
+        self.delete_credentials("pinterest", token_id)
+
+    def post(self, token_id):
+        self.update_credentials("pinterest", token_id)
+
+class PinterestContainerHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Instagram credentials resource.
+    Methods:
+        put -- Adds a new set of credentials (token_id and access_token in Instagram)
+    """
+    def put(self):
+        self.put_credentials("pinterest")

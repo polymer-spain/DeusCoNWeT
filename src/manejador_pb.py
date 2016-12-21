@@ -77,6 +77,9 @@ api_url =[
     (r'/api/oauth/github/credenciales', api_oauth.GitHubContainerHandler),
     (r'/api/oauth/github/credenciales/(.*)', api_oauth.GitHubCredentialHandler),
 
+    (r'/api/oauth/pinterest/credenciales', api_oauth.PinterestContainerHandler),
+    (r'/api/oauth/pinterest/credenciales/(.*)', api_oauth.PinterestCredentialHandler),
+
     (r'/api/oauth/linkedin/credenciales', api_oauth.LinkedinContainerHandler),
     (r'/api/oauth/linkedin/credenciales/(.*)', api_oauth.LinkedinCredentialHandler),
 

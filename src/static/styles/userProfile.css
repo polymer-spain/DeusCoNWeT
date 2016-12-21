@@ -70,6 +70,7 @@ div#userProfile {
 }
 #userProfile #userInformation .content{
 	padding: 10px 40px;
+  height:85%;
 }
 #userProfile #userInformation .user-picture {
 	width: 50;
@@ -149,7 +150,7 @@ div#userProfile {
 	cursor: inherit;
 	display: block;
 }
-#userProfile [data-role="login"][sort] {
+#userProfile [data-role="login"] {
 	margin-left:10px;
 }
 #userProfile [data-role="login"][sort] /deep/ paper-button {

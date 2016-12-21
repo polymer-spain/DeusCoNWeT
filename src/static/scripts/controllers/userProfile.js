@@ -63,7 +63,7 @@ function ($scope, $rootScope, $backend, $http) {
 			if ($target.attr('data-field') !== 'image'){
 				values += $target.attr('data-field') + '=' + $target.val();
 
-				if ($scope.user[$target.attr('data-field') !== $target.val()]){
+				if ($scope.user[$target.attr('data-field')] !== $target.val()){
 					changes = true;
 				}
 			}
@@ -141,5 +141,6 @@ function ($scope, $rootScope, $backend, $http) {
 		$('#socialNetwork instagram-login').bind('instagram-logged', loginCallback);
 		$('#socialNetwork twitter-login').bind('twitter-logged', loginCallback);
 		$('#socialNetwork login-facebook').bind('facebook-logged', loginCallback);
+    $('#socialNetwork pinterest-login').bind('pinterest-logged',loginCallback);
 	})();
 }]);
