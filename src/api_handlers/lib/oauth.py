@@ -44,15 +44,8 @@ note however this software is unsupported. Please don't email me about it. :)
 """
 
 import memcache as mc
-import urlfetch
+from google.appengine.api import urlfetch
 memcache = mc.Client(['127.0.0.1:11211'], debug=0)
-
-GET = 1
-POST = 2
-HEAD = 3
-PUT = 4
-DELETE = 5
-PATCH = 6
 
 from mongoDB import AuthToken
 
@@ -118,7 +111,7 @@ class OAuthClient():
     self.callback_url = callback_url
 
   def prepare_request(self, url, token="", secret="", additional_params=None,
-                      method=GET, t=None, nonce=None):
+                      method=urlfetch.GET, t=None, nonce=None):
     """Prepare Request.
 
     Prepares an authenticated request to any OAuth protected resource.
@@ -154,7 +147,7 @@ class OAuthClient():
                            for k in sorted(params)])
 
     # Join the entire message together per the OAuth specification.
-    message = "&".join(["GET" if method == GET else "POST",
+    message = "&".join(["GET" if method == urlfetch.GET else "POST",
                        encode(url), encode(params_str)])
 
     # Create a HMAC-SHA1 signature of the message.
@@ -167,7 +160,7 @@ class OAuthClient():
     return urlencode(params)
 
   def make_async_request(self, url, token="", secret="", additional_params=None,
-                         protected=False, method=GET, headers={}):
+                         protected=False, method=urlfetch.GET, headers={}):
     """Make Request.
 
     Make an authenticated request to any OAuth protected resource.
@@ -180,7 +173,7 @@ class OAuthClient():
     payload = self.prepare_request(url, token, secret, additional_params,
                                    method)
 
-    if method == GET:
+    if method == urlfetch.GET:
       url = "%s?%s" % (url, payload)
       payload = None
 
@@ -193,7 +186,7 @@ class OAuthClient():
     return rpc
 
   def make_request(self, url, token="", secret="", additional_params=None,
-                   protected=False, method=GET, headers={}):
+                   protected=False, method=urlfetch.GET, headers={}):
 
     return self.make_async_request(url, token, secret, additional_params,
                                    protected, method, headers).get_result()
