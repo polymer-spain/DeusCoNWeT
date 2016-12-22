@@ -44,6 +44,7 @@ note however this software is unsupported. Please don't email me about it. :)
 """
 
 import memcache as mc
+import sys, os, inspect
 from google.appengine.api import urlfetch
 memcache = mc.Client(['127.0.0.1:11211'], debug=0)
 
