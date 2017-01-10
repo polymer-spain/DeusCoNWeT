@@ -148,7 +148,6 @@
       }
       .singleSharedDescription {
         margin: 10px 5px;
-	word-break: break-all;
       }
       .loading {
         width:50%;
@@ -163,15 +162,6 @@
                method="GET"
                handleAs="json"
                on-response="_dataResponse"
-               >
-    </iron-ajax>
-    <iron-ajax
-               id="refreshData"
-               url="{{requestDataUrl}}"
-               headers="{'Timing-Allow-origin': '*'}"
-               method="GET"
-               handleAs="json"
-               on-response="_refreshResponse"
                >
     </iron-ajax>
     <iron-ajax
@@ -385,17 +375,13 @@ access_token={{access_token}}&summary=true -->
       },
       attached: function(){
         this.$.requestLanguage.generateRequest();
-        this._interval = window.setInterval(function(){
+        setInterval(function(){
           this.refresh();
         }.bind(this),this.refreshTime)
       },
-      detached: function(){
-        if (this._interval){
-          window.clearInterval(this._interval);
-        }
-      },
+
       refresh: function(){
-        this.$.refreshData.generateRequest();
+        this.$.requestData.generateRequest();
       },
       /* Observer and computed properties*/
       _languageUpdate: function(newValue){
@@ -481,7 +467,7 @@ access_token={{access_token}}&summary=true -->
           id = item.id.split('_')[1];
           url = 'https://graph.facebook.com/' + id + '/picture?access_token=' + this.access_token;
         }
-        return url || item.picture || item.linked.picture;
+        return url;
       },
       _noExist: function(item){
         return !item;

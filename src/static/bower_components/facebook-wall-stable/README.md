@@ -13,7 +13,7 @@ getting user's posts. Now I use mocked data.
 ## Example
 
 ```html
-  <facebook-wall access_token="\<your_access_token\>" language="en"></facebook-wall>
+  <facebook-wall access_token="<your_access_token>" language="en"></facebook-wall>
 ```
 
 ## To get Access Token

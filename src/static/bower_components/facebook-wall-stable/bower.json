@@ -1,36 +1,46 @@
 {
-    "name": "facebook-wall",
-    "version": "1.0.0",
-    "keywords": [
-        "polymer",
-        "web-components",
-        "facebook",
-        "wall",
-        "facebook-wall"
-    ],
-    "main": "facebook-wall.html",
-    "dependencies": {
-        "iron-ajax": "PolymerElements/iron-ajax",
-        "paper-header-panel": "PolymerElements/paper-header-panel",
-        "paper-styles": "PolymerElements/paper-styles",
-        "iron-icon": "PolymerElements/iron-icon",
-        "iron-icons": "PolymerElements/iron-icons",
-        "paper-icon-button": "PolymerElements/paper-icon-button",
-        "paper-material": "PolymerElements/paper-material",
-        "paper-button": "PolymerElements/paper-button"
-    },
-    "authors": [
-        "Miguel Ortega Moreno <miguel.ortega.moreno5@gmail.com>"
-    ],
-    "description": "Polymer component which show a facebook wall",
-    "moduleType": [],
-    "license": "MIT",
-    "homepage": "https://github.com/Mortega5/facebook-wall",
-    "ignore": [
-        "node_modules",
-        "bower_components",
-        "test",
-        "tests",
-        "*.*~"
-    ]
+  "name": "facebook-wall",
+  "version": "1.0.0",
+  "keywords": [
+    "polymer",
+    "web-components",
+    "facebook",
+    "wall",
+    "facebook-wall"
+  ],
+  "main": "facebook-wall.html",
+  "dependencies": {
+    "iron-ajax": "PolymerElements/iron-ajax",
+    "paper-header-panel": "PolymerElements/paper-header-panel",
+    "paper-styles": "PolymerElements/paper-styles",
+    "iron-icon": "PolymerElements/iron-icon",
+    "iron-icons": "PolymerElements/iron-icons",
+    "paper-icon-button": "PolymerElements/paper-icon-button",
+    "paper-material": "PolymerElements/paper-material",
+    "paper-button": "PolymerElements/paper-button",
+    "web-component-tester": "Polymer/web-component-tester#~4.2.1",
+    "test-fixture": "PolymerElements/test-fixture#^1.0.0"
+  },
+  "devDependencies": {
+    "polymer-test-tools": "Polymer/polymer-test-tools#master",
+    "mocha": "~1.14.0",
+    "sinon": "http://sinonjs.org/releases/sinon-1.10.2.js"
+  },
+  "resolutions": {
+    "mocha": "^2.3.0"
+  },
+  "authors": [
+    "Miguel Ortega Moreno <miguel.ortega.moreno5@gmail.com>"
+  ],
+  "description": "Polymer component which show a facebook wall",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "https://github.com/Mortega5/facebook-wall",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "*.*~"
+  ]
 }

@@ -44,7 +44,9 @@ note however this software is unsupported. Please don't email me about it. :)
 """
 
 import memcache as mc
+import sys
 from google.appengine.api import urlfetch
+print urlfetch
 memcache = mc.Client(['127.0.0.1:11211'], debug=0)
 
 from mongoDB import AuthToken
