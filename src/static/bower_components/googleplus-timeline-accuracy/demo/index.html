@@ -17,12 +17,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../googleplus-timeline.html">
   </head>
   <body unresolved>
-
     <p>An example of <code>&lt;googleplus-timeline&gt;</code>:</p>
-
+    
 
     <template id="Demo" is="dom-bind">  
-      <googleplus-timeline token="" language="{{language}}"
+      <googleplus-timeline token="{{token}}" language="{{language}}" api_key="{{api_key}}"
       accuracy-probability=85>
       </googleplus-timeline>
       </br></br>
@@ -31,6 +30,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
     <script>
       Demo.language = "es";
+      Demo.token = "ya29.CjnPA7ijuAvHRLPRaimF05UFtr7dG6sgy6kkyCtKT5H7NOZyd6uqmXiRM4DSiCWCLAepmlU0E3qxzkc";
+      Demo.api_key = "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis";
       Demo.changeIdiom = function(event,detail) {
         Demo.language = event.target.getAttribute('name');
       }
