@@ -146,6 +146,7 @@ class ComponentAttributes(ndb.Model):
   mostrar = ndb.IntegerProperty()
   component_directory = ndb.StringProperty()
   accessToken = ndb.StringProperty()
+  api_key = StringProperty()
 
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
@@ -748,7 +749,7 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
+def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, endpoint="", component_directory="", api_key=""):
   # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
   # Depending on the social network, different attributes are needed
@@ -766,7 +767,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
     attributes = ComponentAttributes(component_id=name, endpoint=endpoint, accessToken=" ")
     attributes.put()
   elif rs == "googleplus":
-    attributes = ComponentAttributes(component_id=name, token="")
+    attributes = ComponentAttributes(component_id=name, token="", api_key=api_key)
     attributes.put()
   elif rs == "facebook":
     attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
@@ -986,6 +987,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             elif general_comp["social_network"] == "googleplus":
               general_comp["attributes"]["token"] = str(attributes.token)
               general_comp["attributes"]["language"] = str(attributes.language)
+              general_comp["attributes"]["api_key"] = str(attributes.api_key)
               json.dumps(general_comp["attributes"])
               general_comp["img"] = str('images/components/google-icon.svg')
               general_comp["tokenAttr"] = str('token')
@@ -1056,6 +1058,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             elif general_comp["social_network"] == "googleplus":
               general_comp["attributes"]["token"] = str(attributes.token)
               general_comp["attributes"]["language"] = str(attributes.language)
+              general_comp["attributes"]["api_key"] = str(attributes.api_key)
               json.dumps(general_comp["attributes"])
               general_comp["img"] = str('images/components/google-icon.svg')
               general_comp["tokenAttr"] = str('token')
@@ -1132,6 +1135,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               elif general_comp["social_network"] == "googleplus":
                 general_comp["attributes"]["token"] = str(attributes.token)
                 general_comp["attributes"]["language"] = str(attributes.language)
+                general_comp["attributes"]["api_key"] = str(attributes.api_key)
                 json.dumps(general_comp["attributes"])
                 general_comp["img"] = str('images/components/google-icon.svg')
                 general_comp["tokenAttr"] = str('token')
@@ -1200,6 +1204,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               elif general_comp["social_network"] == "googleplus":
                 general_comp["attributes"]["token"] = str(attributes.token)
                 general_comp["attributes"]["language"] = str(attributes.language)
+                general_comp["attributes"]["api_key"] = str(attributes.api_key)
                 json.dumps(general_comp["attributes"])
                 general_comp["img"] = str('images/components/google-icon.svg')
                 general_comp["tokenAttr"] = str('token')
@@ -1267,6 +1272,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           elif general_comp["social_network"] == "googleplus":
             general_comp["attributes"]["token"] = str(attributes.token)
             general_comp["attributes"]["language"] = str(attributes.language)
+            general_comp["attributes"]["api_key"] = str(attributes.api_key)
             json.dumps(general_comp["attributes"])
             general_comp["img"] = str('images/components/google-icon.svg')
             general_comp["tokenAttr"] = str('token')
@@ -1330,6 +1336,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           elif general_comp["social_network"] == "googleplus":
             general_comp["attributes"]["token"] = str(attributes.token)
             general_comp["attributes"]["language"] = str(attributes.language)
+            general_comp["attributes"]["api_key"] = str(attributes.api_key)
             json.dumps(general_comp["attributes"])
             general_comp["img"] = str('images/components/google-icon.svg')
             general_comp["tokenAttr"] = str('token')
