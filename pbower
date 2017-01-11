@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# Default bowerrc file
+BOWERFILE='.bowerrc'
+
+# HELP option
+usage="
+Usage:
+
+    $(basename "$0") [<command>] [<options>]   Install versions of the components in the correct folder
+Commands:
+
+    install                 Install a package locally
+Options:
+
+    \e[33m--save\e[39m                  Save as bower dependencie
+"
+
+# DEFAULT SETTINGS
+save=""
+bower_directory="bower_components"
+
+## COMMAND PARSE
+if [ $# -eq 0 ]
+then
+    echo -e "$usage"
+    exit 1
+fi
+while [[ $# -gt 0 ]]
+do
+    key="$1"
+    case $key in
+        i|install)
+            command="install"
+            package="$2"
+            shift
+            ;;
+        --save)
+            save=$key
+            ;;
+        --help | -h)
+            echo -e "$usage"
+            exit 0
+            ;;
+        *)
+            echo -e "$usage"
+            exit 1
+            ;;
+    esac
+shift
+done
+
+# LOOK FOR BOWER DIRECTORY IN BOWERRC
+if [ -f "$BOWERFILE" ]
+then
+    key="directory"
+    re="\"($key)\": \"([^\"]*)\""
+    bower_directory="no existe"
+    while read -r l; do
+        if [[ $l =~ $re ]]; then
+            name="${BASH_REMATCH[1]}"
+            value="${BASH_REMATCH[2]}"
+            bower_directory=$value
+            break
+        fi
+    done < $BOWERFILE
+fi
+
+# GET PACKAGE NAME and BRANCH/HASH OPTION
+split=(${package//#/ })
+package_name=${split[0]}
+branch=${split[1]}
+real_folder="$bower_directory/$package_name-$branch"
+
+# CHECK IF THIS COMPONENT IS ALREADY INSTALLED
+if [ -d "$real_folder" ]
+then
+    echo -e "\e[92m$package_name\e[39m is already installed"
+    exit 1
+fi
+
+# INSTALL BOWER COMPONENT
+bower $command $package $save
+status=$?
+
+# CHECK IF BOWER FINISHED CORRECTLY
+if [ $status -eq 0 ]
+then
+    # MOVER COMPONENT TO RELATIVE PATH (ADDING BRACH VERSION AT THE END OF THE FOLDER NAME)
+    folder="$bower_directory/$package_name"
+    mv $folder $real_folder
+else
+    exit $status
+fi
