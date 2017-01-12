@@ -146,7 +146,7 @@ class ComponentAttributes(ndb.Model):
   mostrar = ndb.IntegerProperty()
   component_directory = ndb.StringProperty()
   accessToken = ndb.StringProperty()
-  api_key = StringProperty()
+  api_key = ndb.StringProperty()
 
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
