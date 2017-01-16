@@ -14,6 +14,12 @@ Commands:
 Options:
 
     \e[33m--save\e[39m                  Save as bower dependencie
+Example:
+
+    bower install googletimeline-plus#v0.9-stable
+
+IMPORTANT:
+    The version of the component must be v{version_number}-{branch}. For example v0.9-stable
 "
 
 # DEFAULT SETTINGS
@@ -69,26 +75,46 @@ fi
 # GET PACKAGE NAME and BRANCH/HASH OPTION
 split=(${package//#/ })
 package_name=${split[0]}
-branch=${split[1]}
-real_folder="$bower_directory/$package_name-$branch"
 
+real_folder="$bower_directory/$package_name"
+
+# CHECK IF VERSION IS NOT EMPTY
+if [ "${#split[@]}" -gt 1 ]
+then
+    # CHECK IF VERSION IS CORRECTLY WRITTEN
+    version=${split[1]}
+    version_branch=(${version//-/ })
+    
+    if [ "${#version_branch[@]}" -gt 1 ]
+    then
+        branch=${version_branch[1]}
+        real_folder="$real_folder-$branch"
+    else
+        echo -e "\n[Error]: Package must be written in the correct format: v{version_number}-{branch}. Ex: v0.9-stable"
+        echo -e "$usage"
+        exit 2
+    fi
+
+fi
+echo $real_folder
 # CHECK IF THIS COMPONENT IS ALREADY INSTALLED
-if [ -d "$real_folder" ]
-then
-    echo -e "\e[92m$package_name\e[39m is already installed"
-    exit 1
-fi
+# if [ -d "$real_folder" ]
+# then
+#     echo -e "\e[92m$package_name\e[39m is already installed"
+#     exit 1
+# fi
 
-# INSTALL BOWER COMPONENT
-bower $command $package $save
-status=$?
 
-# CHECK IF BOWER FINISHED CORRECTLY
-if [ $status -eq 0 ]
-then
-    # MOVER COMPONENT TO RELATIVE PATH (ADDING BRACH VERSION AT THE END OF THE FOLDER NAME)
-    folder="$bower_directory/$package_name"
-    mv $folder $real_folder
-else
-    exit $status
-fi
+# # INSTALL BOWER COMPONENT
+# bower $command $package $save
+# status=$?
+
+# # CHECK IF BOWER FINISHED CORRECTLY
+# if [ $status -eq 0 ]
+# then
+#     # MOVER COMPONENT TO RELATIVE PATH (ADDING BRACH VERSION AT THE END OF THE FOLDER NAME)
+#     folder="$bower_directory/$package_name"
+#     mv $folder $real_folder
+# else
+#     exit $status
+# fi
