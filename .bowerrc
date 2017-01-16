@@ -1,5 +1,5 @@
 {
    "directory": "src/static/bower_components",
-   "registry": {"search": ["http://10.10.1.2:5555","https://bower.herokuapp.com"]}
+   "registry": "http://centauro.ls.fi.upm.es:5555"
 }
 
