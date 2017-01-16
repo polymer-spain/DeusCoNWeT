@@ -154,7 +154,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
     var platformTimeFunction = function(){
       var interval = $interval(function(){
-        if(document.visibilityState === "visible" ){
+        if(document.visibilityState === "visible" && $scope.listComponentAdded.length > 0){
           $scope.platformUsedTime += $scope.intervalTime;
         }
       }, $scope.intervalTime);
