@@ -1,5 +1,6 @@
 {
   "name": "pinterest-timeline",
+  "version": "0.9.1-stable",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -28,14 +29,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "v0.9-stable",
+  "_release": "0.9.1-stable",
   "_resolution": {
-    "type": "tag",
-    "tag": "v0.9-stable",
-    "commit": "5b36d6d12fe163747b6cee08c565d5dfa225f869"
+    "type": "version",
+    "tag": "v0.9.1-stable",
+    "commit": "2b6b8300f8682d7e7c25d225a9c9d48f48526298"
   },
   "_source": "https://github.com/Mortega5/pinterest-timeline.git",
-  "_target": "v0.9-stable",
+  "_target": "v0.9.1-stable",
   "_originalSource": "pinterest-timeline",
   "_direct": true
 }
