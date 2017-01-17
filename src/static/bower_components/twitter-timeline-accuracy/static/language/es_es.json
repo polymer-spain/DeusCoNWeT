@@ -24,5 +24,6 @@
   "october" : "Octubre",
   "november" : "Noviembre",
   "december" : "Diciembre",
-  "of" : "de"
+  "of" : "de",
+  "tweetError": "Para visualizar correctamente este tweet visita twitter"
 }

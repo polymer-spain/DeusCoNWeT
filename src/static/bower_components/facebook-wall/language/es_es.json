@@ -1,5 +1,5 @@
 {
-  "title" : "Tu timeline",
+  "title" : "Muro de Facebook",
   "refresh" : "Refrescar",
   "load_more":  "Mostrar más",
   "seconds" : "segundos",
@@ -24,5 +24,12 @@
   "october" : "Octubre",
   "november" : "Noviembre",
   "december" : "Diciembre",
-  "of" : "de"
+  "of" : "de",
+  "with": "con",
+  "and": "y",
+  "others": "más",
+  "other": "más",
+  "error": {
+    "noToken": "Opss!! No podemos cargar tus posts en este momento. Intentelo más tarde."
+  }
 }

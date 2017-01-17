@@ -1,4 +1,4 @@
-# twitter-timeline
+# twitter-timeline [![Build Status](https://travis-ci.org/JuanFryS/twitter-timeline.svg?branch=master)](https://travis-ci.org/JuanFryS/twitter-timeline)
 
 It is a [Polymer](https://www.polymer-project.org/1.0/) component for obtain the timeline of Twitter.
 

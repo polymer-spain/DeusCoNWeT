@@ -1,5 +1,5 @@
 {
-  "title" : "Your timeline",
+  "title" : "Facebook wall",
   "refresh" : "Refresh",
   "load_more" : "Load More",
   "seconds" : "seconds",
@@ -24,5 +24,12 @@
   "october" : "October",
   "november" : "November",
   "december" : "December",
-  "of" : "of"
+  "of" : "of",
+  "with": "with",
+  "and": "and",
+  "others": "others",
+  "other": "other",
+  "error": {
+    "noToken": "Opsss!! We cannot show your posts at this moment. Try it later."
+  }
 }
