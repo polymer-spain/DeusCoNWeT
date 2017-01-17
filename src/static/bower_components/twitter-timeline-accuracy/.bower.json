@@ -1,6 +1,6 @@
 {
   "name": "twitter-timeline",
-  "version": "1.0.1-accuracy",
+  "version": "1.0.2-accuracy",
   "authors": [
     "Juan Francisco Salamanca Carmona <jfsalca@gmail.com>"
   ],
@@ -26,14 +26,14 @@
     "paper-material": "PolymerElements/paper-material#~1.0.2",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4"
   },
-  "_release": "1.0.1-accuracy",
+  "_release": "1.0.2-accuracy",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.1-accuracy",
-    "commit": "f319f4374e90ff19649450b0ccc10e15644239f3"
+    "tag": "v1.0.2-accuracy",
+    "commit": "9428467093f96c6796146c7f816cb34839b40eb9"
   },
   "_source": "git@github.com:JuanFryS/twitter-timeline.git",
-  "_target": "v1.0.1-accuracy",
+  "_target": "v1.0.2-accuracy",
   "_originalSource": "twitter-timeline",
   "_direct": true
 }

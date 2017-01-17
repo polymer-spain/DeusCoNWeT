@@ -409,9 +409,13 @@ Polymer({
 
   /* This function prepares the tweets before displaying them */
   _response: function(event, detail) {
-    var parsed = this.parser(detail.response);
-    this.set('events',parsed);
-    this._changeTime(this.events);
+    if (detail.response.error){
+      this._loadMock();
+    } else {
+      var parsed = this.parser(detail.response);
+      this.set('events',parsed);
+      this._changeTime(this.events);
+    }
   },
 
   _language_response: function(event, detail){
