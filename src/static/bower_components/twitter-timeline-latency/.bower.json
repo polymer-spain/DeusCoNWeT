@@ -30,7 +30,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v1.0.2-latency",
-    "commit": "2554e4067ff7128f629e11cd8ffb25599c133e98"
+    "commit": "591a846eb69421db7d27e33e9b3745a8206b905f"
   },
   "_source": "git@github.com:JuanFryS/twitter-timeline.git",
   "_target": "v1.0.2-latency",

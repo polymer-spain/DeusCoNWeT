@@ -30,7 +30,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v1.0.2-accuracy",
-    "commit": "9428467093f96c6796146c7f816cb34839b40eb9"
+    "commit": "d2e607f361f74cfbbbf03b1aaf4e97c0202784e3"
   },
   "_source": "git@github.com:JuanFryS/twitter-timeline.git",
   "_target": "v1.0.2-accuracy",

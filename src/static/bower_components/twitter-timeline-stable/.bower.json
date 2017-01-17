@@ -40,7 +40,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v1.0.2-stable",
-    "commit": "6cc489b4b9ef00e9f714726bd9afc2d0d9cd861d"
+    "commit": "c878ec810ca6953c17ac7a13f7e72062d44b8860"
   },
   "_source": "git@github.com:JuanFryS/twitter-timeline.git",
   "_target": "v1.0.2-stable",

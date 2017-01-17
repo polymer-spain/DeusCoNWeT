@@ -373,7 +373,7 @@ Polymer({
   /* This function prepares the tweets before displaying them */
   _response: function(event, detail) {
     this.sleep(this.latency_time, function(){
-      if (detail.response.error){
+      if (detail.response.errors){
         this._loadMock();
       } else {
         var parsed = this.parser(detail.response);
