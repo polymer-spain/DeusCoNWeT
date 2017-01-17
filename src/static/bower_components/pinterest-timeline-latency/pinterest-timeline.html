@@ -341,6 +341,10 @@ Example:
         get_pins_param: {
           type: String,
           computed: "_get_pins_param(token,REQ_LIMIT)"
+        },
+        latency_time:{
+          type:Number,
+          value: 5000
         }
 
       },
@@ -385,7 +389,7 @@ Example:
           window.setTimeout(
             function() {
               resolve();
-            }, Math.random()*1500);                    
+            }, this.latency_time);                    
         });
         promise.then(function(){
           me.username = e.model.item.username;
@@ -484,7 +488,7 @@ Example:
           window.setTimeout(
             function() {
               resolve();
-            }, Math.random()*1500);                    
+            }, this.latency_time);                    
         });
         /* DELAY */   
         promise.then(function(){
@@ -527,7 +531,7 @@ Example:
           window.setTimeout(
             function() {
               resolve();
-            }, Math.random()*1500);                    
+            }, this.latency_time);                    
         });
         /* DELAY */
         promise.then(function(){

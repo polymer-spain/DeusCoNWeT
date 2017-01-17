@@ -50,6 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       font-size: 14px;
       background: #fff; /* Old browsers */
       overflow: hidden;
+      box-sizing: border-box;
     }
 
     #header {
@@ -179,6 +180,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     params="{{timeline_params}}"
     handleAs='json'
     on-response="_response"
+    on-error="_loadMock"
     >
   </iron-ajax>
 
@@ -190,6 +192,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   on-response="_language_response"
   >
 </iron-ajax>
+  <iron-ajax
+  id="requestMock"
+  url="{{mockUrl}}"
+  method="GET"
+  handleAs="json"
+  on-response="_response"
+  >
+</iron-ajax>
+
+
 
 <paper-material class="wrapper vertical layout">
   <!-- Header -->
@@ -327,6 +339,12 @@ Polymer({
     language_data: {
       type: Array,
       value: []
+    },
+    mockUrl: {
+      type: String,
+      value: function(){
+        return this.resolveUrl('mockData/tweets.json');
+      }
     }
   },
 
@@ -409,9 +427,9 @@ Polymer({
     if(this.events.length === 0){
       this.$.requesttimeline.generateRequest();
       var back = this
-      /*this._interval = window.setInterval(function(){
+      this._interval = window.setInterval(function(){
         back.$.requesttimeline.generateRequest();
-      }, back.refresh_time);*/
+      }, back.refresh_time);
     } else{
       /* Else we had elements, we change events.*.time*/
       this._changeTime(this.events);
@@ -496,14 +514,12 @@ Polymer({
 
   /* URLs parser */
   parseURL: function(tweet) {
-    tweet = tweet || "";
     return tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
       return '<a style="color:rgb(57, 145, 212)" href='+url+' target="_blank">'+url+'</a>'
     })
   },
 
   parseUsername: function(tweet) {
-    tweet = tweet || "";
     return tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
       var username = u.replace("@","")
       return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/'+username+' "target="_blank">@'+username+'</a>'
@@ -511,13 +527,14 @@ Polymer({
   },
 
   parseHashtag: function(tweet) {
-    tweet = tweet || "";
     return tweet.replace(/[#]+[A-Za-z0-9-_ñáéíóúàèìòùç]+/g, function(t) {
       var tag = t.replace("#","")
       return '<a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/'+tag+' "target="_blank">#'+tag+'</a>'
     });
   },
-
+  _loadMock: function(){
+    this.$.requestMock.generateRequest();
+  }
   /* Calculate endpoint for request url */
 
 })

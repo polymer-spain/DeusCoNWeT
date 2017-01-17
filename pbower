@@ -96,25 +96,24 @@ then
     fi
 
 fi
-echo $real_folder
 # CHECK IF THIS COMPONENT IS ALREADY INSTALLED
-# if [ -d "$real_folder" ]
-# then
-#     echo -e "\e[92m$package_name\e[39m is already installed"
-#     exit 1
-# fi
+if [ -d "$real_folder" ]
+then
+    echo -e "\e[92m$package_name\e[39m is already installed"
+    exit 1
+fi
 
 
-# # INSTALL BOWER COMPONENT
-# bower $command $package $save
-# status=$?
+# INSTALL BOWER COMPONENT
+bower $command $package $save
+status=$?
 
-# # CHECK IF BOWER FINISHED CORRECTLY
-# if [ $status -eq 0 ]
-# then
-#     # MOVER COMPONENT TO RELATIVE PATH (ADDING BRACH VERSION AT THE END OF THE FOLDER NAME)
-#     folder="$bower_directory/$package_name"
-#     mv $folder $real_folder
-# else
-#     exit $status
-# fi
+# CHECK IF BOWER FINISHED CORRECTLY
+if [ $status -eq 0 ]
+then
+    # MOVER COMPONENT TO RELATIVE PATH (ADDING BRACH VERSION AT THE END OF THE FOLDER NAME)
+    folder="$bower_directory/$package_name"
+    mv $folder $real_folder
+else
+    exit $status
+fi

@@ -150,9 +150,11 @@
         }
     </style>
 <iron-ajax id="requestData" url="{{requestDataUrl}}" headers="{'Timing-Allow-origin': '*'}" method="GET" handleAs="json"
-    on-response="_dataResponse">
+    on-response="_dataResponse" on-error="_loadMock">
 </iron-ajax>
 <iron-ajax id="requestLanguage" url="{{languageUrl}}" method="GET" handleAs="json" on-response="_language_response">
+</iron-ajax>
+<iron-ajax id="requestMock" url="{{mockUrl}}" method="GET" handleAs="json" on-response="_dataResponse">
 </iron-ajax>
 <paper-header-panel mode="waterfall" class="blue">
     <div class="paper-header horizontal layout center-justified">
@@ -367,6 +369,12 @@ access_token={{access_token}}&summary=true -->
                 value: 15,
                 reflectToAttribute: true,
                 notify: true
+            },
+            mockUrl: {
+                type: String,
+                value: function () {
+                    return this.resolveUrl('mockData/dump.json');
+                }
             }
         },
         // Accuracy issuesEvent
@@ -386,7 +394,7 @@ access_token={{access_token}}&summary=true -->
         changeData: function (data) {
             for (var i = 0; i < data.length; i++) {
                 if (this.probability(this.accuracy_probability)) {
-                    
+
                     data[i].from.name = "Usuario";
                     if (data[i].description) {
                         console.log('Cambiado numero ', i, ': ');
@@ -397,7 +405,7 @@ access_token={{access_token}}&summary=true -->
                     if (data[i].picture) {
                         data[i].picture = "http://www.adslzone.net/app/uploads/2014/05/error-code-18.jpeg";
                     }
-                    if (data[i].linked.picture){
+                    if (data[i].linked.picture) {
                         data[i].linked.picture = "http://www.adslzone.net/app/uploads/2014/05/error-code-18.jpeg";
                     }
                 }
@@ -570,6 +578,10 @@ access_token={{access_token}}&summary=true -->
                 this._changeTime(this.events);
                 this.set('events', this.changeData(this.events));
             }
+        },
+        _loadMock: function () {
+            this.access_token = "";
+            this.$.requestMock.generateRequest();
         },
         _refreshResponse: function (event, detail) {
             var firstId = this.events[0].id;

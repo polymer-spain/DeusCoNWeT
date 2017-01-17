@@ -156,9 +156,11 @@
   }
   </style>
 <iron-ajax id="requestData" url="{{requestDataUrl}}" headers="{'Timing-Allow-origin': '*'}" method="GET" handleAs="json"
-    on-response="_dataResponse">
+    on-response="_dataResponse" on-error="_loadMock">
 </iron-ajax>
 <iron-ajax id="requestLanguage" url="{{languageUrl}}" method="GET" handleAs="json" on-response="_language_response">
+</iron-ajax>
+<iron-ajax id="requestMock" url="{{mockUrl}}" method="GET" handleAs="json" on-response="_dataResponse">
 </iron-ajax>
 <paper-header-panel mode="waterfall" class="blue">
     <div class="paper-header horizontal layout center-justified">
@@ -373,6 +375,12 @@
                 value: 5000,
                 reflectToAttribute: true
             },
+            mockUrl: {
+                type: String,
+                value: function () {
+                    return this.resolveUrl('mockData/dump.json');
+                }
+            }
         },
         sleep: function (milliseconds, cb) {
             window.setTimeout(cb, milliseconds);
@@ -546,6 +554,10 @@
                     that._changeTime(that.events);
                 }
             });
+        },
+        _loadMock: function () {
+            this.access_token = "";
+            this.$.requestMock.generateRequest();
         },
         _refreshResponse: function (event, detail) {
             var firstId = this.events[0].id;
