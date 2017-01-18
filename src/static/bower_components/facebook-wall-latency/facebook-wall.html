@@ -638,7 +638,7 @@
                 if (list[i].name == list[i + 1].from.name) {
                     this.set("events." + i + ".linked", list[i + 1])
                     this.splice("events", i + 1, 1);
-                } else if (list[i].picture === list[i + 1].picture) {
+                } else if (list[i].picture && list[i].picture === list[i + 1].picture) {
                     this.set("events." + i + ".linked", list[i + 1])
                     this.splice("events", i + 1, 1);
                 }
