@@ -358,14 +358,14 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             case 'googleplus':
               var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
               $http.get(uri).success(function (responseData) {
-                $backend.addTokens(social_network, responseData.id, token, $scope.user.user_id).error(registerTokenError);
+                  $backend.setNewNetwork(token, responseData.id, social_network).error(registerTokenError);
               });
               break;
             case 'twitter':
               uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
               $http.get(uri).success(function (responseData) {
                 e.detail.userId = responseData.token_id;
-                $backend.addTokens(social_network, responseData.token_id, token, $scope.user.user_id).error(registerTokenError);
+                $backend.setNewNetwork(token, responseData.token_id, social_network).error(registerTokenError);
               }).error(function() {
                 console.log('Problemas al intentar obtener el token_id de un usuario' );
               });
@@ -373,7 +373,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       	    case 'pinterest':break;
             case 'github':break;
             default:
-              $backend.addTokens(social_network, e.detail.userId, token, $scope.user.user_id).error(registerTokenError);
+              $backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
               break;
           }
         });
