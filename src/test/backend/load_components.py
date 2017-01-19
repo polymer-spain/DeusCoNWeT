@@ -30,6 +30,11 @@
 import urllib
 import test_utils
 
+"""
+Es necesario cambiar los parametros que van en los atributos y ponerlo como has comentado tu,
+con un JSON dumpificado y pasado como script vale?
+"""
+
 uri = "https://centauro.ls.fi.upm.es"
 basepath = "/api/componentes"
 request_uri = uri + basepath

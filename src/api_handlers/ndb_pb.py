@@ -170,7 +170,7 @@ class Component(ndb.Model):
   predetermined = ndb.BooleanProperty(default=False)
   # Preasigned version to load the component. It needs to be confirmed
   version = ndb.StringProperty()
-  attributes = ndb.StructuredProperty(ComponentAttributes)
+  attributes = ndb.StringProperty()
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
@@ -749,39 +749,42 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, endpoint="", component_directory="", api_key=""):
+def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, attributes=attributes):
   # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
   # Depending on the social network, different attributes are needed
-  attributes = None
-  if rs == "twitter":
-    attributes = ComponentAttributes(component_id=name, access_token="", secret_token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock", consumer_key="J4bjMZmJ6hh7r0wlG9H90cgEe",
-                  consumer_secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf", 
-                  component_base="bower_components/twitter-timeline/static/", count=200, endpoint=endpoint)
-    attributes.put()
-  elif rs == "github":
-    attributes = ComponentAttributes(component_id=name, component_directory=component_directory, username=":user", 
-                  token="", mostrar=10)
-    attributes.put()
-  elif rs == "instagram":
-    attributes = ComponentAttributes(component_id=name, endpoint=endpoint, accessToken=" ")
-    attributes.put()
-  elif rs == "googleplus":
-    attributes = ComponentAttributes(component_id=name, token="", api_key=api_key)
-    attributes.put()
-  elif rs == "facebook":
-    attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
-    attributes.put()
-  elif rs == "pinterest":
-    # print "=========================="
-    # print "Entro a la parte de pinterest"
-    # print "=========================="
-    attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest-timeline-stable/')
-    attributes.put()
-  initial_index = random.randint(0, len(version_list)-1)
+  # attributes = None
+  # if rs == "twitter":
+  #   attributes = ComponentAttributes(component_id=name, access_token="", secret_token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock", consumer_key="J4bjMZmJ6hh7r0wlG9H90cgEe",
+  #                 consumer_secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf", 
+  #                 component_base="bower_components/twitter-timeline/static/", count=200, endpoint=endpoint)
+  #   attributes.put()
+  # elif rs == "github":
+  #   attributes = ComponentAttributes(component_id=name, component_directory=component_directory, username=":user", 
+  #                 token="", mostrar=10)
+  #   attributes.put()
+  # elif rs == "instagram":
+  #   attributes = ComponentAttributes(component_id=name, endpoint=endpoint, accessToken=" ")
+  #   attributes.put()
+  # elif rs == "googleplus":
+  #   attributes = ComponentAttributes(component_id=name, token="", api_key=api_key)
+  #   attributes.put()
+  # elif rs == "facebook":
+  #   attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
+  #   attributes.put()
+  # elif rs == "pinterest":
+  #   # print "=========================="
+  #   # print "Entro a la parte de pinterest"
+  #   # print "=========================="
+  #   attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest-timeline-stable/')
+  #   attributes.put()
+  # initial_index = random.randint(0, len(version_list)-1)
+  # component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
+  #  rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
+  #  attributes=attributes)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
-   rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
-   attributes=attributes)
+    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
+    attributes=attributes)
   # We create a new VersionedComponent Entity for each version_added to the version_list
   # for version in version_list:
   #   versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
@@ -955,56 +958,56 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["height"] = str(comp.height)
             general_comp["width"] = str(comp.width)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = {}
-            if general_comp["social_network"] == "twitter":
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-              general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-              general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-              general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-              general_comp["attributes"]["component_base"] = str(attributes.component_base)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["count"] = str(attributes.count)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/twitter-logo.png')
-              general_comp["tokenAttr"] = str('access_token')
-            elif general_comp["social_network"] == "github":
-              general_comp["attributes"]["username"] = str(attributes.username)
-              general_comp["attributes"]["token"] = str(attributes.token)
-              general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/github-icon.png')
-              general_comp["tokenAttr"] = str('token')
-            elif general_comp["social_network"] == "instagram":
-              general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-              general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/instagram-icon.png')
-              general_comp["tokenAttr"] = str('accessToken')
-            elif general_comp["social_network"] == "googleplus":
-              general_comp["attributes"]["token"] = str(attributes.token)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["api_key"] = str(attributes.api_key)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/google-icon.svg')
-              general_comp["tokenAttr"] = str('token')
-            elif general_comp["social_network"] == "facebook":
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/facebook-icon.png')
-              general_comp["tokenAttr"] = str('access_token')
-            elif general_comp["social_network"] == "pinterest":
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_base"] = str(attributes.component_base)
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/pinterest.png')
-              general_comp["tokenAttr"] = str('token')
+            general_comp["attributes"] = str(comp.attributes)
+            # if general_comp["social_network"] == "twitter":
+            #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+            #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
+            #   general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
+            #   general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
+            #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+            #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["count"] = str(attributes.count)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/twitter-logo.png')
+            #   general_comp["tokenAttr"] = str('access_token')
+            # elif general_comp["social_network"] == "github":
+            #   general_comp["attributes"]["username"] = str(attributes.username)
+            #   general_comp["attributes"]["token"] = str(attributes.token)
+            #   general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/github-icon.png')
+            #   general_comp["tokenAttr"] = str('token')
+            # elif general_comp["social_network"] == "instagram":
+            #   general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
+            #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/instagram-icon.png')
+            #   general_comp["tokenAttr"] = str('accessToken')
+            # elif general_comp["social_network"] == "googleplus":
+            #   general_comp["attributes"]["token"] = str(attributes.token)
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["api_key"] = str(attributes.api_key)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/google-icon.svg')
+            #   general_comp["tokenAttr"] = str('token')
+            # elif general_comp["social_network"] == "facebook":
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+            #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/facebook-icon.png')
+            #   general_comp["tokenAttr"] = str('access_token')
+            # elif general_comp["social_network"] == "pinterest":
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+            #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/pinterest.png')
+            #   general_comp["tokenAttr"] = str('token')
             if not rate == None:
               general_comp["rate"] = str(rate.rating_value)
             else:
@@ -1026,56 +1029,56 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["social_network"] = str(info_comp.rs)
             general_comp["description"] = str(info_comp.description)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = {}
-            if general_comp["social_network"] == "twitter":
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-              general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-              general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-              general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-              general_comp["attributes"]["component_base"] = str(attributes.component_base)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["count"] = str(attributes.count)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/twitter-logo.png')
-              general_comp["tokenAttr"] = str('access_token')
-            elif general_comp["social_network"] == "github":
-              general_comp["attributes"]["username"] = str(attributes.username)
-              general_comp["attributes"]["token"] = str(attributes.token)
-              general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/github-icon.png')
-              general_comp["tokenAttr"] = str('token')
-            elif general_comp["social_network"] == "instagram":
-              general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-              general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/instagram-icon.png')
-              general_comp["tokenAttr"] = str('accessToken')
-            elif general_comp["social_network"] == "googleplus":
-              general_comp["attributes"]["token"] = str(attributes.token)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["api_key"] = str(attributes.api_key)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/google-icon.svg')
-              general_comp["tokenAttr"] = str('token')
-            elif general_comp["social_network"] == "facebook":
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/facebook-icon.png')
-              general_comp["tokenAttr"] = str('access_token')
-            elif general_comp["social_network"] == "pinterest":
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_base"] = str(attributes.component_base)
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/pinterest.png')
-              general_comp["tokenAttr"] = str('token')
+            general_comp["attributes"] = str(comp.attributes)
+            # if general_comp["social_network"] == "twitter":
+            #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+            #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
+            #   general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
+            #   general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
+            #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+            #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["count"] = str(attributes.count)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/twitter-logo.png')
+            #   general_comp["tokenAttr"] = str('access_token')
+            # elif general_comp["social_network"] == "github":
+            #   general_comp["attributes"]["username"] = str(attributes.username)
+            #   general_comp["attributes"]["token"] = str(attributes.token)
+            #   general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/github-icon.png')
+            #   general_comp["tokenAttr"] = str('token')
+            # elif general_comp["social_network"] == "instagram":
+            #   general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
+            #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/instagram-icon.png')
+            #   general_comp["tokenAttr"] = str('accessToken')
+            # elif general_comp["social_network"] == "googleplus":
+            #   general_comp["attributes"]["token"] = str(attributes.token)
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["api_key"] = str(attributes.api_key)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/google-icon.svg')
+            #   general_comp["tokenAttr"] = str('token')
+            # elif general_comp["social_network"] == "facebook":
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+            #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/facebook-icon.png')
+            #   general_comp["tokenAttr"] = str('access_token')
+            # elif general_comp["social_network"] == "pinterest":
+            #   general_comp["attributes"]["language"] = str(attributes.language)
+            #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+            #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+            #   json.dumps(general_comp["attributes"])
+            #   general_comp["img"] = str('images/components/pinterest.png')
+            #   general_comp["tokenAttr"] = str('token')
             if not rate == None:
               general_comp["rate"] = str(rate.rating_value)
             else:
@@ -1103,56 +1106,56 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["height"] = str(comp.height)
               general_comp["width"] = str(comp.width)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = {}
-              if general_comp["social_network"] == "twitter":
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-                general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-                general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-                general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-                general_comp["attributes"]["component_base"] = str(attributes.component_base)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["count"] = str(attributes.count)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/twitter-logo.png')
-                general_comp["tokenAttr"] = str('access_token')
-              elif general_comp["social_network"] == "github":
-                general_comp["attributes"]["username"] = str(attributes.username)
-                general_comp["attributes"]["token"] = str(attributes.token)
-                general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/github-icon.png')
-                general_comp["tokenAttr"] = str('token')
-              elif general_comp["social_network"] == "instagram":
-                general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-                general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/instagram-icon.png')
-                general_comp["tokenAttr"] = str('accessToken')
-              elif general_comp["social_network"] == "googleplus":
-                general_comp["attributes"]["token"] = str(attributes.token)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["api_key"] = str(attributes.api_key)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/google-icon.svg')
-                general_comp["tokenAttr"] = str('token')
-              elif general_comp["social_network"] == "facebook":
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/facebook-icon.png')
-                general_comp["tokenAttr"] = str('access_token')
-              elif general_comp["social_network"] == "pinterest":
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_base"] = str(attributes.component_base)
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/pinterest.png')
-                general_comp["tokenAttr"] = str('token')
+              general_comp["attributes"] = str(comp.attributes)
+              # if general_comp["social_network"] == "twitter":
+              #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+              #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
+              #   general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
+              #   general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
+              #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+              #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["count"] = str(attributes.count)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/twitter-logo.png')
+              #   general_comp["tokenAttr"] = str('access_token')
+              # elif general_comp["social_network"] == "github":
+              #   general_comp["attributes"]["username"] = str(attributes.username)
+              #   general_comp["attributes"]["token"] = str(attributes.token)
+              #   general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/github-icon.png')
+              #   general_comp["tokenAttr"] = str('token')
+              # elif general_comp["social_network"] == "instagram":
+              #   general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
+              #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/instagram-icon.png')
+              #   general_comp["tokenAttr"] = str('accessToken')
+              # elif general_comp["social_network"] == "googleplus":
+              #   general_comp["attributes"]["token"] = str(attributes.token)
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["api_key"] = str(attributes.api_key)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/google-icon.svg')
+              #   general_comp["tokenAttr"] = str('token')
+              # elif general_comp["social_network"] == "facebook":
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+              #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/facebook-icon.png')
+              #   general_comp["tokenAttr"] = str('access_token')
+              # elif general_comp["social_network"] == "pinterest":
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+              #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/pinterest.png')
+              #   general_comp["tokenAttr"] = str('token')
               if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
@@ -1172,56 +1175,56 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["social_network"] = str(info_comp.rs)
               general_comp["description"] = str(info_comp.description)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = {}
-              if general_comp["social_network"] == "twitter":
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-                general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-                general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-                general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-                general_comp["attributes"]["component_base"] = str(attributes.component_base)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["count"] = str(attributes.count)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/twitter-logo.png')
-                general_comp["tokenAttr"] = str('access_token')
-              elif general_comp["social_network"] == "github":
-                general_comp["attributes"]["username"] = str(attributes.username)
-                general_comp["attributes"]["token"] = str(attributes.token)
-                general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/github-icon.png')
-                general_comp["tokenAttr"] = str('token')
-              elif general_comp["social_network"] == "instagram":
-                general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-                general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/instagram-icon.png')
-                general_comp["tokenAttr"] = str('accessToken')
-              elif general_comp["social_network"] == "googleplus":
-                general_comp["attributes"]["token"] = str(attributes.token)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["api_key"] = str(attributes.api_key)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/google-icon.svg')
-                general_comp["tokenAttr"] = str('token')
-              elif general_comp["social_network"] == "facebook":
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = 'images/components/facebook-icon.png'
-                general_comp["tokenAttr"] = 'access_token'
-              elif general_comp["social_network"] == "pinterest":
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_base"] = str(attributes.component_base)
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/pinterest.png')
-                general_comp["tokenAttr"] = str('token')
+              general_comp["attributes"] = str(comp.attributes)
+              # if general_comp["social_network"] == "twitter":
+              #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+              #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
+              #   general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
+              #   general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
+              #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+              #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["count"] = str(attributes.count)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/twitter-logo.png')
+              #   general_comp["tokenAttr"] = str('access_token')
+              # elif general_comp["social_network"] == "github":
+              #   general_comp["attributes"]["username"] = str(attributes.username)
+              #   general_comp["attributes"]["token"] = str(attributes.token)
+              #   general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/github-icon.png')
+              #   general_comp["tokenAttr"] = str('token')
+              # elif general_comp["social_network"] == "instagram":
+              #   general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
+              #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/instagram-icon.png')
+              #   general_comp["tokenAttr"] = str('accessToken')
+              # elif general_comp["social_network"] == "googleplus":
+              #   general_comp["attributes"]["token"] = str(attributes.token)
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["api_key"] = str(attributes.api_key)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/google-icon.svg')
+              #   general_comp["tokenAttr"] = str('token')
+              # elif general_comp["social_network"] == "facebook":
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+              #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = 'images/components/facebook-icon.png'
+              #   general_comp["tokenAttr"] = 'access_token'
+              # elif general_comp["social_network"] == "pinterest":
+              #   general_comp["attributes"]["language"] = str(attributes.language)
+              #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+              #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+              #   json.dumps(general_comp["attributes"])
+              #   general_comp["img"] = str('images/components/pinterest.png')
+              #   general_comp["tokenAttr"] = str('token')
               if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
@@ -1240,56 +1243,56 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["social_network"] = str(component.rs)
           general_comp["description"] = str(component.description)
           general_comp["version"] = str(component.version)
-          general_comp["attributes"] = {}
-          if general_comp["social_network"] == "twitter":
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-            general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-            general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-            general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-            general_comp["attributes"]["component_base"] = str(attributes.component_base)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["count"] = str(attributes.count)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/twitter-logo.png')
-            general_comp["tokenAttr"] = str('access_token')
-          elif general_comp["social_network"] == "github":
-            general_comp["attributes"]["username"] = str(attributes.username)
-            general_comp["attributes"]["token"] = str(attributes.token)
-            general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/github-icon.png')
-            general_comp["tokenAttr"] = str('token')
-          elif general_comp["social_network"] == "instagram":
-            general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-            general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/instagram-icon.png')
-            general_comp["tokenAttr"] = str('accessToken')
-          elif general_comp["social_network"] == "googleplus":
-            general_comp["attributes"]["token"] = str(attributes.token)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["api_key"] = str(attributes.api_key)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/google-icon.svg')
-            general_comp["tokenAttr"] = str('token')
-          elif general_comp["social_network"] == "facebook":
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/facebook-icon.png')
-            general_comp["tokenAttr"] = str('access_token')
-          elif general_comp["social_network"] == "pinterest":
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_base"] = str(attributes.component_base)
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/pinterest.png')
-            general_comp["tokenAttr"] = str('token')
+          general_comp["attributes"] = str(comp.attributes)
+          # if general_comp["social_network"] == "twitter":
+          #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+          #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
+          #   general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
+          #   general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
+          #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+          #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["count"] = str(attributes.count)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/twitter-logo.png')
+          #   general_comp["tokenAttr"] = str('access_token')
+          # elif general_comp["social_network"] == "github":
+          #   general_comp["attributes"]["username"] = str(attributes.username)
+          #   general_comp["attributes"]["token"] = str(attributes.token)
+          #   general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/github-icon.png')
+          #   general_comp["tokenAttr"] = str('token')
+          # elif general_comp["social_network"] == "instagram":
+          #   general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
+          #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/instagram-icon.png')
+          #   general_comp["tokenAttr"] = str('accessToken')
+          # elif general_comp["social_network"] == "googleplus":
+          #   general_comp["attributes"]["token"] = str(attributes.token)
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["api_key"] = str(attributes.api_key)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/google-icon.svg')
+          #   general_comp["tokenAttr"] = str('token')
+          # elif general_comp["social_network"] == "facebook":
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+          #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/facebook-icon.png')
+          #   general_comp["tokenAttr"] = str('access_token')
+          # elif general_comp["social_network"] == "pinterest":
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+          #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/pinterest.png')
+          #   general_comp["tokenAttr"] = str('token')
           if not rate == None:
             general_comp["rate"] = str(rate.rating_value)
           else:
@@ -1304,56 +1307,56 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["social_network"] = str(comp.rs)
           general_comp["description"] = str(comp.description)
           eneral_comp["version"] = str(component.version)
-          general_comp["attributes"] = {}
-          if general_comp["social_network"] == "twitter":
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-            general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-            general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-            general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-            general_comp["attributes"]["component_base"] = str(attributes.component_base)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["count"] = str(attributes.count)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/twitter-logo.png')
-            general_comp["tokenAttr"] = str('access_token')
-          elif general_comp["social_network"] == "github":
-            general_comp["attributes"]["username"] = str(attributes.username)
-            general_comp["attributes"]["token"] = str(attributes.token)
-            general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/github-icon.png')
-            general_comp["tokenAttr"] = str('token')
-          elif general_comp["social_network"] == "instagram":
-            general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-            general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/instagram-icon.png')
-            general_comp["tokenAttr"] = str('accessToken')
-          elif general_comp["social_network"] == "googleplus":
-            general_comp["attributes"]["token"] = str(attributes.token)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["api_key"] = str(attributes.api_key)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/google-icon.svg')
-            general_comp["tokenAttr"] = str('token')
-          elif general_comp["social_network"] == "facebook":
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/facebook-icon.png')
-            general_comp["tokenAttr"] = str('access_token')
-          elif general_comp["social_network"] == "pinterest":
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_base"] = str(attributes.component_base)
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/pinterest.png')
-            general_comp["tokenAttr"] = str('token')
+          general_comp["attributes"] = str(comp.attributes)
+          # if general_comp["social_network"] == "twitter":
+          #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+          #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
+          #   general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
+          #   general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
+          #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+          #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["count"] = str(attributes.count)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/twitter-logo.png')
+          #   general_comp["tokenAttr"] = str('access_token')
+          # elif general_comp["social_network"] == "github":
+          #   general_comp["attributes"]["username"] = str(attributes.username)
+          #   general_comp["attributes"]["token"] = str(attributes.token)
+          #   general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/github-icon.png')
+          #   general_comp["tokenAttr"] = str('token')
+          # elif general_comp["social_network"] == "instagram":
+          #   general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
+          #   general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/instagram-icon.png')
+          #   general_comp["tokenAttr"] = str('accessToken')
+          # elif general_comp["social_network"] == "googleplus":
+          #   general_comp["attributes"]["token"] = str(attributes.token)
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["api_key"] = str(attributes.api_key)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/google-icon.svg')
+          #   general_comp["tokenAttr"] = str('token')
+          # elif general_comp["social_network"] == "facebook":
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
+          #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/facebook-icon.png')
+          #   general_comp["tokenAttr"] = str('access_token')
+          # elif general_comp["social_network"] == "pinterest":
+          #   general_comp["attributes"]["language"] = str(attributes.language)
+          #   general_comp["attributes"]["component_base"] = str(attributes.component_base)
+          #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
+          #   json.dumps(general_comp["attributes"])
+          #   general_comp["img"] = str('images/components/pinterest.png')
+          #   general_comp["tokenAttr"] = str('token')
           if not rate == None:
             general_comp["rate"] = str(rate.rating_value)
           else:

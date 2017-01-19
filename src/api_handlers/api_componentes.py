@@ -38,7 +38,7 @@ with open(configFile, "r") as ymlfile:
 domain = cfg["domain"]
 
 
-social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest"]
+social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest", ""]
 
 class ComponentRatingHandler(SessionHandler):
     """
@@ -196,16 +196,16 @@ class ComponentListHandler(SessionHandler):
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("versions")
-
-            endpoint = ""
-            component_directory = ""
-            api_key = ""
-            if self.request.POST.has_key("endpoint"):
-                endpoint = self.request.POST["endpoint"]
-            if self.request.POST.has_key("component_directory"):
-                component_directory = self.request.POST["component_directory"]
-            if self.request.POST.has_key("api_key"):
-                api_key = self.request.POST["api_key"]
+            attributes = self.request.POST["attributes"]
+            # endpoint = ""
+            # component_directory = ""
+            # api_key = ""
+            # if self.request.POST.has_key("endpoint"):
+            #     endpoint = self.request.POST["endpoint"]
+            # if self.request.POST.has_key("component_directory"):
+            #     component_directory = self.request.POST["component_directory"]
+            # if self.request.POST.has_key("api_key"):
+            #     api_key = self.request.POST["api_key"]
 
             # Predetermined is an optional param (default_value=False)
             predetermined = None
@@ -230,8 +230,7 @@ class ComponentListHandler(SessionHandler):
                             # print "=========================="
                             # Adds the component to datastore
                             ndb_pb.insertComponent(component_id, url=url, description=description, rs=social_network, input_t=input_type, output_t=output_type, 
-                                                    version_list=version_list, predetermined=predetermined, endpoint=endpoint, component_directory=component_directory,
-                                                    api_key=api_key)
+                                                    version_list=version_list, predetermined=predetermined, attributes=attributes)
                             response = {"status": "Component uploaded succesfully"}
                             self.response.write(json.dumps(response))
                             self.response.set_status(201)
