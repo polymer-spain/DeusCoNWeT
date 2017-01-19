@@ -1,6 +1,6 @@
 {
   "name": "pinterest-timeline",
-  "version": "0.9.1-latency",
+  "version": "0.9.2-latency",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -29,14 +29,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "0.9.1-latency",
+  "_release": "0.9.2-latency",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.1-latency",
-    "commit": "1fe1796723f16a0b9415c88cc1c092b8d0d76690"
+    "tag": "v0.9.2-latency",
+    "commit": "0e742e87a111ffc6e9ad603b203b06cfff1d411e"
   },
   "_source": "https://github.com/Mortega5/pinterest-timeline.git",
-  "_target": "v0.9.1-latency",
+  "_target": "v0.9.2-latency",
   "_originalSource": "pinterest-timeline",
   "_direct": true
 }
