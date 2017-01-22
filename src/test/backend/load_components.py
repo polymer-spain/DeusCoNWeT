@@ -27,7 +27,7 @@
     completeness and refresh time.
 """
 
-import urllib
+import urllib, json
 import test_utils
 
 """
@@ -40,6 +40,15 @@ basepath = "/api/componentes"
 request_uri = uri + basepath
 test_utils.openConnection(True)
 versions_list = ["stable", "accuracy", "latency"]
+aux = {"endpoint": ':domain/api/aux/twitterTimeline',
+        "language": ':language',
+        "access_token": "",
+        "secret_token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
+        "consumer_key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
+        "consumer_secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+        "component_base": "bower_components/twitter-timeline/static/",
+        "count": 200
+        }
 params = urllib.urlencode({"url": 'https://github.com/JuanFryS/twitter-timeline',
         "component_id": 'twitter-timeline',
         "description": 'Web component to obtain the timeline of Twitter using Polymer',
@@ -47,12 +56,14 @@ params = urllib.urlencode({"url": 'https://github.com/JuanFryS/twitter-timeline'
         "input_type": 'None',
         "output_type": 'tweet',
         "versions": versions_list,
-        "endpoint": ':domain/api/aux/twitterTimeline',
-        "predetermined": 'True'
+        "attributes": json.dumps(aux)
         }, doseq=True)
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
+aux = {"api_key": "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis",
+        "token": ""
+        }
 params = urllib.urlencode({"url": 'https://github.com/ailopera/googleplus-timeline',
         "component_id": 'googleplus-timeline',
         "description": 'Web component to obtain the timeline of Google Plus using Polymer',
@@ -61,10 +72,14 @@ params = urllib.urlencode({"url": 'https://github.com/ailopera/googleplus-timeli
         "output_type": 'tweet',
         "versions": versions_list,
         "predetermined": 'True',
-        "api_key": "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis"
+        "attributes": json.dumps(aux)
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
+aux = {"component_directory": 'bower_components/github-events/',
+        "username": ":user",
+        "token": "",
+        "mostrar": 10}
 params = urllib.urlencode({"url": 'https://github.com/Mortega5/github-events',
         "component_id": 'github-events',
         "description": 'Web component to obtain the timeline of Github notifications',
@@ -72,11 +87,13 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/github-events',
         "input_type": 'None',
         "output_type": 'tweet',
         "versions": versions_list,
-        "component_directory": 'bower_components/github-events/',
-        "predetermined": 'True'
+        "predetermined": 'True',
+        "attributes": json.dumps(aux)
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
+aux = {"component_directory": 'bower_components/facebook-wall/',
+        "access_token": ""}
 params = urllib.urlencode({"url": 'https://github.com/Mortega5/facebook-wall',
         "component_id": 'facebook-wall',
         "description": 'Web component to obtain the timeline of Facebook messages using Polymer',
@@ -84,11 +101,13 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/facebook-wall',
         "input_type": 'None',
         "output_type": 'tweet',
         "versions": versions_list,
-        "component_directory": 'bower_components/facebook-wall/',
-        "predetermined": 'True'
+        "predetermined": 'True',
+        "attributes": json.dumps(aux)
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
+aux = {"access_token": "",
+        "component_base": "bower_components/pinterest-timeline-stable/"}
 params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/tree/redesign/src/static/bower_components/pinterest-timeline-stable',
         "component_id": 'pinterest-timeline',
         "description": 'Web component to obtain the timeline of Pinterest messages using Polymer',
@@ -99,3 +118,15 @@ params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/t
         "predetermined": 'True'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
+
+aux = {"api_key_geocoding": "AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM",
+        "api_key_traffic": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz"}
+params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents",
+        "component_id": 'traffic-incidents',
+        "description": 'Web component to know the state of the traffic in a certain city',
+        "social_network": '',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "predetermined": 'True'
+        }, doseq=True)
