@@ -44,7 +44,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         // Parse :domain, :user, :language
         for (var attr in $scope.catalogList[i].attributes) {
           // skip loop if the property is from prototype
-          if ($scope.catalogList[i].attributes.hasOwnProperty(attr)){
+          if ($scope.catalogList[i].attributes.hasOwnProperty(attr) && typeof $scope.catalogList[i].attributes[attr] == "string"){
             var attr_value = $scope.catalogList[i].attributes[attr];
             attr_value = attr_value.replace(':domain', $scope.domain);
             attr_value = attr_value.replace(':user', 'mortega5');
