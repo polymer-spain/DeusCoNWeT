@@ -140,7 +140,8 @@ params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents
         "output_type": 'tweet',
         "versions": versions_list,
         "attributes": json.dumps(aux),
-        "predetermined": 'True'
+        "predetermined": 'True',
+        "img": 'images/components/traffic-incidents-icon.png'
         }, doseq=True)
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
