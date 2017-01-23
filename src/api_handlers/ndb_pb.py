@@ -158,7 +158,6 @@ class Component(ndb.Model):
   url = ndb.StringProperty()
   input_type = ndb.StringProperty(repeated=True)
   output_type = ndb.StringProperty(repeated=True)
-  tokenAttr
   rs = ndb.StringProperty()
   description = ndb.StringProperty()
   # List of versions available for a component
