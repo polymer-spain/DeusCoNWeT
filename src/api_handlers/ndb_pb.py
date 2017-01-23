@@ -749,7 +749,7 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, attributes=attributes):
+def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, attributes=""):
   # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
   # Depending on the social network, different attributes are needed
@@ -778,7 +778,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
   #   # print "=========================="
   #   attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest-timeline-stable/')
   #   attributes.put()
-  # initial_index = random.randint(0, len(version_list)-1)
+  initial_index = random.randint(0, len(version_list)-1)
   # component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
   #  rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
   #  attributes=attributes)
@@ -958,7 +958,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["height"] = str(comp.height)
             general_comp["width"] = str(comp.width)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = str(comp.attributes)
+            general_comp["attributes"] = json.loads(comp.attributes)
             # if general_comp["social_network"] == "twitter":
             #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
             #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
@@ -1029,7 +1029,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["social_network"] = str(info_comp.rs)
             general_comp["description"] = str(info_comp.description)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = str(comp.attributes)
+            general_comp["attributes"] = json.loads(comp.attributes)
             # if general_comp["social_network"] == "twitter":
             #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
             #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
@@ -1106,7 +1106,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["height"] = str(comp.height)
               general_comp["width"] = str(comp.width)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = str(comp.attributes)
+              general_comp["attributes"] = json.loads(comp.attributes)
               # if general_comp["social_network"] == "twitter":
               #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
               #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
@@ -1175,7 +1175,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["social_network"] = str(info_comp.rs)
               general_comp["description"] = str(info_comp.description)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = str(comp.attributes)
+              general_comp["attributes"] = json.loads(comp.attributes)
               # if general_comp["social_network"] == "twitter":
               #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
               #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
@@ -1243,7 +1243,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["social_network"] = str(component.rs)
           general_comp["description"] = str(component.description)
           general_comp["version"] = str(component.version)
-          general_comp["attributes"] = str(comp.attributes)
+          general_comp["attributes"] = json.loads(component.attributes)
           # if general_comp["social_network"] == "twitter":
           #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
           #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
@@ -1306,8 +1306,8 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["url"] = str(comp.url)
           general_comp["social_network"] = str(comp.rs)
           general_comp["description"] = str(comp.description)
-          eneral_comp["version"] = str(component.version)
-          general_comp["attributes"] = str(comp.attributes)
+          general_comp["version"] = str(comp.version)
+          general_comp["attributes"] = json.loads(comp.attributes)
           # if general_comp["social_network"] == "twitter":
           #   general_comp["attributes"]["access_token"] = str(attributes.access_token)
           #   general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
