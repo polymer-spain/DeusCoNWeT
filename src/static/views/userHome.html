@@ -94,12 +94,12 @@
                 <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter"
                  pre="{{item.socialNetwork == undefined && user.tokens[item.social_network] !== undefined}}">
                   <!-- token required-->
-                  <span class="label label-warning warning" ng-hide="item.social_network== undefined || user.tokens[item.social_network] !== undefined">{{language.noToken}}</span>
-                  <button ng-hide="item.social_network== undefined || user.tokens[item.social_network] !== undefined" ng-click="login(item.component_id, $event)" class="tokenDisabled">
+                  <span class="label label-warning warning" ng-hide="item.social_network == "" || user.tokens[item.social_network] !== undefined">{{language.noToken}}</span>
+                  <button ng-hide="item.social_network == "" || user.tokens[item.social_network] !== undefined" ng-click="login(item.component_id, $event)" class="tokenDisabled">
                     {{language.noTokenDescription}}
                   </button>
                   <!-- token not required -->
-                  <div ng-show="item.social_network== undefined || user.tokens[item.social_network] !== undefined" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
+                  <div ng-show="item.social_network == "" || user.tokens[item.social_network] !== undefined" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
                     {{item.description}}
                   </div>
                   <div class="componentData horizontal layout">
