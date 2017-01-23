@@ -193,10 +193,14 @@ class ComponentListHandler(SessionHandler):
             component_id = self.request.POST["component_id"]
             description = self.request.POST["description"]
             social_network = self.request.POST["social_network"]
+            img = self.request.POST["img"]
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("versions")
             attributes = self.request.POST["attributes"]
+            tokenAttr = ""
+            if self.request.POST.has_key("tokenAttr"):
+                tokenAttr = self.request.POST["tokenAttr"]
             # endpoint = ""
             # component_directory = ""
             # api_key = ""
@@ -230,7 +234,7 @@ class ComponentListHandler(SessionHandler):
                             # print "=========================="
                             # Adds the component to datastore
                             ndb_pb.insertComponent(component_id, url=url, description=description, rs=social_network, input_t=input_type, output_t=output_type, 
-                                                    version_list=version_list, predetermined=predetermined, attributes=attributes)
+                                                    version_list=version_list, predetermined=predetermined, attributes=attributes, tokenAttr=tokenAttr, img=img)
                             response = {"status": "Component uploaded succesfully"}
                             self.response.write(json.dumps(response))
                             self.response.set_status(201)

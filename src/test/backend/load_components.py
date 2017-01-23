@@ -56,7 +56,9 @@ params = urllib.urlencode({"url": 'https://github.com/JuanFryS/twitter-timeline'
         "input_type": 'None',
         "output_type": 'tweet',
         "versions": versions_list,
-        "attributes": json.dumps(aux)
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'access_token',
+        "img": 'images/components/twitter-logo.png'
         }, doseq=True)
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
@@ -72,7 +74,9 @@ params = urllib.urlencode({"url": 'https://github.com/ailopera/googleplus-timeli
         "output_type": 'tweet',
         "versions": versions_list,
         "predetermined": 'True',
-        "attributes": json.dumps(aux)
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'token',
+        "img": 'images/components/google-icon.svg'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
@@ -88,7 +92,9 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/github-events',
         "output_type": 'tweet',
         "versions": versions_list,
         "predetermined": 'True',
-        "attributes": json.dumps(aux)
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'token',
+        "img": 'images/components/github-icon.png'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
@@ -102,7 +108,9 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/facebook-wall',
         "output_type": 'tweet',
         "versions": versions_list,
         "predetermined": 'True',
-        "attributes": json.dumps(aux)
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'access_token',
+        "img": 'images/components/facebook-icon.png'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
@@ -115,7 +123,10 @@ params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/t
         "input_type": 'None',
         "output_type": 'tweet',
         "versions": versions_list,
-        "predetermined": 'True'
+        "predetermined": 'True',
+        "attributes": json.dumps(aux),
+        "tokenAttr": "access_token",
+        "img": "images/components/pinterest.png"
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
@@ -128,5 +139,8 @@ params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents
         "input_type": 'None',
         "output_type": 'tweet',
         "versions": versions_list,
+        "attributes": json.dumps(aux),
         "predetermined": 'True'
         }, doseq=True)
+
+test_utils.make_request("PUT", request_uri, params, 201, None)
