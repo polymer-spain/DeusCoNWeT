@@ -1,6 +1,6 @@
 {
   "name": "traffic-incidents",
-  "version": "1.0.1-accuracy",
+  "version": "1.0.2-accuracy",
   "authors": [
     "Miguel Ortega Moreno <mortega@conwet.com>"
   ],
@@ -31,14 +31,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "1.0.1-accuracy",
+  "_release": "1.0.2-accuracy",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.1-accuracy",
-    "commit": "7a43c758ea36d5612963a1e6dd81e3138c6337bf"
+    "tag": "v1.0.2-accuracy",
+    "commit": "151f6ded87a344c9fdcaa838571c1324b6d6e6d4"
   },
   "_source": "https://github.com/Mortega5/traffic-incidents.git",
-  "_target": "v1.0.1-accuracy",
+  "_target": "v1.0.2-accuracy",
   "_originalSource": "traffic-incidents",
   "_direct": true
 }
