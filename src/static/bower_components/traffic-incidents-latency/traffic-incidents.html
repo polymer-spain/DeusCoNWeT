@@ -9,6 +9,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <!--
+  @element traffic-incidents
+  @blurb Show a timeline of traffic issues
+  @status beta
+  @homepage https://github.com/Mortega5/google-login
+  @demo demo/index.html
+  @hero hero.svg
+
+
 Show a timeline of traffic issues. Its use two api:
 
 - **Google Maps Geocoding API**: to convert any address to geographical coordinates.
@@ -83,9 +91,9 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
   paper-header-panel {
     width: 100%;
     height: 100%;
-    @apply(--shadow-elevation-3dp);
     background-color: #eee;
     font-family: 'Dosis', sans-serif;
+    @apply(--shadow-elevation-3dp);
   }
   .paper-header {
     height: var(--ti-header-height, 50px);
@@ -100,12 +108,12 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
     border-top-right-radius: 5px;
     @apply(--ti-header);
   }
-  .paper-header paper-icon-button,
+  .paper-header paper-icon-button#search,
   .paper-header[active] .input-container {
     display: inline-block;
   }
   .paper-header .input-container,
-  .paper-header[active] paper-icon-button{
+  .paper-header[active] paper-icon-button#search{
     display:none;
   }
   .paper-header[active] .input-container{
@@ -330,11 +338,14 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 
   <paper-header-panel mode="waterfall-tall">
     <div class="paper-header horizontal layout center" active$="{{active}}">
-      <p class="title">Traffic Incidents <span style="text-transform:capitalize">({{city}})</span></p>
-      <paper-icon-button icon="search" on-click="toggleInput"></paper-icon-button>
+      <paper-icon-button icon="search" id="search" on-click="toggleInput"></paper-icon-button>
       <div class="input-container">
         <input id="searchBox" placeholder="Search City" on-blur="blurInput" on-keyup="keyupInput"/>
       </div>
+      <p class="title" id="name">
+        Traffic Incidents <span style="text-transform:capitalize">({{city}})</span>
+        </p>
+      <paper-icon-button id="refresh" on-click="refresh" icon="refresh"></paper-icon-button>
     </div>
 
     <div class="content">
@@ -356,8 +367,15 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
         <paper-spinner active="{{_loading}}"></paper-spinner>
       </div>
       <template is="dom-if" if="{{_isEmpty}}">
+        <template is="dom-if" if="{{city}}">
+          <div class="card">
+            {{no_incidents}}
+          </div>
+        </template>
+      </template>
+      <template is="dom-if" if="{{!city}}">
         <div class="card">
-          {{no_incidents}}
+          <p>Search a city using the search box</p>
         </div>
       </template>
     </div>
@@ -419,7 +437,7 @@ Polymer({
     * `auto_refresh` is true when we want to refresh automatically each any (`refresh_time`) seconds
     */
     auto_refresh: {
-      value: true,
+      value: false,
       type: Boolean,
       reflectToAttribute: true,
       notify: true
@@ -526,17 +544,20 @@ Polymer({
     this.active = !this.active;
     if (this.active){
       this.$.searchBox.focus();
+      this.$.name.hidden = true;
     }
   },
   blurInput: function(e){
     var target = e.currentTarget;
     if (!target.value){
+      this.$.name.hidden = false;
       this.toggleInput();
       target.blur();
     }
   },
   keyupInput: function(e){
     if (e.keyCode === 13){
+      this.$.name.hidden = false;
       this.city = this.$.searchBox.value;
       this.$.traffic.requestTraffic();
       this.$.searchBox.value = "";
@@ -548,6 +569,12 @@ Polymer({
   },
   _empty: function(){
     this.set('traffic_info', []);
+  },
+  attached: function(){
+    if (!this.city) {
+      this._loading = false;
+      this.$.search.click();
+    }
   }
 });
 </script>

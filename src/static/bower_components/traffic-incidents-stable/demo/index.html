@@ -18,13 +18,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </head>
   <body unresolved>
     <template is="dom-bind" id="bind">
-      <traffic-incidents city="london" api_key_geocoding="AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM"
-        app_key_traffic="AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-" auto_refresh refresh_time="60000"
+      <traffic-incidents api_key_geocoding="AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM"
+        app_key_traffic="AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-" refresh_time="60000"
         traffic_info="{{traffic}}">
       </traffic-incidents>
 
     </template>
-    <script>
+    <!--<script>
       window.addEventListener('WebComponentsReady',function(){
         var bind = document.querySelector('#bind');
         bind.test = 'no recibidos';
@@ -41,6 +41,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return finalDay;
         }
       })
-    </script>
+    </script>-->
   </body>
 </html>
