@@ -1,6 +1,6 @@
 {
   "name": "googleplus-timeline",
-  "version": "0.9.1-stable",
+  "version": "0.9.2-stable",
   "authors": [
     "Ana Isabel Lopera  <lopera.martinez.ana.isabel@gmail.com>"
   ],
@@ -27,14 +27,14 @@
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "web-component-tester": "*"
   },
-  "_release": "0.9.1-stable",
+  "_release": "0.9.2-stable",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.1-stable",
+    "tag": "v0.9.2-stable",
     "commit": "e78336b0c7552b444dd681f81cec877c234c2ba4"
   },
   "_source": "git@github.com:ailopera/googleplus-timeline.git",
-  "_target": "v0.9.1-stable",
+  "_target": "v0.9.2-stable",
   "_originalSource": "googleplus-timeline",
   "_direct": true
 }
