@@ -131,7 +131,7 @@ params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/t
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
 aux = {"api_key_geocoding": "AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM",
-        "api_key_traffic": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz"}
+        "app_key_traffic": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz"}
 params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents",
         "component_id": 'traffic-incidents',
         "description": 'Web component to know the state of the traffic in a certain city',
@@ -142,6 +142,32 @@ params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents
         "attributes": json.dumps(aux),
         "predetermined": 'True',
         "img": 'images/components/traffic-incidents-icon.png'
+        }, doseq=True)
+
+aux = {"app-id": "655f716c02b3f0aceac9e3567cfb46a8"}
+params = urllib.urlencode({"url": "https://github.com/Mortega5/open-weather",
+        "component_id": 'open-weather',
+        "description": 'Web component to know the weather in future days',
+        "social_network": '',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "attributes": json.dumps(aux),
+        "predetermined": 'True',
+        "img": 'images/components/open-weather-icon.png'
+        }, doseq=True)
+
+aux = {}
+params = urllib.urlencode({"url": 'https://github.com/Mortega5/finance-search',
+        "component_id": 'finance-search',
+        "description": 'Web component to know the values of shares',
+        "social_network": '',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "attributes": json.dumps(aux),
+        "predetermined": 'True',
+        "img": 'images/components/finance-search-icon.png'
         }, doseq=True)
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
