@@ -131,7 +131,7 @@ params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/t
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
 aux = {"api_key_geocoding": "AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM",
-        "app_key_traffic": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz"}
+        "app_key_traffic": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"}
 params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents",
         "component_id": 'traffic-incidents',
         "description": 'Web component to know the state of the traffic in a certain city',
