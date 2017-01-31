@@ -1,0 +1,30 @@
+{
+  "name": "finance-value",
+  "version": "0.9.0",
+  "authors": [
+    "Miguel Ortega Moreno <mortega@conwet.com>"
+  ],
+  "description": "An element providing current financial value of companies",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed",
+    "finance",
+    "value",
+    "current",
+    "web-components"
+  ],
+  "main": "finance-value.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/mortega5/finance-value",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  }
+}

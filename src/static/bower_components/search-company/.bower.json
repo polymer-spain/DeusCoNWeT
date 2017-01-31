@@ -1,0 +1,36 @@
+{
+  "name": "search-company",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "main": "search-company.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/<USERNAME>/seed-element/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
+    "byutv-jsonp": "^1.3.0",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  },
+  "_release": "a99c29c491",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a99c29c4919892ed6f7c26b205860860dfd88495"
+  },
+  "_source": "https://github.com/Mortega5/search-company.git",
+  "_target": "*",
+  "_originalSource": "search-company"
+}
