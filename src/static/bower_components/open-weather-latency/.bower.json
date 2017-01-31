@@ -33,7 +33,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v0.9.0-latency",
-    "commit": "5b7e74a96399f983b2cf413863b686c026ed78aa"
+    "commit": "627fa3aa74857ce75b901aae0c1d27981d6e9c34"
   },
   "_source": "git@github.com:Mortega5/open-weather.git",
   "_target": "v0.9.0-latency",
