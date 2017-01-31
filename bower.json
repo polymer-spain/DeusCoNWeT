@@ -10,7 +10,7 @@
     "angular-touch": "~1.4.1",
     "iron-ajax": "PolymerElements/iron-ajax#~1.1.1",
     "iron-dropdown": "PolymerElements/iron-dropdown#~1.0.6",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.1",
     "iron-icon": "PolymerElements/iron-icon#~1.0.5",
     "login-facebook": "login-fb#~2.0.0",
     "ng-polymer-elements": "~0.3.0",
@@ -33,7 +33,9 @@
     "paper-checkbox": "PolymerElements/paper-checkbox#~1.1.3",
     "paper-radio-button": "PolymerElements/paper-radio-button#~1.1.2",
     "paper-radio-group": "PolymerElements/paper-radio-group#~1.0.9",
-    "iron-form": "PolymerElements/iron-form#~1.0.16"
+    "iron-form": "PolymerElements/iron-form#~1.0.16",
+    "chart.js": "^2.4.0",
+    "octicons": "^5.0.1"
   },
   "devDependencies": {
     "grunt-contrib-uglify": "~0.10.1",
