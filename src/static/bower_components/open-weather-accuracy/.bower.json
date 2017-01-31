@@ -33,7 +33,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v0.9.0-accuracy",
-    "commit": "1c77ab3a3b4fda68292c93ad7a563504ace61d99"
+    "commit": "a5d57ad96bff9925f3a2ec224c519845ee4ef964"
   },
   "_source": "git@github.com:Mortega5/open-weather.git",
   "_target": "v0.9.0-accuracy",
