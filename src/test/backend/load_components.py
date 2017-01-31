@@ -143,6 +143,7 @@ params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents
         "predetermined": 'True',
         "img": 'images/components/traffic-incidents-icon.png'
         }, doseq=True)
+test_utils.make_request("PUT", request_uri, params, 201, None)
 
 aux = {"app-id": "655f716c02b3f0aceac9e3567cfb46a8"}
 params = urllib.urlencode({"url": "https://github.com/Mortega5/open-weather",
@@ -156,6 +157,7 @@ params = urllib.urlencode({"url": "https://github.com/Mortega5/open-weather",
         "predetermined": 'True',
         "img": 'images/components/open-weather-icon.png'
         }, doseq=True)
+test_utils.make_request("PUT", request_uri, params, 201, None)
 
 aux = {}
 params = urllib.urlencode({"url": 'https://github.com/Mortega5/finance-search',
