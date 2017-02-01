@@ -33,6 +33,7 @@ Example:
 -->
 
 <dom-module id="finance-chart">
+  <link rel="import" type="css" href="../octicons/build/font/octicons.css">
   <template>
   <style is="custom-style">
   :host {
@@ -302,7 +303,7 @@ Polymer({
   **/
   flip: function(event){
     var index= event.currentTarget.getAttribute('data-index');
-    this.querySelector('#flipContainer-' + index).classList.toggle('flip');
+    this.$$('#flipContainer-' + index).classList.toggle('flip');
   },
   _getOptions: function(options,data,index,current){
     function isObject(item) {
