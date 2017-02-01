@@ -335,7 +335,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         }
       }
     };
-
+    $scope.isAdded = function(elementId){
+      return $scope.listComponentAdded.indexOf(elementid) !== -1;
+    }
 
     // Callback when login finish
     (function(){

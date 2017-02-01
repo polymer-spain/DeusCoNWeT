@@ -92,7 +92,7 @@
               </div>
               <div id="listCatalog" class="flex" >
                 <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter"
-                 pre="{{!item.socialNetwork || user.tokens[item.social_network] !== undefined}}">
+                 pre="{{!item.socialNetwork || user.tokens[item.social_network] !== undefined}}" disabled="{{isAdded(item.component_id)}}">
                   
                   <!-- token required-->
                   <span class="label label-warning warning" ng-hide="!item.social_network || user.tokens[item.social_network] !== undefined">{{language.noToken}}</span>
