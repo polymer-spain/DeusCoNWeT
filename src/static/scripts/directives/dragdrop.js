@@ -84,8 +84,9 @@ picbit.directive("ngContainer", function () {
 				$.contextMenu({
 					selector: '.context-menu',
 					callback: function(key, options) {
+            var elementId = options.$trigger[0].tagName.toLowerCase();
 						options.$trigger.parent().remove();
-						element.scope().removeElement(id);
+						element.scope().removeElement(elementId);
 						element[0].setAttribute('disabled',false);
 					}.bind(this),
 					items: {
@@ -192,8 +193,9 @@ picbit.directive("ngCreateElement", function () {
 				$.contextMenu({
 					selector: '.context-menu',
 					callback: function(key, options) {
+            var elementId = options.$trigger[0].tagName.toLowerCase();
 						options.$trigger.parent().remove();
-						element.scope().removeElement(scope.idElement);
+						element.scope().removeElement(elementId);
 						element[0].setAttribute('disabled',false);
 					}.bind(this),
 					items: {
