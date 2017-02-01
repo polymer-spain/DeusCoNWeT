@@ -24,13 +24,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "a99c29c491",
+  "_release": "78f0519e46",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "a99c29c4919892ed6f7c26b205860860dfd88495"
+    "commit": "78f0519e466d63ecb8d8ae132d91c73c78c2b857"
   },
   "_source": "https://github.com/Mortega5/search-company.git",
   "_target": "*",
-  "_originalSource": "search-company"
+  "_originalSource": "search-company",
+  "_direct": true
 }

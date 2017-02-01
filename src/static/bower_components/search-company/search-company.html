@@ -9,7 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../byutv-jsonp/byutv-jsonp.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
 <link rel="import" href="../paper-spinner/paper-spinner-lite.html">
 <!--
@@ -91,13 +91,13 @@ Example:
     height: 20px;
   }
   </style>
-  <byutv-jsonp
-  id="jsonp"
-  url="https://json2jsonp.com/"
-  params="{{_params}}"
-  on-response="_searchSymbolResponse"
-  on-error="_searchSymbolResponseError"
-  timeout-duration="1000"></byutv-jsonp>
+  <iron-ajax 
+    id="searchCompany"
+    url="https://centauro.ls.fi.upm.es:4444/company?q={{company}}"
+    on-response="_searchSymbolResponse"
+    on-error="_searchSymbolResponseError"
+  ></iron-ajax>
+
   <input id="company" value="{{company::input}}" placeholder="Company"/>
   <template is="dom-if" if="{{_showBox(company,_selected)}}">
     <div class="results" loading$="{{_loading}}" error$="{{_error}}">
@@ -158,6 +158,9 @@ Polymer({
       value:true
     }
   },
+  listeners: {
+    'tap': 'focus'
+  },
   _filterCompanies: function(newValue){
     if (newValue && newValue !== this._selected){
       this._selected = "";
@@ -171,12 +174,12 @@ Polymer({
       this._error = false;
     }
   },
-  _searchSymbolResponse: function(data){
+  _searchSymbolResponse: function(event, detail){
     this._loading= false;
-    if (data.detail && data.detail.length > 0){
-      this.set('_list',data.detail);
+    if (detail.response && detail.response.length > 0){
+      this.set('_list',detail.response);
     } else {
-      this.fire('search-company-error', data);
+      this.fire('search-company-error', detail);
     }
   },
   _searchSymbolResponseError: function(){
@@ -189,9 +192,7 @@ Polymer({
       console.error('Text is required');
       this.fire('search-company-error',{error:'Company required'});
     } else {
-      var encodedQuery = encodeURIComponent(this.company);
-      this._params = {"url":"http://chstocksearch.herokuapp.com/api/" + encodedQuery}
-      this.$.jsonp.generateRequest();
+      this.$.searchCompany.generateRequest();
     }
   },
   _select: function(e){
@@ -209,6 +210,9 @@ Polymer({
   },
   _showBox: function(company, selected){
     return company && !selected && company !== selected;
+  },
+  focus: function(){
+    this.$.company.focus();
   }
 });
 </script>
