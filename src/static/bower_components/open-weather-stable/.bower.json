@@ -33,7 +33,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v0.9.0-stable",
-    "commit": "bc1d24fed9ef622f7563adf16e7b2414f0c61e80"
+    "commit": "6eb02863dacf8026907037757c2383981ff93dd7"
   },
   "_source": "https://github.com/Mortega5/open-weather.git",
   "_target": "v0.9.0-stable",
