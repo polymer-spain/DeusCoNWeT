@@ -26,13 +26,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "7e26e51521",
+  "_release": "b157b8ed8e",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "7e26e515216a1d1ca8b2fda1ac1b5b93281230f7"
+    "commit": "b157b8ed8e7508fb7f214b46fce3a6a018773516"
   },
   "_source": "https://github.com/Mortega5/finance-value.git",
   "_target": "*",
-  "_originalSource": "finance-value"
+  "_originalSource": "finance-value",
+  "_direct": true
 }
