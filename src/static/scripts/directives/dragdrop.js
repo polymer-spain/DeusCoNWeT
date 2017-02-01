@@ -109,7 +109,7 @@ picbit.directive("ngContainer", function () {
 				var minWidth = newTimeline.css('minWidth');
 				minHeight = minHeight !== 'none'? parseInt(minHeight.split('px')[0]) : 0;
 				minWidth = minWidth !== 'none'? parseInt(minWidth.split('px')[0]) : 0;
-				var height = newTimeline.css('heigth') || '400px';
+				var height = newTimeline.css('height') || '400px';
 				var width = newTimeline.css('width') || '400px';
 				divContainer.resizable('option', 'minHeight',minHeight+10);
 				divContainer.resizable('option', 'minWidth',minWidth+10);
@@ -218,7 +218,7 @@ picbit.directive("ngCreateElement", function () {
 				var minWidth = newTimeline.css('minWidth');
 				minHeight = minHeight !== 'none'? parseInt(minHeight.split('px')[0]) : 0;
 				minWidth = minWidth !== 'none'? parseInt(minWidth.split('px')[0]) : 0;
-				var height = newTimeline.css('heigth') || '400px';
+				var height = newTimeline.css('height') || '400px';
 				var width = newTimeline.css('width') || '400px';
 				height = height.split('px') < 400 ? '400px': height;
 				width = width.split('px') < 400 ? '400px': width;
