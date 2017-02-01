@@ -30,7 +30,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v1.0.0-accuracy",
-    "commit": "896e0e9ce2a9535492af8809f42abedc593ba7d4"
+    "commit": "79c50d49ce03d6031856087c1ba967ef257c73e8"
   },
   "_source": "git@github.com:Mortega5/finance-search.git",
   "_target": "v1.0.0-accuracy",
