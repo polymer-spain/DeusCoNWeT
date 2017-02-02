@@ -108,6 +108,10 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
     border-top-right-radius: 5px;
     @apply(--ti-header);
   }
+  paper-icon-button#search:hover{
+    background-color:rgba(0,0,0,0.3);
+    border-radius: 50%;
+  }
   .paper-header paper-icon-button#search,
   .paper-header[active] .input-container {
     display: inline-block;
@@ -340,7 +344,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
     <div class="paper-header horizontal layout center" active$="{{active}}">
       <paper-icon-button icon="search" id="search" on-click="toggleInput"></paper-icon-button>
       <div class="input-container">
-        <input id="searchBox" placeholder="Search City" on-blur="blurInput" on-keyup="keyupInput"/>
+        <input id="searchBox" placeholder="Buscar una ciudad" on-blur="blurInput" on-keyup="keyupInput"/>
       </div>
       <p class="title" id="name">
         Traffic Incidents <span style="text-transform:capitalize">({{city}})</span>
@@ -375,7 +379,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
       </template>
       <template is="dom-if" if="{{!city}}">
         <div class="card">
-          <p>Search a city using the search box</p>
+          <p>Busca usa ciudad usando la caja de busqueda</p>
         </div>
       </template>
     </div>
@@ -437,7 +441,7 @@ Polymer({
     * `auto_refresh` is true when we want to refresh automatically each any (`refresh_time`) seconds
     */
     auto_refresh: {
-      value: true,
+      value: false,
       type: Boolean,
       reflectToAttribute: true,
       notify: true
@@ -549,7 +553,7 @@ Polymer({
   },
   blurInput: function(e){
     var target = e.currentTarget;
-    if (!target.value){
+    if (!target.value && this.city){
       this.$.name.hidden = false;
       this.toggleInput();
       target.blur();

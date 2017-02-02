@@ -1,6 +1,6 @@
 {
   "name": "traffic-incidents",
-  "version": "1.0.2-latency",
+  "version": "1.0.3-latency",
   "authors": [
     "Miguel Ortega Moreno <mortega@conwet.com>"
   ],
@@ -31,14 +31,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "1.0.2-latency",
+  "_release": "1.0.3-latency",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.2-latency",
-    "commit": "d1459812ed63d54e9170989d375d3cc0b5b63cec"
+    "tag": "v1.0.3-latency",
+    "commit": "41379f300bb03b80cf161b27bb19199c620a4262"
   },
   "_source": "https://github.com/Mortega5/traffic-incidents.git",
-  "_target": "v1.0.2-latency",
+  "_target": "v1.0.3-latency",
   "_originalSource": "traffic-incidents",
   "_direct": true
 }
