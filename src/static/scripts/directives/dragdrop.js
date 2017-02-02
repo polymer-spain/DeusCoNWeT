@@ -74,7 +74,10 @@ picbit.directive("ngContainer", function () {
         //divContainer.css({height:'300px'});
         divContainer.draggable({
           appendTo: '[ng-container]',
-          containment: "parent"
+          containment: "parent",
+          start: function (event, ui) {
+            $(this).data('preventBehaviour', true);
+          }
         });
         divContainer.resizable({
           containement: "parent"
