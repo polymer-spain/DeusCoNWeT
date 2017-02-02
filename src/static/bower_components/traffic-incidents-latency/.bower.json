@@ -35,7 +35,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v1.0.3-latency",
-    "commit": "41379f300bb03b80cf161b27bb19199c620a4262"
+    "commit": "8253887d732ff8530391b864d1886658c4fc3f2c"
   },
   "_source": "https://github.com/Mortega5/traffic-incidents.git",
   "_target": "v1.0.3-latency",

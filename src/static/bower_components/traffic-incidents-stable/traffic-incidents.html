@@ -341,9 +341,9 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
   on-traffic-request_iniciated="_loading_data" on-geocoding-request-error="_empty"></traffic-incidents-data>
 
   <paper-header-panel mode="waterfall-tall">
-    <div class="paper-header horizontal layout center" active$="{{active}}">
+    <div class="paper-header horizontal layout center" active$="{{active}}" >
       <paper-icon-button icon="search" id="search" on-click="toggleInput"></paper-icon-button>
-      <div class="input-container">
+      <div class="input-container" on-click="focusInput">
         <input id="searchBox" placeholder="Buscar una ciudad" on-blur="blurInput" on-keyup="keyupInput"/>
       </div>
       <p class="title" id="name">
@@ -567,6 +567,9 @@ Polymer({
       this.$.searchBox.value = "";
       this.toggleInput();
     }
+  },
+  focusInput: function(){
+    this.$.searchBox.focus();
   },
   refresh: function(){
     this.$.traffic.requestTraffic();

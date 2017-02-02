@@ -35,7 +35,7 @@
   "_resolution": {
     "type": "version",
     "tag": "v1.0.3-stable",
-    "commit": "24499f52639974c5f00ed95538586c6041408cc6"
+    "commit": "7598702e324a2f73bdf5beec33a13b107e79d681"
   },
   "_source": "https://github.com/Mortega5/traffic-incidents.git",
   "_target": "v1.0.3-stable",
