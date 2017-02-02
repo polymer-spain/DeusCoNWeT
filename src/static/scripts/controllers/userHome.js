@@ -85,7 +85,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     }
     // Remove disabled
     var selector = "[ng-create-element][id-element='" + id +"']";
-    $(selector).attr('disabled',false),
+    $(selector).attr('disabled',false);
   };
 
   $scope.blurList = function (e) {
