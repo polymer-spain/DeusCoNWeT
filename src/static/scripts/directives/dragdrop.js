@@ -79,6 +79,22 @@ picbit.directive("ngContainer", function () {
             $(this).data('preventBehaviour', true);
           }
         });
+        divContainer.find(":input").on('mousedown', function (e) {
+          var mdown = new MouseEvent("mousedown", {
+            screenX: e.screenX,
+            screenY: e.screenY,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            view: window
+          });
+          $(this).closest('.draggable')[0].dispatchEvent(mdown);
+        }).on('click', function (e) {
+          var $draggable = $(this).closest('.draggable');
+          if ($draggable.data("preventBehaviour")) {
+            e.preventDefault();
+            $draggable.data("preventBehaviour", false)
+          }
+        });
         divContainer.resizable({
           containement: "parent"
         });
@@ -185,7 +201,26 @@ picbit.directive("ngCreateElement", function () {
         var divContainer = $('<div>').css('display', 'inline-block');
         divContainer.draggable({
           appendTo: '[ng-container]',
-          containment: "parent"
+          containment: "parent",
+          start: function (event, ui) {
+            $(this).data('preventBehaviour', true);
+          }
+        });
+        divContainer.find(":input").on('mousedown', function (e) {
+          var mdown = new MouseEvent("mousedown", {
+            screenX: e.screenX,
+            screenY: e.screenY,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            view: window
+          });
+          $(this).closest('.draggable')[0].dispatchEvent(mdown);
+        }).on('click', function (e) {
+          var $draggable = $(this).closest('.draggable');
+          if ($draggable.data("preventBehaviour")) {
+            e.preventDefault();
+            $draggable.data("preventBehaviour", false)
+          }
         });
         divContainer.resizable({
           containement: "parent"
