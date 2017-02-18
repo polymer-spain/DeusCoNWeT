@@ -80,23 +80,23 @@ params = urllib.urlencode({"url": 'https://github.com/ailopera/googleplus-timeli
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-aux = {"component_directory": 'bower_components/github-events/',
-        "username": ":user",
-        "token": "",
-        "mostrar": 10}
-params = urllib.urlencode({"url": 'https://github.com/Mortega5/github-events',
-        "component_id": 'github-events',
-        "description": 'Web component to obtain the timeline of Github notifications',
-        "social_network": 'github',
-        "input_type": 'None',
-        "output_type": 'tweet',
-        "versions": versions_list,
-        "predetermined": 'True',
-        "attributes": json.dumps(aux),
-        "tokenAttr": 'token',
-        "img": 'images/components/github-icon.png'
-        }, doseq=True)
-test_utils.make_request("PUT", request_uri, params, 201, None)
+# aux = {"component_directory": 'bower_components/github-events/',
+#         "username": ":user",
+#         "token": "",
+#         "mostrar": 10}
+# params = urllib.urlencode({"url": 'https://github.com/Mortega5/github-events',
+#         "component_id": 'github-events',
+#         "description": 'Web component to obtain the timeline of Github notifications',
+#         "social_network": 'github',
+#         "input_type": 'None',
+#         "output_type": 'tweet',
+#         "versions": versions_list,
+#         "predetermined": 'True',
+#         "attributes": json.dumps(aux),
+#         "tokenAttr": 'token',
+#         "img": 'images/components/github-icon.png'
+#         }, doseq=True)
+# test_utils.make_request("PUT", request_uri, params, 201, None)
 
 aux = {"component_directory": 'bower_components/facebook-wall/',
         "access_token": ""}
@@ -114,7 +114,7 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/facebook-wall',
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-aux = {"access_token": "",
+aux = {"token": "",
         "component_base": "bower_components/pinterest-timeline-stable/"}
 params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/tree/redesign/src/static/bower_components/pinterest-timeline-stable',
         "component_id": 'pinterest-timeline',
