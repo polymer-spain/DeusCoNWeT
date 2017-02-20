@@ -125,7 +125,7 @@ params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/t
         "versions": versions_list,
         "predetermined": 'True',
         "attributes": json.dumps(aux),
-        "tokenAttr": "access_token",
+        "tokenAttr": "token",
         "img": "images/components/pinterest.png"
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
