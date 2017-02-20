@@ -16,7 +16,7 @@ Options:
     \e[33m--save\e[39m                  Save as bower dependencie
 Example:
 
-    bower install googletimeline-plus#v0.9-stable
+    bower install  googletimeline-plus#v0.9-stable
 
 IMPORTANT:
     The version of the component must be v{version_number}-{branch}. For example v0.9-stable
@@ -105,7 +105,7 @@ fi
 
 
 # INSTALL BOWER COMPONENT
-bower $command $package $save
+bower $command --allow-root $package $save
 status=$?
 
 # CHECK IF BOWER FINISHED CORRECTLY
