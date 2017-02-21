@@ -8,7 +8,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   // TODO se deberan coger de la lista que se registra en usuario
   $scope.listComponentAdded = [];
   $scope.componentsRated = [];
-
+  $rootScope.user.tokens.twitter = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
 
   // loads references for this
   (function () {
