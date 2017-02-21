@@ -3,11 +3,12 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   'use strict';
 
   // Se harcodea twitter por motivos de error en el tokenAttr
-  $rootScope.user.tokens.twitter = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
+  //$rootScope.user.tokens.twitter = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
   // Lista de componentes añadidos
   // TODO se deberan coger de la lista que se registra en usuario
   $scope.listComponentAdded = [];
   $scope.componentsRated = [];
+
 
   // loads references for this
   (function () {
@@ -84,8 +85,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
     }
     // Remove disabled
-    var selector = "[ng-create-element][id-element='" + id +"']";
-    $(selector).attr('disabled',false);
+    var selector = "[ng-create-element][id-element='" + id + "']";
+    $(selector).attr('disabled', false);
   };
 
   $scope.blurList = function (e) {
@@ -157,7 +158,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
   var platformTimeFunction = function () {
     var interval = $interval(function () {
-      if (document.visibilityState === "visible" && $scope.listComponentAdded.length > 0 && $scope.listComponentAdded.length !== $scope.componentsRated.length) {
+      if (document.visibilityState === "visible" && $scope.listComponentAdded.length > 0 && $scope.listComponentAdded.length !== $scope.componentsRated.length && !$scope._rating) {
         $scope.platformUsedTime += $scope.intervalTime;
       }
     }, $scope.intervalTime);
@@ -169,9 +170,25 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     if (newValue !== oldValue && newValue >= $scope.formLoadTime && $scope.listComponentAdded.length > 0) {
       var result = $scope.getRandomComponent();
       if (result) {
-        $('#rate-modal').modal({
-          backdrop: 'static',
-          keyboard: false
+
+        var text = $scope.language.survey + " " + result;
+        var options = {
+          "closeButton": true,
+          "showDuration": "0",
+          "hideDuration": "0",
+          "timeOut": "0",
+          "extendedTimeOut": "0",
+        }
+        $scope.showToastr('info', text, options, function () {
+          $scope._rating = true;
+          $('#rate-modal').modal({
+            backdrop: 'static',
+            keyboard: false
+          });
+        }, function(){
+          $scope.randomComponent = undefined;
+          resetModal();
+          platformTimeFunction();
         });
         $scope.platformUsedTime = 0;
       }
@@ -233,7 +250,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           $('#aditionalForm').fadeIn('easing', function () {
           });
         });
-        //console.log('TODO registrar datos en algun lado');
       } else {
         $('#rate-modal .modal-footer p').show();
       }
@@ -253,6 +269,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $('#rate-modal .modal-footer button').hide();
         $scope._submitExtendedQuestionaire();
         $scope.componentsRated.push($scope.randomComponent);
+        $scope._rating = false;
         $('#aditionalForm').fadeOut('easing', function () {
           $('#thanksInfo').show();
           $('#rate-modal .modal-footer button').hide();
