@@ -44,8 +44,8 @@ aux = {"endpoint": ':domain/api/aux/twitterTimeline',
         "language": ':language',
         "access_token": "",
         "secret_token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
-        "consumer_key": "J4bjMZmJ6hh7r0wlG9H90cgEe",
-        "consumer_secret": "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf",
+        "consumer_key": "BOySBn8XHlyYDQiGiqZ1tzllx",
+        "consumer_secret": "xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE",
         "component_base": "bower_components/twitter-timeline/static/",
         "count": 200
         }
