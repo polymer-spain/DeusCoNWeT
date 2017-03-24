@@ -118,7 +118,7 @@ Example:
                 <finance-chart symbol="[[company_symbol]]" current="{{company}}" historical="{{data}}" on-finance-chart-ready="checkEmpty" on-finance-chart-error="_errorHandler" accuracy=15 start="2016-9-31">
             </template>
             <template is="dom-if" if="{{!company_symbol}}">
-                <div class="horizontal layout center-center post" hidden>
+                <div class="horizontal layout center-center post">
                     <p>Utiliza la barra de busqueda para encontrar una empresa</p>
                 </div>
             </template>

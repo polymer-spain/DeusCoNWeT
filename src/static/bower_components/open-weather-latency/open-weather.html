@@ -381,7 +381,7 @@ If lat and lon are no defined. it will try to get your location
           current_time += now.getMinutes() > 9 ? ':' + now.getMinutes() : ':0' + now.getMinutes();
           var day = dt.getUTCDate();
           var month = dt.getMonth() + 1;
-          var year = dt.getYear();
+          var year = dt.getFullYear();
           var init = Math.floor(i / 8) * 8;
           var minmax = getMinMax(list.slice(init, 8 + init));
           var weather = {

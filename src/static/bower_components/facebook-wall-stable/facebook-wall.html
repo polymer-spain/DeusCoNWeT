@@ -524,7 +524,7 @@ access_token={{access_token}}&summary=true -->
             }
         },
         _dataResponse: function (event, detail) {
-            if (detail.response) {
+            if (detail.response && (detail.response.data || detail.response.home)) {
                 // Support mocked data
                 if (detail.response.home) {
                     this.set("events", detail.response.home.data);
@@ -534,7 +534,7 @@ access_token={{access_token}}&summary=true -->
                 this._reParserLinked(this.events);
                 this._changeTime(this.events);
             } else {
-                console.log('Los datos vienen vacios',detail)
+                this._loadMock();
             }
         },
         _loadMock: function(){

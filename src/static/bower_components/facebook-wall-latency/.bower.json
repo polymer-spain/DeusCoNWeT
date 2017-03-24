@@ -1,6 +1,6 @@
 {
   "name": "facebook-wall",
-  "version": "0.9.2-latency",
+  "version": "0.9.3-stable",
   "keywords": [
     "polymer",
     "web-components",
@@ -43,14 +43,14 @@
     "tests",
     "*.*~"
   ],
-  "_release": "0.9.2-latency",
+  "_release": "0.9.3-stable",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.2-latency",
-    "commit": "f64c4518d1f493942fdc8453c0e8a9a19ce7a8b0"
+    "tag": "v0.9.3-stable",
+    "commit": "e30fdde5dff1de0749784b7bee46ae29438c9756"
   },
   "_source": "git@github.com:Mortega5/facebook-wall.git",
-  "_target": "v0.9.2-latency",
+  "_target": "v0.9.3-stable",
   "_originalSource": "facebook-wall",
   "_direct": true
 }

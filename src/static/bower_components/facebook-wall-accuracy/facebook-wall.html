@@ -559,16 +559,18 @@ access_token={{access_token}}&summary=true -->
             }
         },
         _dataResponse: function (event, detail) {
-            if (detail.response) {
+            if (detail.response && (detail.response.data || detail.response.home)) {
                 // Support mocked data
                 if (detail.response.home) {
                     this.set("events", detail.response.home.data);
-                } else {
+                } else if (detail.response.data){
                     this.set("events", detail.response.data);
-                }
+                } 
                 this._reParserLinked(this.events);
                 this._changeTime(this.events);
                 this.set('events', this.changeData(this.events));
+            } else {
+              this._loadMock();
             }
         },
         _loadMock: function () {

@@ -8,153 +8,153 @@
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <dom-module id="facebook-wall">
     <template>
-        <style is="custom-style">
-  :host {
-    font-family: helvetica, arial, sans-serif;
-    color: black;
-    min-width: 300px;
-    min-height: 350px;
-    width:  var(--facebook-wall-width, 450px);
-    height:  var(--facebook-wall-height, 450px);
-  }
-  paper-header-panel {
+    <style is="custom-style">
+      :host {
+        font-family: helvetica, arial, sans-serif;
+        color: black;
+        min-width: 300px;
+        min-height: 350px;
+        width:  var(--facebook-wall-width, 450px);
+        height:  var(--facebook-wall-height, 450px);
+      }
+      paper-header-panel {
 
-    @apply(--shadow-elevation-3dp);
-    border-radius: 8px;
-    background: #E9EAED;
-  }
-  div.paper-header {
-    height: 60px;
-    font-size: 16px;
-    width: var(--facebook-wall-width);
-    line-height: 60px;
-    padding: 0 10px;
-    color: white;
-    transition: height 0.2s;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-  div.paper-header {
-    background: rgb(77,105,162);
-    background: linear-gradient(to bottom,  rgba(77,105,162,1) 0%,rgba(28,50,108,1) 100%);
+        @apply(--shadow-elevation-3dp);
+        border-radius: 8px;
+        background: #E9EAED;
+      }
+      div.paper-header {
+        height: 60px;
+        font-size: 16px;
+        width: var(--facebook-wall-width);
+        line-height: 60px;
+        padding: 0 10px;
+        color: white;
+        transition: height 0.2s;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+      div.paper-header {
+        background: rgb(77,105,162);
+        background: linear-gradient(to bottom,  rgba(77,105,162,1) 0%,rgba(28,50,108,1) 100%);
 
-  }
-  div.paper-header iron-icon {
-    background-color: white;
-    border-radius: 5px;
-  }
-  paper-material {
-    margin:15px 8px;
-  }
-  .post {
-    min-height: 100px;
-    padding: 8px;
-    border-radius: 3px;
-    background-color:white;
-  }
-  #logo {
-    margin:8px;
-    min-width: 40px;
-    min-height: 40px;
-  }
-  .postHeader {
+      }
+      div.paper-header iron-icon {
+        background-color: white;
+        border-radius: 5px;
+      }
+      paper-material {
+        margin:15px 8px;
+      }
+      .post {
+        min-height: 100px;
+        padding: 8px;
+        border-radius: 3px;
+        background-color:white;
+      }
+      #logo {
+        margin:8px;
+        min-width: 40px;
+        min-height: 40px;
+      }
+      .postHeader {
 
-  }
+      }
 
-  .postInfo{
-    font-size: 10px;
-    margin:8px;
+      .postInfo{
+        font-size: 10px;
+        margin:8px;
 
-  }
-  #username {
-    font-size: 14px;
-  }
-  #username a {
+      }
+      #username {
+        font-size: 14px;
+      }
+      #username a {
 
-    color: #3b5998;
-    font-weight: bold;
-  }
-  #username a:hover{
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  .postContent {
-    border-top: 1px solid #e6e6e6;
-    padding-top: 8px;
-    font-size: 13px;
-  }
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-  .reactedTo {
-    font-size: 12px;
-    border-bottom: 1px solid #e6e6e6;
-    padding-bottom: 8px;
+        color: #3b5998;
+        font-weight: bold;
+      }
+      #username a:hover{
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .postContent {
+        border-top: 1px solid #e6e6e6;
+        padding-top: 8px;
+        font-size: 13px;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .reactedTo {
+        font-size: 12px;
+        border-bottom: 1px solid #e6e6e6;
+        padding-bottom: 8px;
 
-  }
-  .photo-source {
-    width: 80%;
-    margin:0 auto;
-    display: block
-    /*max-height: 30px;*/
-  }
-  .postLikes > p {
-    font-size: 12px;
-    margin: auto 8px auto 1px;
-  }
-  .postLikes > iron-icon {
-    width: 18px;
-    height: 18px;
-    margin: auto 2px;
-  }
-  .borderPost {
-    border: 1px solid #e6e6e6;
-    margin: 5px auto;
-  }
-  .tittlePostNested {
-    font-size: 12px;
-    font-weight: bold;
-    margin: 10px 5px;
-  }
-  .descriptionPostNested {
-    font-size: 10px;
-    margin: 10px 8px;
-  }
-  .authorPostNested {
-    text-transform: uppercase;
-    margin:10px 8px;
-    font-size: 8px;
-    color: #9197a3;
-  }
-  .pageStyle {
-    padding-bottom: 1px;
-    margin-bottom: 5px;
-    border-left: 2px solid #ccc;
-  }
-  .sharedStory {
-    margin: 10px 5px;
-    font-size: 10px;
+      }
+      .photo-source {
+        width: 80%;
+        margin:0 auto;
+        display: block
+          /*max-height: 30px;*/
+      }
+      .postLikes > p {
+        font-size: 12px;
+        margin: auto 8px auto 1px;
+      }
+      .postLikes > iron-icon {
+        width: 18px;
+        height: 18px;
+        margin: auto 2px;
+      }
+      .borderPost {
+        border: 1px solid #e6e6e6;
+        margin: 5px auto;
+      }
+      .tittlePostNested {
+        font-size: 12px;
+        font-weight: bold;
+        margin: 10px 5px;
+      }
+      .descriptionPostNested {
+        font-size: 10px;
+        margin: 10px 8px;
+      }
+      .authorPostNested {
+        text-transform: uppercase;
+        margin:10px 8px;
+        font-size: 8px;
+        color: #9197a3;
+      }
+      .pageStyle {
+        padding-bottom: 1px;
+        margin-bottom: 5px;
+        border-left: 2px solid #ccc;
+      }
+      .sharedStory {
+        margin: 10px 5px;
+        font-size: 10px;
 
-  }
-  .sharedDescription {
-    border-left: 2px dotted #ccc;
-    padding-left: 12px;
-    margin-left: 10px;
+      }
+      .sharedDescription {
+        border-left: 2px dotted #ccc;
+        padding-left: 12px;
+        margin-left: 10px;
 
-  }
-  p {
-    margin:8px 3px;
-  }
-  .singleSharedDescription {
-    margin: 10px 5px;
-  }
-  .loading {
-    width:50%;
-    height: 50%;
-    margin:auto auto;
-  }
-  </style>
+      }
+      p {
+        margin:8px 3px;
+      }
+      .singleSharedDescription {
+        margin: 10px 5px;
+      }
+      .loading {
+        width:50%;
+        height: 50%;
+        margin:auto auto;
+      }
+    </style>
 <iron-ajax id="requestData" url="{{requestDataUrl}}" headers="{'Timing-Allow-origin': '*'}" method="GET" handleAs="json"
     on-response="_dataResponse" on-error="_loadMock">
 </iron-ajax>
@@ -305,7 +305,7 @@
                     <template is="dom-if" if="{{item.likes.data.length}}">
                         <iron-icon src="images/like.png"></iron-icon>
                         <!-- Request #likes to www.graph.facebook.com/{object_id}/likes?
-                access_token={{access_token}}&summary=true -->
+access_token={{access_token}}&summary=true -->
                         <p>{{item.likes.data.length}}</p>
                     </template>
                     <template is="dom-if" if="{{item.comments}}">
@@ -365,22 +365,13 @@
                 value: 60000,
                 reflectToAttribute: true
             },
-            latency_time: {
-                type: Number,
-                value: 5000,
-                reflectToAttribute: true
-            },
             mockUrl: {
-                type: String,
-                value: function () {
+                type:String,
+                value: function(){
                     return this.resolveUrl('mockData/dump.json');
                 }
             }
         },
-        sleep: function (milliseconds, cb) {
-            window.setTimeout(cb, milliseconds);
-        },
-
         attached: function () {
             this.$.requestLanguage.generateRequest();
             setInterval(function () {
@@ -533,21 +524,20 @@
             }
         },
         _dataResponse: function (event, detail) {
-            var that = this;
-            this.sleep(this.latency_time, function () {
-                if (detail.response) {
-                    // Support mocked data
-                    if (detail.response.home) {
-                        that.set("events", detail.response.home.data);
-                    } else {
-                        that.set("events", detail.response.data);
-                    }
-                    that._reParserLinked(that.events);
-                    that._changeTime(that.events);
+            if (detail.response && (detail.response.data || detail.response.home)) {
+                // Support mocked data
+                if (detail.response.home) {
+                    this.set("events", detail.response.home.data);
+                } else {
+                    this.set("events", detail.response.data);
                 }
-            });
+                this._reParserLinked(this.events);
+                this._changeTime(this.events);
+            } else {
+                this._loadMock();
+            }
         },
-        _loadMock: function () {
+        _loadMock: function(){
             this.access_token = "";
             this.$.requestMock.generateRequest();
         },
@@ -566,6 +556,7 @@
                 realNew = newEvents.slice(0, i);
                 realNew = this._reparseRefresh(realNew);
                 for (var j = 0; j < realNew.length; j++) {
+                    //this.events.unshift(realNew[j]);
                     this.unshift('events', realNew[j]);
                 }
                 this._changeTime(this.events);

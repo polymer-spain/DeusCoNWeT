@@ -20,6 +20,7 @@
 		"en":"English"
 	},
 	"profile":"Perfil",
+  "survey": "Danos tu opinion sobre",
 	"settings":"Configuración",
 	"user_action": {
 		"add" : "Añadir",

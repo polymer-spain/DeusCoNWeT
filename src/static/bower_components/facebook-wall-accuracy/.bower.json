@@ -1,6 +1,6 @@
 {
   "name": "facebook-wall",
-  "version": "0.9.2-accuracy",
+  "version": "0.9.3-accuracy",
   "keywords": [
     "polymer",
     "web-components",
@@ -43,14 +43,14 @@
     "tests",
     "*.*~"
   ],
-  "_release": "0.9.2-accuracy",
+  "_release": "0.9.3-accuracy",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.2-accuracy",
-    "commit": "3c8d57cad84e5c25bee3cdefdee2a43bfbbe95d1"
+    "tag": "v0.9.3-accuracy",
+    "commit": "68e70bd6f841b5c0db10233dc680b27cc5de9a59"
   },
   "_source": "git@github.com:Mortega5/facebook-wall.git",
-  "_target": "v0.9.2-accuracy",
+  "_target": "v0.9.3-accuracy",
   "_originalSource": "facebook-wall",
   "_direct": true
 }
