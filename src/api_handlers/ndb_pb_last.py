@@ -28,7 +28,6 @@ import os
 import yaml
 import random
 import logging
-
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
     'twitter',
