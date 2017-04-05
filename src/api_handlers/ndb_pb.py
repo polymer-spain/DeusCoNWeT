@@ -28,7 +28,7 @@ import os
 import yaml
 import random
 import logging
-import BTA
+import BVA
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
     'twitter',
@@ -41,7 +41,7 @@ social_list = [
     'pinterest',
     ]
 
-bta = BTA.BTA()
+bva = BVA.BVA()
 # We read the relevant fields in the config.yaml file (config params for PicBit Backend)
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
@@ -337,7 +337,7 @@ def assignPredeterminedComponentsToUser(entity_key):
   # print "Entrada en la primera llamada de la asignacion"
   # print "====================================================="
   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
-  versions = bta.getNewVersions()
+  versions = bva.getNewVersions()
 
   for comp in predetermined_comps:
     st = activateComponentToUser(comp.component_id, entity_key)
