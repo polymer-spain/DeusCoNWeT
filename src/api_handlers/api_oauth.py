@@ -49,9 +49,9 @@ domain = cfg["domain"]
 client = None
 
 # Configuration params in order to perform the request to Twitter
-consumer_key = "tuprQMrGCdGyz7QDVKdemEWXl"
+consumer_key = "BOySBn8XHlyYDQiGiqZ1tzllx"
 consumer_secret = \
-    "byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm"
+    "xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE"
 request_token_url = \
     "https://api.twitter.com/oauth/request_token"
 base_authorization_url = \
