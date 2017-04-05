@@ -41,7 +41,8 @@ social_list = [
     'pinterest',
     ]
 
-bva = BVA.BVA()
+bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"],
+              ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"])
 # We read the relevant fields in the config.yaml file (config params for PicBit Backend)
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
