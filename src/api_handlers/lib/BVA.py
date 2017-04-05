@@ -12,7 +12,7 @@ class BVA(object):
         for _ in components:
           self.v_component.append(copy.copy(versions))
         self.combinations = self.generateCombinations()
-        self.times_called = times_called or self.tiemes_called
+        self.times_called = times_called or self.times_called
     def restartValues(self):
         self.tiemes_called = 0
     
