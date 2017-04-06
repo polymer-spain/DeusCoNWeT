@@ -14,7 +14,7 @@ class BVA(object):
         self.combinations = self.generateCombinations()
         self.times_called = times_called or self.times_called
     def restartValues(self):
-        self.tiemes_called = 0
+        self.times_called = 0
     
     def randomVersion(self, component):
         if len(self.v_component[component]) ==0:
