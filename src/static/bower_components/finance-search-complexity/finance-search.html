@@ -1,0 +1,227 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/finance-chart/finance-chart.html">
+<link rel="import" href="bower_components/search-company/search-company.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <finance-search></finance-search>
+
+Example:
+
+    <finance-search>
+      <h2>Hello finance-search</h2>
+    </finance-search>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="finance-search">
+  <template>
+      <style include="iron-flex iron-flex-alignment">
+        :host {
+          display: inline-block;
+          box-sizing: content-box;
+          width: var(--finance-search-width, 400px);
+          height: var(--finance-search-width, 260px);
+          min-height: 260px;
+          background-color:#3F51B5;
+          border-radius: 2px;
+          box-sizing: content-box;
+          border: 1px solid #eceff1;
+          position: relative;
+        }
+        .container{
+          margin:8px;
+          position:relative;
+        }
+        finance-chart {
+          box-sizing: content-box;
+          width: 100%;
+          --finance-chart-front: {
+            border:none;
+            background:transparent;
+            position:relative;
+            margin: auto 0;
+          }
+        }
+        /*finance-chart /deep/ .front {
+          border:none;
+        }*/
+        search-company {
+          --search-company-input: {
+            height:40px;
+            border:none;
+            border-bottom:1px solid #dedede;
+            outline: none;
+            @apply(--shadow-elevation-2dp);
+          }
+        }
+        .post {
+          margin: 8px 15px;
+          padding:8px 15px;
+          background-color:#fefefe;
+          border-radius:2px;
+        }
+        .empty {
+          position:absolute;
+          width: 100%;
+          padding:0;
+          margin:0 auto;
+        }
+        .loading {
+          position:absolute;
+          top:0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0,0,0,0.5);
+          z-index:1000;
+          border-radius: 2px;
+        }
+    </style>
+    <div class="vertical layout box">
+      <template if="{{_loading}}" is="dom-if">
+        <template if="{{company_symbol}}" is="dom-if">
+          <div class="loading vertical layout center-center">
+            <paper-spinner active></paper-spinner>
+          </div>
+        </template>
+      </template>
+        <search-company symbol="{{company_symbol}}" company="{{fullname}}"></search-company>
+        <div class="container">
+            <div id="empty" class="horizontal layout center-center post empty" hidden>
+                <p>No hay datos sobre {{fullname}}</p>
+            </div>
+            <template is="dom-if" if="{{company_symbol}}">
+                <finance-chart symbol="[[company_symbol]]" current="{{company}}" historical="{{data}}" accuracy="{{accuracy}}" on-finance-chart-ready="checkEmpty" on-finance-chart-error="_errorHandler" start="2016-9-31">
+            </template>
+            <template is="dom-if" if="{{!company_symbol}}">
+                <div class="horizontal layout center-center post">
+                    <p>Utiliza la barra de busqueda para encontrar una empresa</p>
+                </div>
+            </template>
+        </div>
+        <template is="dom-if" if="{{company_symbol}}">
+          <finance-chart symbol="[[company_symbol]]" current="{{company}}" historical="{{data}}" on-finance-chart-ready="checkEmpty"
+            on-finance-chart-error="_errorHandler" on-finance-chart-reload="_reloading" start="2016-9-31">
+        </template>
+        <template is="dom-if" if="{{!company_symbol}}">
+          <div class="horizontal layout center-center post">
+            <p>Utiliza la barra de busqueda para encontrar una empresa</p>
+          </div>
+        </template>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'finance-search',
+
+      properties: {
+        emptyData: {
+          type: Boolean,
+          value: false
+        },
+        data: {
+          type: Array,
+          value: function () { return [] },
+          notify: true
+        },
+        company_symbol: {
+          type: String,
+          observer: 'resetEmpty'
+        },
+        fullname: {
+          type: String,
+          observer: '_setEmpty'
+        }
+      },
+      attached: function () {
+        this.decrease_maintenance();
+      },
+      _setEmpty: function () {
+        this.$.empty.hidden = true;
+      },
+      resetEmpty: function (newvalue, oldvalue) {
+        this.$.empty.hidden = true;
+        if (newvalue && newvalue !== oldvalue) {
+          this._loading = true;
+        } else {
+          this._loading = false;
+        }
+      },
+      checkEmpty: function (event, detail) {
+        this._loading = false;
+        if (detail.data && detail.data.length == 0) {
+          this.$.empty.hidden = false;
+        } else {
+          this.$.empty.hidden = true;
+        }
+      },
+      _errorHandler: function () {
+        this.$.empty.hidden = false;
+        this._loading = false;
+        console.log('Hubo algun error');
+      },
+      _reloading: function(){
+        this._loading = true;
+      },
+      decrease_maintenance: function () {
+        var a = 1;
+        var b = 2;
+        var c = 3;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+      },
+    });
+  </script>
+</dom-module>

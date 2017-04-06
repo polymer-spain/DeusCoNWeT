@@ -1,6 +1,6 @@
 {
   "name": "finance-search",
-  "version": "1.0.0-latency",
+  "version": "1.0.2-latency",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -27,14 +27,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "1.0.0-latency",
+  "_release": "1.0.2-latency",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.0-latency",
-    "commit": "1306e35d5a1d0b2bd8589e328d7fca467fa68b94"
+    "tag": "v1.0.2-latency",
+    "commit": "58d28d000a5a8e332c4f4143ab5381b04f939f14"
   },
-  "_source": "git@github.com:Mortega5/finance-search.git",
-  "_target": "v1.0.0-latency",
+  "_source": "https://github.com/Mortega5/finance-search.git",
+  "_target": "v1.0.2-latency",
   "_originalSource": "finance-search",
   "_direct": true
 }

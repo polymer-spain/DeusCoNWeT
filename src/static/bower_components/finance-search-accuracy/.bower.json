@@ -1,6 +1,6 @@
 {
   "name": "finance-search",
-  "version": "1.0.0-accuracy",
+  "version": "1.0.2-accuracy",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -26,14 +26,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "1.0.0-accuracy",
+  "_release": "1.0.2-accuracy",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.0-accuracy",
-    "commit": "79c50d49ce03d6031856087c1ba967ef257c73e8"
+    "tag": "v1.0.2-accuracy",
+    "commit": "3f5a56bba0bdf463920a6c4f3b3d1cc27bb8a0e4"
   },
-  "_source": "git@github.com:Mortega5/finance-search.git",
-  "_target": "v1.0.0-accuracy",
+  "_source": "https://github.com/Mortega5/finance-search.git",
+  "_target": "v1.0.2-accuracy",
   "_originalSource": "finance-search",
   "_direct": true
 }

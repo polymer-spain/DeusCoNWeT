@@ -16,7 +16,10 @@
   "main": "finance-chart.html",
   "license": "http://polymer.github.io/LICENSE.txt",
   "homepage": "https://github.com/mortega5/finance-chart",
-  "ignore": [],
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",
     "finance-historical": "^0.9.0",

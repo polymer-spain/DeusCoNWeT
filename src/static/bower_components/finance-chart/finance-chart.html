@@ -10,14 +10,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <script src="../moment/moment.js"></script>
+
 <link rel="import" href="../finance-historical/finance-historical.html">
 <link rel="import" href="../finance-value/finance-value.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../chart-elements/chart-line.html">
-<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<script src="../Chart.Zoom.js/Chart.Zoom.js"></script>
 <link rel="stylesheet" href="../octicons/build/font/octicons.css">
+
+
+
 
 <!--
 Show a chart of finance value of any company using Chart.js and Chart.Zoom.js
@@ -33,13 +37,12 @@ Example:
 -->
 
 <dom-module id="finance-chart">
-  <link rel="import" type="css" href="../octicons/build/font/octicons.css">
   <template>
   <style is="custom-style">
   :host {
     display: inline-block;
     box-sizing: border-box;
-    width: var(--fiance-chart-width, 400px);
+    width: var(--fiance-chart-width,400px);
     height: var(--finance-chart-height, 200px);
   }
   p{
@@ -48,16 +51,13 @@ Example:
   .fullChart{
     width: 100%;
     height: 100%;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    @apply(--finance-chart-fullchart);
   }
   .sortChart{
     width:200px;
     border:1px solid #ddd;
     border-radius: 5px;
     background-color:#f9f9f9;
-    margin: 0 auto;
+    margin: auto;
   }
   /* entire container, keeps perspective */
   .flip-container {
@@ -100,9 +100,13 @@ Example:
     box-sizing: border-box;
     border:1px solid #ddd;
     border-radius: 5px;
-    background-color: #3F51B5;
+
+
+    background: #1e3c72; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #1e3c72 , #2a5298); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #1e3c72 , #2a5298); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
     height: 160px;
-    @apply(--finance-chart-front);
   }
   /* back, initially hidden pane */
   .back {
@@ -125,9 +129,10 @@ Example:
     width: 66.66%;
   }
   .change{
-    padding:0 8px;
+    padding:3px 8px;
     flex:1;
     font-weight: bold;
+    text-shadow: 0px 0px 2px black;
   }
   .increase{
     color:#9fea48;
@@ -152,13 +157,11 @@ Example:
     text-shadow:0px 0px 2px #333;
     color: white;
     font-weight: bold;
-    max-height: 35px;
   }
   .text{
     font-size: 14px;
     font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
     padding:3px 0;
-    min-height: 15px;
   }
   paper-icon-button {
     position: absolute;
@@ -181,18 +184,18 @@ Example:
     padding-bottom:2px;
   }
   </style>
-  <finance-historical id="historical" symbol="[[symbol]]" end="[[end]]" delay="[[delay]]" start="[[start]]" data="{{historical}}" on-finance-historical-error="errorHandler" on-finance-historical-ready="historicalReady"></finance-historical>
-  <finance-value id="value" symbol="[[symbol]]" data="{{current}}"  accuracy="[[accuracy]]"></finance-value>
+  <finance-historical id="historical" symbol="[[symbol]]" end="[[end]]" start="[[start]]" data="{{historical}}"></finance-historical>
+  <finance-value id="value" symbol="[[symbol]]" data="{{current}}"></finance-value>
   <template is="dom-if" if="{{_is_ready}}">
     <template is="dom-repeat" items="{{historical}}">
       <div class="flip-container" id$="flipContainer-{{index}}">
-        <div class="flipper vertical layout center-center">
+        <div class="flipper">
           <div class="front">
             <p alt="show full historical data" title="show full historical data" class="octicon octicon-graph graph" on-click="flip" data-index$="{{index}}"></p>
             <template is="dom-repeat" items="{{_getCurrent(current,index)}}" as="now">
               <div class="left info">
                 <p class="name">{{now.Name}}</p>
-                <div class="extra flex">
+                <div class="extra">
                   <div>
                     <p class="text low">Low</p>
                     <p class="text high">High:</p>
@@ -200,8 +203,8 @@ Example:
                     <p class="text">Curr.</p>
                   </div>
                   <div>
-                    <p class="text">{{_getLow(now)}}</p>
-                    <p class="text">{{_getHigh(now)}}</p>
+                    <p class="text">{{now.DaysLow}}</p>
+                    <p class="text">{{now.DaysHigh}}</p>
                     <p class="text">{{now.Volume}}</p>
                     <p class="text">{{now.LastTradePriceOnly}}</p>
                   </div>
@@ -220,10 +223,8 @@ Example:
         </div>
       </div>
     </template>
-    <template is="dom-if" if="{{historical.lenght == 0}}"></template>
   </template>
 </template>
-<script src="../Chart.Zoom.js/Chart.Zoom.js"></script>
 <script>
 Polymer({
   is: 'finance-chart',
@@ -235,7 +236,6 @@ Polymer({
     symbol: {
       type: String,
       notify:true,
-      observer: "updateData"
     },
     /**
       End Date value for take data
@@ -280,20 +280,7 @@ Polymer({
       type: Boolean,
       computed:'_checkReady(current.*, historical.*)',
       notify:true
-    },
-    accuracy: {
-      type:Number,
-      value: 100,
-      reflectToAttribute: true
-    },
-    delay: {
-      type: Number,
-      value:0,
-      reflectToAttribute: true
     }
-  },
-  updateData: function(){
-      this.$.value.requestData()
   },
   _checkReady: function(current, historical){
     return current.base.length >0 && historical.base.length > 0;
@@ -303,7 +290,7 @@ Polymer({
   **/
   flip: function(event){
     var index= event.currentTarget.getAttribute('data-index');
-    this.$$('#flipContainer-' + index).classList.toggle('flip');
+    this.querySelector('#flipContainer-' + index).classList.toggle('flip');
   },
   _getOptions: function(options,data,index,current){
     function isObject(item) {
@@ -479,18 +466,7 @@ Polymer({
       return 'trending-flat';
     }
   },
-  _getLow: function(current){
-      return current.DaysLow || current.YearLow
-  },
-  _getHigh: function(current){
-    return current.DaysHigh || current.YearHigh
-  },
-  historicalReady: function(){
-    this.fire('finance-chart-ready',{data:this.historical});
-  },
-  errorHandler: function(e){
-    this.fire('finance-chart-error',e)
-  }
+
 });
 </script>
 </dom-module>

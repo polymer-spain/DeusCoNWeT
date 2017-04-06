@@ -41,7 +41,6 @@ Example:
           width: var(--finance-search-width, 400px);
           height: var(--finance-search-width, 260px);
           min-height: 260px;
-          min-width:400px;
           background-color:#3F51B5;
           border-radius: 2px;
           box-sizing: content-box;
@@ -168,6 +167,10 @@ Example:
             this.$.empty.hidden = false;
             this._loading = false;
             console.log('Hubo algun error');
+          },
+          reload: function(){
+            this._loading = true;
+            this.$$('finance-chart').reload();
           },
       });
   </script>
