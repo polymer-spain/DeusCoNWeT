@@ -302,24 +302,24 @@ def getCipher(token_entity_key):
 # to his dashboard (transactional operation)
 # Params: - general_component: Component Entity that it is desired to be served to the user
 # Returns: string that represents the version that will be served to the user
-@ndb.transactional()
-def setComponentVersion(general_component):
-  # print "====================================================="
-  # print "Entrada en la llamada de setting"
-  # print "====================================================="
-  version = ""
-  if component_versioning == "dynamic":
-    # We set the version that will be served to the user
-    version = general_component.version_list[general_component.version_index]
-    # We change the version_index field, that represents the version that will be served to the next user
-    general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
-    # Update the info about the component changed
-    general_component.put()
-  # If the component versioning is set as static, we always set the stable version for the component
-  elif component_versioning == "static":
-    version="stable"
+# @ndb.transactional()
+# def setComponentVersion(general_component):
+#   # print "====================================================="
+#   # print "Entrada en la llamada de setting"
+#   # print "====================================================="
+#   version = ""
+#   if component_versioning == "dynamic":
+#     # We set the version that will be served to the user
+#     version = general_component.version_list[general_component.version_index]
+#     # We change the version_index field, that represents the version that will be served to the next user
+#     general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
+#     # Update the info about the component changed
+#     general_component.put()
+#   # If the component versioning is set as static, we always set the stable version for the component
+#   elif component_versioning == "static":
+#     version="stable"
 
-  return version
+#   return version
 
 def getComponentEntity(component_id):
   general_component = Component.query(Component.component_id == component_id).get()
@@ -338,7 +338,6 @@ def assignPredeterminedComponentsToUser(entity_key):
   # print "Entrada en la primera llamada de la asignacion"
   # print "====================================================="
   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
-  versions = bva.getNewVersions()
 
   for comp in predetermined_comps:
     st = activateComponentToUser(comp.component_id, entity_key)
@@ -354,10 +353,13 @@ def assignPredeterminedComponentsToUser(entity_key):
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
-def activateComponentToUser(component_id, entity_key): #No entiendo lo que pretende hacer
+def activateComponentToUser(component_id, entity_key): 
   # print "====================================================="
   # print "Entrada en la llamada de la activacion"
   # print "====================================================="
+  versions = bva.getNewVersions()
+  version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
+                  "finance-search": 5, "open-weather": 6}
   user = entity_key.get()
   general_component = Component.query(Component.component_id == component_id).get()
   user_component = None
@@ -396,7 +398,7 @@ def activateComponentToUser(component_id, entity_key): #No entiendo lo que prete
         # print "El numero de indice antes de llamar a setComponentVersion: " 
         # print general_component.version_index
         # print "============================================="
-        new_version = setComponentVersion(general_component)
+        new_version = versions[version_order[component_id]]
         # print "============================================="
         # print "El numero de indice despues de llamar a setComponentVersion: " 
         # print general_component.version_index
