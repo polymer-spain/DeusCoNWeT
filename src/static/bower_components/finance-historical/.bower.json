@@ -34,6 +34,6 @@
     "commit": "567bb8783a087a92d8c4dc721aeda0e3daf6d3df"
   },
   "_source": "https://github.com/Mortega5/finance-historical.git",
-  "_target": "^0.9.0",
+  "_target": "^0.9.1",
   "_originalSource": "finance-historical"
 }

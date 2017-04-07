@@ -1,6 +1,6 @@
 {
   "name": "finance-chart",
-  "version": "0.0.9",
+  "version": "0.9.1",
   "authors": [
     "Miguel Ortega Moreno<mortega@conwet.com>"
   ],
@@ -16,10 +16,7 @@
   "main": "finance-chart.html",
   "license": "http://polymer.github.io/LICENSE.txt",
   "homepage": "https://github.com/mortega5/finance-chart",
-  "ignore": [
-    "/.*",
-    "/test/"
-  ],
+  "ignore": [],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",
     "finance-historical": "^0.9.0",
@@ -34,13 +31,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "0.0.9",
+  "_release": "0.9.1",
   "_resolution": {
     "type": "version",
-    "tag": "0.0.9",
-    "commit": "5a67c36f8efb3c7f6439a0023b9d2e5f6cbad968"
+    "tag": "0.9.1",
+    "commit": "6b74412bfe3c9f381eec7d5d0fa8d74ed2720163"
   },
   "_source": "https://github.com/Mortega5/finance-chart.git",
-  "_target": "^0.0.9",
-  "_originalSource": "finance-chart"
+  "_target": "^0.9.1",
+  "_originalSource": "finance-chart",
+  "_direct": true
 }

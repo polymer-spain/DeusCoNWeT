@@ -71,7 +71,7 @@ Example:
     },
     ready: function () {
       this.addEventListener('symbol-changed', this.requestData.bind(this));
-      this.requestData();
+      // this.requestData();
     },
     _generateQuery: function (symbol) {
       var symbol_list = symbol.split(/[\,\;]/);
@@ -113,13 +113,12 @@ Example:
       return random < accuracy;
     },
     checkAccuracy: function () {
-      if (this.data && this.data.length && this.probability(this.accuracy)) {
-        // cambiar algo
-        this.set('data.0.Name', 'Error');
-        this.set('data.0.DaysLow', 'Error')
-        this.set('data.0.DaysHigh', 'Error')
-        console.log(this.data);
-      }
+      var DATA = ['Name', 'DaysLow','DaysHigh'];
+      DATA.forEach(function(field, index){
+        if (this.data && this.data.length && this.probability(this.accuracy)) {  
+          this.set('data.0.' + field, 'Error');
+        }
+      }.bind(this))
     }
 
   });
