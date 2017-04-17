@@ -39,15 +39,16 @@ class BVA(object):
             if len(versions_component) == 0:
               self.v_component[component] = copy.copy(self.versions)
               versions_component = self.v_component[component]
-
-
+              if "stable" in versions_component:
+                versions_component.remove('stable')
+            
             version = random.choice(versions_component)
             self.v_component[component].remove(version)
             return version
 
         # times iterated
         times_iterated = 0
-        while nComponents - times_iterated > 0:
+        while nComponents > times_iterated:
             count = nComponents - times_iterated
 
             # Good combinations

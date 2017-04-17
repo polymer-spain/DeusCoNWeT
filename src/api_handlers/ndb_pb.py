@@ -1670,3 +1670,6 @@ def deleteSession(hashed_id):
 # app = webapp2.WSGIApplication([
 #       ('/', MainPage),
 # ], debug=True)
+
+def getBVA():
+  return bva
