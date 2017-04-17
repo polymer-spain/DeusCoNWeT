@@ -28,7 +28,7 @@ open-weather#v0.9.2-accuracy
 open-weather#v0.9.2-maintenance
 open-weather#v0.9.2-complexity
 open-weather#v0.9.2-structural
-finance-search#v1.0.2-stable
+finance-search#v1.0.2-stabley
 finance-search#v1.0.2-latency
 finance-search#v1.0.2-accuracy
 finance-search#v1.0.2-maintenance
