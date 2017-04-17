@@ -338,9 +338,10 @@ def assignPredeterminedComponentsToUser(entity_key):
   # print "Entrada en la primera llamada de la asignacion"
   # print "====================================================="
   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
+  versions = bva.getNewVersions()
 
   for comp in predetermined_comps:
-    st = activateComponentToUser(comp.component_id, entity_key)
+    st = activateComponentToUser(comp.component_id, entity_key, versions)
     
 
 # Set the version for the component in the case it will be added to the user dashboard
@@ -353,11 +354,10 @@ def assignPredeterminedComponentsToUser(entity_key):
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
-def activateComponentToUser(component_id, entity_key): 
-  # print "====================================================="
-  # print "Entrada en la llamada de la activacion"
-  # print "====================================================="
-  versions = bva.getNewVersions()
+def activateComponentToUser(component_id, entity_key, versions): 
+  print "====================================================="
+  print "Entrada en la llamada de la activacion"
+  print "====================================================="
   version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
                   "finance-search": 5, "open-weather": 6}
   user = entity_key.get()
