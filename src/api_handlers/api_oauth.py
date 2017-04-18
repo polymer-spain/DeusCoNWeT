@@ -1001,7 +1001,7 @@ class TwitterSignUpHandler(SessionHandler):
                             user_info["user_id"] = user_identifier
                             user_key = ndb_pb.insertUser("twitter",
                             twitter_user_data["token_id"], twitter_user_data["access_token"], user_info)
-
+                            ndb_pb.assignComponents(user_key)
                             # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
                             memcache.delete(key_verifier)
 
