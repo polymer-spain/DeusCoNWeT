@@ -1,5 +1,7 @@
 import unittest
 import sys
+import copy
+import pprint
 
 BVA_FOLDER = '../../api_handlers/lib/'
 sys.path.insert(1, BVA_FOLDER)
@@ -24,10 +26,12 @@ class BVA_tester(unittest.TestCase):
 
         total = len(self.components)
         current=0
+
         while(current<total):
-      
+          
             # Check good versions
             goodVersions = bva.getNewVersions()
+
             #print goodVersions
             good = goodVersions.count('stable')
             self.assertEquals(good, total-current, 'Stable versions must be ' + str(total-current) + ' and there are ' + str(good) + ' on good test' )
@@ -45,5 +49,30 @@ class BVA_tester(unittest.TestCase):
 
         bva.restartValues()
         self.assertEquals(bva.times_called,0,'Times_called is not 0')
+    
+    def checkDistribution(self):
+        times= 30
+        bva = BVA.BVA(self.components, self.versions)
+        # Test no repeat versions
+        base={}
+        count_versions=[]
+        for el in self.versions:
+            base[el] = 0
+        for _ in self.components:
+          count_versions.append(copy.copy(base))
+
+        for _ in range(times):
+            versions = bva.getNewVersions()
+            for idx, version in enumerate(versions):
+              count_versions[idx][version] +=1
+        
+        # Check distribution
+        for element in count_versions:
+            del element[self.versions[0]]
+            distribution = [element[version] for version in element]
+            minimum = min(distribution)
+            maximum = max(distribution)
+            self.assertTrue(abs(maximum-1)<2, 'Wrong distribution of "bad" versions')
+
 if __name__ == '__main__':
     unittest.main()
