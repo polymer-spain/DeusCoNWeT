@@ -331,17 +331,17 @@ def getComponentEntity(component_id):
 #########################################################################################
 
 # Adds to the user dashboard those component defined as predetermined in the system
-def assignPredeterminedComponentsToUser(entity_key):
-  # Obtains the predetermined components of the system and adds it to the User
-  # We consider that we will have at most 10 predetermined components in our system
-  # print "====================================================="
-  # print "Entrada en la primera llamada de la asignacion"
-  # print "====================================================="
-  predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
-  versions = bva.getNewVersions()
+# def assignPredeterminedComponentsToUser(entity_key):
+#   # Obtains the predetermined components of the system and adds it to the User
+#   # We consider that we will have at most 10 predetermined components in our system
+#   # print "====================================================="
+#   # print "Entrada en la primera llamada de la asignacion"
+#   # print "====================================================="
+#   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
+  
 
-  for comp in predetermined_comps:
-    st = activateComponentToUser(comp.component_id, entity_key, versions)
+#   for comp in predetermined_comps:
+#     st = activateComponentToUser(comp.component_id, entity_key, versions)
     
 
 # Set the version for the component in the case it will be added to the user dashboard
@@ -354,95 +354,95 @@ def assignPredeterminedComponentsToUser(entity_key):
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
-def activateComponentToUser(component_id, entity_key, versions): 
-  print "====================================================="
-  print "Entrada en la llamada de la activacion"
-  print "====================================================="
-  version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
-                  "finance-search": 5, "open-weather": 6}
-  user = entity_key.get()
-  general_component = Component.query(Component.component_id == component_id).get()
-  user_component = None
-  status = False
-  # We check if the user has added the corresponding social network to his/her profile
-  for social_network in user.net_list:
-    if general_component.rs == social_network.social_name:
-      #We check if the component provided is in the user component list
-      # If not, we create a new UserComponent Entity, setting the component version the user will use
-      for comp in user.components:
-        if comp.component_id == component_id:
-          user_component = comp
+# def activateComponentToUser(component_id, entity_key, versions): 
+#   # print "====================================================="
+#   # print "Entrada en la llamada de la activacion"
+#   # print "====================================================="
+#   version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
+#                   "finance-search": 5, "open-weather": 6}
+#   user = entity_key.get()
+#   general_component = Component.query(Component.component_id == component_id).get()
+#   user_component = None
+#   status = False
+#   # We check if the user has added the corresponding social network to his/her profile
+#   for social_network in user.net_list:
+#     if general_component.rs == social_network.social_name:
+#       #We check if the component provided is in the user component list
+#       # If not, we create a new UserComponent Entity, setting the component version the user will use
+#       for comp in user.components:
+#         if comp.component_id == component_id:
+#           user_component = comp
 
-      if not user_component == None:
-        # We set the field to active
-        # The user's preferences (heigh, width) does not change
-        # We get the version of the component that will be served to the user
-        # (the same version than the setted when the user activated the component for the first time)
-        version = user_component.version
-        if not user_component.active:
-          user_component.active = True
-          user.put()
-          status = True
-      else:
-        # We set the version of the component
-        general_component = getComponentEntity(component_id)
-        version = general_component.version
-        # We create a new UserComponent entity
-        user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
-        # We add the component to the component_list of the user
-        user.components.append(user_component)
-        user.put()
+#       if not user_component == None:
+#         # We set the field to active
+#         # The user's preferences (heigh, width) does not change
+#         # We get the version of the component that will be served to the user
+#         # (the same version than the setted when the user activated the component for the first time)
+#         version = user_component.version
+#         if not user_component.active:
+#           user_component.active = True
+#           user.put()
+#           status = True
+#       else:
+#         # We set the version of the component
+#         general_component = getComponentEntity(component_id)
+#         version = general_component.version
+#         # We create a new UserComponent entity
+#         user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
+#         # We add the component to the component_list of the user
+#         user.components.append(user_component)
+#         user.put()
 
-        # We increase the counters that represents the times that a given component has been tested (general and versioned)
-        # print "============================================="
-        # print "El numero de indice antes de llamar a setComponentVersion: " 
-        # print general_component.version_index
-        # print "============================================="
-        new_version = versions[version_order[component_id]]
-        # print "============================================="
-        # print "El numero de indice despues de llamar a setComponentVersion: " 
-        # print general_component.version_index
-        # print "============================================="
-        general_component.version = new_version
-        general_component.test_count += 1
-        general_component.put()
-        # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
-        # versionedComponent.version == version)).get()
-        # versioned_component.test_count = versioned_component.test_count + 1
-        # versioned_component.put()
-        status = True
+#         # We increase the counters that represents the times that a given component has been tested (general and versioned)
+#         # print "============================================="
+#         # print "El numero de indice antes de llamar a setComponentVersion: " 
+#         # print general_component.version_index
+#         # print "============================================="
+#         new_version = versions[version_order[component_id]]
+#         # print "============================================="
+#         # print "El numero de indice despues de llamar a setComponentVersion: " 
+#         # print general_component.version_index
+#         # print "============================================="
+#         general_component.version = new_version
+#         general_component.test_count += 1
+#         general_component.put()
+#         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
+#         # versionedComponent.version == version)).get()
+#         # versioned_component.test_count = versioned_component.test_count + 1
+#         # versioned_component.put()
+#         status = True
 
-      # We store in a ComponentTested entity the new version tested by the user
-      user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
-      if not user_component_tested == None:
-        # We update the field that represents the actual version that is being tested
-        user_component_tested.actual_version = version
-        # We add the version to the versions tested list, if is not was added previously
-        if not version in user_component_tested.versions_tested:
-          user_component_tested.versions_tested.append(version)
-          user_component_tested.put()
-      else:
-        # We create a new ComponentTested entity to store the versions of a component tested by the user
-        component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
-        component_tested.put()
-  return status
+#       # We store in a ComponentTested entity the new version tested by the user
+#       user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
+#       if not user_component_tested == None:
+#         # We update the field that represents the actual version that is being tested
+#         user_component_tested.actual_version = version
+#         # We add the version to the versions tested list, if is not was added previously
+#         if not version in user_component_tested.versions_tested:
+#           user_component_tested.versions_tested.append(version)
+#           user_component_tested.put()
+#       else:
+#         # We create a new ComponentTested entity to store the versions of a component tested by the user
+#         component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
+#         component_tested.put()
+#   return status
 
 
 # Removes the component from the user's dashboard
 # It turns the field active to False, thus the component will not be listed as a
 # component included in the user's dashboard
-def deactivateUserComponent(entity_key, component_id):
-  user = entity_key.get()
-  status = False
-  # We check if the component provided is in the user component list
-  for comp in user.components:
-    if comp.component_id == component_id and comp.active:
-      # Deactivates the component
-      comp.active = False
-      user.put()
-      status = True
+# def deactivateUserComponent(entity_key, component_id):
+#   user = entity_key.get()
+#   status = False
+#   # We check if the component provided is in the user component list
+#   for comp in user.components:
+#     if comp.component_id == component_id and comp.active:
+#       # Deactivates the component
+#       comp.active = False
+#       user.put()
+#       status = True
 
-  return status
+#   return status
 
 
 #####################################################################################
@@ -598,6 +598,17 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   token.put()
   user.tokens.append(token)
 
+  # Setting up the versions for the components
+  versions = bva.getNewVersions()
+  comps = Component.query().fetch(15)
+  version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
+                  "finance-search": 5, "open-weather": 6}
+
+  for comp in comps:
+    component_id = comp.component_id
+    version = versions[version_order[component_id]]
+    uc = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", version=version)
+    user.components.append(uc)
   # Updates the user entity
   user.put()
 
