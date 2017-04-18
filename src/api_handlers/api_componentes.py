@@ -497,3 +497,12 @@ class ComponentHandler(SessionHandler):
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(400)
+
+class BVAHandler(SessionHandler):
+  def get(self):
+    bva = ndb_pb.getBVA()
+    resp = {"times_called":bva.times_called, "versions":bva.getNewVersions()}
+    
+    self.response.content_type = "application/json"
+    self.response.write(json.dumps(resp))
+    self.response.set_status(200)
