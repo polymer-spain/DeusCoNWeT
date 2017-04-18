@@ -125,6 +125,7 @@ class OauthSignUpHandler(SessionHandler):
                     # Generate a valid username for a new user
                     user_key = ndb_pb.insertUser(social_network,
                             token_id, access_token, user_data)
+                    ndb_pb.assignComponents(user_key)
                     # Creates the session
                     session_id = self.login(user_key)
 
