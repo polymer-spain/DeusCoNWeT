@@ -5,13 +5,14 @@ import numpy as np
 BVA_FOLDER = '../../api_handlers/lib/'
 sys.path.insert(1, BVA_FOLDER)
 import BVA
+
 components = ["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"]
 versions = ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"]
 
 bva = BVA.BVA(components,versions)
 
 list_versions=[]
-iterations=10000
+iterations=10000 if len(sys.argv) < 2 else int(sys.argv[1])
 
 for _ in range(iterations):
   list_versions += bva.getNewVersions()
@@ -47,6 +48,7 @@ def plot_bar_from_counter(counter, ax=None):
       ax.text(v, i, str(v), color='black', fontweight='bold')
     ax.xaxis.set_major_locator(plt.FixedLocator(x_coordinates))
     ax.xaxis.set_major_formatter(plt.FixedFormatter(names))
+    ax.set_title("Histogram of BVA %s iterations"%'{0:,}'.format(iterations))
     autolabel(rects, ax)
     return ax
 
@@ -55,4 +57,3 @@ def plot_bar_from_counter(counter, ax=None):
 
 plot_bar_from_counter(data)
 plt.show()
-
