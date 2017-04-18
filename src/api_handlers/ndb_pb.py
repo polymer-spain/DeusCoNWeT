@@ -610,7 +610,7 @@ def assignComponents(user_key):
                   "finance-search": 5, "open-weather": 6}
 
   for comp in comps:
-    version = versions[version_order[component_id]]
+    version = versions[version_order[comp.component_id]]
     uc = UserComponent(component_id=comp.component_id, x=0, y=0, height="0", width="0", version=version)
     user.components.append(uc)
   # Updates the user entity
