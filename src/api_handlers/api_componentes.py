@@ -147,16 +147,7 @@ class ComponentListHandler(SessionHandler):
                         self.response.write(component_list)
                         self.response.set_status(200)
                     else:
-                        # In this case the list of components will be requested and returned
-                        ndb_pb.assignPredeterminedComponentsToUser(user_id)
-                        new_component_list = ndb_pb.getComponents(user_id, social_network, format_flag, user_filter)
-                        new_component_list_aux = json.loads(new_component_list)
-                        if not len(new_component_list_aux["data"]) == 0:
-                            self.response.content_type = "application/json"
-                            self.response.write(new_component_list)
-                            self.response.set_status(200)
-                        else:
-                            self.response.set_status(204)
+                        self.response.set_status(204)
                 else:
                     response = \
                     {"error": "Invalid value for param social_network, filter o list_format"}
