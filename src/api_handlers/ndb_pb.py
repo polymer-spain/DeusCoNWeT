@@ -598,6 +598,11 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   token.put()
   user.tokens.append(token)
 
+  user.put()
+  return user_key
+
+def assignComponents(user_key):
+  user = user_key.get()
   # Setting up the versions for the components
   versions = bva.getNewVersions()
   comps = Component.query().fetch(15)
@@ -605,14 +610,11 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
                   "finance-search": 5, "open-weather": 6}
 
   for comp in comps:
-    component_id = comp.component_id
-    version = versions[version_order[component_id]]
-    uc = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", version=version)
+    version = versions[version_order[comp.component_id]]
+    uc = UserComponent(component_id=comp.component_id, x=0, y=0, height="0", width="0", version=version)
     user.components.append(uc)
   # Updates the user entity
   user.put()
-
-  return user_key
 
 
 # Actualiza la info de usuario proporcionada y retorna una lista de los elementos actualizados
@@ -650,7 +652,7 @@ def updateUser(entity_key, data): #FUNCIONA
   if data.has_key("component"):
     comp_name = data["component"]
     # Adds the component to the user
-    activated = activateComponentToUser(comp_name, entity_key)
+    # activated = activateComponentToUser(comp_name, entity_key)
     if activated:
       updated_data += ["component"]
 
