@@ -127,12 +127,12 @@ class UserHandler(SessionHandler):
               user_info["name"] = user_profile["name"]
               user_info["surname"] = user_profile["surname"]
             refs_list = []
-            components_list_js = ndb_pb.getComponents()
+            components_list_js = ndb_pb.getUserComponentList(user_id, component_detailed_info=True)
             components_list = json.loads(components_list_js)
             for comp in components_list["data"]:
               ident = comp["component_id"]
-              component = ndb_pb.getComponentEntity(ident)
-              version = component.version
+              # component = ndb_pb.getComponentEntity(ident)
+              version = comp["version"]
               static = "/"
               if str(ident) == "twitter-timeline": static = "/static/"
               ref = "/bower_components/" + \
