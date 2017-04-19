@@ -613,6 +613,8 @@ def assignComponents(user_key):
     version = versions[version_order[comp.component_id]]
     uc = UserComponent(component_id=comp.component_id, x=0, y=0, height="0", width="0", version=version)
     user.components.append(uc)
+    comp.version = version
+    comp.put()
   # Updates the user entity
   user.put()
 

@@ -14,8 +14,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   (function () {
     if ($scope.user.references) {
       $scope.user.references.forEach(function (value, index) {
+        var $jq = window.$;
         var $link = $('<link rel="import">').attr('href', $scope.user.references[index]);
         $('body').append($link);
+        window.setTimeout(function(){window.$=$jq},1000)
       });
     }
   })();
