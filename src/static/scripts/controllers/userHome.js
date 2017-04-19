@@ -182,6 +182,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           "timeOut": "0",
           "extendedTimeOut": "0",
         }
+        $scope._rating = true;
         $scope.showToastr('info', text, options, function () {
           $scope._rating = true;
           $('#rate-modal').modal({
@@ -199,7 +200,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     }
   });
   $scope.getRandomComponent = function () {
-    var unratedList = $scope.listComponentAdded;
+    // Deep copy
+    var unratedList = JSON.parse(JSON.stringify($scope.listComponentAdded));
     var findElement = function (element, list) {
       var find = -1;
       for (var i = 0; i < list.length && find === -1; i++) {
