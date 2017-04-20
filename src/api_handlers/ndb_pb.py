@@ -951,6 +951,7 @@ def getUserComponentList(user_id, component_detailed_info=False):
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
   ans = []
+  print entity_key
   general_comp = {}
   if filter_by_user:
     # user id specified
@@ -993,6 +994,7 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
 
       else:
         user = entity_key.get()
+        print user
         user_comps = user.components
         # Now we get the general info about the components used by the user
         for comp in user_comps:
