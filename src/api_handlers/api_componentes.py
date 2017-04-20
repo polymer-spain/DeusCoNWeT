@@ -126,7 +126,7 @@ class ComponentListHandler(SessionHandler):
 
         # Social_network,filter_param and list_format are optional params
         social_network = self.request.get("social_network", default_value="")
-        filter_param = self.request.get("filter",default_value="general")
+        filter_param = self.request.get("filter",default_value="user")
         list_format = self.request.get("list_format", default_value="reduced")
 
         # Lists of posible values for each param
