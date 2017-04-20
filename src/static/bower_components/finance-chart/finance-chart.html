@@ -233,7 +233,7 @@ Example:
           <div class="flipper vertical layout center-center">
             <div class="front">
               <paper-icon-button class="refresh" icon="refresh" on-click="updateData"></paper-icon-button>
-              <paper-icon-button class="graph" icon="github:graph"></paper-icon-button>
+              <paper-icon-button class="graph" icon="github:graph" on-click="flip"></paper-icon-button>
               <template is="dom-repeat" items="{{_getCurrent(current,index)}}" as="now">
                 <div class="left info">
                   <p class="name">{{now.Name}}</p>
@@ -360,8 +360,8 @@ Example:
         Flip between resume information and full chart
       **/
       flip: function (event) {
-        var index = event.currentTarget.getAttribute('data-index');
-        this.querySelector('#flipContainer-' + index).classList.toggle('flip');
+        var index = event.model.index;
+        this.$$('#flipContainer-' + index).classList.toggle('flip');
       },
       _getOptions: function (options, data, index, current) {
         function isObject(item) {
