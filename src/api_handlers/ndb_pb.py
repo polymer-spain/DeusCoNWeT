@@ -980,9 +980,9 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["height"] = str(comp.height)
             general_comp["width"] = str(comp.width)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = json.loads(comp.attributes)
-            general_comp["img"] = str(comp.img)
-            general_comp["tokenAttr"] = str(comp.tokenAttr)
+            general_comp["attributes"] = json.loads(info_comp.attributes)
+            general_comp["img"] = str(info_comp.img)
+            general_comp["tokenAttr"] = str(info_comp.tokenAttr)
             
             if not rate == None:
               general_comp["rate"] = str(rate.rating_value)
@@ -1006,9 +1006,9 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["social_network"] = str(info_comp.rs)
             general_comp["description"] = str(info_comp.description)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = json.loads(comp.attributes)
-            general_comp["img"] = str(comp.img)
-            general_comp["tokenAttr"] = str(comp.tokenAttr)
+            general_comp["attributes"] = json.loads(info_comp.attributes)
+            general_comp["img"] = str(info_comp.img)
+            general_comp["tokenAttr"] = str(info_comp.tokenAttr)
             
             if not rate == None:
               general_comp["rate"] = str(rate.rating_value)
@@ -1037,9 +1037,9 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["height"] = str(comp.height)
               general_comp["width"] = str(comp.width)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = json.loads(comp.attributes)
-              general_comp["img"] = str(comp.img)
-              general_comp["tokenAttr"] = str(comp.tokenAttr)
+              general_comp["attributes"] = json.loads(info_comp.attributes)
+              general_comp["img"] = str(info_comp.img)
+              general_comp["tokenAttr"] = str(info_comp.tokenAttr)
               
               if not rate == None:
                 general_comp["rate"] = rate.rating_value
@@ -1060,9 +1060,9 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["social_network"] = str(info_comp.rs)
               general_comp["description"] = str(info_comp.description)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = json.loads(comp.attributes)
-              general_comp["img"] = str(comp.img)
-              general_comp["tokenAttr"] = str(comp.tokenAttr)
+              general_comp["attributes"] = json.loads(info_comp.attributes)
+              general_comp["img"] = str(info_comp.img)
+              general_comp["tokenAttr"] = str(info_comp.tokenAttr)
               
               if not rate == None:
                 general_comp["rate"] = rate.rating_value
