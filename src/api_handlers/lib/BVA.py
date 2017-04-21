@@ -21,7 +21,7 @@ class BVA(object):
             self.v_component[component] = copy.copy(self.versions)
 
         versions_component = self.v_component[component]
-        version = random.choice(versions_component)
+        version = versions_component[(component + self.times_called) % len(versions_component)]
         self.v_component[component].remove(version)
 
         return version
@@ -31,7 +31,7 @@ class BVA(object):
         goodVersion = self.versions[0]
         nonGoodVersions = self.versions[1:]
 
-        def randomBadVersions(component):
+        def randomBadVersions(component, count):
             versions_component = self.v_component[component]
             if "stable" in versions_component:
                 versions_component.remove('stable')
@@ -41,8 +41,8 @@ class BVA(object):
               versions_component = self.v_component[component]
               if "stable" in versions_component:
                 versions_component.remove('stable')
-            
-            version = random.choice(versions_component)
+            bad_versions = self.versions[1:]
+            version = bad_versions[(count+component) % len(bad_versions)]
             self.v_component[component].remove(version)
             return version
 
@@ -52,20 +52,17 @@ class BVA(object):
             count = nComponents - times_iterated
 
             # Good combinations
-            versions_position = list(range(nComponents))
             good_versions = [None]*nComponents
             bad_versions = [None]*nComponents
 
             for idx in range(nComponents):
-                position = random.choice(versions_position)
-                versions_position.remove(position)
 
                 if idx < count:
-                    good_versions[position] = goodVersion
-                    bad_versions[position] = randomBadVersions(position)
+                    good_versions[idx] = goodVersion
+                    bad_versions[idx] = randomBadVersions(idx,times_iterated)
                 else:
-                    good_versions[position] = randomBadVersions(position)
-                    bad_versions[position] = goodVersion
+                    good_versions[idx] = randomBadVersions(idx, times_iterated)
+                    bad_versions[idx] = goodVersion
             combinations.append(good_versions)
             combinations.append(bad_versions)
 
@@ -83,3 +80,11 @@ class BVA(object):
             versions = [self.randomVersion(i) for i in l]
         self.times_called += 1
         return versions
+if __name__ == "__main__":
+  components = ["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"]
+  versions = ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"]
+
+  bva = BVA(components, versions)
+
+  for i in range(2):
+    print bva.getNewVersions()

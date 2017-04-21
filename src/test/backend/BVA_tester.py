@@ -73,6 +73,5 @@ class BVA_tester(unittest.TestCase):
             minimum = min(distribution)
             maximum = max(distribution)
             self.assertTrue(abs(maximum-1)<2, 'Wrong distribution of "bad" versions')
-
 if __name__ == '__main__':
     unittest.main()
