@@ -17,7 +17,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         var $jq = window.$;
         var $link = $('<link rel="import">').attr('href', $scope.user.references[index]);
         $('body').append($link);
-        window.setTimeout(function(){window.$=$jq},1000)
+        window.setTimeout(function () {
+          window.$ = $jq
+        }, 1000)
       });
     }
   })();
@@ -159,9 +161,19 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
   $scope.formLoadTime = 60000; // Indicates when we'll show to the user the form
 
+  $scope.diffArray = function (arr1, arr2) {
+    var newArr = [];
+    var myArr = arr1.concat(arr2);
+
+    newArr = myArr.filter(function (item) {
+      return arr2.indexOf(item) < 0 || arr1.indexOf(item) < 0;
+    });
+    return newArr;
+  }
   var platformTimeFunction = function () {
     var interval = $interval(function () {
-      if (document.visibilityState === "visible" && $scope.listComponentAdded.length > 0 && $scope.listComponentAdded.length !== $scope.componentsRated.length && !$scope._rating) {
+
+      if (document.visibilityState === "visible" && $scope.listComponentAdded.length > 0 && $scope.diffArray($scope.listComponentAdded, $scope.componentsRated).length() > 0 && !$scope._rating) {
         $scope.platformUsedTime += $scope.intervalTime;
       }
     }, $scope.intervalTime);
@@ -189,7 +201,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             backdrop: 'static',
             keyboard: false
           });
-        }, function(){
+        }, function () {
           $scope.randomComponent = undefined;
           resetModal();
           platformTimeFunction();
@@ -252,8 +264,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $('#rate-modal .modal-footer p').hide();
         $scope._submitQuestionaire();
         $('#initialQuestion').fadeOut("easing", function () {
-          $('#aditionalForm').fadeIn('easing', function () {
-          });
+          $('#aditionalForm').fadeIn('easing', function () {});
         });
       } else {
         $('#rate-modal .modal-footer p').show();
@@ -337,7 +348,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       var question = aditional_questions[i];
       var answer = question.selected || question.value;
       if (answer) {
-        mixpanel_event_list.push({ "event_name": question.id, "selection": answer }); // qué hace exactamente el push?
+        mixpanel_event_list.push({
+          "event_name": question.id,
+          "selection": answer
+        }); // qué hace exactamente el push?
       }
     }
     // We check if the user has anwered all questions
@@ -374,7 +388,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           $rootScope.user.tokens[social_network] = '';
           $scope.setToken(social_network, '');
         };
-        $rootScope.user = $rootScope.user || { tokens: {} };
+        $rootScope.user = $rootScope.user || {
+          tokens: {}
+        };
         $rootScope.user.tokens[social_network] = token;
         $scope.setToken(social_network, token);
         $('#login-modal').modal('toggle');
@@ -395,8 +411,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
               console.log('Problemas al intentar obtener el token_id de un usuario');
             });
             break;
-          case 'pinterest': break;
-          case 'github': break;
+          case 'pinterest':
+            break;
+          case 'github':
+            break;
           default:
             $backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
             break;
