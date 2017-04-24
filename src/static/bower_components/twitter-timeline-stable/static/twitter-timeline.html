@@ -460,7 +460,7 @@ Polymer({
       /* Años*/
       if ((current_date.getFullYear() - date.getFullYear()) != 0) {
         var dif = current_date.getFullYear() - date.getFullYear()
-        time = dif==1 ? dif + " " + this.data.year : dif + " " + this.language_data.years;
+        time = dif==1 ? dif + " " + this.language_data.year : dif + " " + this.language_data.years;
         /* Meses */
       } else if ((current_date.getMonth() - date.getMonth()) != 0) {
         var dif = current_date.getMonth() - date.getMonth();
