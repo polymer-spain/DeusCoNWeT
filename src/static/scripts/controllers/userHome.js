@@ -317,7 +317,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       var properties = {
         "selection": answer,
         "question_type": "obligatory",
-        "question": question_text,
+        "question": question_id,
         "component": $scope.randomComponent,
         "timestamp": Date.now(),
         "version": version,
@@ -362,7 +362,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         mixpanel_event = mixpanel_event_list[i];
         mixpanel_properties = {
           "selection": mixpanel_event.selection,
-          "question": mixpanel_event.question,
+          "question": mixpanel_event.event_name,
           "question_type": "optional",
           "component": $scope.randomComponent, // Se manda la versión?
           "version": version,
