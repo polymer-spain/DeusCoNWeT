@@ -86,5 +86,4 @@ app = webapp2.WSGIApplication([
     (r'/api/oauth/instagram/credenciales/(.*)', api_oauth.InstagramCredentialHandler),
 
     (r'/api/subscriptions', api_contacto.SubscriptionHandler),
-
-    ], debug=True)
+    ], debug=False)
