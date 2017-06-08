@@ -1,0 +1,44 @@
+{
+  "name": "traffic-incidents",
+  "version": "1.0.3-maintenance",
+  "authors": [
+    "Miguel Ortega Moreno <mortega@conwet.com>"
+  ],
+  "description": "Show a timeline of traffic issues.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed",
+    "traffic",
+    "incidents",
+    "web-components"
+  ],
+  "main": "traffic-incidents.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://mortega5.github.io/traffic-incidents",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
+    "iron-ajax": "^1.4.3",
+    "paper-header-panel": "^1.1.6",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.0",
+    "paper-icon-button": "PolymerElements/paper-icon-button#^1.1.2",
+    "paper-input": "PolymerElements/paper-input#^1.1.19"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  },
+  "_release": "1.0.3-maintenance",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.3-maintenance",
+    "commit": "a37efd3dd7e21633c6b1744b01fa7d9149528cd4"
+  },
+  "_source": "https://github.com/Mortega5/traffic-incidents.git",
+  "_target": "v1.0.3-maintenance",
+  "_originalSource": "traffic-incidents",
+  "_direct": true
+}

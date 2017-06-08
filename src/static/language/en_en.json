@@ -12,12 +12,14 @@
   "contact":"Contact",
   "about":"about us",
   "privacy":"privacy",
+  "home": "Dashboard",
   "about_first" :"Deus is a work group who is mainly working with Google tecnologies, particularly those most innovative: GO! programming lenguage, web components Polymer, GoogleCloud (CloudSQL y Cloud Datastore), AppEngine or Google Analytics.",
   "about_second" : "It arised as a platform to educate students in leading tecnologies, deal with investigation projects and, at the same time, give them a first contact with the work environment. Currently, it has several Final Dissertation and Practicum students working in differents areas.",
   "lang": {
     "es":"Español",
     "en":"English"
   },
+  "survey": "Send us your review of",
   "profile":"Profile",
   "settings":"Settings",
   "user_action": {
@@ -33,18 +35,16 @@
     "email" : "Email",
     "save" : "Save",
     "social" : "Your Social Networks",
-    "Login_Facebook" : "Log in Facebook",
-    "Logout_Facebook" : "Log out Facebook",
-    "Login_Google+" : "Log in Google+",
-    "Logout_Google+" : "Log out Google+",
-    "Login_Twitter" : "Log in Twitter",
-    "Logout_Twitter" : "Log out Twitter",
-    "Login_Github" : "Log in Github",
-    "Logout_Github" : "Log out Github",
-    "Login_Linkedin" : "Log in Linkedin",
-    "Logout_Linkedin" : "Log out Linkedin",
-    "Login_Instagram" : "Log in Instagram",
-    "Logout_Instagram" : "Log out Instagram"
+    "email_label": "Email address",
+    "profile_settings":"User settings",
+    "user_information": "User information",
+    "picture": "Picture",
+    "upload": "Upload new image",
+    "profession": "Profession",
+    "phone": "Phone",
+    "age": "Age",
+    "permission": "Click to give permissions "
+
   },
 
   "help": {
@@ -58,7 +58,53 @@
     "input_title": "Username",
     "userIdError": "* Username already used",
     "invalid_username": "Only letters, numbers, '-', or '_'"
-  }
-
+  },
+  "componentAddedEmpty" : "There are no components added",
+  "componentListEmpty": "There are no more components.",
+  "catalog": {
+    "show":"Mostrar Catalogo",
+    "componentList": "Components list",
+    "search": "Search",
+    "rate": "Ratings",
+    "rateUp": "& up",
+    "clear":"clear"
+  },
+  "questionary": {
+    "component": {
+      "verybad": "So bad",
+      "bad": "Bad",
+      "neutral": "At the average",
+      "good": "Good",
+      "verygood": "So good"
+    },
+    "about": "Rate the component: ",
+    "emptyQuestions": "* Must fill in all questions",
+    "yes":"Yes",
+    "no": "No",
+    "amplied": {
+      "verybad": "Strongly disagree",
+      "bad": "Disagree",
+      "neutral": "Neither agree nor disagree",
+      "good": "Agree",
+      "verygood": "Strongly agree"
+    },
+    "define": "How do you define the component?",
+    "help": "Would you help us fulfilling a survey about the components you have used?",
+    "difficulty": "The component is difficult to be used" ,
+    "design": "The component design is pleasant",
+    "information": "The component information is shown concise and clearly",
+    "share": "Would you use this component?",
+    "recommend": "Would you recommend this component?",
+    "end": "The survey has finished. Thanks for your time",
+    "advantage": "Point out a strenght of the component",
+    "advantage_sort":"Advantage of the component",
+    "drawback":"Point out a weakness of the component",
+    "drawback_sort":"Defect of the component"
+  },
+  "delete":"Delete",
+  "noToken": "Unauthorized",
+  "noTokenDescription":"Click to log in this social network before use it",
+  "loginTitle": "Log in before use  ",
+  "loginRequest": "The component requires  permission for works correctly. In order to use it, log in",
+  "add_token_error": "There are already an user with this account. Please use other account"
 }
-

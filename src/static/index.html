@@ -1,90 +1,137 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="shortcut icon" href="images/logo.png" />
-    <meta name="description" content="">
-    <base href="/#">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="shortcut icon" href="images/logo.png" />
+  <meta name="description" content="">
+  <base href="/#">
+  <script>
+  if (window.location.protocol == "http:"){
+    window.location.protocol = "https:";
+  }
+  </script>
+  <title>PicBit</title>
+  <!-- Polymer -->
+  <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+  <!-- active shadow DOM -->
+  <script>
+    window.Polymer = window.Polymer || {};
+    window.Polymer.dom = "shadow";
+  </script>
+  <link rel="import" href="elements/elements.html">
+  <!-- stylesheet -->
+  <link rel="stylesheet" href="vendor/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/selectId.css">
+  <link rel="stylesheet" href="styles/userHome.css">
+  <link rel="stylesheet" href="styles/userProfile.css">
 
-    <title>PicBit</title>
+  <link rel="stylesheet" href="vendor/jquery-ui.min.css">
+  <link rel="stylesheet" href="vendor/jquery.contextmenu.css">
+  <link rel="stylesheet" href="vendor/toastr.min.css">
+  <!-- Mixpanel script (Used to send user form data - user questionaire results) -->
+  <script type="text/javascript">
+    (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+    for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f)}})(document,window.mixpanel||[]);
+    mixpanel.init("d3bef513d72a99cc1e8bd3ca133e0f69");
+  </script>
+</head>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Exo:400,300' rel='stylesheet' type='text/css'>
-
-    <!-- Polymer -->
-    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-    <link rel="import" href="elements/elements.html">
-
-    <!-- stylesheet -->
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/landingPage.css">
-  </head>
-
-  <body unresolved ng-app="picbit" ng-controller="MainController">
-
-    <core-toolbar ng-class="{small: scrolled}">
-      <img class="logo" src="images/logo.png" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">
-      <div horizontal layout flex>
-        <h2 id="name" ng-click="isLogged ? changeView('/user/{{user.name}}') :changeView('/')">Picbit</h2>
+<body ng-app="picbit" class="vertical layout" ng-controller="MainController">
+  <paper-toolbar class="header">
+    <paper-icon-button ng-click="goto('/')" class="logo" src="images/logo.png"></paper-icon-button>
+    <a  class="title"><p ng-click="goto('/')">Picbit</p></a>
+    <div class="dropdown btn">
+      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+        {{language.lang[idioma] || language.language}}
+        <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li><a ng-click="setLanguage('es')">{{language.lang.es}}</a></li>
+          <li><a ng-click="setLanguage('en')">{{language.lang.en}}</a></li>
+        </ul>
       </div>
-
-      <!-- Languages --> 
-      <core-dropdown-menu id="language" label="{{languageSelected}}">
-        <core-dropdown class="lang-menu dropdown" >
-          <core-menu vertical layout>
-            <core-item class="lenguage-button" ng-click="changelanguage('es')">{{language.lang.es}}</core-item>
-            <core-item class="lenguage-button" ng-click="changelanguage('en')">{{language.lang.en}}</core-item>
-          </core-menu>
-        </core-dropdown>
-      </core-dropdown-menu>
-      <!-- End Languages -->
-
-      <core-icon-button ng-show="!isLogged" id="siginButton" ng-click="showPopup()" icon="social:person" class="signin">
-        <span id="nameId">{{language.login}}</span>
-      </core-icon-button>
-
-      <div ng-click="dropmenu()"  ng-show="isLogged" relative>
-        <div horizontal layout id="user_options">
-          <core-icon id="siginButton" icon="social:person"></core-icon>
-          <span flex>{{user.user_id}}</span>
+      <div ng-show="isLogged" class="log-button">
+        <div class="dropdown btn user-button">
+          <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-user"></span> {{user.user_id}}
+          </button>
+          <ul class="dropdown-menu">
+            <li><a ng-click="goto('/user/:user')">{{language.home}}</a></li>
+            <li><a ng-click="goto('/user/:user/profile')">{{language.profile}}</a></li>
+            <li><a ng-click="logout()">{{language.logout}}</a></li>
+          </ul>
         </div>
-        <core-dropdown class="lang-menu dropdown" id="dropmenu" relatedTarget="{{document.querySelector('#user_options')}}">
-          <core-menu vertical layout>
-            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="goto('home')">{{language.profile}}</paper-button></core-item>
-            <core-item ng-click="goto('profile')" class="core-item"><paper-button class="profile_button" flex >{{language.settings}}</paper-button></core-item>
-            <core-item class="core-item"><paper-button class="profile_button" flex ng-click="logout()">{{language.logout}}</paper-button></core-item>
-          </core-menu>
-        </core-dropdown>
       </div>
 
-    </core-toolbar>
+      <button ng-hide="isLogged" type="button" class="btn btn-primary btn-md log-button" id="myBtn" data-toggle="modal" data-target="#login-popup" data-keyboard="true">
+        {{language.login}}
+      </button>
 
-    <footer horizontal center-justified layout>
-      <paper-button ng-click="changeView('/about')">{{language.about}}</paper-button>
-      <paper-button><a href="https://deusconwet.typeform.com/to/opLyCo">{{language.contact}}</a></paper-button>
-      <paper-button ng-click="changeView('/privacy')">{{language.privacy}}</paper-button>
-      <a href="https://mixpanel.com/f/partner"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
-    </footer>
-    <div ng-view="" id="view" class="view">
-
+    </paper-toolbar>
+    <div class="flex layout horizontal">
+      <div ng-view="" id="view" class="flex"></div>
     </div>
 
-    <!-- pop up social networks -->
-    <div ng-show="shadow" class="shadow"></div>
-    <div ng-show="popup" vertical center layout class="popup" id="popup">
-      <core-icon-button  ng-click="hidePopup()" icon="close"></core-icon-button>
-      <span>{{language.select_network}}</span>
-      <div vertical center-justified layout class="button-login">
-        <google-login class="button-login" clientID="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/userinfo.profile" callback="{{domain}}" static="true"></google-login>
-        <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter" static></twitter-login>
-        <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,email" static="true"></login-facebook>
+    <!--FOOTER -->
+    <paper-toolbar class="footer layout horizontal center-justified" ng-show="{{pathname.indexOf('user') == -1}}">
+      <paper-button><a href="mailto:deus@conwet.com">{{language.contact}}</a> </paper-button>
+      <paper-button ng-click="goto('/about')">{{language.about}}</paper-button>
+      <paper-button ng-click="goto('/privacy')">{{language.privacy}}</paper-button>
+    </paper-toolbar>
+
+
+    <!-- Login modal -->
+    <!-- Modal -->
+    <div id="login-popup" class="modal fade" role="dialog" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">{{language.entry}}</h4>
+          </div>
+          <div class="modal-body vertical layout center-center">
+            <!-- Modal login -->
+            <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly" callback="{{domain}}" static="true"></google-login>
+            <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+            <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+          </div>
+        </div>
 
       </div>
     </div>
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
+    ga('create', 'UA-79737599-1', 'auto');
+    ga('send', 'pageview');
+
+    </script>
+    <!-- vendor -->
+    <script src="vendor/jquery-2.2.3.min.js"></script>
+    <script src="vendor/bootstrap.min.js"></script>
+    <!-- <script>
+      jQuery.ajax({
+        url: 'vendor/bootstrap.min.js',
+        success: function (data) {
+          (new Function('document', 'window', data))
+            .call({}, wrap(document), wrap(window));
+          },
+        dataType: 'text'
+       });
+     </script>
+     -->
+    <!-- <script src="vendor/bootstrap.min.js"></script>-->
+    <script src="vendor/jquery-ui.min.js"></script>
+    <script src="vendor/jquery.contextmenu.js"></script>
+    <script src="vendor/toastr.min.js"></script>
     <!-- build:js scripts/min/dependencies.min.js -->
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>
@@ -92,26 +139,23 @@
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/angular-touch/angular-touch.min.js"></script>
     <script src="bower_components/angular-route/angular-route.min.js"></script>
-    <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
     <!-- endbuild -->
+
 
     <!-- build:js scripts/min/logic.min.js -->
     <script src="scripts/app.js"></script>
-    <script src="scripts/controllers/main.js"></script>
-    <script src="scripts/controllers/landingPage.js"></script>
-    <script src="scripts/controllers/userHome.js"></script>
-    <script src="scripts/controllers/about.js"></script>
-    <script src="scripts/controllers/contact.js"></script>
-    <script src="scripts/controllers/profile.js"></script>
-    <script src="scripts/controllers/privacy.js"></script>
-    <script src="scripts/controllers/selectId.js"></script>
-    <script src="scripts/directives/dragdrop.js"></script>
-    <script src="scripts/services/anchosmooth.js"></script>
+    <script src="scripts/filter/catalogFilter.js"></script>
+    <script src="scripts/services/requestLanguage.js"></script>
     <script src="scripts/services/backend.js"></script>
     <script src="scripts/services/cookies.js"></script>
-    <script src="scripts/services/requestLanguage.js"></script>
-    <script src="scripts/filter/arrayFilter.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/controllers/selectId.js"></script>
+    <script src="scripts/controllers/userHome.js"></script>
+    <script src="scripts/controllers/userProfile.js"></script>
+    <script src="scripts/controllers/about.js"></script>
+    <script src="scripts/controllers/privacy.js"></script>
+    <script src="scripts/directives/dragdrop.js"></script>
     <!-- endbuild -->
 
   </body>
-</html>
+  </html>

@@ -47,6 +47,8 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
                                 secret=secret_token,
                                 additional_params={'count': count},
                                 protected=True)
+        self.response.headers.add_header('Access-Control-Allow-Origin', '*')
+        self.response.headers['Content-Type'] = 'application/json'
         self.response.write(respuesta.content)
 
 
@@ -57,8 +59,6 @@ class instagramRequest(webapp2.RequestHandler):
     min_id = self.request.get("min_id", default_value="")
     max_id = self.request.get("max_id", default_value="")
 #    media_id = self.request.get("media_id", default_value="")
-
-#    print(media_id)
     peticion = "https://api.instagram.com/v1/users/self/feed?access_token="+access_token
 
     #Peticion basica
@@ -73,4 +73,7 @@ class instagramRequest(webapp2.RequestHandler):
     #Cargar mas datos
     else:
       respuesta = urllib2.urlopen(peticion+"&max_id="+max_id+"&count="+count).read()
+
+    self.response.headers.add_header('Access-Control-Allow-Origin', '*')
+    self.response.headers['Content-Type'] = 'application/json'    
     self.response.write(respuesta)

@@ -1,0 +1,500 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+A polymer element for showing the current weather
+
+Example
+```
+<open-weather lat="48.1549108" lon="11.5418358" app-id="api-id-open-weather"></open-weather>
+```
+
+If lat and lon are no defined. it will try to get your location
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="stylesheet" type="text/css" href="../weather-icons/css/weather-icons.min.css">
+<dom-module id="open-weather">
+  
+
+  <template>
+  <style is="custom-style" include="iron-flex iron-flex-alignment">
+  :host {
+    position: relative;
+    width: 250px;
+    height:230px;
+    min-width:250px;
+    min-height: 230px;
+    color: #eee;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 300;
+    display: inline-block;
+    background-color:rgba(20, 63, 97, 0.75);
+    padding:12px 0 8px 0;
+    border-radius: 5px;
+    text-shadow: 0px 0px 3px #3a3a3a;
+  }
+  :host > p {
+    margin:8px 0;
+  }
+  p {
+    margin:0;
+  }
+  .main {
+    padding:15px 10px;
+  }
+  .title {
+    padding:2px 12px;
+  }
+  .main .weather-icon{
+    font-size: 50px;
+    text-align: center;
+    margin:3px 0;
+    line-height: 70px;
+    color:#eee;
+    padding:5px;
+  }
+
+  .weather-text{
+    text-align: left;
+    margin:5px;
+  }
+
+  .minmax {
+    font-size:12px;
+  }
+  .min > span {
+    padding-left: 3px;
+  }
+  .weather > div {
+    margin-bottom: 1em;
+  }
+  .extrainfo {
+    margin:5px 0;
+  }
+  .extrainfo > p{
+    font-size:16px;
+  }
+  .main .temperature {
+    font-size:14px;
+    font-weight: bold;
+    margin:3px 0;
+  }
+  .main .temperature > span {
+    font-size:24px;
+  }
+  .right-info {
+    text-align: right;
+    margin:0 5px 5px 5px;
+  }
+  iron-icon[icon="refresh"]{
+    width: 20px;
+    height: 20px;
+    margin:-2px 0 0 auto;
+    cursor:pointer;
+  }
+  iron-icon[icon="refresh"]:hover,
+  iron-icon[icon="refresh"]:focus,
+  iron-icon[icon="refresh"]:active {
+    color:#333;
+  }
+  .right-info > .date,
+  .right-info > .day {
+    font-size:12px;
+  }
+  .separator{
+    margin: 12px auto;
+    width: calc(100% - 20px);
+    width:-moz-calc(50% - 40px);
+    height: 1px;
+    background-color:#eee;
+  }
+  .conditiontext{
+    font-size: 14px;
+  }
+  .nextDay .info {
+    padding:5px;
+    width: 25%;
+    min-width: 50px;
+    text-align: center;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+  }
+  .info:first-child{
+    border:none;
+  }
+  .info {
+    border-left: 1px solid rgba(238, 238, 238, 0.5);
+  }
+  .info > .day{
+    font-size:12px;
+  }
+  .info > .weather-icon{
+    font-size:16px;
+    padding:5px;
+  }
+  .info > .temperature{
+    padding:3px;
+    font-size:10px;
+  }
+  .prettyIcon{
+    width: 55px;
+    height: 55px;
+    text-shadow: none;
+  }
+  .loading {
+    position: absolute;
+    display: none !important;
+    top:0;
+    left:0;
+    width:100%;
+    height: 100%;
+    background-color: rgba(0,0,0, 0.3);
+    border-radius: 5px;
+  }
+  .loading[active] {
+    visibility: visible;
+    display: inline-flex !important;
+  }
+  .animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+  }
+  @-webkit-keyframes fadeIn {
+    0% {opacity: 0;}
+    10%{opacity: 0.1;}
+    50%{opacity: 0.1;}
+    80%{opacity:0.3;}
+    100%{opacity:1}
+    
+    
+  }
+
+  @keyframes fadeIn {
+    0% {opacity: 0;}
+    10%{opacity: 0.1;}
+    50%{opacity:0.1;}
+    80%{opacity: 0.1;}
+    100%{opacity:1}
+  }
+
+  .fadeIn {
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+  }
+  </style>
+  <iron-ajax id="ajax"  url="https://centauro.ls.fi.upm.es:4444/weather"
+  params="{{weather_params}}"
+  handle-as="json"
+  on-response="_weatherApiResponse">
+</iron-ajax>
+
+
+<template is="dom-if" if="[[current_date]]" id="mainTemplate" restamp>
+  <div class="horizontal layout center title wrap animated fadeIn">
+    <p class="city flex">{{current_date.name}}</p>
+    <iron-icon class="refresh" icon="refresh" on-click="refresh"></iron-icon>
+  </div>
+  <div class="horizontal center layout main wrap animated fadeIn">
+    <div class="vertical layout weather-text">
+      <p class="temperature"><span>{{current_date.currentTemp}}</span>°{{current_date.temperatureUnit}}</p>
+      <p class="minmax">
+        {{current_date.minTemp}}° / {{current_date.maxTemp}}°
+      </p>
+    </div>
+    <div class="flex horizontal layout center-center">
+      <img src$="{{current_date.prettyIcon}}" class="prettyIcon">
+    </div>
+    <div class="right-info vertical layout">
+      <p class="current_time">{{current_date.current_time}}</p>
+      <p class="date">{{current_date.current_date}}</p>
+      <p class="day">{{current_date.day}}</p>
+    </div>
+  </div>
+  <div class="separator"></div>
+  <div class="nextDay horizontal layout center-justified wrap animated fadeIn">
+    <template is="dom-repeat" items="{{next_days}}">
+      <div class="info">
+        <p class="day">{{item.day}}</p>
+        <p class$="wi weather-icon {{item.icon}}"></p>
+        <p class="temperature">{{item.minTemp}}° / {{item.maxTemp}}°</p>
+      </div>
+    </template>
+  </div>
+ <div active$="{{_loading}}" class="loading vertical layout center-center">
+    <paper-spinner active></paper-spinner>
+  </div>
+</template>
+</template>
+<script>
+Polymer({
+  is: 'open-weather',
+  properties: {
+    /**
+    * City latitude
+    */
+    lat: {type:Number},
+    /**
+    * City longitude
+    */
+    lon: {type:Number},
+    /**
+    * Open weather ID
+    */
+    appId: {},
+    /**
+    * Imperial values for data
+    **/
+    imperial: {type: Boolean, value: false},
+    /**
+    * Set the language of dates
+    **/
+    language: {type: String, value: 'es'},
+    /**
+    * Set units of data
+    **/
+    units: {type: String, value: 'metric'},
+    /**
+    * All data from api. (5 days, 8 values for day)
+    */
+    data: {type:Array, value: function(){return []}},
+    /**
+    * Data for next 4 days
+    */
+    next_days: {type:Array, value: function(){return []}},
+
+    weather_params:{type:Object,computed:'_weatherApiParams(lat, lon, units, language, appId)',observer:'_weatherParamsChanged'},
+    _loading:{
+      type:Boolean,
+      value:true
+    },
+    refresh_time:{type:Number,value:60000}
+  },
+  _iconMapping: {
+    "01d": "wi-day-sunny",
+    "01n": "wi-night-clear",
+    "02d": "wi-day-cloudy",
+    "02n": "wi-night-cloudy",
+    "03d": "wi-cloudy",
+    "03n": "wi-cloudy",
+    "04d": "wi-cloudy",
+    "04n": "wi-cloudy",
+    "09d": "wi-showers",
+    "09n": "wi-showers",
+    "10d": "wi-day-rain",
+    "10n": "wi-night-rain",
+    "11d": "wi-thunderstorm",
+    "11n": "wi-thunderstorm",
+    "13d": "wi-snow",
+    "13n": "wi-snow",
+    "50d": "wi-fog",
+    "50n": "wi-fog"
+  },
+  _iconMappingPretty: {
+    "01d": "http://i.imgur.com/8emVn0q.png",
+    "01n": "http://i.imgur.com/bFgsaOB.png",
+    "02d": "http://i.imgur.com/VzKmO0h.png",
+    "02n": "http://i.imgur.com/BEiKkyQ.png",
+    "03d": "http://i.imgur.com/523PFSf.png",
+    "03n": "http://i.imgur.com/523PFSf.png",
+    "04d": "http://i.imgur.com/523PFSf.png",
+    "04n": "http://i.imgur.com/523PFSf.png",
+    "09d": "http://i.imgur.com/0r3bkb6.png",
+    "09n": "http://i.imgur.com/0r3bkb6.png",
+    "10d": "http://i.imgur.com/FgTtbmZ.png",
+    "10n": "http://i.imgur.com/oV2Oqbd.png",
+    "11d": "http://i.imgur.com/uhpwPZm.png",
+    "11n": "http://i.imgur.com/uhpwPZm.png",
+    "13d": "http://i.imgur.com/GKXCYFQ.png",
+    "13n": "http://i.imgur.com/GKXCYFQ.png",
+    "50d": "http://i.imgur.com/TlecD8p.png",
+    "50n": "http://i.imgur.com/TlecD8p.png"
+  },
+  _windDirections: ["N", "NE", "E", "SE", "S", "SW", "W", "NW"],
+  // Observers
+  _weatherParamsChanged: function(){
+    if (this.lat && this.lon && this.units && this.language && this.appId){
+      this._loading = true;
+      this.$.ajax.generateRequest();
+    }
+  },
+  _weatherClass: function(tempLevel) {
+    return 'weather temp-level-' + tempLevel;
+  },
+  _weatherApiParams: function(lat, lon, units, language, appId) {
+    return {lat: lat, lon: lon, units: units, lang: language, appId: appId};
+  },
+  _weatherApiResponse: function(e) {
+    this._loading = false;
+    var res = e.detail.response;
+    if (res.cod && res.cod === "404"){
+      console.log('error!');
+      return res;
+    }
+    var list = res.list;
+    var days = {
+      es:['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
+      en:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      ru:['вос','пон','вто́','сре','чет','пя́т','суб'],
+      it:['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
+      uk:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      de:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      pt:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      ro:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      pl:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      fi:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      nl:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      fr:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      bg:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      sv:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      tr:['Sun','Mon','Tue','Wed','thu','Fri','Sat'],
+      ca:['Sun','Mon','Tue','Wed','thu','Fri','Sat']
+
+    }
+    function getTempLevel(temp, isImperial) {
+      if (isImperial) {
+        temp = (temp - 32) * (5 / 9)
+      }
+      var level = Math.round((temp + 8) / 8);
+      level = level < 0 ? 0 : level;
+      level = level > 6 ? 6 : level;
+      return level
+    }
+    var getMinMax = function(list_temp){
+      var minmax = {min:100,max:-100};
+      for (var i=0;i<list_temp.length;i++){
+        if (list_temp[i].main.temp_min < minmax.min){
+          minmax.min = Math.round(list_temp[i].main.temp_min);
+        }
+        if (list_temp[i].main.temp_max > minmax.max){
+          minmax.max = Math.round(list_temp[i].main.temp_max);
+        }
+      }
+      return minmax;
+    }
+    this.set('next_days',[]);
+    this.set('data',[]);
+    for (var i=0;i<list.length;i++) {
+      var dt = new Date(list[i].dt*1000);
+      var now = new Date()
+      var current_time = now.getHours() > 9? now.getHours() : '0' + now.getHours();
+      current_time += now.getMinutes() > 9? ':' + now.getMinutes(): ':0' + now.getMinutes();
+      var day = dt.getUTCDate();
+      var month = dt.getMonth() +1;
+      var year = dt.getFullYear();
+      var init = Math.floor(i/8)*8;
+      var minmax = getMinMax(list.slice(init,8+init));
+      var weather = {
+        icon: this._iconMapping[list[i].weather[0].icon],
+        conditiontext: list[i].weather[0].description,
+        name: res.city.name,
+        currentTemp: Math.round(list[i].main.temp),
+        minTemp: minmax.min,
+        maxTemp: minmax.max,
+        windSpeed:  list[i].wind.speed,
+        windMetric: this.imperial ? "Mi/H" : "M/h",
+        windDirection: this._windDirections[Math.round(list[i].wind.deg / 45) % 8],
+        cloudiness: list[i].clouds.all,
+        humidity: list[i].main.humidity,
+        pressure: list[i].main.pressure,
+        temperatureUnit: this.imperial ? 'F':'C',
+        tempLevel: getTempLevel(list[i].main.temp, this.imperial),
+        dt:dt,
+        day: days[this.language][dt.getDay()],
+        current_time: current_time,
+        current_date: day + '/' + month + '/' + year,
+        day: days[this.language][dt.getDay()],
+        prettyIcon: this._iconMappingPretty[list[i].weather[0].icon]
+      };
+      this.push('data',weather);
+    }
+    this.set('current_date', null);
+    window.setTimeout(function(){
+      this.set('current_date', this.data[0]);
+    }.bind(this),100);
+    
+    // next 3 days
+    for (var i=8;i<this.data.length;i=i+8){
+      this.push('next_days', this.data[i]);
+    }
+    this.fire('open-weather-load', {weather: this.data});
+  },
+  /**
+  * Update data
+  */
+  refresh: function(){
+    this._loading=true;
+    this.$.ajax.generateRequest();
+  },
+  attached: function() {
+    this._interval = window.setInterval(this.refresh.bind(this),this.refresh_time);
+    this.decrease_maintenance();
+    var getCurrentLocation= function(position) {
+      this.lat = position.coords.latitude;
+      this.lon = position.coords.longitude;
+    }
+    if (typeof(this.lat) == "undefined" && typeof(this.lon) == "undefined") {
+      navigator.geolocation.getCurrentPosition(getCurrentLocation.bind(this));
+    }
+  },
+  detached: function(){
+    if(this._interval) window.clearInterval(this._interval)
+  },
+  decrease_maintenance: function(){
+    var a = 1;
+    var b = 2;
+    var c = 3;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+    a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+  },
+});
+</script>
+</dom-module>

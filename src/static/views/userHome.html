@@ -1,110 +1,238 @@
-<link rel="stylesheet" href="styles/userHome.css">
-
-<div ng-container id="container">
-
-  <div horizontal around-justified layout>
-
-    <div vertical layout end id="listOption" style="z-index:1">
-      <div id="menuArrow" ng-click="showMenu()" ng-class="{hidden: isMenuHidden()}">
-        <core-icon id="menu-icon" icon="arrow-back"></core-icon>
+<style is="custom-style">
+  body {
+    background-image:url('../images/userhome.jpg');
+  }
+  paper-toolbar.header {
+    background-color: #333;
+    border: 1px solid black;
+  }
+  .footer {
+    display:none !important;
+  }
+</style>
+<div id="userHome" ng-container>
+  <!-- Left bar -->
+  <div class="left-bar">
+    <div class="nav-buttons vertical layout menu-buttons" data-button role="group">
+      <div class="btn btn-default" data-button ng-click="toggleCatalog()" data-keyboard="false" title="Añadir un nuevo componente">
+        <span class="glyphicon glyphicon-plus"></span>
       </div>
-
-      <!-- Añadir un elemento -->
-      <div id="add" ng-class="{hidden: isMenuHidden('add')}"> <!--BIEN-->
-        <div horizontal layout ng-class="{corto: !isMenuHidden('add')}"> <!--BIEN-->
-          <div class="div_button" ng-click="ocultar('add'); setSelected('add')" ng-class="{sort: !sort[0]}">
-            <core-icon icon="add-box"></core-icon>
-          </div>
-          <div flex horizontal layout ng-click="setList('add'); setSort('add')" ng-class="{sort: sort[0]}">
-            <p flex ng-show="showElement?true:showSingle=='add'" class="dropdown" style="padding-left:10px"> {{language.user_action.add}}</p>
-            <core-icon id="arrowAdd" ng-show="showElement?true:showSingle=='add'" class="dropdown" icon="arrow-drop-down">
-            </core-icon>
-          </div>
-        </div>
-        <div class="animate-show list" ng-show="isListHidden('add')">
-          <div sale ng-repeat="element in listComponents | arrayFilter:listComponentAdded">
-            <ul style="padding-left:10px;padding-top:5px;padding-bottom:5px;margin-top:0px;margin-bottom:0px;">
-              <p ng-create-element id-element="{{element.name}}" list-attributes="{{element.attributes}}">{{element.name}}</p>
-            </ul>
-          </div>
-          <div ng-if="listComponents.length == 0">
-            <p>No tenemos más componentes</p>
-          </div>
-        </div>
+      <div class="btn btn-default" data-button ng-click="selectListButton($event);activeDelCmpList($event)" title="Eliminar un nuevo componente">
+        <span class="glyphicon glyphicon-trash"></span>
       </div>
-
-      <!-- Borrar un elemento -->
-      <div id="delete" ng-class="{hidden: isMenuHidden('delete')}">
-        <div horizontal layout ng-class="{corto: !isMenuHidden('delete')}">
-          <div class="div_button" ng-click="ocultar('delete'); setSelected('delete')" ng-class="{sort: sort[1]}">
-            <core-icon icon="delete"></core-icon>
-          </div>
-          <div flex horizontal layout ng-click="setList('delete'); setSort('delete')" ng-class="{sort: sort[1]}">
-            <p flex ng-show="showElement?true:showSingle=='delete'" class="dropdown" style="padding-left:10px"> {{language.user_action.delete}}</p>
-            <core-icon id="arrowDelete" ng-show="showElement?true:showSingle=='delete'" class="dropdown" icon="arrow-drop-down">
-            </core-icon>
-          </div>
-        </div>
-        <div class="animate-show list" ng-show="isListHidden('delete')">
-          <div horizontal layout center draggable="true" ng-repeat="element in listComponentAdded" class="deleteOption">
-
-            <span flex style="padding-left: 10px" >{{element}}</span>
-            <core-icon-button class="icon" ng-click="deleteTimeline(element)" icon="cancel"></core-icon-button>
-          </div>
-          <div ng-if="listComponentAdded.length == 0">
-            <p style="padding-left:10px">No tiene componentes añadidos</p>
-          </div>
-        </div>
+      <div class="btn btn-default" data-toggle="modal" data-target="#help-popup" data-keyboard="false" title="Abrir el menu de ayuda">
+        <span class="glyphicon glyphicon-info-sign"></span>
       </div>
-
-      <!-- modifica un elemento -->
-      <div id="modify" ng-class="{hidden: isMenuHidden('modify')}">
-        <div horizontal layout ng-class="{corto: !isMenuHidden('modify')}">
-          <div class="div_button" ng-click="ocultar('modify'); setSelected('modify')" ng-class="{sort: sort[2]}">
-            <core-icon  icon="create"></core-icon>
-          </div>
-          <div flex horizontal layout ng-click="setList('modify'); setSort('modify')" class="dropdown" ng-class="{sort: sort[2]}">
-            <p flex ng-show="showElement?true:showSingle=='modify'" class="dropdown" style="padding-left:10px">  {{language.user_action.modify}}</p>
-            <core-icon id="arrowModify" ng-show="showElement?true:showSingle=='modify'" class="dropdown" icon="arrow-drop-down">
-            </core-icon>
-          </div>
-        </div>
-        <div class="animate-show list" ng-show="isListHidden('modify')" >
-          <div horizontal layout center ng-repeat="element in listComponentAdded" class="deleteOption" ng-click="setModifySelected(element)" ng-class="{modifySelected: isModifySelected(element)}">
-            <span flex style="padding-left:10px">{{element}}</span>
-          </div>
-          <div ng-if="listComponentAdded.length == 0">
-            <p style="padding-left:10px">No tiene componentes añadidos</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Opcion de ayuda -->
-      <div id="help" ng-class="{hidden: isMenuHidden('help')}" ng-click="ocultar('help'); showToggleHelp($event)" style="max-width:170px">
-        <core-icon icon="help"></core-icon>
-        <span ng-show="showElement" style="padding-left: 10px;">{{language.user_action.help}}</span>
-      </div>
+    </div>
+    <div class="component-list  bg-primary vertical layaout" data-list>
+      <p class="add-item" data-index="{{$index}}" data-list ng-repeat="item in listComponentAdded" title="{{itemDescription}}" ng-click="blurList($event)">{{item.name}}</p>
+      <p data-list  ng-if="listComponentAdded.length == 0" >
+        {{language.componentAddedEmpty}}
+      </p>
     </div>
   </div>
-</div>
 
-<div ng-show="toggleHelp" class="shadow">
-  <div ng-show="toggleHelp" class="helpModal">
-    <div class="titleHelp" horizontal layout>
-      <p flex>Ayuda</p>
-      <paper-icon-button center ng-click="hideToggleHelp($event)" icon="close"></paper-icon-button>
+  <div id="help-popup" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-md">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{language.user_action.help}}</h4>
+        </div>
+        <div class="modal-body vertical layout center-center">
+          <!-- Modal login -->
+          <p>
+            <strong>{{language.user_action.add}} ( <span class="glyphicon glyphicon-plus"></span>
+              )</strong><span>: {{language.help.add}}</span>
+            </p>
+            <br>
+            <p>
+              <strong>{{language.user_action.delete}}(				<span class="glyphicon glyphicon-trash"></span>
+                )</strong>: <span>{{language.help.delete}}</span>
+              </p>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div id="store-modal" class="modal fade" role="dialog" data-keyboard="false" >
+        <div class="modal-dialog modal-lg vertical store layout">
+
+          <!-- Modal content-->
+          <div class="modal-content store vertical layout flex">
+            <div class="modal-header">
+              <button type="button" class="close" ng-click="closeModal('#store-modal')">&times;</button>
+              <h4 class="modal-title">{{language.catalog.componentList}}</h4>
+            </div>
+            <div class="modal-body store flex horizontal layout">
+              <div id="searchCatalog" class="vertical layout">
+                <div class="btn-group">
+                  <input type="text" ng-model="textFilter" class="form-control" placeholder="{{language.catalog.search}}" aria-describedby="basic-addon1">
+                  <span id="searchclear" ng-click="removeTextFilter()" class="glyphicon glyphicon-remove-circle"></span>
+                </div>
+                <hr>
+                <div class="horizontal layout title">
+                  <p class="flex">{{language.catalog.rate}}</p>
+                  <p class="clear" ng-show="starFilter != undefined" ng-click="removeStarFilter()">{{language.catalog.clear}}</p>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" ng-model="starFilter" value="5" name="optradio"><star-rate star="5" value="5"></star-rate></label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" ng-model="starFilter" value="4" name="optradio"><star-rate star="5" value="4"></star-rate>{{language.catalog.rateUp}}</label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" ng-model="starFilter" value="3" name="optradio"><star-rate star="5" value="3"></star-rate>{{language.catalog.rateUp}}</label>
+                </div>
+                <div class="radio">
+                  <label><input type="radio" ng-model="starFilter" value="2" name="optradio"><star-rate star="5" value="2"></star-rate>{{language.catalog.rateUp}}</label>
+                </div>
+              </div>
+              <div id="listCatalog" class="flex" >
+                <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter"
+                 pre="{{!item.socialNetwork || user.tokens[item.social_network] !== undefined}}">
+                  
+                  <!-- token required-->
+                  <span class="label label-warning warning" ng-hide="!item.social_network || user.tokens[item.social_network] !== undefined">{{language.noToken}}</span>
+                  <button ng-hide="!item.social_network || user.tokens[item.social_network] !== undefined" ng-click="login(item.component_id, $event)" class="tokenDisabled">
+                    {{language.noTokenDescription}}
+                  </button>
+                  <!-- token not required -->
+                  <div ng-show="!item.social_network || user.tokens[item.social_network] !== undefined" class="description" title="{{item.description}}" data-test="{{user.tokens[item.social_network]}}">
+                    {{item.description}}
+                  </div>
+                  <div class="componentData horizontal layout">
+                    <img ng-src="{{item.img}}" style="width:45px;height:45px"/>
+                    <div class="flex vertical center-center layout componentInfo">
+                      <p>{{item.component_id}}</p>
+                    </div>
+                  </div>
+                  <star-rate star="5" value="{{item.rate}}"></star-rate>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div id="login-modal" class="modal fade" role="dialog" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content modal-md">
+              <div class="modal-header">
+                <button type="button" class="close" ng-click="closeModal('#login-modal')" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">{{language.loginTitle}} {{loginSelected}}</h4>
+              </div>
+              <div class="modal-body login-body">
+                <p>{{language.loginRequest}}</p>
+                <google-login data-role="login" ng-show="loginSelected == 'googleplus'" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly" 	callback="{{domain}}" static="true"></google-login>
+                <github-login data-role="login" sort scope="user:email" ng-show="loginSelected == 'github'" static endpoint="{{domain}}/api/oauth/github/credenciales" client_id="ae271d42c068cae023b9"></github-login>
+                <login-facebook data-role="login" ng-show="loginSelected == 'facebook'" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
+                <twitter-login data-role="login" ng-show="loginSelected == 'twitter'" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
+                <instagram-login data-role="login" ng-show="loginSelected == 'instagram'" client_id="34af286560fc492cbabc62285f098047" redirect_uri="{{domain}}"></instagram-login>
+                <pinterest-login data-role="login" ng-show="loginSelected == 'pinterest'" client_id="4860892995748113255" client_secret="e6c2689affe436017db35146f9eff98199aa3b26ad05a4ba6c15d060798b510e" redirect_uri="https://centauro.ls.fi.upm.es"></pinterest-login>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="closeModal('#login-modal')">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+      </div>
+
+      <div id="rate-modal" class="modal fade scrollbar-macosx scroll-content scroll-scrolly_visible" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-md">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">{{language.questionary.about}} {{randomComponent}}</h4>
+            </div>
+            <div class="modal-body vertical layout" >
+              <div id="initialQuestion">
+                <p class="questionText">{{language.questionary.define}}</p>
+                <paper-radio-group>
+                  <paper-radio-button name="1">{{language.questionary.component.verybad}} </paper-radio-button><br>
+                  <paper-radio-button name="2">{{language.questionary.component.bad}}</paper-radio-button><br>
+                  <paper-radio-button name="3">{{language.questionary.component.neutral}}</paper-radio-button><br>
+                  <paper-radio-button name="4">{{language.questionary.component.good}}</paper-radio-button><br>
+                  <paper-radio-button name="5">{{language.questionary.component.verygood}} </paper-radio-button><br>
+                </paper-radio-group>
+              </div>
+              <div id="aditionalForm" elevation="2" class="userForm" style="display:none">
+                <form is="iron-form" >
+                  <p class="questionText">{{language.questionary.difficulty}} </p>
+                  <paper-radio-group id="question2" class="aditionalQuestion" >
+                    <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+                    <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+                    <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+                    <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+                    <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+                  </paper-radio-group>
+                </form>
+
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.design}}</p>
+                  <paper-radio-group id="question3" class="aditionalQuestion">
+                    <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+                    <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+                    <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+                    <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+                    <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+                  </paper-radio-group>
+                </form>
+
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.information}}</p>
+                  <paper-radio-group id="question4" class="aditionalQuestion">
+                    <paper-radio-button name="1"> {{language.questionary.amplied.verybad}} </paper-radio-button><br>
+                    <paper-radio-button name="2">{{language.questionary.amplied.bad}}</paper-radio-button><br>
+                    <paper-radio-button name="3">{{language.questionary.amplied.neutral}}</paper-radio-button><br>
+                    <paper-radio-button name="4">{{language.questionary.amplied.good}}</paper-radio-button><br>
+                    <paper-radio-button name="5">{{language.questionary.amplied.verygood}}</paper-radio-button><br>
+                  </paper-radio-group>
+                </form>
+
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.advantage}}</p>
+                  <input type="text" class="form-control aditionalQuestion" id="advantage" data-field="advantage" placeholder="{{language.questionary.advantage_sort}}">
+                </form>
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.drawback}}</p>
+                  <input type="text" class="form-control aditionalQuestion" id="drawback" data-field="drawback" placeholder="{{language.questionary.drawback_sort}}">
+                </form>
+
+                <!-- Confirmation to take an aditional questionaire about the component-->
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.share}}</p>
+                  <paper-radio-group id="question5" class="aditionalQuestion">
+                    <paper-radio-button name="1">{{language.questionary.yes}}</paper-radio-button>
+                    <paper-radio-button name="0">{{language.questionary.no}}</paper-radio-button>
+                  </paper-radio-group>
+                </form>
+
+                <form is="iron-form">
+                  <p class="questionText">{{language.questionary.recommend}}</p>
+                  <paper-radio-group id="question6" class="aditionalQuestion">
+                    <paper-radio-button name="1">{{language.questionary.yes}}</paper-radio-button>
+                    <paper-radio-button name="0">{{language.questionary.no}}</paper-radio-button>
+                  </paper-radio-group>
+                </form>
+              </div>
+              <div id="thanksInfo" style="display:none">
+                <p>{{language.questionary.end}}</p>
+              </div>
+            </div>
+            <div class="modal-footer horizontal">
+              <p>{{language.questionary.emptyQuestions}}</p>
+              <!--<button class="btn btn-danger" data-toggle="modal" data-target="#rate-modal" ng-click="submitRating()">{{language.close}}</button> -->
+              <button class="btn btn-primary" ng-click="submitRating()">{{language.send}}</button>
+              <button class="btn btn-primary" id="closeRateModal" data-toggle="modal" ng-click="closerating()" data-target="#rate-modal" style="display:none">OK</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
-    <div class="help-text" vertical center-justified layout>
-      <p>
-        <strong>{{language.user_action.add}}</strong><span>: {{language.help.add}}</span>
-      </p>
-      <p>
-        <strong>{{language.user_action.delete}}</strong>: <span>{{language.help.delete}}</span>
-      </p>
-      <p>
-        <strong>{{language.user_action.modify}}</strong>: <span>{{language.help.modify}}</span>
-      </p>
-    </div>
-    <!--<paper-button ng-click="hideToggleHelp($event)">{{language.close}}</paper-button>-->
-  </div>
-</div>

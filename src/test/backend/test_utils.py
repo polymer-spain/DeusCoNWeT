@@ -7,7 +7,7 @@ import httplib
 import urllib
 import json
 import time
-
+import ssl
 # Global vars
 connection = None
 remoteConnection = True
@@ -31,9 +31,9 @@ class bcolors:
 def openConnection(remote=True):
     global connection,remoteConnection
     if remote:
-        connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
+        connection = httplib.HTTPSConnection("centauro.ls.fi.upm.es",443,context=ssl._create_unverified_context())
     else:
-        connection = httplib.HTTPConnection("localhost:8080")
+        connection = httplib.HTTPConnection("localhost:8001")
         remoteConnection = False
 
 def closeConnection():
@@ -65,6 +65,14 @@ def do_login_or_signup(social_network, token_id, access_token, user_identifier):
             session = make_request("POST", request_uri, params, 201, None, True, True)
     return session
 
+def do_logout(social_network, session, printSession=False):
+    request_uri = '/api/oauth/' + social_network + '/logout'
+    params = urllib.urlencode({})
+    print "POSTEST: Logout de usuario en el sistema"
+    print "Ignorar el status de este caso"
+    make_request("POST", request_uri, params, 200, session, printSession)
+
+
 def make_request(method, request_uri, params, status_ok, session, printHeaders=False, preTest=False):
     """
     Metodo make_request: Realiza llamadas HTTP a la API REST, retornando la
@@ -82,7 +90,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
     global connection, nTest, nTestOK, nTestError, remoteConnection, nPreTest
     nTest += 1
     print "Realizando petición ", method, " ", request_uri
-    headers = {"User-Agent": "PicBit-App"}
+    headers = {"User-Agent": "PicBit-App","Content-Type":"application/x-www-form-urlencoded"}
     session_cookie = None
     # Adds the cookie session header
     if not session == None:
@@ -123,7 +131,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
     if not session_cookie == None and printHeaders:
         print "\tCookie de la respuesta: " + session_cookie + "\n"
 
-    # We introduce a sligth latency (0.5 seconds) in order to emulate a "remote" behavior of the tests against the dev_server
+    # We introduce a sligth latency (1 second) in order to emulate a "remote" behavior of the tests against the dev_server
     if not remoteConnection:
         time.sleep(1)
 
@@ -139,4 +147,3 @@ def tests_status():
     print 'Test Ok: ', nTestOK
     print "Tests Erróneos: ", nTestError, bcolors.ENDC
     print '==============================='
-

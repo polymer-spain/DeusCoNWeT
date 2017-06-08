@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>traffic-incidents Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="../traffic-incidents.html">
+  </head>
+  <body unresolved>
+    <template is="dom-bind" id="bind">
+      <traffic-incidents api_key_geocoding="AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM"
+        app_key_traffic="AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-" auto_refresh refresh_time="60000"
+        traffic_info="{{traffic}}">
+      </traffic-incidents>
+
+    </template>
+    <script>
+      window.addEventListener('WebComponentsReady',function(){
+        var bind = document.querySelector('#bind');
+        bind.test = 'no recibidos';
+        bind.traffic = [];
+        document.querySelector('traffic-incidents').addEventListener('traffic_info-ready', function(e){
+          bind.test = 'ready';
+        });
+        bind.takeDate = function(date){
+          var timestamp = date.match(/\/Date\(([^\)]*)\)\//);
+          var finalDay;
+          if (timestamp.length > 1 ) {
+            finalDay = new Date(parseInt(timestamp[1]));
+          }
+          return finalDay;
+        }
+      })
+    </script>
+  </body>
+</html>

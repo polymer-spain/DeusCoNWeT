@@ -1,0 +1,39 @@
+{
+  "name": "finance-search",
+  "version": "1.0.2-complexity",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "main": "finance-search.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/<USERNAME>/seed-element/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
+    "finance-chart": "^0.0.9",
+    "search-company": "*",
+    "finance-historical": "^0.9.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  },
+  "_release": "1.0.2-complexity",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.2-complexity",
+    "commit": "0d5570fd16bc8252ec95d629cc9f7d2c39c184e8"
+  },
+  "_source": "https://github.com/Mortega5/finance-search.git",
+  "_target": "v1.0.2-complexity",
+  "_originalSource": "finance-search",
+  "_direct": true
+}

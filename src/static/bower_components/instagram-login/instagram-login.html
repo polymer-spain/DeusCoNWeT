@@ -7,92 +7,134 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../core-icon/core-icon.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
 
-<!--
-Web component for login instagram button.
+<dom-module id="instagram-login">
+  <style is="custom-style">
+    :host {
+      display: block;
+    }
+    .large{
+      background: rgba(81,127,164,1);
+      background: -moz-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -webkit-gradient(left top, right top, color-stop(0%, rgba(81,127,164,1)), color-stop(53%, rgba(102,151,189,1)), color-stop(100%, rgba(89,128,158,1)));
+      background: -webkit-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -o-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -ms-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: linear-gradient(to right, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#517fa4', endColorstr='#59809e', GradientType=1 );
+      color: #fff;
+      border-radius: 3px;
+      padding-left: 5px;
+      padding-right: 5px;
+      text-transform: none;
+      width: 205px;
+      height: 50px;
+      font-size: 16px;
+    }
 
-##### Example
+    .sort{
+      background: rgba(81,127,164,1);
+      background: -moz-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -webkit-gradient(left top, right top, color-stop(0%, rgba(81,127,164,1)), color-stop(53%, rgba(102,151,189,1)), color-stop(100%, rgba(89,128,158,1)));
+      background: -webkit-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -o-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -ms-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: linear-gradient(to right, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#517fa4', endColorstr='#59809e', GradientType=1 );
+      border-radius: 3px;
+      height: 46px;
+      width: 82px;
+    }
 
-<instagram-login></instagram-login>
+    .icon{
+      margin-right: 5px;
+      --iron-icon-width: 30px;
+      --iron-icon-height: 25px;
+    }
 
-@element instagram-login
-@blurb Web component for login instagram button.
-@status beta
-@homepage http://polymerlabs.github.io/instagram-login
--->
-<polymer-element name="instagram-login" attributes="clientId redirectUri logged sort">
+    .disconnected{
+      background: grey;
+    }
+
+  </style>
 
   <template>
-    <!--Large buttons-->
 
-    <link rel="stylesheet" href="instagram-login.css">
-    <paper-button class="InstagramButton" title="Instagram" hidden?="{{!(!logged && !sort)}}" on-click="{{login}}">
-      <core-icon src="instagram-login.png" class="icon"></core-icon>
-      Log in with Instagram
-    </paper-button>
 
-    <paper-button class="InstagramButton logout" title="Instagram" hidden?="{{!(logged && !sort)}}" on-click="{{logout_func}}">
-      <core-icon src="instagram-login.png" class="icon"></core-icon>
-      Log out from Instagram
-    </paper-button>
+    <!-- large and disconnected -->
+    <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
+      <paper-button class="large" title="Instagram" on-click="_login">
+        <iron-icon src="instagram-login.png" class="icon"></iron-icon>
+        Log in with Instagram
+      </paper-button>
+    </template>
 
-    <!--Small Buttons-->
+    <!-- large and connected -->
+    <template is="dom-if" if="[[_largeAndConnected(logged, sort)]]">
+      <paper-button class="large logout" title="Instagram" on-click="_logout_func">
+        <iron-icon src="instagram-login.png" class="icon"></iron-icon>
+        Log out from Instagram
+      </paper-button>
+    </template>
 
-    <paper-button class="InstagramButton2" title="Instagram" hidden?="{{!(!logged && sort)}}" on-click="{{login}}">
-      <core-icon src="instagram-login.png" class="icon"></core-icon>
-    </paper-button>
+    <!-- sort and disconnected -->
+    <template is="dom-if" if="[[_sortAndDisconnected(logged, sort)]]">
+      <paper-button class="sort" title="Instagram" on-click="_login">
+        <iron-icon src="instagram-login.png" class="icon"></iron-icon>
+      </paper-button>
+    </template>
 
-    <paper-button class="InstagramButton2 logout" title="Instagram" hidden?="{{!(logged && sort)}}" on-click="{{logout_func}}">
-      <core-icon src="instagram-login.png" class="icon"></core-icon>
-    </paper-button>
+    <!-- sort and connected -->
+    <template is="dom-if" if="[[_sortAndConnected(logged, sort)]]">
+      <paper-button class="sort disconnected" title="Instagram" on-click="_logout_func">
+        <iron-icon src="instagram-login.png" class="icon"></iron-icon>
+      </paper-button>
+    </template>
+
   </template>
 
   <script>
     Polymer({
-      /* Hay que comprobar si hay datos del
-      usuario en la base de datos para saber
-      si esta logueado o no */
-      logged: false, // Parametro que se recibe de la base de datos
-      sort: false,
-      /**
-       * The `clientId` attribute is the client_Id defined in the Instagram App
-       * @attribute clientId
-       * @type string
-       * @default ''
-       */
-      clientId: '',
-
-      /**
-       * The `redirectUri` attribute is the callback url define in the Instagram App
-       * @attribute redirectUri
-       * @type string
-       * @default ''
-       */
-      redirectUri: '',
-
-      /**
-       * The `access_token` property is returned when the login process is completed
-       * @property access_token
-       * @type string
-       * @default ''
-       */
-      access_token: '',
-      userId:'',
-      /**
-       * The `login` method opens a window to instagram authorization page to
-       * complete the login process. Called when when is pressed the InstagramButton
-       * @method login
-       * @param {String} event
-       * @param {String} detail
-       * @param {String} sender
-       * @return {void}
-       */
-      login: function(event, detail, sender) {
-        var oauth_url = "https://instagram.com/oauth/authorize?client_id=" + this.clientId
-        + "&redirect_uri=" + this.redirectUri + "&response_type=token";
+      is: "instagram-login",
+      properties: {
+        logged: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        sort: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        client_id: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        redirect_uri: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        access_token: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        user_id: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        }
+      },
+      _login: function(event, detail, sender) {
+        var oauth_url = "https://instagram.com/oauth/authorize?client_id=" + this.client_id
+        + "&redirect_uri=" + this.redirect_uri + "&response_type=token";
         var win = window.open(oauth_url, "Autoriza la aplicación",'width=800, height=600');
         var back = this;
         var polTimer = window.setInterval(function(){
@@ -104,9 +146,9 @@ Web component for login instagram button.
               var exp = new RegExp(patron);
               back.access_token = exp.exec(url)[1];
               var splited = back.access_token.split('.');
-              back.userId = splited[0];
+              back.user_id = splited[0];
 
-              back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram',userId:back.userId});
+              back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram',userId:back.user_id});
               win.close();
               back.logged = true;
             }
@@ -115,11 +157,25 @@ Web component for login instagram button.
           }
         }, 100);
       },
-      logout_func: function(event, detail, sender){
+      _logout_func: function(event, detail, sender){
         /* Borrar datos de la base de datos */
         var back = this;
         back.logged = false
+      },
+
+      _largeAndDisconnected: function (logged,sort) {
+        return !logged && !sort;
+      },
+      _largeAndConnected: function(logged, sort) {
+        return logged && !sort;
+      },
+      _sortAndDisconnected: function(logged, sort) {
+        return !logged && sort; 
+      },
+      _sortAndConnected: function(logged, sort) {
+        return logged && sort; 
       }
-    });
+
+    })
   </script>
-</polymer-element>
+</dom-module>

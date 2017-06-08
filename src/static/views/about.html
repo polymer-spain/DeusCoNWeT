@@ -1,16 +1,13 @@
 <link rel="stylesheet" href="styles/about.css">
-<div  horizontal center-justified layout class="information">
-  <div flex two horizontal layout class="left">
-  </div>
-  <div flex one vertical center-justified layout class="right">
-    <div>{{language.about_first}}</div>
-    <br>
-    <div  flex>{{language.about_second}}</div>
-    <div horizontal center-justified layout id="social">
-      <a href="https://twitter.com/DeusConwet" target="_blank"><core-icon-button class="twitter" src="images/icon-twitter.png"></core-icon-button></a>
-      <a href="https://www.facebook.com/deus.conwet.3" target="_blank"><core-icon-button class="facebook" src="../images/login-facebook.png"></core-icon-button></a>
-      <a href="https://github.com/polymer-spain/DeusCoNWeT" target="_blank"><core-icon-button class="github" src="images/icon-github.png"></core-icon-button></a>
-      <a href="https://plus.google.com/b/101568720042222642034/101568720042222642034/about" target="_blank"><core-icon-button class="googleplus" src="images/icon-googleplus.png"></core-icon-button></a>
+<div id="about" class="horizontal center-justified layout wrap">
+  <div ng-repeat="member in members" class="members horizontal  center layout">
+    <div class="image">
+      <img ng-src="{{member.img}}">
     </div>
-  </div>  
+    <div class="info vertical layout">
+      <div class="name">{{member.name}}</div>
+      <div class="studies">{{member.studies}}</div>
+      <a target="_blank" href="{{member.github}" class="github">{{member.github}}</a>
+    </div>
+  </div>
 </div>

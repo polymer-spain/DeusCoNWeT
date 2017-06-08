@@ -25,8 +25,10 @@ import webapp2
 from Crypto.Cipher import AES
 import base64
 import os
+import yaml
 import random
-
+import logging
+import BVA
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
     'twitter',
@@ -36,8 +38,19 @@ social_list = [
     'linkedin',
     'googleplus',
     'github',
+    'pinterest',
     ]
 
+bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"],
+              ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"])
+# We read the relevant fields in the config.yaml file (config params for PicBit Backend)
+basepath = os.path.dirname(__file__)
+configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+with open(configFile, "r") as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+# If the param is set wrong, we configure component versioning as static
+component_versioning = cfg["component_versioning"] if cfg["component_versioning"] in ["static", "dynamic"] else "static"
 
 #####################################################################################
 # Definicion de entidades de la base de datos
@@ -119,6 +132,23 @@ social_list = [
   #               starRate=self.roundReputation(), nForks=self.forks, userRating = 0.0,
   #               componentId=self.full_name_id)
 
+class ComponentAttributes(ndb.Model):
+  component_id = ndb.StringProperty(required=True)
+  access_token = ndb.StringProperty()
+  secret_token = ndb.StringProperty()
+  consumer_key = ndb.StringProperty()
+  consumer_secret = ndb.StringProperty()
+  endpoint = ndb.StringProperty()
+  component_base = ndb.StringProperty()
+  language = ndb.StringProperty(default=":language")
+  count = ndb.IntegerProperty()
+  username = ndb.StringProperty()
+  token = ndb.StringProperty()
+  mostrar = ndb.IntegerProperty()
+  component_directory = ndb.StringProperty()
+  accessToken = ndb.StringProperty()
+  api_key = ndb.StringProperty()
+
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
   name = ndb.StringProperty()
@@ -133,12 +163,17 @@ class Component(ndb.Model):
   description = ndb.StringProperty()
   # List of versions available for a component
   version_list = ndb.StringProperty(repeated=True)
-  # Index to control the version that will be served to the next user that adds it to his dashboard 
+  # Index to control the version that will be served to the next user that adds it to his dashboard
   version_index = ndb.IntegerProperty()
   # Determines the times that the general component has been tested
   test_count = ndb.IntegerProperty(default=0)
   # Represents if the component will served in a predetermined way to every new user in the system
   predetermined = ndb.BooleanProperty(default=False)
+  # Preasigned version to load the component. It needs to be confirmed
+  version = ndb.StringProperty()
+  attributes = ndb.StringProperty()
+  img = ndb.StringProperty()
+  tokenAttr = ndb.StringProperty()
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
@@ -147,7 +182,7 @@ class UserComponent(ndb.Model):
   height = ndb.StringProperty()
   width = ndb.StringProperty()
   listening = ndb.StringProperty()
-  # Actual cersion of the component that is being tested
+  # Actual version of the component that is being tested
   version = ndb.StringProperty()
   # Represents if the component is placed in the dashboard
   active = ndb.BooleanProperty(default=True)
@@ -168,12 +203,15 @@ class ComponentTested(ndb.Model):
 #   version = ndb.StringProperty()
 #   # Determines the times that the versioned component has been tested
 #   test_count = ndb.IntegerProperty(default=0)
-#   version_rating = ndb.FloatProperty(default=0) 
+#   version_rating = ndb.FloatProperty(default=0)
 
 class UserRating(ndb.Model):
   component_id = ndb.StringProperty()
   version = ndb.StringProperty() # Version of the component rated
   rating_value = ndb.FloatProperty()
+  # In the future, this field it could be a reference to an entity that would hold the evaluation resuls
+  # Optional_evaluation indicates whether a user has completed the optional form or not.
+  optional_evaluation = ndb.BooleanProperty(default=False)
 
 class Group(ndb.Model):
   group_name = ndb.StringProperty(required=True)
@@ -206,6 +244,14 @@ class User(ndb.Model):
   group_list = ndb.StructuredProperty(Group, repeated=True)
   rates = ndb.StructuredProperty(UserRating, repeated=True)
   components = ndb.StructuredProperty(UserComponent, repeated=True)
+  # The next info is related to the user profile
+  name = ndb.StringProperty()
+  surname = ndb.StringProperty()
+  age = ndb.IntegerProperty()
+  studies = ndb.StringProperty() # This field is set through the cuestionaire
+  tech_exp = ndb.StringProperty() # This field is set through the cuestionaire
+  social_nets_use = ndb.StringProperty() # This field is set through the cuestionaire
+  gender = ndb.StringProperty() # This field is set through the cuestionaire
 
 class GitHubAPIKey(ndb.Model):
   token = ndb.StringProperty()
@@ -222,7 +268,7 @@ class Session(ndb.Model):
 # Tamaño de bloque
 BLOCK_SIZE = 32
 
-# caracter para realizar un padding del mensaje a cifrar 
+# caracter para realizar un padding del mensaje a cifrar
 # (para que sea multiplo del tamaño del bloque)
 PADDING = '{'
 #Funcion de padding del mensaje a cifrar
@@ -254,21 +300,30 @@ def getCipher(token_entity_key):
 
 # Defines the version of a given component that will be served to a user that adds it
 # to his dashboard (transactional operation)
-
+# Params: - general_component: Component Entity that it is desired to be served to the user
+# Returns: string that represents the version that will be served to the user
 # @ndb.transactional()
-def setComponentVersion(component_id):
-  # version = ""
-  # general_component = Component.query(Component.component_id == component_id).get()
-  # # We set the version that will be served to the user
-  # version = general_component.version_list[general_component.version_index]
-  # # We change the version_index field, that represents the version that will be served to the next user
-  # general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
-  # # Update the info about the component changed
-  # general_component.put()
-  # return version
+# def setComponentVersion(general_component):
+#   # print "====================================================="
+#   # print "Entrada en la llamada de setting"
+#   # print "====================================================="
+#   version = ""
+#   if component_versioning == "dynamic":
+#     # We set the version that will be served to the user
+#     version = general_component.version_list[general_component.version_index]
+#     # We change the version_index field, that represents the version that will be served to the next user
+#     general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
+#     # Update the info about the component changed
+#     general_component.put()
+#   # If the component versioning is set as static, we always set the stable version for the component
+#   elif component_versioning == "static":
+#     version="stable"
 
-  # De momento se sirve la version estable del componente
-  return "stable"
+#   return version
+
+def getComponentEntity(component_id):
+  general_component = Component.query(Component.component_id == component_id).get()
+  return general_component
 
 #########################################################################################
 # Definicion de metodos relacionados con operaciones de alto nivel sobre la base de datos
@@ -276,86 +331,118 @@ def setComponentVersion(component_id):
 #########################################################################################
 
 # Adds to the user dashboard those component defined as predetermined in the system
-def assignPredeterminedComponentsToUser(entity_key):
-  # Obtains the predetermined components of the system and adds it to the User
-  # We consider that we will have at most 10 predetermined components in our system
-  predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
-  for comp in predetermined_comps:
-    activateComponentToUser(comp.component_id, entity_key)
+# def assignPredeterminedComponentsToUser(entity_key):
+#   # Obtains the predetermined components of the system and adds it to the User
+#   # We consider that we will have at most 10 predetermined components in our system
+#   # print "====================================================="
+#   # print "Entrada en la primera llamada de la asignacion"
+#   # print "====================================================="
+#   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
+  
 
+#   for comp in predetermined_comps:
+#     st = activateComponentToUser(comp.component_id, entity_key, versions)
+    
+
+# Set the version for the component in the case it will be added to the user dashboard
+# def setPreasignedVersion(component_id):
+#  comp = Component.query(Component.component_id == component_id).get()
+#  version = setComponentVersion(comp)
+#  comp.preasigned_version = version
+#  comp.put()
+#  return version
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
-def activateComponentToUser(component_id, entity_key):
-  user = entity_key.get()
-  user_component = None
-  status = False
-  #We check if the component provided is in the user component list
-  # If not, we create a new UserComponent Entity, setting the component version that will use the user
-  for comp in user.components:
-    if comp.component_id == component_id:
-      user_component = comp
+# def activateComponentToUser(component_id, entity_key, versions): 
+#   # print "====================================================="
+#   # print "Entrada en la llamada de la activacion"
+#   # print "====================================================="
+#   version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
+#                   "finance-search": 5, "open-weather": 6}
+#   user = entity_key.get()
+#   general_component = Component.query(Component.component_id == component_id).get()
+#   user_component = None
+#   status = False
+#   # We check if the user has added the corresponding social network to his/her profile
+#   for social_network in user.net_list:
+#     if general_component.rs == social_network.social_name:
+#       #We check if the component provided is in the user component list
+#       # If not, we create a new UserComponent Entity, setting the component version the user will use
+#       for comp in user.components:
+#         if comp.component_id == component_id:
+#           user_component = comp
 
-  if not user_component == None:
-    # We set the field to active
-    # The user's preferences (heigh, width) does not change
-    # We get the version of the component that will be served to the user
-    # (the same version than the setted when the user activated the component for the first time)
-    version = user_component.version
-    if not user_component.active:
-      user_component.active = True
-      user.put()
-      status = True
-  else:
-    # We set the version of the component
-    version = setComponentVersion(component_id)
-    # We create a new UserComponent entity
-    user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
-    # We add the component to the component_list of the user
-    user.components.append(user_component)
-    user.put()
+#       if not user_component == None:
+#         # We set the field to active
+#         # The user's preferences (heigh, width) does not change
+#         # We get the version of the component that will be served to the user
+#         # (the same version than the setted when the user activated the component for the first time)
+#         version = user_component.version
+#         if not user_component.active:
+#           user_component.active = True
+#           user.put()
+#           status = True
+#       else:
+#         # We set the version of the component
+#         general_component = getComponentEntity(component_id)
+#         version = general_component.version
+#         # We create a new UserComponent entity
+#         user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
+#         # We add the component to the component_list of the user
+#         user.components.append(user_component)
+#         user.put()
 
-    # We increase the counters that represents the times that a given component has been tested (general and versioned)
-    general_component = Component.query(Component.component_id == component_id).get()
-    general_component.test_count = general_component.test_count + 1
-    general_component.put()
-    # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
-    #  VersionedComponent.version == version)).get()
-    # versioned_component.test_count = versioned_component.test_count + 1
-    # versioned_component.put()
-    status = True
+#         # We increase the counters that represents the times that a given component has been tested (general and versioned)
+#         # print "============================================="
+#         # print "El numero de indice antes de llamar a setComponentVersion: " 
+#         # print general_component.version_index
+#         # print "============================================="
+#         new_version = versions[version_order[component_id]]
+#         # print "============================================="
+#         # print "El numero de indice despues de llamar a setComponentVersion: " 
+#         # print general_component.version_index
+#         # print "============================================="
+#         general_component.version = new_version
+#         general_component.test_count += 1
+#         general_component.put()
+#         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
+#         # versionedComponent.version == version)).get()
+#         # versioned_component.test_count = versioned_component.test_count + 1
+#         # versioned_component.put()
+#         status = True
 
-  # We store in a ComponentTested entity the new version tested by the user
-  user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
-  if not user_component_tested == None:
-    # We update the field that represents the actual version that is being tested
-    user_component_tested.actual_version = version
-    # We add the version to the versions tested list, if is not was added previously
-    if not version in user_component_tested.versions_tested:
-      user_component_tested.versions_tested.append(version)
-      user_component_tested.put()
-  else:
-    # We create a new ComponentTested entity to store the versions of a component tested by the user
-    component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
-    component_tested.put()
-  return status
+#       # We store in a ComponentTested entity the new version tested by the user
+#       user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
+#       if not user_component_tested == None:
+#         # We update the field that represents the actual version that is being tested
+#         user_component_tested.actual_version = version
+#         # We add the version to the versions tested list, if is not was added previously
+#         if not version in user_component_tested.versions_tested:
+#           user_component_tested.versions_tested.append(version)
+#           user_component_tested.put()
+#       else:
+#         # We create a new ComponentTested entity to store the versions of a component tested by the user
+#         component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
+#         component_tested.put()
+#   return status
 
 
 # Removes the component from the user's dashboard
 # It turns the field active to False, thus the component will not be listed as a
 # component included in the user's dashboard
-def deactivateUserComponent(entity_key, component_id):
-  user = entity_key.get()
-  status = False
-  # We check if the component provided is in the user component list
-  for comp in user.components:
-    if comp.component_id == component_id and comp.active:
-      # Deactivates the component
-      comp.active = False
-      user.put()
-      status = True
+# def deactivateUserComponent(entity_key, component_id):
+#   user = entity_key.get()
+#   status = False
+#   # We check if the component provided is in the user component list
+#   for comp in user.components:
+#     if comp.component_id == component_id and comp.active:
+#       # Deactivates the component
+#       comp.active = False
+#       user.put()
+#       status = True
 
-  return status
+#   return status
 
 
 #####################################################################################
@@ -370,12 +457,24 @@ def getToken(id_rs, social_net):  # FUNCIONA
   if not user == None:
     cipher = getCipher(token.key.id())
     ans = {"token": decodeAES(cipher, token.token),
-          "user_id": user.user_id}
+          "user_id": user.user_id,
+          "token_id": token.identifier}
   return ans
 
+def getUserTokens(user_id):
+  token_aux = {}
+  ans = None
+  user = User.query(User.user_id == user_id).get()
+  if not user == None:
+    for token in user.tokens:
+      cipher = getCipher(token.key.id())
+      token_aux[token.social_name] = decodeAES(cipher, token.token)
+    ans = json.dumps(token_aux)
+  return ans
+
+
 def searchToken(token_id, rs): #FUNCIONA
-  tokens = Token.query()
-  token = tokens.filter(Token.identifier==token_id).filter(Token.social_name==rs).get() 
+  token = Token.query(Token.identifier==token_id).filter(Token.social_name==rs).get()
   if token:
     cipher = getCipher(token.key.id())
     return decodeAES(cipher, token.token)
@@ -384,11 +483,11 @@ def searchToken(token_id, rs): #FUNCIONA
 
 def modifyToken(user_id, new_token, rs): #FUNCIONA
   tok = Token.query(Token.identifier == user_id).filter(Token.social_name == rs).get()
-  
+
   # Ciphers the token
   cipher = getCipher(tok.key.id())
   new_token = encodeAES(cipher, new_token)
-  
+
   # Updates the token
   tok.token = new_token
   token_key = tok.put()
@@ -405,6 +504,17 @@ def modifyToken(user_id, new_token, rs): #FUNCIONA
   return user.key
 
 ## Metodos asociados a la entidad Usuario
+# Obtiene la lista de credenciales (token_id, red_social) de un usuario en el sistema
+def getUserCredentialList(user_id):
+  user = User.query(User.user_id == user_id).get()
+  credential_list = []
+  for token in user.tokens:
+    credential = {"token_id": token.identifier,
+    "social_network": token.social_name}
+    credential_list.append(credential)
+  return credential_list
+
+
 def getUser(user_id, component_detailed_info = False): #FUNCIONA
   user = User.query(User.user_id == user_id).get()
   user_info = None
@@ -419,6 +529,16 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
     # Componemos la lista de componentes de usuario, detallada o reducida
     user_component_list = getUserComponentList(user_id, component_detailed_info)
 
+    # for component in user_component_list:
+    #   comp = Component.query(Component.component_id == component["component_id"]).get()
+    #   comp.version = setComponentVersion(component["component_id"])
+    #   comp.test_count += 1
+    #   comp.put()
+    # Obtenemos la lista de credenciales de usuario
+    credential_list = getUserCredentialList(user_id)
+    # print "respuesta de getUserCredentialList: "
+    # print credential_list
+
     # Componemos el diccionario con la info relativa al usuario
     user_info = {"user_id": user.user_id,
                 "description": user.description,
@@ -429,6 +549,7 @@ def getUser(user_id, component_detailed_info = False): #FUNCIONA
                 "email": user.email,
                 "phone": user.phone,
                 "nets": net_names,
+                "token_ids": credential_list,
                 "components": user_component_list}
 
   return user_info
@@ -456,7 +577,7 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
     if data.has_key("private_email"):
       user.private_email = data["private_email"]
     if data.has_key("phone"):
-      user.phone = datos["phone"]
+      user.phone = data["phone"]
     if data.has_key("private_phone"):
       user.private_phone = data["private_phone"]
     if data.has_key("description"):
@@ -468,7 +589,7 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
 
   # Inserts the user entity
   user_key = user.put()
-  
+
   token = Token(identifier=ide, token="", social_name=rs)
   token_key = token.put()
   # Ciphers the access token and stores in the datastore
@@ -477,10 +598,25 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   token.put()
   user.tokens.append(token)
 
+  user.put()
+  return user_key
+
+def assignComponents(user_key):
+  user = user_key.get()
+  # Setting up the versions for the components
+  versions = bva.getNewVersions()
+  comps = Component.query().fetch(15)
+  version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
+                  "finance-search": 5, "open-weather": 6}
+
+  for comp in comps:
+    version = versions[version_order[comp.component_id]]
+    uc = UserComponent(component_id=comp.component_id, x=0, y=0, height="0", width="0", version=version)
+    user.components.append(uc)
+    comp.version = version
+    comp.put()
   # Updates the user entity
   user.put()
-
-  return user_key
 
 
 # Actualiza la info de usuario proporcionada y retorna una lista de los elementos actualizados
@@ -506,7 +642,7 @@ def updateUser(entity_key, data): #FUNCIONA
   if data.has_key("description"):
     user.description = data["description"]
     updated_data += ["description"]
-  
+
   if data.has_key("image"):
     user.image = data["image"]
     updated_data += ["image"]
@@ -518,7 +654,7 @@ def updateUser(entity_key, data): #FUNCIONA
   if data.has_key("component"):
     comp_name = data["component"]
     # Adds the component to the user
-    activated = activateComponentToUser(comp_name, entity_key)
+    # activated = activateComponentToUser(comp_name, entity_key)
     if activated:
       updated_data += ["component"]
 
@@ -527,7 +663,11 @@ def updateUser(entity_key, data): #FUNCIONA
     # We add a Rating entity that represents the component rating
     rating = UserRating(component_id=comp_name, rating_value=rate)
     user.rates.append(rating)
-    updated_data += ["rate"]    
+    updated_data += ["rate"]
+
+  # We update the optional_evaluation field
+  if data.has_key("optional_evaluation"):
+    user.optional_evaluation = data['optional_evaluation']
 
   # Updates the user data
   user.put()
@@ -536,7 +676,7 @@ def updateUser(entity_key, data): #FUNCIONA
 
 
 def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
-  user = entity_key.get()  
+  user = entity_key.get()
   # We create a Token Entity in the datastore
   tok_aux = Token(identifier=user_id, token="", social_name=social_name)
   token_key = tok_aux.put()
@@ -548,7 +688,8 @@ def insertToken(entity_key, social_name, access_token, user_id): #FUNCIONA
   # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
   # We add the social network to the user's nets list
-  if not social_name in user.net_list:
+  social_aux = SocialUser(social_name="social_name")
+  if not social_aux in user.net_list:
     social_network = SocialUser(social_name=social_name)
     user.net_list.append(social_network)
   # Updates the user
@@ -559,11 +700,11 @@ def insertGroup(entity_key, name, data=None): #FUNCIONA
   user = entity_key.get()
   group = Group(group_name=name)
   users = ""
-  
+
   if not data == None:
     if data.has_key("description"): group.description = data["description"]
     if data.has_key("usuarios"):
-      for user in datos["usuarios"]:
+      for user in data["usuarios"]:
         users = users + user + ", "
 
   group.user_list = users
@@ -600,22 +741,22 @@ def searchGroups(entity_key): #FUNCIONA
 
   return json.dumps(ans)
 
-def insertNetwork(entity_key, name, data=None): # FUNCIONA
-  user = entity_key.get()
-  user_social = SocialUser(social_name=name)
-  if not datos == None:
-    if data.has_key("following"):
-      user_social.following = data["following"]
-    if data.has_key("followers"):
-      user_social.followers = data["followers"]
-    if data.has_key("followers_url"):
-      user_social.followers_url = data["followers_url"]
-    if data.has_key("following_url"):
-      user_social.following_url = data["url_sig"]
+# def insertNetwork(entity_key, name, data=None): # FUNCIONA
+#   user = entity_key.get()
+#   user_social = SocialUser(social_name=name)
+#   if not data == None:
+#     if data.has_key("following"):
+#       user_social.following = data["following"]
+#     if data.has_key("followers"):
+#       user_social.followers = data["followers"]
+#     if data.has_key("followers_url"):
+#       user_social.followers_url = data["followers_url"]
+#     if data.has_key("following_url"):
+#       user_social.following_url = data["url_sig"]
 
-  user.net_list.append(user_social)
-  user.put()
-    
+#   user.net_list.append(user_social)
+#   user.put()
+
 
 def searchNetwork(entity_key): # FUNCIONA
   user = entity_key.get()
@@ -629,18 +770,51 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output=None, version_list=None, predetermined=False):
-  # Generates a random initial value that represents the version of the component that will be 
+def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, attributes="", tokenAttr="", img=""):
+  # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
+  # Depending on the social network, different attributes are needed
+  # attributes = None
+  # if rs == "twitter":
+  #   attributes = ComponentAttributes(component_id=name, access_token="", secret_token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock", consumer_key="J4bjMZmJ6hh7r0wlG9H90cgEe",
+  #                 consumer_secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf", 
+  #                 component_base="bower_components/twitter-timeline/static/", count=200, endpoint=endpoint)
+  #   attributes.put()
+  # elif rs == "github":
+  #   attributes = ComponentAttributes(component_id=name, component_directory=component_directory, username=":user", 
+  #                 token="", mostrar=10)
+  #   attributes.put()
+  # elif rs == "instagram":
+  #   attributes = ComponentAttributes(component_id=name, endpoint=endpoint, accessToken=" ")
+  #   attributes.put()
+  # elif rs == "googleplus":
+  #   attributes = ComponentAttributes(component_id=name, token="", api_key=api_key)
+  #   attributes.put()
+  # elif rs == "facebook":
+  #   attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
+  #   attributes.put()
+  # elif rs == "pinterest":
+  #   # print "=========================="
+  #   # print "Entro a la parte de pinterest"
+  #   # print "=========================="
+  #   attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest-timeline-stable/')
+  #   attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
-  component = Component(component_id=name, url=url, input_type=input_t, output_type=output,
-   rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined)
+  # component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
+  #  rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
+  #  attributes=attributes)
+  component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
+    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
+    attributes=attributes, tokenAttr=tokenAttr, img=img)
   # We create a new VersionedComponent Entity for each version_added to the version_list
   # for version in version_list:
   #   versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
   #   versionedComponent.put()
   created = True
   # Saves the changes to the entity
+
+  component.version = setComponentVersion(component)
+  component.test_count += 1
   component.put()
 
 
@@ -704,11 +878,11 @@ def addListening(entity_key, name, events):
         comp.listening += event + ""
 
   user.put()
-  
+
 
 def searchComponent(component_id):
   return Component.query(Component.component_id == component_id).get()
-  
+
 def getComponent(entity_key, name, all_info=False): # FUNCIONA
   comp = Component.query(Component.component_id == name).get()
   if comp == None:
@@ -721,7 +895,7 @@ def getComponent(entity_key, name, all_info=False): # FUNCIONA
     general_comp["url"] = comp.url
     general_comp["social_network"] = comp.rs
     general_comp["description"] = comp.description
-    if not rate == None: 
+    if not rate == None:
       general_comp["rate"] = rate.rating_value
     else:
       general_comp["rate"] = 0
@@ -760,7 +934,7 @@ def getUserComponentList(user_id, component_detailed_info=False):
       rating = UserRating.query(UserRating.component_id == comp.component_id).get()
       component_rate = rating if not rating == None else 0.0
       if component_detailed_info:
-        component_info = {"component_id": comp.component_id, 
+        component_info = {"component_id": comp.component_id,
                         "x": comp.x,
                         "y": comp.y,
                         "height": comp.height,
@@ -769,14 +943,15 @@ def getUserComponentList(user_id, component_detailed_info=False):
                         "user_rate": component_rate,
                         "version": comp.version}
       else:
-          component_info = {"component_id": comp.component_id, 
+          component_info = {"component_id": comp.component_id,
                         "user_rate": component_rate}
       # Adds the component to the component list
-      component_list.append(component_info)
-  return component_list
+      component_list.append(json.dumps(component_info))
+  return json.dumps({'data':[json.loads(el) for el in component_list]})
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
   ans = []
+  print entity_key
   general_comp = {}
   if filter_by_user:
     # user id specified
@@ -792,41 +967,53 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           if comp.active:
             info_comp = Component.query(Component.component_id == comp.component_id).get()
             rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-            general_comp["component_id"] = comp.component_id
-            general_comp["url"] = info_comp.url
-            general_comp["social_network"] = info_comp.rs
-            general_comp["description"] = info_comp.description
-            general_comp["x"] = comp.x
-            general_comp["y"] = comp.y
-            general_comp["input_type"] = info_comp.input_type
-            general_comp["output_type"] = info_comp.output_type
-            general_comp["listening"] = comp.listening
-            general_comp["height"] = comp.height
-            general_comp["width"] = comp.width
-            general_comp["version"] = comp.version
-            if not rate == None: 
-              general_comp["rate"] = rate.rating_value
+            attributes = ComponentAttributes(ComponentAttributes.component_id == comp.component_id).get()
+            general_comp["component_id"] = str(comp.component_id)
+            general_comp["url"] = str(info_comp.url)
+            general_comp["social_network"] = str(info_comp.rs)
+            general_comp["description"] = str(info_comp.description)
+            general_comp["x"] = str(comp.x)
+            general_comp["y"] = str(comp.y)
+            general_comp["input_type"] = str(info_comp.input_type)
+            general_comp["output_type"] = str(info_comp.output_type)
+            general_comp["listening"] = str(comp.listening)
+            general_comp["height"] = str(comp.height)
+            general_comp["width"] = str(comp.width)
+            general_comp["version"] = str(comp.version)
+            general_comp["attributes"] = json.loads(info_comp.attributes)
+            general_comp["img"] = str(info_comp.img)
+            general_comp["tokenAttr"] = str(info_comp.tokenAttr)
+            
+            if not rate == None:
+              general_comp["rate"] = str(rate.rating_value)
             else:
-              general_comp["rate"] = 0
+              general_comp["rate"] = str(0)
             # ans = general_comp
             ans.append(json.dumps(general_comp))
 
+
       else:
         user = entity_key.get()
+        print user
         user_comps = user.components
         # Now we get the general info about the components used by the user
         for comp in user_comps:
           if comp.active:
             info_comp = Component.query(Component.component_id == comp.component_id).get()
             rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-            general_comp["component_id"] = info_comp.component_id
-            general_comp["url"] = info_comp.url
-            general_comp["social_network"] = info_comp.rs
-            general_comp["description"] = info_comp.description
-            if not rate == None: 
-              general_comp["rate"] = rate.rating_value
+            general_comp["component_id"] = str(info_comp.component_id)
+            general_comp["url"] = str(info_comp.url)
+            general_comp["social_network"] = str(info_comp.rs)
+            general_comp["description"] = str(info_comp.description)
+            general_comp["version"] = str(comp.version)
+            general_comp["attributes"] = json.loads(info_comp.attributes)
+            general_comp["img"] = str(info_comp.img)
+            general_comp["tokenAttr"] = str(info_comp.tokenAttr)
+            
+            if not rate == None:
+              general_comp["rate"] = str(rate.rating_value)
             else:
-              general_comp["rate"] = 0
+              general_comp["rate"] = str(0)
             ans.append(json.dumps(general_comp))
 
     else:
@@ -838,19 +1025,23 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
             rate = UserRating.query(UserRating.component_id == comp.component_id).get()
             if not info_comp == None:
-              general_comp["component_id"] = comp.component_id
-              general_comp["url"] = info_comp.url
-              general_comp["social_network"] = info_comp.rs
-              general_comp["description"] = info_comp.description
-              general_comp["x"] = comp.x
-              general_comp["y"] = comp.y
-              general_comp["input_type"] = info_comp.input_type
-              general_comp["output_type"] = info_comp.output_type
-              general_comp["listening"] = comp.listening
-              general_comp["height"] = comp.height
-              general_comp["width"] = comp.width
-              general_comp["version"] = comp.version
-              if not rate == None: 
+              general_comp["component_id"] = str(comp.component_id)
+              general_comp["url"] = str(info_comp.url)
+              general_comp["social_network"] = str(info_comp.rs)
+              general_comp["description"] = str(info_comp.description)
+              general_comp["x"] = str(comp.x)
+              general_comp["y"] = str(comp.y)
+              general_comp["input_type"] = str(info_comp.input_type)
+              general_comp["output_type"] = str(info_comp.output_type)
+              general_comp["listening"] = str(comp.listening)
+              general_comp["height"] = str(comp.height)
+              general_comp["width"] = str(comp.width)
+              general_comp["version"] = str(comp.version)
+              general_comp["attributes"] = json.loads(info_comp.attributes)
+              general_comp["img"] = str(info_comp.img)
+              general_comp["tokenAttr"] = str(info_comp.tokenAttr)
+              
+              if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
                 general_comp["rate"] = 0
@@ -864,11 +1055,16 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             info_comp = Component.query(Component.component_id == comp.component_id).filter(Component.rs == rs).get()
             rate = UserRating.query(UserRating.component_id == comp.component_id).get()
             if not info_comp == None:
-              general_comp["component_id"] = info_comp.component_id
-              general_comp["url"] = info_comp.url
-              general_comp["social_network"] = info_comp.rs
-              general_comp["description"] = info_comp.description
-              if not rate == None: 
+              general_comp["component_id"] = str(info_comp.component_id)
+              general_comp["url"] = str(info_comp.url)
+              general_comp["social_network"] = str(info_comp.rs)
+              general_comp["description"] = str(info_comp.description)
+              general_comp["version"] = str(comp.version)
+              general_comp["attributes"] = json.loads(info_comp.attributes)
+              general_comp["img"] = str(info_comp.img)
+              general_comp["tokenAttr"] = str(info_comp.tokenAttr)
+              
+              if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
                 general_comp["rate"] = 0
@@ -880,30 +1076,42 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
         components = Component.query().fetch(20)
         for component in components:
           rate = UserRating.query(UserRating.component_id == component.component_id).get()
-          general_comp["component_id"] = component.component_id
-          general_comp["url"] = component.url
-          general_comp["social_network"] = component.rs
-          general_comp["description"] = component.description
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
+          attributes = ComponentAttributes.query(ComponentAttributes.component_id == component.component_id).get()
+          general_comp["component_id"] = str(component.component_id)
+          general_comp["url"] = str(component.url)
+          general_comp["social_network"] = str(component.rs)
+          general_comp["description"] = str(component.description)
+          general_comp["version"] = str(component.version)
+          general_comp["attributes"] = json.loads(component.attributes)
+          general_comp["img"] = str(component.img)
+          general_comp["tokenAttr"] = str(component.tokenAttr)
+          
+          if not rate == None:
+            general_comp["rate"] = str(rate.rating_value)
           else:
-            general_comp["rate"] = 0
+            general_comp["rate"] = str(0)
           ans.append(json.dumps(general_comp))
       else:
         components = Component.query(Component.rs == rs).fetch(20)
         for comp in components:
           rate = UserRating.query(UserRating.component_id == comp.component_id).get()
-          general_comp["component_id"] = comp.component_id
-          general_comp["url"] = comp.url
-          general_comp["social_network"] = comp.rs
-          general_comp["description"] = comp.description
-          if not rate == None: 
-            general_comp["rate"] = rate.rating_value
+          general_comp["component_id"] = str(comp.component_id)
+          general_comp["url"] = str(comp.url)
+          general_comp["social_network"] = str(comp.rs)
+          general_comp["description"] = str(comp.description)
+          general_comp["version"] = str(comp.version)
+          general_comp["attributes"] = json.loads(comp.attributes)
+          general_comp["img"] = str(comp.img)
+          general_comp["tokenAttr"] = str(comp.tokenAttr)
+          
+          if not rate == None:
+            general_comp["rate"] = str(rate.rating_value)
           else:
             general_comp["rate"] = 0
           ans.append(json.dumps(general_comp))
-
-  return ans
+	# loggin.info(ans)
+  return json.dumps({'data':[json.loads(el) for el in ans]})
+  # return json.dumps({'data':})
 
 def newUserBeta(email, name, surname): #FUNCIONA
   beta_user = UserBeta(email=email, name=name, surname=surname)
@@ -917,7 +1125,40 @@ def getEmails(): #FUNCIONA
 
   return email_list
 
+def updateProfile(user_id, data):
+  user = User.query(User.user_id == user_id).get()
+  updated_data = []
+  if data.hasKey("age"):
+    user["age"] = data.age
+    updated_data.append("age")
+  if data.hasKey("studies"):
+    user["studies"] = data.studies
+    updated_data.append("studies")
+  if data.hasKey("tech_exp"):
+    user["tech_exp"] = data.tech.exp
+    updated_data.append("tech_exp")
+  if data.hasKey("social_nets_use"):
+    user["social_nets_use"] = data.social_nets_use
+    updated_data.append("social_nets_use")
+  if data.hasKey("gender"):
+    user["gender"] = data.gender
+    updated_data.append("gender")
+  user.put()
+  return updated_data
 
+def getProfile(user_id):
+  ans = None
+  user = User.query(User.user_id == user_id).get()
+  if not user == None:
+    user_info = {"age": user.age,
+                  "studies": user.studies,
+                  "tech_exp": user.tech_exp,
+                  "social_nets_use": user.social_nets_use,
+                  "gender": user.gender,
+                  "name": user.name,
+                  "surname": user.surname}
+    ans = json.dumps(user_info)
+  return ans
 def subscribedUser(email):
   emails = getEmails()
   if email in emails:
@@ -976,7 +1217,7 @@ def deleteCredentials(entity_key, rs, id_rs):
     # does not belong to a social network to perform login in our system
     if not rs in ['googleplus', 'facebook', 'twitter'] and not len(user.tokens) == 1:
       token_aux = tok.token
-      del_token = Token(identifier = id_rs, token = token_aux, social_name = rs) 
+      del_token = Token(identifier = id_rs, token = token_aux, social_name = rs)
       tok.key.delete()
       if not user == None:
         # Deletes the token from the user
@@ -1001,7 +1242,7 @@ def getUsers():
               "description": user.description,
               "groups": group_names,
               "networks": net_names}
-    # Returns the user's phone an email if they haven't a private scope 
+    # Returns the user's phone an email if they haven't a private scope
     if not user.private_phone:
       usuario["phone"] = user.phone
     if not user.private_email:
@@ -1052,9 +1293,9 @@ def deleteSession(hashed_id):
 #   def get(self):
 #     self.response.headers['Content-Type'] = 'text/plain'
 #     #PARTE 1: INSERCION DE 1 USUARIO, INSERCION 1 TOKEN, MOSTRAR TOKENS
-#     datos = {"email":"lruiz@conwet.com", 
-#               "telefono": 61472589, 
-#               "descripcion":"Este es mi perfil personal", 
+#     datos = {"email":"lruiz@conwet.com",
+#               "telefono": 61472589,
+#               "descripcion":"Este es mi perfil personal",
 #               "imagen": "www.example.com/mi-foto.jpg"}
 #     key = insertaUsuario("twitter", "lrr9204", "asdfghjklm159753", datos)
 
@@ -1160,3 +1401,6 @@ def deleteSession(hashed_id):
 # app = webapp2.WSGIApplication([
 #       ('/', MainPage),
 # ], debug=True)
+
+def getBVA():
+  return bva

@@ -1,0 +1,14 @@
+{
+  "name": "Chart.Zoom.js",
+  "homepage": "https://github.com/chartjs/Chart.Zoom.js",
+  "version": "0.2.0",
+  "_release": "0.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.0",
+    "commit": "1322ab723333755c95fef5293702b507fc6ae02a"
+  },
+  "_source": "https://github.com/chartjs/Chart.Zoom.js.git",
+  "_target": "^0.2.0",
+  "_originalSource": "Chart.Zoom.js"
+}

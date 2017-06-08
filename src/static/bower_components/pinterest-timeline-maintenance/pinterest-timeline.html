@@ -1,0 +1,588 @@
+<!--
+@license
+@author Javier Caballero Abenza. All rights reserved.
+
+Component that shows your feed from Pinterest
+
+Example:
+
+    <pinterest-timeline token="Your token"></pinterest-timeline>
+
+@element pinterest-timeline
+@demo demo/index.html
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../paper-material/paper-material.html">
+
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Aclonica" />
+
+<dom-module id="pinterest-timeline">
+
+  <template>
+
+    <iron-ajax id="request_user" url="https://api.pinterest.com/v1/me/" method="GET" params="{{get_user_param}}" handleAs='json'
+      on-response="_user_received">
+    </iron-ajax>
+
+    <iron-ajax id="request_boards" url="https://api.pinterest.com/v1/me/boards/" method="GET" params="{{get_boards_param}}" handleAs='json'
+      on-response="_boards_received">
+    </iron-ajax>
+
+    <iron-ajax id="request_following_boards" url="https://api.pinterest.com/v1/me/following/boards/" method="GET" params="{{get_boards_param}}"
+      handleAs='json' on-response="_following_boards_received">
+    </iron-ajax>
+
+    <iron-ajax id="request_pins" url="https://api.pinterest.com/v1/boards/{{username}}/{{board}}/pins/" method="GET" params="{{get_pins_param}}"
+      handleAs='json' on-response="_pins_received">
+    </iron-ajax>
+
+    <iron-ajax id="morePins" url="{{next_url}}" method="GET" handleAs='json' on-response="_more_pins_received">
+    </iron-ajax>
+
+    <iron-ajax id="requestLanguage" url="{{language_url}}" method="GET" handleAs="json" on-response="_language_response">
+    </iron-ajax>
+
+    <style is="custom-style">
+      :host {
+        display: block;
+        min-height: 400px;
+        min-width: 470px;
+        width: 470px;
+        height: 400px;
+        background-color: white;
+        overflow: hidden;
+        position: relative;
+      }
+
+      paper-toolbar.red {
+        text-transform: none;
+        --paper-toolbar-background: -webkit-linear-gradient(top,#EC1515,#CB2C2C);
+        margin-bottom: 10px;
+      }
+
+      paper-header-panel.header{
+        position: relative;
+        width: 100%;
+        min-height: 60px;
+        max-height:60px;
+      }
+
+      .icon{
+        --iron-icon-width: 60px;
+        --iron-icon-height: 46px;
+      }
+
+      .title{
+        margin-left: 0px !important;
+        font-size: 16px !important;
+        text-align: center;
+      }
+
+      .item{
+        text-transform: none;
+        background: -webkit-linear-gradient(top,#BA1010,#EC1515);
+        padding-top: 1px;
+        margin-bottom: 7px;
+        width: 90%;
+        font-size: 12px !important;
+        padding: 5px;
+      }
+
+      .item:hover{
+          background: -webkit-linear-gradient(top,#BC3E3E,#EF3838);
+      }
+
+      .pin{
+        border-radius: 8px;
+        width: 200px;
+        height: 250px;
+      }
+
+      ​.header{
+        min-height: 60px;
+        max-height: 60px;
+      }
+
+      .content{
+        padding-top: 10px;
+        height: calc(100% - 70px);
+        text-align: center;
+        overflow-y: auto; 
+      }
+
+      .home{
+        text-transform: none;
+        font-size: 24px;
+        font-family: Aclonica;
+        color: var(--paper-red-700);
+      }
+
+      .itemBig{
+        display: inline-block;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        background: -webkit-linear-gradient(top,#BA1010,#EC1515);
+        color: #ffffff;
+        margin-top: 5px; 
+        margin-bottom: 5px;
+
+        text-transform: none;
+        font: 16px Roboto, arial, sans-serif;
+      }
+
+      .itemBig:hover{
+        background: -webkit-linear-gradient(top,#BC3E3E,#EF3838);
+      }
+
+      .dropdown-content{
+        background: -webkit-linear-gradient(top,#EC1515,#CB2C2C);
+        width: 150px;
+        max-width: 150px;
+        text-align: center;
+        font-family: arial;
+        font-size: 14px;
+        padding: 2px;
+        color: white;
+
+        position: absolute;
+        z-index: 1;
+        float: right;
+        right: -155px;
+        transition: .5s ease;
+      }
+
+      .menu{
+        margin-right: 0 !important;
+      }
+
+      .dropdown-content b{
+        font-family: Aclonica;
+        font-weight: lighter;
+      }
+
+
+
+    </style>
+
+<paper-header-panel mode="seamed" class="header" >
+  <paper-toolbar class="paper-header red">
+    <iron-icon src="logo-pinterest.png" class="icon"></iron-icon>
+    <span class="title flex">{{words.title}}</span>
+    <paper-icon-button icon="refresh" on-click="refresh" hidden="{{!hide_home}}"></paper-icon-button>
+    <paper-icon-button icon="icons:arrow-back" on-click="before" hidden="{{!hide_home}}"></paper-icon-button>
+    <p>
+      {{get_index}}
+    </p>
+    <paper-icon-button icon="icons:arrow-forward" on-click="next" hidden="{{!hide_home}}"></paper-icon-button>
+    <paper-icon-button icon="menu" class="menu" on-click="toggle"></paper-icon-button>
+  </paper-toolbar>
+</paper-header-panel>
+<paper-menu id="dropdown-content" class="dropdown-content" role="listbox">
+  <hr>
+  <b>{{words.following-boards}}:</b>
+  <hr>
+  <template is="dom-repeat" items="[[following_boards]]">
+
+    <paper-button raised class="item" on-click="get_pins">{{item.name}}</paper-button>
+
+  </template>
+  <hr>
+  <b>{{words.my-boards}}:</b>
+  <hr>
+  <template is="dom-repeat" items="[[boards]]">
+
+    <paper-button raised class="item" on-click="get_pins">{{item.name}}</paper-button>
+
+  </template>
+</paper-menu>
+
+<div class="content" on-scroll="scrolled">
+  <!-- Home -->
+  <div class="home" hidden="{{hide_home}}">
+    {{words.following-boards}}:
+    <template is="dom-repeat" items="[[following_boards]]">
+      <paper-button raised class="itemBig" on-click="get_pins">{{item.name}}</paper-button>
+    </template>
+    <hr> {{words.my-boards}}:
+    <template is="dom-repeat" items="[[boards]]">
+      <paper-button raised class="itemBig" on-click="get_pins">{{item.name}}</paper-button>
+    </template>
+  </div>
+
+
+  <!-- PINS -->
+  <template is="dom-repeat" items="{{pins}}">
+    <a href="{{item.url}}" target="_blank">
+      <img class="pin" src="{{item.image.original.url}}">
+    </a>
+  </template>
+</div>
+
+</template>
+
+<script>
+
+    Polymer({
+
+      is: 'pinterest-timeline',
+
+      properties: {
+
+        SHOW_COUNT: {
+          type: Number,
+          value: 20,
+        },
+
+        REQ_LIMIT: {
+          type: Number,
+          value: 60,
+        },
+
+        next_url: {
+          type: String,
+          value: "",
+        },
+
+        cache: {
+          type: Object,
+          value: [],
+        },
+
+        cursor: {
+          type: Number,
+          value: 0,
+        },
+
+        get_index: String,
+
+        username: String,
+
+        board: String,
+
+        token: String,
+
+        language: {
+          type: String,
+          value: "es",
+          reflectToAttribute: true,
+          observer: "_languageChanged"
+        },
+
+        language_url: {
+          type: String,
+          computed: "_calculateLanguageUrl(lan_file)"
+        },
+
+        get_user_param: {
+          type: String,
+          computed: "_get_user_param(token)"
+        },
+
+        get_boards_param: {
+          type: String,
+          computed: "_get_boards_param(token)"
+        },
+
+        get_pins_param: {
+          type: String,
+          computed: "_get_pins_param(token,REQ_LIMIT)"
+        },
+        refresh_time: {
+          type: Number,
+          value: 60000,
+          reflectToAttribute: true
+        },
+        pins: {
+         type: Array,
+         value: function(){return []},
+         notify: true
+         },
+        pins_cache: {
+         type: Array,
+         value: function(){return []},
+         notify: true
+        },
+
+        step: {
+          value:0,
+          type:Number
+        },
+        discardStepNumber: {
+          type:Number,
+          value:6
+        }
+
+      },
+
+      /* Language observer */
+      _languageChanged: function (newVal, oldValue) {
+        if (newVal === "en") {
+          this.language = "en";
+          this.lan_file = "en_en.json"
+        }
+        else if (newVal === "es") {
+          this.language = "es";
+          this.lan_file = "es_es.json"
+        }
+        this.$.requestLanguage.generateRequest();
+      },
+
+      /* Calculate endpoint for request url */
+      _calculateLanguageUrl: function (file) {
+        return this.resolveUrl("language/" + file);
+      },
+
+      _language_response: function (event, detail) {
+        this.words = detail.response;
+      },
+
+      get_user: function () {
+        this.$.request_user.generateRequest();
+      },
+
+      get_boards: function () {
+        this.$.request_boards.generateRequest();
+        this.$.request_following_boards.generateRequest();
+      },
+
+      get_pins: function (e) {
+        this.username = e.model.item.username;
+        this.board = e.model.item.id_name;
+        this.$.request_pins.generateRequest();
+      },
+
+      refresh: function () {
+        this.$.request_pins.generateRequest();
+      },
+
+      _get_user_param: function (token) {
+        return { access_token: token, fields: "id,username,first_name,image" };
+      },
+
+      _get_boards_param: function (token) {
+        return { access_token: token };
+      },
+
+      _get_pins_param: function (token, REQ_LIMIT) {
+        return { access_token: token, fields: "id,url,image", limit: REQ_LIMIT };
+      },
+
+      _user_received: function (event, detail) {
+        this.user = detail.response.data;
+        this.get_boards();
+      },
+
+      _boards_received: function (event, detail) {
+        this.boards = detail.response.data;
+        for (var i = this.boards.length - 1; i >= 0; i--) {
+          var splited = this.boards[i].url.split('/');
+          this.boards[i].username = splited[splited.length - 3];
+          this.boards[i].id_name = splited[splited.length - 2];
+        };
+      },
+
+      _following_boards_received: function (event, detail) {
+        this.following_boards = detail.response.data;
+        for (var i = this.following_boards.length - 1; i >= 0; i--) {
+          var splited = this.following_boards[i].url.split('/');
+          this.following_boards[i].username = splited[splited.length - 3];
+          this.following_boards[i].id_name = splited[splited.length - 2];
+        };
+      },
+
+      _pins_received: function (event, detail) {
+        if (!this.hide_home) this.hide_home = true;
+        var pins = detail.response.data;
+        this.cursor = 0;
+        this.next_url = "";
+        this.cache = [];
+        if (detail.response.page.next != null) {
+          this.next_url = detail.response.page.next;
+        }
+        //Pagination
+        if (pins.length > this.SHOW_COUNT) {
+          this.pins = pins.slice(0, this.SHOW_COUNT);
+          this.page = this.SHOW_COUNT;
+        }
+        else {
+          this.pins = pins;
+          this.page = pins.length;
+        }
+        this.pins_cache = pins;
+        this.cache[this.cursor] = this.pins;
+        this.update_index();
+      },
+
+
+      //Pagination
+
+      _more_pins_received: function (event, detail) {
+        var pins = detail.response.data;
+        this.next_url = "";
+        if (detail.response.page.next != null) {
+          this.next_url = detail.response.page.next;
+        }
+        if (pins.length > this.SHOW_COUNT) {
+          this.pins = pins.slice(0, this.SHOW_COUNT);
+          this.page = this.SHOW_COUNT;
+        }
+        else {
+          this.pins = pins;
+        }
+        this.pins_cache = pins;
+        this.cache[this.cursor] = this.pins;
+      },
+
+      next: function () {
+        this.cursor++;
+        if (this.cache[this.cursor]) {
+          //If it is in cache just load
+          this.pins = this.cache[this.cursor];
+        }
+        else {
+          //check if there are more to show
+          if (this.pins_cache.length > this.page) {
+            if (this.pins_cache.length < this.page + this.SHOW_COUNT) {
+              //Not enough to fill the page
+              this.pins = this.pins_cache.slice(this.page, this.pins_cache.length);
+              this.page = this.pins_cache.length;
+            }
+            else {
+              //Load next pins
+              this.pins = this.pins_cache.slice(this.page, this.page + this.SHOW_COUNT);
+              this.page = this.page + this.SHOW_COUNT;
+            }
+            this.cache[this.cursor] = this.pins;
+
+          }
+          else if (this.next_url != "") {
+            this.$['morePins'].generateRequest();
+          }
+          else {
+            this.cursor--;
+          }
+        }
+        this.update_index();
+      },
+
+      before: function () {
+        if (this.cursor > 0) {
+          this.cursor--;
+          this.pins = this.cache[this.cursor];
+        }
+        this.update_index();
+      },
+
+      update_index: function () {
+        if (this.pins) {
+          this.get_index = '(' + this.cursor * this.SHOW_COUNT + ',' + (this.cursor * this.SHOW_COUNT + this.pins.length) + ')';
+        }
+        else {
+          this.get_index = '';
+        }
+
+      },
+
+      toggle: function () {
+        if (this.$['dropdown-content'].style.right == "-155px") {
+          this.$['dropdown-content'].style.right = "0";
+        }
+        else {
+          this.$['dropdown-content'].style.right = "-155px";
+        }
+
+      },
+
+      // Element Lifecycle
+
+      attached: function() {
+       // `attached` fires once the element and its parents have been inserted
+       // into a document.
+       //
+       // This is a good place to perform any work related to your element's
+       // visual state or active behavior (measuring sizes, beginning animations,
+       // loading resources, etc).
+       this.decrease_maintenance();
+       this._interval = this._interval || window.setInterval(this.refresh.bind(this),this.refresh_time);
+       this.get_user();
+       this.$['dropdown-content'].style.right="-155px";
+       this.hide_home=false;
+
+     },
+
+     detached: function() {
+       if (this._interval){
+         window.clearInterval(this._interval);
+       }
+       // The analog to `attached`, `detached` fires when the element has been
+       // removed from a document.
+       //
+       // Use this to clean up anything you did in `attached`.
+     },
+      decrease_maintenance: function(){
+        var a = 1;
+        var b = 2;
+        var c = 3;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+        a = a && b? a:c;a = a && b? a:c;a = a && b? a:c;
+      },
+      scrolled: function (evt) {
+        this.step += 1;
+        var el = evt.currentTarget;
+        if (!this.discardStepNumber || this.step < this.discardStepNumber) {
+          this.lastValidScroll = el.scrollTop;
+        } else {
+          el.scrollTop = this.lastValidScroll;
+          this.step = 0;
+        }
+      },
+      // Element Behavior
+
+    });
+
+  </script>
+
+</dom-module>

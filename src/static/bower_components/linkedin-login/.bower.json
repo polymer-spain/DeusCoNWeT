@@ -1,6 +1,6 @@
 {
   "name": "linkedin-login",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "authors": [
     "Ana Isabel Lopera <lopera.martinez.ana.isabel@gmail.com>"
   ],
@@ -15,24 +15,23 @@
   "homepage": "https://github.com/ailopera/linkedin-login/",
   "ignore": [
     "/.*",
-    "/tests/"
+    "/tests/",
+    "bower_components"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.2",
-    "paper-button": "Polymer/paper-button#~0.5.2",
-    "core-ajax": "Polymer/core-ajax"
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.5",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.5",
+    "paper-button": "PolymerElements/paper-button#~1.0.7"
   },
-  "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#^2.0.5"
-  },
-  "_release": "1.0.0",
+  "devDependencies": {},
+  "_release": "2.0.0",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.0",
-    "commit": "a4c1d70c7e802ff24d2d86daef2f7b0b611d7565"
+    "tag": "v2.0.0",
+    "commit": "1baa34c7f37b86570d9c94d0a46519b78a8ae139"
   },
   "_source": "git://github.com/ailopera/linkedin-login.git",
-  "_target": "~1.0.0",
+  "_target": "~2.0.0",
   "_originalSource": "linkedin-login",
   "_direct": true
 }

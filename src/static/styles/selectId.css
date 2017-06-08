@@ -1,12 +1,10 @@
 #selectId {
-  margin-top:100px;
+  color:white;
+  padding-top:50px;
+  
 }
 
-#selectId .container {
-  margin-top:150px;
-}
-
-#selectId  core-icon[icon="label"] {
+#selectId  iron-icon[icon="label"] {
   color:burlywood;
   margin-bottom: 9px;
 }
@@ -22,31 +20,15 @@
   font-size: 25px;
 }
 
-#selectId paper-input-decorator {
+#selectId paper-input {
   margin-top: 20px;
   margin-left: 35px;
   font-size: 22px;
   width: 500px;
-}
-#selectId paper-input-decorator /deep/ .unfocused-underline {
-  background-color: #c39457;
+  color: firebrick;
 }
 
-#selectId paper-input-decorator /deep/ .focused-underline {
-  background-color: #334c9b;
-}
-#selecId paper-input-decorator /deep/ error-text {
-   color:black; 
-}
-#selectId paper-button {
-  margin: 0 auto;
-  margin-top: 15px;
-  margin-right: 0;
-  background-color: #B72e2e;
-  font-size: 18px;
-  -webkit-transition:all linear 0.4s;
-  transition:all linear 0.4s;
-}
-paper-button.ng-hide {
-  opacity: 0;
+#sendUsernameButton {
+  -webkit-transition:all linear 0.3s;
+  transition:all linear 0.3s;
 }

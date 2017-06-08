@@ -1,0 +1,42 @@
+{
+  "name": "pinterest-timeline",
+  "version": "0.9.2-stable",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "main": "pinterest-timeline.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/<USERNAME>/seed-element/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0",
+    "paper-toolbar": "PolymerElements/paper-toolbar#~1.1.6",
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.1.2",
+    "iron-icons": "PolymerElements/iron-icons#~1.1.3",
+    "paper-menu-button": "PolymerElements/paper-menu-button#~1.5.2",
+    "paper-menu": "PolymerElements/paper-menu#~1.2.2",
+    "paper-item": "PolymerElements/paper-item#~1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  },
+  "_release": "0.9.2-stable",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.9.2-stable",
+    "commit": "4d8dee72d5520428961ecbd23446b885aff60960"
+  },
+  "_source": "https://github.com/Mortega5/pinterest-timeline.git",
+  "_target": "v0.9.2-stable",
+  "_originalSource": "pinterest-timeline",
+  "_direct": true
+}

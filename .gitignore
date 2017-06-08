@@ -7,3 +7,7 @@ images/min
 build
 .brackets.json
 *.*~
+file.log
+readlog.sh
+database
+.vscode

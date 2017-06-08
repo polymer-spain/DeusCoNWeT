@@ -130,7 +130,7 @@ angular.module("picbit",[]).controller("UserHomeController", ["$scope", "$timeou
 		}
 	};
 
-	$scope.hidelist = function (event) {
+	$scope.showlist = function (event) {
 		switch(event){
 			case "add":
 				return $scope.listaOpciones[0];
@@ -151,7 +151,7 @@ angular.module("picbit",[]).controller("UserHomeController", ["$scope", "$timeou
 		if ($scope.selected === event){
 			$scope.selected = "";
 			$scope.showSingle = "";
-			if (!$scope.hidelist(event)) {
+			if ($scope.showlist(event)) {
 				$scope.setList(event);
 			}
 		}
@@ -194,7 +194,6 @@ angular.module("picbit",[]).controller("UserHomeController", ["$scope", "$timeou
 	};
 
 	$scope.deleteTimeline = function(elementName) {
-		//angular.element(document.querySelector("#container")).find(elementName).remove();
 		var index = $scope.listComponentAdded.indexOf(elementName);
 		$scope.listComponentAdded.splice(index, 1);
 	};
@@ -205,7 +204,7 @@ angular.module("picbit",[]).controller("UserHomeController", ["$scope", "$timeou
 
 	$scope.deleteTimelineLeaveHover = function () {
 		$scope.hovered = "";
-	};
+	};u
 
 	$scope.showToggleHelp = function (event){
 		$scope.toggleHelp = true;
