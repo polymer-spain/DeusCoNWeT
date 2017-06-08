@@ -144,8 +144,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
     }
   };
-  $scope.closeModal = function (selector) {
+  $scope.closeModal = function (selector, reset) {
     $(selector).modal('toggle');
+    if (reset) $scope.resetModal();
   };
   $scope.login = function (name) {
     $scope.loginSelected = name.split('-')[0];
@@ -159,7 +160,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   // Watcher that controls whether the form should be showed to the user or not
   $scope.platformUsedTime = 0;
   $scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
-  $scope.formLoadTime = 60000; // Indicates when we'll show to the user the form
+  $scope.formLoadTime = 6000; // Indicates when we'll show to the user the form
 
   $scope.diffArray = function (arr1, arr2) {
     var newArr = [];
@@ -180,6 +181,12 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     return interval;
   }.bind(this);
   var platformTimeHandler = platformTimeFunction();
+  $scope.closerating = function () {
+    $scope.randomComponent = undefined;
+    $scope._rating = false;
+    resetModal();
+    platformTimeFunction();
+  };
 
   $scope.$watch("platformUsedTime", function (newValue, oldValue) {
     if (newValue !== oldValue && newValue >= $scope.formLoadTime && $scope.listComponentAdded.length > 0) {
@@ -201,11 +208,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             backdrop: 'static',
             keyboard: false
           });
-        }, function () {
-          $scope.randomComponent = undefined;
-          resetModal();
-          platformTimeFunction();
-        });
+        }, $scope.closerating);
         $scope.platformUsedTime = 0;
       }
       $interval.cancel(platformTimeHandler);
@@ -252,11 +255,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         e.value = "";
       });
     }, 200);
-  };
-  $scope.closerating = function () {
-    $scope.randomComponent = undefined;
-    resetModal();
-    platformTimeFunction();
   };
   $scope.submitRating = function () {
     if (!$('#aditionalForm').is(':visible')) {
@@ -374,7 +372,11 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       }
     }
   };
-
+  $scope.closeForm = function(){
+    if ($('#initialQuestion').is(':visible')){
+      this.closerating();
+    }
+  };
 
   // Callback when login finish
   (function () {

@@ -91,8 +91,8 @@
                 </div>
               </div>
               <div id="listCatalog" class="flex" >
-                <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter"
-                 pre="{{!item.socialNetwork || user.tokens[item.social_network] !== undefined}}">
+                <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" data-index="{{$index}}" imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter"
+                 data-item="{{item}}">
                   
                   <!-- token required-->
                   <span class="label label-warning warning" ng-hide="!item.social_network || user.tokens[item.social_network] !== undefined">{{language.noToken}}</span>
@@ -147,7 +147,7 @@
           <!-- Modal content-->
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <button type="button" class="close" ng-click="closeForm()" data-dismiss="modal">&times;</button>
               <h4 class="modal-title">{{language.questionary.about}} {{randomComponent}}</h4>
             </div>
             <div class="modal-body vertical layout" >

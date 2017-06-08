@@ -237,15 +237,15 @@ picbit.directive("ngCreateElement", function () {
     };
     element.attr("draggable", "true");
     element.on("dragstart", function (e) {
-      var canExecute = $(element)[0].getAttribute('disabled') === "false" || !element.attr('disabled');
-      canExecute = canExecute && scope.condition && scope.condition !== 'false';
+      var item = JSON.parse(element.attr('data-item'));
+      var canExecute = item.tokenAttr ? item.attributes[item.tokenAttr] !== "" : true;
       if (canExecute) {
         scope.comienzo(e);
       }
     });
     element.on('dblclick', function (e) {
-      var canExecute = $(element)[0].getAttribute('disabled') === "false" || !element.attr('disabled');
-      canExecute = canExecute && scope.condition && scope.condition !== 'false';
+      var item = JSON.parse(element.attr('data-item'));
+      var canExecute = item.tokenAttr ? item.attributes[item.tokenAttr] !== "" : true;
       if (canExecute) {
         scope.click(e);
       }
