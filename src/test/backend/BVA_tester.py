@@ -19,7 +19,7 @@ class BVA_tester(unittest.TestCase):
         self.assertEquals(bva.components, self.components,'Components are not stored correctly')
         self.assertEquals(bva.versions, self.versions,'Components are not stored correctly')
         self.assertEquals(bva.times_called, 0, 'Times called must be 0')
-        self.assertIsNotNone(bva.combinations,'Combinations are empty')
+        self.assertIsNotNone(bva.scenarios,'Combinations are empty')
   
     def testCombinations(self):
         bva = BVA.BVA(self.components, self.versions)
@@ -51,7 +51,7 @@ class BVA_tester(unittest.TestCase):
         self.assertEquals(bva.times_called,0,'Times_called is not 0')
     
     def checkDistribution(self):
-        times= 30
+        times= 100
         bva = BVA.BVA(self.components, self.versions)
         # Test no repeat versions
         base={}
