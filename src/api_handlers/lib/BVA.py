@@ -1,6 +1,6 @@
 import random
 import copy
-from itertools import permutations
+from itertools import permutations, combinations
 
 class BVA(object):
     def __init__(self, components, versions, times_called=0):
@@ -14,10 +14,11 @@ class BVA(object):
         self.bad_versions = versions[1:]
         # List of versions for each component (Deprecated?)
         self._permutationList = []*(len(self.components) +1)
+        self._permutationsUsed = [[]]*(len(self.components) + 1)
+
         for idx in range(len(components)+1):
             self._permutationList.append(self.generatePermutation(idx))
-        self._countUsed = [0]* (len(self.components) + 1)
-
+        
         self._scenarioList = [False]*(len(self.components) +1)
         # Predefined scenarios
         self._endPredefined = 0
@@ -27,28 +28,47 @@ class BVA(object):
     def restartValues(self):
         self.times_called = 0
     
+    # Mira el numero de elementos que necesita y hace combinaciones con el `number`.
+    # Si ese `number` es mayor a la lista de versiones, pasa tantos generadores como sean requeridos
+    # Devuelve un array de iteradores
+    # Ej: si tenemos 7 versiones y `number` es 9, devuelve un iterador de 7 vecesiones y otro de 2.
     def generatePermutation(self, number):
         _versions = self.bad_versions
-        if number > len(self.bad_versions):
-            _versions = self.bad_versions + self.bad_versions
-        return permutations(_versions, number)
+        _combinations = []
+        _versions_len = len(_versions)
+        
+        if number <= _versions_len:
+            _combinations.append(combinations(_versions, number))
+        else:
+            next_value = _versions_len
+            remaining = number
+            while  next_value > 0:
+                _combinations.append(combinations(_versions, next_value))
+                remaining -= next_value
+                next_value = min([_versions_len, remaining])
+
+        return _combinations
 
 
-    # Genera iterador para coger scenarios con n versiones malas. Si se acaban vuelve a coger mas
     def generateNextScenario(self, nBadVersions):
+        scenario = []
         try:
-            scenario = ()
-            if nBadVersions !=0:
-                scenario = self._permutationList[nBadVersions].next()
+            for iterator in self._permutationList[nBadVersions]:
+                scenario += list(iterator.next())
+
             stable_list = [self.good_version] * (len(self.components) - nBadVersions)
-            total_versions = list(scenario) + stable_list
+            total_versions = scenario + stable_list
             self._scenarioList[nBadVersions] = permutations(list(total_versions), len(self.components))
 
         # Si no hay mas permutaciones se vuelven a generar
         except StopIteration:
             self._permutationList[nBadVersions] = self.generatePermutation(nBadVersions)
+            for iterator in self._permutationList[nBadVersions]:
+                scenario += list(iterator.next())
+            
             stable_list = [self.good_version] * (len(self.components) - nBadVersions)
-            total_versions = list(scenario) + stable_list
+            total_versions = scenario + stable_list
+            self._permutationsUsed[nBadVersions] = []
             # El iterador de versiones con n malas se guarda en _scenarioList
             self._scenarioList[nBadVersions] = permutations(list(total_versions), len(self.components))
 
@@ -56,12 +76,16 @@ class BVA(object):
     def getCompleteScenario(self, nBadVersions):
         if (not self._scenarioList[nBadVersions]):
             self.generateNextScenario(nBadVersions)
-        try:
-            return self._scenarioList[nBadVersions].next()
-        except StopIteration:
-            self.generateNextScenario(nBadVersions)
-            return self._scenarioList[nBadVersions].next()
+        scenario = None
+        while scenario == None or scenario in self._permutationsUsed[nBadVersions]:
+            try:
+                scenario = self._scenarioList[nBadVersions].next()
+        
+            except StopIteration:
+                self.generateNextScenario(nBadVersions)
 
+        self._permutationsUsed[nBadVersions].append(scenario)            
+        return scenario
     # Generate a new scenerarios
     def generateScenarios(self):
         scenarios = []
@@ -97,7 +121,7 @@ class BVA(object):
         if (self.times_called < lng):
             versions = self.scenarios[self.times_called]
         else:
-            self.scenarios += self.generateScenarios()[1:]
+            self.scenarios += self.generateScenarios()
             versions = self.scenarios[self.times_called]
 
         self.times_called += 1
@@ -110,11 +134,17 @@ if __name__ == "__main__":
     bva = BVA(components, versions)
     scenarios = []
     
-    for i in range(10):
+    for i in range(2500):
         scenarios.append(bva.getNewVersions())
+    #     scenario = bva.getNewVersions()
+    #     good = list(scenario).count('stable')
+    #     if good == 6:
+    #         print scenario
 
     for idx, scenario in enumerate(scenarios):
-        repetidos = (scenarios.count(scenario))
+        repetidos = 0
+        if scenario.count('stable') != 7 and scenario.count('stable') != 6:
+            repetidos = (scenarios.count(scenario))
 
         if repetidos > 1:
             print idx, scenario
