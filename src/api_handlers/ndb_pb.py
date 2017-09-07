@@ -813,7 +813,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
   created = True
   # Saves the changes to the entity
 
-  component.version = setComponentVersion(component)
+  #component.version = setComponentVersion(component)
   component.test_count += 1
   component.put()
 

@@ -134,7 +134,7 @@ if __name__ == "__main__":
     bva = BVA(components, versions)
     scenarios = []
     
-    for i in range(2500):
+    for i in range(3500):
         scenarios.append(bva.getNewVersions())
     #     scenario = bva.getNewVersions()
     #     good = list(scenario).count('stable')

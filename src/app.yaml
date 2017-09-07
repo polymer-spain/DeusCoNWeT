@@ -11,6 +11,8 @@ handlers:
   static_files: ../favicon.ico
   upload: favicon\.ico
 
+- url: /.well-known
+  static_dir: static/.well-known
 - url: /
   static_files: static/index.html
   upload: index\.html

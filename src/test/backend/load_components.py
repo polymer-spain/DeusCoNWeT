@@ -76,7 +76,7 @@ params = urllib.urlencode({"url": 'https://github.com/ailopera/googleplus-timeli
         "predetermined": 'True',
         "attributes": json.dumps(aux),
         "tokenAttr": 'token',
-        "img": 'images/components/google-icon.svg'
+        "img": 'images/components/google-icon.png'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
