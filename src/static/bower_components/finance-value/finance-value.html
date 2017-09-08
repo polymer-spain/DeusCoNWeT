@@ -1,0 +1,126 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+<finance-value></finance-value>
+
+Example:
+
+<finance-value>
+<h2>Hello finance-value</h2>
+</finance-value>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="finance-value">
+  <template>
+    <style>
+  :host {
+    visibility: hidden;;
+  }
+  </style>
+  <iron-ajax id="requestValue"
+   url="https://centauro.ls.fi.upm.es:4444/stock" method="GET"
+   params="{{_query}}" handleAs='json'
+   on-response="_financeApiResponse"
+   on-error="_financeApiResponseError"
+   >
+  </iron-ajax>
+</template>
+
+<script>
+  Polymer({
+    is: 'finance-value',
+
+    properties: {
+      _query: {
+        type: String,
+        computed: '_generateQuery(symbol)'
+      },
+      symbold: {
+        type: String,
+        notify: true
+      },
+      data: {
+        type: Array,
+        value: function () { return [] },
+        notify: true
+      },
+      accuracy: {
+        type: Number,
+        value: 100,
+        reflectToAttribute: true,
+        notify: true
+      }
+    },
+    ready: function () {
+      this.addEventListener('symbol-changed', this.requestData.bind(this));
+      // this.requestData();
+    },
+    _generateQuery: function (symbol) {
+      var symbol_list = symbol.split(/[\,\;]/);
+      var symbols = "";
+      for (var i = 0; i < symbol_list.length; i++) {
+        if (i > 0) {
+          symbols += ',';
+        }
+        symbols += '"' + symbol_list[i] + '"'
+      }
+      query = 'select * from yahoo.finance.quote where symbol in (' + symbols + ')'
+      return {q:query}
+    },
+    requestData: function () {
+      if (this.symbol) {
+        this.fire('finance-value-inicated');
+        this.$.requestValue.generateRequest();
+      }
+    },
+    _financeApiResponseError: function(event, detail){
+      this.fire('finance-value-error',detail.response);
+    },
+    _financeApiResponse: function (event,detail) {
+      var data = detail.response;
+      var isArray = data.query.results.quote instanceof Array;
+      if (!isArray) {
+        this.set('data', [data.query.results.quote]);
+      } else {
+        this.set('data', data.query.results.quote);
+      }
+      if (this.accuracy != 100) {
+        this.checkAccuracy();
+      }
+      this.fire('finance-value-ready', { data: this.data });
+    },
+    probability: function (accuracy) {
+      var random = Math.round(Math.random() * 100);
+      // If accuracy is 85, only change if random is 85-99 (15%)
+      return random < accuracy;
+    },
+    checkAccuracy: function () {
+      var DATA = ['Name', 'DaysLow','DaysHigh'];
+      DATA.forEach(function(field, index){
+        if (this.data && this.data.length && this.probability(this.accuracy)) {  
+          this.set('data.0.' + field, 'Error');
+        }
+      }.bind(this))
+    }
+
+  });
+</script>
+</dom-module>

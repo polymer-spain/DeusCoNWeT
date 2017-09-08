@@ -132,8 +132,8 @@ class UserHandler(SessionHandler):
             components_list = json.loads(components_list_js)
             for comp in components_list["data"]:
               ident = comp["component_id"]
-              component = mongoDB.getComponentEntity(ident)
-              version = component.version
+              #component = mongoDB.getComponentEntity(ident)
+              version = comp["version"]
               static = "/"
               if str(ident) == "twitter-timeline": static = "/static/"
               ref = "/bower_components/" + \
@@ -498,57 +498,57 @@ class UserCredentialsHandler(SessionHandler):
       self.response.set_status(401)
 
 # Additional classes for handling resources
-class AssignComponentsHandler(SessionHandler):
-  def get(self, user_id):
-    cookie_value = self.request.cookies.get("session")
-    if not cookie_value == None:
-      user = self.getUserInfo(cookie_value)
-      if not user == None:
-        user_logged = mongoDB.getUserId(user)
-        user_info = mongoDB.getUser(user_id)
-        # print "========================================="
-        # print "Respuesta de getUser: " + str(user_info == None)
-        # print "========================================="
-        if user_info == None:
-          self.response.content_type = "application/json"
-          self.response.write({"error": "The user does not exist"})
-          self.response.set_status(404)
-        elif not user_info == None and user_logged == user_id:
-          # print "========================================="
-          # print "Va a realizarse la llamada para la asignacion"
-          # print "========================================="
-          mongoDB.assignPredeterminedComponentsToUser(user)
-          # resp = {"resp": "OK"}
-          # self.response.content_type = "application/json"
-          # self.response.write(resp)
-          # self.response.set_status(200)
-        # else:
-        #   print "======================================="
-        #   print "Entro por donde me sale el bolo"
-        #   print "======================================="
-      else:
-        # We invalidate the session cookies received
-        expire_date = datetime.datetime(1970,1,1,0,0,0)
-        self.response.set_cookie("session", "",
-            path="/", domain=domain, secure=True, expires=expire_date)
-        # We delete and invalidate other cookies received, like the user logged nickname
-        # and social network in which the user performed the login
-        if not self.request.cookies.get("social_network") == None:
-          self.response.set_cookie("social_network", "",
-              path="/", domain=domain, secure=True, expires=expire_date)
-        if not self.request.cookies.get("user") == None:
-          self.response.set_cookie("user", "",
-              path="/", domain=domain, secure=True, expires=expire_date)
+# class AssignComponentsHandler(SessionHandler):
+#   def get(self, user_id):
+#     cookie_value = self.request.cookies.get("session")
+#     if not cookie_value == None:
+#       user = self.getUserInfo(cookie_value)
+#       if not user == None:
+#         user_logged = mongoDB.getUserId(user)
+#         user_info = mongoDB.getUser(user_id)
+#         # print "========================================="
+#         # print "Respuesta de getUser: " + str(user_info == None)
+#         # print "========================================="
+#         if user_info == None:
+#           self.response.content_type = "application/json"
+#           self.response.write({"error": "The user does not exist"})
+#           self.response.set_status(404)
+#         elif not user_info == None and user_logged == user_id:
+#           # print "========================================="
+#           # print "Va a realizarse la llamada para la asignacion"
+#           # print "========================================="
+#           mongoDB.assignPredeterminedComponentsToUser(user)
+#           # resp = {"resp": "OK"}
+#           # self.response.content_type = "application/json"
+#           # self.response.write(resp)
+#           # self.response.set_status(200)
+#         # else:
+#         #   print "======================================="
+#         #   print "Entro por donde me sale el bolo"
+#         #   print "======================================="
+#       else:
+#         # We invalidate the session cookies received
+#         expire_date = datetime.datetime(1970,1,1,0,0,0)
+#         self.response.set_cookie("session", "",
+#             path="/", domain=domain, secure=True, expires=expire_date)
+#         # We delete and invalidate other cookies received, like the user logged nickname
+#         # and social network in which the user performed the login
+#         if not self.request.cookies.get("social_network") == None:
+#           self.response.set_cookie("social_network", "",
+#               path="/", domain=domain, secure=True, expires=expire_date)
+#         if not self.request.cookies.get("user") == None:
+#           self.response.set_cookie("user", "",
+#               path="/", domain=domain, secure=True, expires=expire_date)
 
-        # Builds the response
-        response = \
-          {"error": "The cookie session provided does not belongs to any active user"}
-        self.response.content_type = "application/json"
-        self.response.write(json.dumps(response))
-        self.response.set_status(400)
-    else:
-      response = \
-          {"error": "You must provide a session cookie"}
-      self.response.content_type = "application/json"
-      self.response.write(json.dumps(response))
-      self.response.set_status(401)
+#         # Builds the response
+#         response = \
+#           {"error": "The cookie session provided does not belongs to any active user"}
+#         self.response.content_type = "application/json"
+#         self.response.write(json.dumps(response))
+#         self.response.set_status(400)
+#     else:
+#       response = \
+#           {"error": "You must provide a session cookie"}
+#       self.response.content_type = "application/json"
+#       self.response.write(json.dumps(response))
+#       self.response.set_status(401)

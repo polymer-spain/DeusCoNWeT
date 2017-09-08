@@ -4,16 +4,12 @@ function ($http, $location, $rootScope, $cookies) {
 
   'use strict';
 
-  if ($location.host() === "localhost"){
-    if ($location.port() === 443) {
-      this.endpoint = "https://" + $location.host();
-    } else {
-      this.endpoint = "http://" + $location.host() + ":" + $location.port();
-    }
-  } else {
-    this.endpoint = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
-  }
-
+  // if ($location.host() === "localhost"){
+  //   this.endpoint = "http://" + $location.host() + ":" + $location.port();
+  // }else {
+  //   this.endpoint = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
+  // }
+  this.endpoint = 'https://centauro.ls.fi.upm.es';
   // Envia el token y el identificador del token correspondiente a una red social
   // POST /api/oauth/{red_social}/login
   // PARAMS: @token_id
@@ -151,10 +147,7 @@ function ($http, $location, $rootScope, $cookies) {
   // Añade un token de una recial al sistema
   this.addTokens = function(socialNetwork, token_id, access_token, user_id, oauth_verifier){
     var uri,
-    data = {
-      token_id:token_id,
-      access_token:access_token
-    },
+    data = "token_id=" + token_id + "&access_token="+ access_token,
     request, verb;
 
     switch (socialNetwork) {

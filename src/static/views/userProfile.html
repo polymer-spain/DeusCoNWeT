@@ -62,7 +62,7 @@
       <div class="content">
         <div class="horizontal center layout loginSection" ng-class="{logged: existToken('googleplus')}">
           <p>{{language.user_profile.permission}}</p>
-          <google-login data-role="login" sort  client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" 	callback="{{domain}}" static="true"></google-login>
+          <google-login data-role="login" sort  client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly" 	callback="{{domain}}" static="true"></google-login>
           <hr>
         </div>
         <div class="horizontal center layout loginSection" ng-class="{logged: existToken('github')}">

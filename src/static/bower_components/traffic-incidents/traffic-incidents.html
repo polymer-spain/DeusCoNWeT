@@ -9,6 +9,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <!--
+  @element google-login
+  @blurb Boton de login para google+
+  @status beta
+  @homepage https://github.com/Mortega5/google-login
+
 Show a timeline of traffic issues. Its use two api:
 
 - **Google Maps Geocoding API**: to convert any address to geographical coordinates.
@@ -48,6 +53,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
 <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+<!-- Fix bug with font-face and shadow dom-->
 <style>
   @font-face {
     font-family: "Flaticon";
@@ -183,7 +189,17 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
   paper-spinner[active]{
     display:inline-block;
   }
-  @media screen and (-webkit-min-device-pixel-ratio:-1) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./fonts/Flaticon.eot");
+    src: url("./fonts/Flaticon.eot?#iefix") format("embedded-opentype"),
+    url("./fonts/Flaticon.woff") format("woff"),
+    url("./fonts/Flaticon.ttf") format("truetype"),
+    url("./fonts/Flaticon.svg#Flaticon") format("svg");
+    font-weight: normal;
+    font-style: normal;
+  }
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
     @font-face {
       font-family: "Flaticon";
       src: url("./fonts/Flaticon.svg#Flaticon") format("svg");

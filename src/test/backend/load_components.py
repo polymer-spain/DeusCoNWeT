@@ -27,69 +27,149 @@
     completeness and refresh time.
 """
 
-import urllib
+import urllib, json
 import test_utils
+
+"""
+Es necesario cambiar los parametros que van en los atributos y ponerlo como has comentado tu,
+con un JSON dumpificado y pasado como script vale?
+"""
 
 uri = "https://centauro.ls.fi.upm.es"
 basepath = "/api/componentes"
 request_uri = uri + basepath
 test_utils.openConnection(True)
 versions_list = ["stable", "accuracy", "latency"]
-params = urllib.urlencode({'url': 'https://github.com/JuanFryS/twitter-timeline',
-        'component_id': 'twitter-timeline',
-        'description': 'Web component to obtain the timeline of Twitter using Polymer',
-        'social_network': 'twitter' ,
-        'input_type': 'None',
-        'output_type': 'tweet',
-        'versions': versions_list,
-        'endpoint': ':domain/api/aux/twitterTimeline',
-        'predetermined': 'True'
+aux = {"endpoint": ':domain/api/aux/twitterTimeline',
+        "language": ':language',
+        "access_token": "",
+        "secret_token": "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock",
+        "consumer_key": "BOySBn8XHlyYDQiGiqZ1tzllx",
+        "consumer_secret": "xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE",
+        "component_base": "bower_components/twitter-timeline/static/",
+        "count": 200
+        }
+params = urllib.urlencode({"url": 'https://github.com/JuanFryS/twitter-timeline',
+        "component_id": 'twitter-timeline',
+        "description": 'Web component to obtain the timeline of Twitter using Polymer',
+        "social_network": 'twitter' ,
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'access_token',
+        "img": 'images/components/twitter-logo.png'
         }, doseq=True)
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-params = urllib.urlencode({'url': 'https://github.com/ailopera/googleplus-timeline',
-        'component_id': 'googleplus-timeline',
-        'description': 'Web component to obtain the timeline of Google Plus using Polymer',
-        'social_network': 'googleplus',
-        'input_type': 'None',
-        'output_type': 'tweet',
-        'versions': versions_list,
-        'predetermined': 'True'
+aux = {"api_key": "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis",
+        "token": ""
+        }
+params = urllib.urlencode({"url": 'https://github.com/ailopera/googleplus-timeline',
+        "component_id": 'googleplus-timeline',
+        "description": 'Web component to obtain the timeline of Google Plus using Polymer',
+        "social_network": 'googleplus',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "predetermined": 'True',
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'token',
+        "img": 'images/components/google-icon.png'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-params = urllib.urlencode({'url': 'https://github.com/Mortega5/github-events',
-        'component_id': 'github-events',
-        'description': 'Web component to obtain the timeline of Github notifications',
-        'social_network': 'github',
-        'input_type': 'None',
-        'output_type': 'tweet',
-        'versions': versions_list,
-        'component_directory': 'bower_components/github-events/',
-        'predetermined': 'True'
+# aux = {"component_directory": 'bower_components/github-events/',
+#         "username": ":user",
+#         "token": "",
+#         "mostrar": 10}
+# params = urllib.urlencode({"url": 'https://github.com/Mortega5/github-events',
+#         "component_id": 'github-events',
+#         "description": 'Web component to obtain the timeline of Github notifications',
+#         "social_network": 'github',
+#         "input_type": 'None',
+#         "output_type": 'tweet',
+#         "versions": versions_list,
+#         "predetermined": 'True',
+#         "attributes": json.dumps(aux),
+#         "tokenAttr": 'token',
+#         "img": 'images/components/github-icon.png'
+#         }, doseq=True)
+# test_utils.make_request("PUT", request_uri, params, 201, None)
+
+aux = {"component_directory": 'bower_components/facebook-wall/',
+        "access_token": ""}
+params = urllib.urlencode({"url": 'https://github.com/Mortega5/facebook-wall',
+        "component_id": 'facebook-wall',
+        "description": 'Web component to obtain the timeline of Facebook messages using Polymer',
+        "social_network": 'facebook',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "predetermined": 'True',
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'access_token',
+        "img": 'images/components/facebook-icon.png'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-params = urllib.urlencode({'url': 'https://github.com/Mortega5/facebook-wall',
-        'component_id': 'facebook-wall',
-        'description': 'Web component to obtain the timeline of Facebook messages using Polymer',
-        'social_network': 'facebook',
-        'input_type': 'None',
-        'output_type': 'tweet',
-        'versions': versions_list,
-        'component_directory': 'bower_components/facebook-wall/',
-        'predetermined': 'True'
+aux = {"token": "",
+        "component_base": "bower_components/pinterest-timeline-stable/"}
+params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/tree/redesign/src/static/bower_components/pinterest-timeline-stable',
+        "component_id": 'pinterest-timeline',
+        "description": 'Web component to obtain the timeline of Pinterest messages using Polymer',
+        "social_network": 'pinterest',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "predetermined": 'True',
+        "attributes": json.dumps(aux),
+        "tokenAttr": "token",
+        "img": "images/components/pinterest.png"
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-params = urllib.urlencode({'url': 'https://github.com/polymer-spain/DeusCoNWeT/tree/redesign/src/static/bower_components/pinterest-timeline-stable',
-        'component_id': 'pinterest-timeline',
-        'description': 'Web component to obtain the timeline of Pinterest messages using Polymer',
-        'social_network': 'pinterest',
-        'input_type': 'None',
-        'output_type': 'tweet',
-        'versions': versions_list,
-        'predetermined': 'True'
+aux = {"api_key_geocoding": "AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM",
+        "app_key_traffic": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"}
+params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents",
+        "component_id": 'traffic-incidents',
+        "description": 'Web component to know the state of the traffic in a certain city',
+        "social_network": '',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "attributes": json.dumps(aux),
+        "predetermined": 'True',
+        "img": 'images/components/traffic-incidents-icon.png'
         }, doseq=True)
+test_utils.make_request("PUT", request_uri, params, 201, None)
+
+aux = {"app-id": "655f716c02b3f0aceac9e3567cfb46a8"}
+params = urllib.urlencode({"url": "https://github.com/Mortega5/open-weather",
+        "component_id": 'open-weather',
+        "description": 'Web component to know the weather in future days',
+        "social_network": '',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "attributes": json.dumps(aux),
+        "predetermined": 'True',
+        "img": 'images/components/open-weather-icon.png'
+        }, doseq=True)
+test_utils.make_request("PUT", request_uri, params, 201, None)
+
+aux = {}
+params = urllib.urlencode({"url": 'https://github.com/Mortega5/finance-search',
+        "component_id": 'finance-search',
+        "description": 'Web component to know the values of shares',
+        "social_network": '',
+        "input_type": 'None',
+        "output_type": 'tweet',
+        "versions": versions_list,
+        "attributes": json.dumps(aux),
+        "predetermined": 'True',
+        "img": 'images/components/finance-search-icon.png'
+        }, doseq=True)
+
 test_utils.make_request("PUT", request_uri, params, 201, None)

@@ -310,12 +310,6 @@ Example:
 
         token: String,
 
-        component_base: {
-          type: String,
-          value:"",
-          reflectToAttribute: true
-        },
-
         language: {
           type: String,
           value: "es",
@@ -325,7 +319,7 @@ Example:
 
         language_url: {
           type: String,
-          computed: "_calculateLanguageUrl(component_base, lan_file)"
+          computed: "_calculateLanguageUrl(lan_file)"
         },
 
         get_user_param: {
@@ -341,6 +335,22 @@ Example:
         get_pins_param: {
           type: String,
           computed: "_get_pins_param(token,REQ_LIMIT)"
+        },
+        refresh_time: {
+          type: Number,
+          value: 60000,
+          reflectToAttribute:true,
+          notify: true
+        },
+         pins: {
+         type: Array,
+         value: function(){return []},
+         notify: true
+        },
+        pins_cache: {
+         type: Array,
+         value: function(){return []},
+         notify: true
         }
 
       },
@@ -355,14 +365,12 @@ Example:
           this.language = "es";
           this.lan_file = "es_es.json"
         }
-        if (this.component_base || this.component_base == "") {
           this.$.requestLanguage.generateRequest();
-        }
       },
 
       /* Calculate endpoint for request url */
-      _calculateLanguageUrl: function(component_directory, file) {
-        return component_directory + "language/" + file;
+      _calculateLanguageUrl: function( file) {
+        return this.resolveUrl("language/" + file);
       },
 
       _language_response: function(event, detail){
@@ -539,17 +547,28 @@ Example:
       // Element Lifecycle
 
       attached: function() {
-        // `attached` fires once the element and its parents have been inserted
-        // into a document.
-        //
-        // This is a good place to perform any work related to your element's
-        // visual state or active behavior (measuring sizes, beginning animations,
-        // loading resources, etc).
-        this.get_user();
-        this.$['dropdown-content'].style.right="-155px";
-        this.hide_home=false;
+       // `attached` fires once the element and its parents have been inserted
+       // into a document.
+       //
+       // This is a good place to perform any work related to your element's
+       // visual state or active behavior (measuring sizes, beginning animations,
+       // loading resources, etc).
+       this._interval = this._interval || window.setInterval(this.refresh.bind(this),this.refresh_time);
+       this.get_user();
+       this.$['dropdown-content'].style.right="-155px";
+       this.hide_home=false;
 
-      },
+     },
+
+     detached: function() {
+       if (this._interval){
+         window.clearInterval(this._interval);
+       }
+       // The analog to `attached`, `detached` fires when the element has been
+       // removed from a document.
+       //
+       // Use this to clean up anything you did in `attached`.
+     },
 
     });
 

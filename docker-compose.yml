@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  picbit:
+    image: 'deus/picbit'
+    ports: 
+      - 80:80
+      - 443:443
+    volumes: 
+      #- etc/letsencrypt/live/centauro.ls.fi.upm.es:/app/ssl
+      - /home/miguel/DeusCoNWeT:/app
+      - /home/miguel/logs/picbit:/logs
+    restart: always
+    command: ['bash', '/app/server_config/init.sh']

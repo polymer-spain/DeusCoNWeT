@@ -7,11 +7,11 @@
   <link rel="shortcut icon" href="images/logo.png" />
   <meta name="description" content="">
   <base href="/#">
-  <script>
-   if (window.location.protocol == "http:"){
-     window.location.protocol = "https:";
-   }
-  </script>
+   <script>
+  if (window.location.protocol == "http:"){
+    window.location.protocol = "https:";
+  }
+  </script> 
   <title>PicBit</title>
   <!-- Polymer -->
   <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
@@ -96,7 +96,7 @@
           </div>
           <div class="modal-body vertical layout center-center">
             <!-- Modal login -->
-            <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/plus.login" callback="{{domain}}" static="true"></google-login>
+            <google-login class="button-login" client_id="37385538925-jv2d25auk59lisafr1gu83r04d9cuivt.apps.googleusercontent.com" scope="https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly" callback="{{domain}}" static="true"></google-login>
             <twitter-login class="button-login" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
             <login-facebook class="button-login" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
           </div>
@@ -116,7 +116,8 @@
     </script>
     <!-- vendor -->
     <script src="vendor/jquery-2.2.3.min.js"></script>
-    <script>
+    <script src="vendor/bootstrap.min.js"></script>
+    <!-- <script>
       jQuery.ajax({
         url: 'vendor/bootstrap.min.js',
         success: function (data) {
@@ -125,7 +126,8 @@
           },
         dataType: 'text'
        });
-    </script>
+     </script>
+     -->
     <!-- <script src="vendor/bootstrap.min.js"></script>-->
     <script src="vendor/jquery-ui.min.js"></script>
     <script src="vendor/jquery.contextmenu.js"></script>

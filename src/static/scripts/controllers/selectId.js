@@ -21,7 +21,7 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
           element.invalid = false;
           $rootScope.register = undefined;
           /*TODO mandar al tutorial de bienvenida, y almacenar los datos en $rootScope.user*/
-          $location.path("/user/" + userId + '/profile');
+          $location.path("/user/" + userId);
         });
       });
     } else {

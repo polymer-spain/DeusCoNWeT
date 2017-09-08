@@ -1,0 +1,901 @@
+<!--
+   @license
+   Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+   This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+   The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+   The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+   Code distributed by Google as part of the polymer project is also
+   subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+   -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/social-icons.html">
+<link rel="import" href="../iron-icons/av-icons.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../finance-search/finance-search.html">
+
+<!--
+   An element providing a solution to no problem in particular.
+   
+   Example:
+   
+   <googleplus-timeline></googleplus-timeline>
+   
+   @group Seed Elements
+   @element googleplus-timeline
+   @demo demo/index.html
+   @hero hero.svg
+   -->
+<dom-module id="googleplus-timeline">
+  <style is="custom-style">
+      :host {
+      display: inline-block;
+      width:  var(--googleplus-timeline-width, 450px);
+      height:  var(--googleplus-timeline-height, 450px);
+      min-height: 350px;
+      min-width: 300px;
+      color:#2e2e2e;
+      }
+      /* Header styles */
+      paper-header-panel {
+      font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      background-color: rgb(238,238,238);
+      @apply(--shadow-elevation-3dp);
+      }
+      div.paper-header {
+      height: 50px;
+      font-size: 20px;
+      text-align: center;
+      padding: 0 10px;
+      color: white;
+      transition: height 0.2s;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      background-color: var(--google-red-500);
+      }
+      div.paper-header iron-icon {
+      border-radius: 5px;
+      width: 40px;
+      height: 40px;
+      }
+      .title {
+      font-weight: bold;
+      font-size: 1.3em;
+      }
+      p {
+      margin:0;
+      }
+      /* Post styles */
+      .post {
+      min-height: 100px;
+      padding: 15px;
+      color: #212121;
+      font-size: 12px;
+      line-height: 20px;
+      word-wrap: break-word;
+      border-radius: 3px;
+      background-color: #fff;
+      border: 2px;
+      border:1px solid #fefefe;
+      }
+      .post .content {
+      margin: 10px 3px;
+      background-color:red;
+      }
+      .postShadow{
+      margin: 15px 30px;
+      }
+      paper-button {
+      background-color:#9e9e9e;
+      text-transform: none;
+      color: #444;
+      margin:0;
+      font-size: 14px;
+      }
+      .header {
+      border-bottom: 1px solid #ebebeb;
+      margin-bottom:10px;
+      }
+      .header_text {
+      margin-right:5px;      
+      }
+      .header iron-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+      }
+      .header iron-icon /deep/ img {
+      border-radius: 50%;
+      }
+      .header .date {
+      padding-top: 10px;
+      }
+      .header .name{
+      padding-top: 10px;
+      }
+      .header_text{
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+      }
+      .time {
+      font-size: 10px;
+      color: #757575;
+      }
+      a{
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+      }
+      a:hover{
+      color: #1976D2;
+      }
+      /* Post content styles */
+      .text{
+      }
+      /* Attachment styles */
+      .media_icon{
+      width: 15px;
+      height: 15px;
+      /*padding-left: 10px;*/
+      }
+      #video{
+      padding-bottom: 15px;
+      }
+      .attachment_box_container{
+      margin:10px auto; 
+      width: 90%;
+      }
+      #video_caption{
+      width: 100px;
+      height: 75px;
+      border: 1px;
+      border-color: #BDBDBD;
+      padding: 3px 3px 0px 3px;
+      }
+      #video_title{
+      font: normal 14px Roboto,arial,sans-serif;
+      margin-top: 0px;
+      margin-bottom: 8px;
+      padding-top: 23px;
+      text-decoration: none;
+      color: #404040;
+      }
+      #video_title:hover{
+      color: #1976D2;
+      } 
+      #article_title_container {
+      padding-left: 15px;
+      padding-top: 10px;
+      float: left;
+      }
+      .attached_photo{
+      width: 90%;
+      height: auto;
+      padding: 0px 15px 15px 15px;
+      }
+      #article_title{
+      font: normal 14px Roboto, arial, sans-serif;
+      text-decoration: none;
+      color: #404040;
+      vertical-align: middle;
+      padding: 10px 0px 5px 15px;
+      }
+      #article_subtitle{
+      font: normal 13px Roboto,arial,sans-serif;
+      margin-top: 0px;
+      margin-bottom: 10px;
+      padding-left: 15px;
+      text-decoration: none;
+      color: #757575; 
+      }
+      #article_title:hover{
+      color: #1976D2;
+      text-decoration: underline;
+      }
+      #original_post_author{
+      font-weight: bold;
+      }
+      /*.post:hover #article_title{
+      color: #1976D2;
+      }*/
+      .post:hover #original-post-link{
+      color: #1976D2;
+      }
+      #share_details{
+      padding-left: 15px;
+      padding-bottom: 5px;
+      }
+      #share_details a{
+      color: black;
+      text-decoration: none;
+      }
+      #share_details a:hover{
+      text-decoration: underline;
+      }
+      /* Album and caption styles */
+      #album_title_container{
+      padding-bottom: 5px;
+      }
+      #album_title{
+      font: normal 14px Roboto,arial,sans-serif;
+      color: #404040;
+      padding-bottom: 10px; 
+      }
+      #album_title:hover{
+      color: #1976D2;
+      font-size: 14px;
+      text-decoration: underline;
+      cursor: auto;
+      }
+      #albumContainer{
+      padding: 0px 15px 15px 15px;
+      }
+      .imgContainer{
+      margin: 0px;
+      padding: 0px;
+      border: 0px;
+      }
+      .album_caption{
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      margin: 0px;
+      border: 1px;
+      border-style: solid;
+      color: white;
+      font-weight: bold;
+      }
+      /* Button styles */
+      #loadMoreDiv{
+      padding-bottom: 10px;
+      }
+      #loadMoreButton{
+      background-color: #BDBDBD;
+      padding-bottom: 10px;
+      font-weight: bold;
+      }
+      /* Post Footer styles */
+      #stats_count{
+      color: var(--google-grey-700);
+      /*margin-top: 10px;
+      margin-bottom: 10px;*/
+      font-weight: bold;
+      font-size: 15px;
+      padding-right: 10px;
+      padding-left: 3px;
+      }
+      .share_icon{
+      width: 15px;
+      height: 15px;
+      padding-left: 10px;
+      }
+      #likeContainer span {
+      vertical-align: -1px;
+      margin-left: -5px;
+      margin-top: 20px;  
+      }
+      #loadingGif {
+        text-align: center;
+        width: 50%;
+        margin:0 auto;
+      }
+      #loadingGif > p {
+        margin:10% 0;
+        font-size: 17px;
+      }
+      div.divisor {
+      border-top:1px solid #ebebeb;
+      margin:15px auto 5px auto;
+      }
+      .refresh_button {
+      position: absolute;
+      top:3px;
+      right:5px;
+      margin:0;
+      }
+      .component_name {
+      height: 100%;
+      line-height: 45px;
+      }
+      .access {
+      color: #0f9d58;
+      }
+   </style>
+<template id="template">
+  <iron-ajax id="requestFollowing" url="https://people.googleapis.com/v1/people/me/connections?key={{api_key}}&access_token={{token}}"
+    method="GET" handleAs='json' on-response="_responseFollowings">
+  </iron-ajax>
+  <iron-ajax id="requestPosts" method="GET" handleAs='json' on-response="_responsePosts">
+  </iron-ajax>
+  <iron-ajax id="requestMock" url="{{mockUrl}}" method="GET" handleAs='json' on-response="_responseMock"></iron-ajax>
+  <paper-header-panel mode="waterfall" class="red">
+    <div class="paper-header">
+      <p class="component_name">Google+</p>
+      <paper-icon-button id="refresh_button" class="refresh_button" icon="refresh" title="refresh" on-click="_refresh_posts">
+      </paper-icon-button>
+    </div>
+    <div class="content">
+      <template is="dom-repeat" items="{{timeline_posts}}" sort="_sortPosts" delay="1000">
+        <paper-material elevation="2" class="postShadow">
+          <!-- Google+ POST -->
+          <div class="post">
+            <!-- HEADER: user's avatar, user identifier and time information -->
+            <div class="header horizontal layout">
+              <a href="{{item.actor.url}}" target="_blank" class="header_text">
+                <iron-icon src="{{item.actor.image.url}}" class="userAvatarPost"></iron-icon>
+              </a>
+              <div class="flex name">
+                <a href="{{item.actor.url}}" target="_blank" class="header_text"> {{item.actor.displayName}}</a>
+                <span class="access">➤ {{item.access.description}}</span>
+              </div>
+              <span class="date"><a href="{{item.url}}" target="_blank" class="time"> {{item.published_pretty}}</a></span>
+            </div>
+            <!-- BODY: text and details about the post itself -->
+            <!-- shared post header -->
+            <template is="dom-if" if="{{_isSharedPost(item)}}">
+              <div id="share_details">
+                <a href="{{item.object.actor.url}}" target="_blank" id="original_post_author">{{item.object.actor.displayName}}</a>
+                <a href="{{item.url}}" target="_blank" id="original-post-link"> {{language_data.shared_first}}</a>
+              </div>
+            </template>
+            <!-- post content -->
+            <template is="dom-if" if="{{item.object.content}}">
+              <div class="text" inner-h-t-m-l="{{item.object.content}}"></div>
+            </template>
+            <!-- post attachments -->
+            <template is="dom-if" if="{{item.object.attachments}}">
+              <!-- post video attachment (if any) -->
+              <template is="dom-if" if="{{_hasVideoAttachment(item)}}">
+                <div class="divisor"></div>
+                <!-- <google-youtube video-id="{{_getYoutubeVideoId(item.object.attachments.0.embed.url)}}" 
+                              width="380px" height="285px" ><google-youtube> -->
+                <div class="attachment_box_container horizontal layout">
+                  <a href="{{item.object.attachments.0.url}}" target="_blank">
+                    <img id="video_caption" src="{{item.object.attachments.0.image.url}}">
+                  </a>
+                  <p>
+                    <iron-icon class="media_icon" icon="av:play-arrow"></iron-icon>
+                    <a id="video_title" href="{{item.object.attachments.0.url}}" target="_blank">
+                                    {{item.object.attachments.0.displayName}}
+                                    <!-- <p id="article_subtitle"> {{item.object.attachments.0.content}} </p> -->
+                                 </a>
+                  </p>
+                </div>
+              </template>
+              <!-- post photo attachment (if any) -->
+              <template is="dom-if" if="{{_hasAttachment(item,'photo')}}">
+                <div class="divisor"></div>
+                <span class="attached_photo_section">
+                           <a href="{{item.object.attachments.0.url}}" target="_blank" >
+                           <img class="attached_photo" src="{{item.object.attachments.0.image.url}}">
+                           </a>
+                           </span>
+              </template>
+              <!-- Link/article attachment (if any) -->
+              <template is="dom-if" if="{{_hasAttachment(item,'article')}}">
+                <div class="divisor"></div>
+                <div class="attachment_box_container">
+                  <a id="article_title" class="post-link" target="_blank" href="{{item.object.attachments.0.url}}">
+                    <iron-icon class="media_icon" icon="av:web"></iron-icon>
+                    {{item.object.attachments.0.displayName}}
+                  </a>
+                  <p id="article_subtitle"> {{item.object.attachments.0.content}} </p>
+                  <a href="{{item.object.attachments.0.url}}" target="_blank">
+                    <template is="dom-if" if="{{_hasArticleCaption(item)}}">
+                      <img class="attached_photo" src="{{item.object.attachments.0.image.url}}">
+                    </template>
+                  </a>
+                </div>
+              </template>
+              <!-- Album attachment (if any) -->
+              <template is="dom-if" if="{{_hasAttachment(item,'album')}}">
+                <div class="divisor"></div>
+                <!-- Shows up to 4 captions of the album -->
+                <div id="albumContainer">
+                  <div id="album_title_container">
+                    <a href="{{item.object.attachments.0.url}}" id="album_title" target="_blank">
+                      <iron-icon class="media_icon" icon="image:photo-album"></iron-icon>
+                      {{item.object.attachments.0.displayName}}
+                    </a>
+                  </div>
+                  <!-- Album Layout -->
+                  <div class="horizontal layout wrap" style="width:380px">
+<!-- Main photo -->
+<template is="dom-if" if="{{item.object.attachments.0.thumbnails.0.url}}">
+  <a href="{{item.object.attachments.0.thumbnails.0.url}}" target="_blank">
+    <img class=" album_caption" src="{{item.object.attachments.0.thumbnails.0.image.url}}" style$="width:{{_getCaptionDimensions(0,item)}};">
+    </img>
+  </a>
+</template>
+<!-- Secondary photo(s) -->
+<div class="vertical layout secondary imgContainer">
+  <!-- Second photo (if any) -->
+  <template is="dom-if" if="{{item.object.attachments.0.thumbnails.1.url}}">
+    <a href="{{item.object.attachments.0.thumbnails.1.url}}" target="_blank">
+      <img class=" album_caption" src="{{item.object.attachments.0.thumbnails.1.image.url}}" style$="width:{{_getCaptionDimensions(0,item)}};">
+    </a>
+  </template>
+  <!-- Third photo (if any) -->
+  <template is="dom-if" if="{{item.object.attachments.0.thumbnails.2.url}}">
+    <a href="{{item.object.attachments.0.thumbnails.2.url}}" target="_blank">
+      <img class=" album_caption" src="{{item.object.attachments.0.thumbnails.2.image.url}}" style$="width:{{_getCaptionDimensions(0,item)}};">
+    </a>
+  </template>
+  <!-- Fourth photo (if any) -->
+  <template is="dom-if" if="{{item.object.attachments.0.thumbnails.3.url}}">
+    <a href="{{item.object.attachments.0.thumbnails.3.url}}" target="_blank">
+      <img class=" album_caption" src="{{item.object.attachments.0.thumbnails.3.image.url}}" style$="width:{{_getCaptionDimensions(0,item)}};">
+    </a>
+  </template>
+</div>
+</div>
+</div>
+</template>
+</template>
+<!-- FOOTER: info about #+1's and #replies to the post -->
+<div id="likeContainer">
+  <!-- #Plus to the post-->
+  <iron-icon class="share_icon" icon="add"></iron-icon>
+  <span id="stats_count">{{item.object.plusoners.totalItems}}</span>
+  <!-- #Replies to the post-->
+  <iron-icon class="share_icon" icon="reply"></iron-icon>
+  <span id="stats_count">{{item.object.replies.totalItems}}</span>
+  <!-- #Shares of the post-->
+  <iron-icon class="share_icon" icon="social:share"></iron-icon>
+  <span id="stats_count">{{item.object.resharers.totalItems}}</span>
+</div>
+</div>
+<!-- END OF POST -->
+</paper-material>
+</template>
+<template is="dom-if" if="{{!timeline_posts.length}}">
+  <template is="dom-if" if="{{!loading}}">
+    <paper-material elevation="2" class="postShadow">
+      <div class="post vertical layout center-center">
+        <p>No hay contactos o no existen post de los contactos</p>
+
+      </div>
+    </paper-material>
+  </template>
+</template>
+<div class="loading vertical layout center-justified" id="loadingGif" hidden="{{!loading}}">
+  <img src="loading.gif">
+  <p>Loading...</p>
+</div>
+</div>
+</paper-header-panel>
+</template>
+</dom-module>
+<script>
+  Polymer({
+
+    is: 'googleplus-timeline',
+
+    properties: {
+      /**
+       * Describes the api-key of the application
+       *
+       * @type {{name: string}}
+       */
+      token: {
+        type: String,
+        reflectToAttribute: true,
+        notify: true
+      },
+      //Posts that will be displayed on the component
+      timeline_posts: {
+        type: Array,
+        value: []
+      },
+      //Represents the post retrieved for any user that cannot
+      //be displayed on the current page of the component
+      next_timeline_posts: {
+        type: Object,
+        value: []
+      },
+      page_timestamp: {
+        type: Number,
+        value: 0
+      },
+      api_key: {
+        type: String,
+        reflectToAttribute: true,
+        notify: true
+      },
+      //Represents the desired range of time that will cover a specific page
+      // (one month = 2678400000 millis)
+      millis_range_timestamp: {
+        type: Number,
+        value: 604800000 //One week
+      },
+      /* Object that holds a list of object about the actual page 
+         the post list nextpage to obtain about every user that the logged in user follows
+        Also stores other necessary field like the timestamp of the last post retrieved
+         Elements:
+         - author: G+ user id, author of posts 
+         - displayName: human readable identifier for the user
+         - timestamp: timestamp of the first post in the page-
+         - nextPageToken: identifier for the next page of post list retrieved by the API
+        */
+      last_retrieved_page: {
+        type: Object,
+        value: []
+      },
+      user_followings: {
+        type: Object,
+        value: []
+      },
+      //Auxiliar param to check if there are new posts loaded when the user wants to see another page of posts
+      post_added_per_page: {
+        type: Number,
+        value: 0
+      },
+      language: {
+        type: String,
+        value: 'en',
+        notify: true,
+        reflectToAttribute: true,
+        observer: "_languageChanged"
+      },
+      language_en: {
+        type: Object,
+        value: {
+          "load_more": "Load More",
+          "shared_first": "has shared first: ",
+          "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+            "Sep", "Oct", "Nov", "Dec"],
+          "sec": "second",
+          "secs": "seconds",
+          "min": "minute",
+          "mins": "minutes",
+          "hour": "hour",
+          "hours": "hours",
+          "day": "day",
+          "days": "days",
+          "user": "User"
+        }
+      },
+      language_es: {
+        type: Object,
+        value: {
+          "load_more": "Cargar más",
+          "shared_first": "ha compartido primero: ",
+          "months": ["En", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep",
+            "Oct", "Nov", "Dic"],
+          "sec": "segundo",
+          "secs": "segundos",
+          "min": "minuto",
+          "mins": "minutos",
+          "hour": "hora",
+          "hours": "horas",
+          "day": "día",
+          "days": "días",
+          "user": "Usuario"
+        }
+      },
+      language_data: {
+        type: Object,
+        value: []
+      },
+      mockUrl: {
+        type: String,
+        value: function () {
+          return this.resolveUrl('mockData/following.json');
+        },
+      },
+      refresh_time: {
+        type: Number,
+        value: 60000,
+        reflectToAttribute: true
+      }
+    },
+    _responseFollowings: function (event, detail) {
+      var response = detail.response;
+      var added = 0;
+      if (response.connections) {
+        var users = response.connections;
+        for (i = 0; i < users.length; i++) {
+          if (users[i].urls) {
+            var user_id = users[i].urls[0].metadata.source.id;
+            this.push('user_followings', user_id);
+            this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
+            this.$.requestPosts.generateRequest();
+            added++;
+          }
+        }
+        if (!added) this.loading = false;
+      }
+      else {
+        // load mockData
+        this.loading = false;
+        this.$.requestMock.generateRequest()
+      }
+    },
+    _responseMock: function (event, detail) {
+      //We generate an ajax request to get the post published by the authenticated user
+      this.push('user_followings', "me");
+      this.$.requestPosts.setAttribute("url", this._getRequestPostsURL("me"));
+      this.$.requestPosts.generateRequest();
+      //We generate an ajax request for each user that the authenticated user follows 
+      for (i = 0; i < detail.response.items.length; i++) {
+        user_id = detail.response.items[i].id;
+        //We add the user_id to an auxiliar structure
+        this.push('user_followings', user_id);
+        this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
+        this.$.requestPosts.generateRequest();
+      }
+    },
+
+    _getRequestPostsURL: function (user_id) {
+      return "https://www.googleapis.com/plus/v1/people/" + user_id + "/activities/public";
+    },
+
+    _updateLastRetrievedPage: function (current_user_page) {
+      // We add the timestamp of the last post retrieved along with its author to an auxiliary variable
+      found = false;
+      for (i = 0; i < this.last_retrieved_page.length && !found; i++) {
+        if (this.last_retrieved_page[i].author === current_user_page.author) {
+          found = true;
+          //If there aren't new pages to be obtained for the user, we don't track it anymore
+          if (typeof (current_user_page.nextPageToken) == 'undefined') {
+            this.splice('last_retrieved_page', i, 1);
+          }
+          else {
+            this.set('last_retrieved_page.' + i + '.timestamp', current_user_page.timestamp);
+            this.set('last_retrieved_page.' + i + '.nextPageToken', current_user_page.nextPageToken);
+          }
+        }
+      }
+      if (!found && (typeof current_user_page.nextPageToken) != 'undefined')
+        this.push('last_retrieved_page', current_user_page);
+    },
+
+    _obtainNextPagePost: function (user_id, last_post_timestamp, last_post_nextPageToken) {
+      // We check if the last user post returned is previous to the page_timestamp 
+      // (posts that will be displayed on the current displayed page)
+      // If it is, we'll request the following post from the user until we've reached the reference timestamp for the actual "page"
+      // that displays the component
+      if (last_post_timestamp > this.page_timestamp && (typeof last_post_nextPageToken) != 'undefined') {
+        //We set the next page param in the next request
+        request_params = { "pageToken": last_post_nextPageToken };
+        this.$.requestPosts.setAttribute("url", this._getRequestPostsURL(user_id));
+        this.$.requestPosts.setAttribute("params", JSON.stringify(request_params));
+        this.$.requestPosts.generateRequest();
+      }
+    },
+
+    _responsePosts: function (event, detail) {
+      // We reset the params field for the next request of requestPost iron-ajax
+      this._interval = this._interval || window.setInterval(this._refresh_posts.bind(this), this.refresh_time);
+      this.$.requestPosts.setAttribute("params", '{}');
+      //Appends all user posts to the user timeline 
+      user_posts = detail.response.items;
+      // If the user hasn't posted anything yet, we just ignore it
+      if (user_posts.length > 0) {
+        for (i = 0; i < user_posts.length; i++) {
+          //We transform timestamps to a more manageable format of every post received (published and updated fields)
+          user_posts[i] = this._changeTime(user_posts[i]);
+          // We insert the post into the timeline that holds all posts that will be displayed to the user
+          // (If the published date for the post is in the period of time that shows the actual page of the component)
+          this.push('timeline_posts', user_posts[i]);
+        }
+        this.loading = false;
+      }
+    },
+    _refresh_posts: function () {
+      this.loading = true;
+      this.set('timeline_posts', []);
+      var that = this;
+      this.user_followings.forEach(function (user_id) {
+        that.$.requestPosts.setAttribute("url", that._getRequestPostsURL(user_id));
+        that.$.requestPosts.generateRequest();
+        console.log('se Actualiza ', user_id)
+      });
+    },
+
+    // Element Lifecycle
+
+    attached: function () {
+      // `attached` fires once the element and its parents have been inserted
+      // into a document.
+      //
+      // This is a good place to perform any work related to your element's
+      // visual state or active behavior (measuring sizes, beginning animations,
+      // loading resources, etc).
+      this.loading = true;
+      if (this.token) {
+        //We set the language
+        if (this.language == "en")
+          this.set('language_data', this.language_en);
+        else if (this.language == "es")
+          this.set('language_data', this.language_es);
+
+        //We set the headers for the Google API requests
+        var headers = {
+          "Authorization": "Bearer " + this.token,
+          "Timing-Allow-origin": "*"
+        };
+        this.$.requestPosts.setAttribute("headers", JSON.stringify(headers));
+        //this.$.requestMock.generateRequest();
+        this.$.requestFollowing.generateRequest();
+      }
+    },
+
+    detached: function () {
+      // The analog to `attached`, `detached` fires when the element has been
+      // removed from a document.
+      //
+      // Use this to clean up anything you did in `attached`.
+      if (this._interval) {
+        window.clearInterval(this._interval);
+      }
+    },
+
+    // AUXILIAR FUNCTIONS
+    /**
+    * Convert a given posts timestamp of post lists to a human readable date
+    *
+    */
+    _changeTime: function (post) {
+      updated_post = post;
+      var date = new Date(post.published);
+      var updated_date = new Date(post.updated)
+      var current_date = new Date();
+      var time;
+      var month = this.language_data.months;
+      /* Years*/
+      if ((current_date.getFullYear() - date.getFullYear()) != 0) {
+        var dif = current_date.getFullYear() - date.getFullYear()
+        time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+        /* Months */
+      } else if ((current_date.getMonth() - date.getMonth()) != 0) {
+        var dif = current_date.getMonth() - date.getMonth();
+        time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+        /* Days */
+      } else if ((current_date.getDate() - date.getDate()) == 0) {
+        if ((current_date.getHours() - date.getHours()) == 0) {
+          if ((current_date.getMinutes() - date.getMinutes()) == 0) {
+            time = current_date.getSeconds() - date.getSeconds();
+            time += time == 1 ? " " + this.language_data.sec : " " + this.language_data.secs;
+          }
+          else {
+            time = current_date.getMinutes() - date.getMinutes();
+            time += time == 1 ? " " + this.language_data.min : " " + this.language_data.mins;
+          }
+        }
+        else {
+          if (current_date.getHours() - date.getHours() == 1) {
+            time = current_date.getHours() - date.getHours();
+            time += " " + this.language_data.hour;
+          } else {
+            time = current_date.getHours() - date.getHours();
+            time += " " + this.language_data.hours;
+          }
+        }
+      }
+      else if (((current_date.getDate() - date.getDate()) < 8) && ((current_date.getDate() - date.getDate()) > 0)) {
+        if ((current_date.getDate() - date.getDate()) == 1) {
+          time = current_date.getDate() - date.getDate();
+          time += " " + this.language_data.day;
+        }
+        else {
+          time = current_date.getDate() - date.getDate();
+          time += " " + this.language_data.days;
+        }
+      }
+      else {
+        time = date.getDate() + " " + month[date.getMonth()] + " " + date.getFullYear();
+      }
+      // We change the timestamps to millis UTC and we create a field that represents the published
+      // date in a readably format
+      updated_post.published_pretty = time;
+      updated_post.published = date.getTime();
+      updated_post.updated = updated_date.getTime();
+      return updated_post;
+    },
+
+    _sortPosts: function (post1, post2) {
+      if (post1.published == post2.published)
+        return 0;
+      else
+        return post1.published > post2.published ? -1 : 1;
+    },
+
+    // AUXILIAR FUNCTIONS FOR DOM-IF CONDITIONS 
+
+
+    _thereArePosts: function (value) {
+      // Checks if there are remaining posts to be displayed
+      var thereAre = this.timeline_posts && this.timeline_posts.length > 0
+      return value == 'true' ? thereAre : !thereAre;
+    },
+
+    _hasAttachment: function (item, attachmentType) {
+      return item.object.attachments[0].objectType === attachmentType;
+    },
+
+    _hasVideoAttachment: function (item) {
+      return item.object.attachments[0].objectType === 'video'
+        && item.object.attachments[0].hasOwnProperty('embed');
+    },
+
+    _hasArticleCaption: function (item) {
+      return item.object.attachments[0].image && item.object.attachments[0].image.url && item.object.attachments[0].image.width > 360;
+    },
+
+    _isSharedPost: function (item) {
+      return item.verb === "share";
+    },
+    /* Function _getCaptionDimensions: Adjusts the dimensions of album captions.
+    Given an index inside the album caption List, the function returns a fixed 
+    dimension, depending of the image role in the camption collage (main, secondary) */
+    _getCaptionDimensions: function (image_index, item) {
+      dimension = "0px";
+      main_photo = (image_index == 0);
+      album_captions_length = item.object.attachments[0].thumbnails.length;
+      if (main_photo) {
+        switch (album_captions_length) {
+          case 1:
+            dimension = "300px";
+            break;
+          case 2:
+            dimension = "173px";
+            break;
+          case 3:
+            dimension = "200px";
+            break;
+          case 4:
+            dimension = "262px";
+            break;
+          default: /* More than 4 photos*/
+            /* We only show 4 captions of the album, so the main photo will have the same dimension
+            as the previous case */
+            dimension = "262px";
+        }
+      } else {
+        switch (album_captions_length) {
+          case 1:
+            dimension = "0px";
+            break;
+          case 2:
+            dimension = "173px";
+            break;
+          case 3:
+            dimension = "100px";
+            break;
+          case 4:
+            dimension = "86px";
+            break;
+          default: /* More than 4 photos*/
+            /* We only show 4 captions of the album, so the secondary photos will have the same dimension
+            as the previous case */
+            dimension = "86px";
+        }
+      }
+      return dimension;
+    },
+    // OBSERVERS
+    _languageChanged: function (newVal) {
+      if (newVal === "en") {
+        this.language = "en";
+        this.set('language_data', this.language_en);
+      }
+      else if (newVal === "es") {
+        this.language = "es";
+        this.set('language_data', this.language_es);
+      }
+    },
+  });
+</script>

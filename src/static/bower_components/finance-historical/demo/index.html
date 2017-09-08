@@ -1,0 +1,73 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>finance-historical Demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../finance-historical.html">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body unresolved>
+<style>
+.table {
+  margin:5px 15px;
+  width: 80%;
+  box-sizing: border-box;
+}
+</style>
+<template is="dom-bind" id="bind">
+  <finance-historical symbol="yhoo" end="2010-03-10" start="2009-9-11" data="{{response}}"></finance-historical>
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Symbol</th>
+        <th>Date</th>
+        <th>Open</th>
+        <th>High</th>
+        <th>Low</th>
+        <th>Close</th>
+        <th>Volume</th>
+        <th>Adj_Close</th>
+      </tr>
+    </thead>
+    <tbody>
+      <template is="dom-repeat" items="{{response}}" as="companies">
+        <template is="dom-repeat" items="{{companies}}">
+          <tr>
+            <td>{{index}}</td>
+            <td>{{item.Symbol}}</td>
+            <td>{{item.Date}}</td>
+            <td>{{item.Open}}</td>
+            <td>{{item.High}}</td>
+            <td>{{item.Low}}</td>
+            <td>{{item.Close}}</td>
+            <td>{{item.Volume}}</td>
+            <td>{{item.Adj_Close}}</td>
+          </tr>
+        </template>
+      </template>
+    </tbody>
+  </table>
+</template>
+<script>
+window.addEventListener('WebComponentsReady', function(e) {
+  var bind = document.querySelector('#bind');
+  var fh = document.querySelector('finance-historical');
+  fh.addEventListener('finance-historical-ready', function(data){
+    console.log(bind.response)
+  })
+});
+</script>
+</body>
+</html>

@@ -34,14 +34,16 @@ import logging
 
 ## API URLS and handlers
 api_url =[
+    (r'/api/componentes/bva', api_componentes.BVAHandler),
     (r'/api/componentes', api_componentes.ComponentListHandler),
     (r'/api/componentes/(.*)/valoracionComponente', api_componentes.ComponentRatingHandler),
     (r'/api/componentes/(.*)', api_componentes.ComponentHandler),
 
+
     (r'/api/usuarios', api_usuarios.UserListHandler),
     (r'/api/usuarios/([A-Za-z0-9]*)/profile', api_usuarios.ProfileHandler),
     (r'/api/usuarios/([A-Za-z0-9]*)/credentials', api_usuarios.UserCredentialsHandler),
-    (r'/api/usuarios/([A-Za-z0-9]*)/assign', api_usuarios.AssignComponentsHandler),
+    # (r'/api/usuarios/([A-Za-z0-9]*)/assign', api_usuarios.AssignComponentsHandler),
     (r'/api/usuarios/(.*)', api_usuarios.UserHandler),
 
     (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),

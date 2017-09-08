@@ -1,0 +1,179 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<!--
+An polymer element providing finance historical of companies
+
+Example:
+```
+<finance-historical symbol="yhoo" end="2010-03-10" start="2009-9-11"></finance-historical>
+```
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="finance-historical">
+  <template>
+  <style>
+  :host {
+    visibility: hidden;
+  }
+  </style>
+</template>
+
+<script>
+Polymer({
+  is: 'finance-historical',
+
+  properties: {
+    _query: {
+      type: String,
+      computed:'_generateQuery(symbol,start,end)'
+    },
+  /**
+    * Symbol of the company(ies) which we want take data
+    **/
+    symbol: {
+      type: String,
+      notify: true,
+      observer: "updateData"
+    },
+    /**
+    * End date interval
+    */
+    end: {
+      type: Date,
+      value: function(){return new Date()},
+      notify:true
+    },
+    /**
+    * Start date interval
+    */
+    start: {
+      type: Date,
+      notify: true
+    },
+    /**
+    * Data of company(ies) found
+    **/
+    data: {
+      type: Array,
+      value: function(){return [ ]},
+      notify: true
+    },
+    delay: {
+      type:Number,
+      value:0,
+      reflectToAttribute: true
+    }
+  },
+  ready: function(){
+    this.addEventListener('start-changed', this.requestData.bind(this));
+    this.addEventListener('end-changed', this.requestData.bind(this));
+    this.addEventListener('symbol-changed', this.requestData.bind(this));
+    this.requestData();
+  },
+  updateData: function(){
+      this.requestData();
+  },
+  _generateQuery: function(symbol,start,end){
+    var query_start = new Date(start);
+    var query_end = new Date(end);
+    var q_start = {
+      year:query_start.getFullYear(),
+      month:query_start.getMonth()+1 < 9? '0'+(query_start.getMonth()+1):(query_start.getMonth()+1),
+      day:query_start.getDate() < 9? '0'+query_start.getDate():query_start.getDate()
+    };
+    var q_end = {
+      year:query_end.getFullYear(),
+      month:query_end.getMonth()+1 < 9? '0'+(query_end.getMonth()+1):(query_end.getMonth()+1),
+      day:query_end.getDate() < 9? '0'+query_end.getDate():query_end.getDate()
+    };
+    query_start = q_start.year + '-' + q_start.month + '-' + q_start.day;
+    query_end = q_end.year + '-' + q_end.month + '-' + q_end.day;
+    // ADD symbol
+    var symbol_list = symbol.split(/[\,\;]/);
+    var symbols = "";
+    for (var i=0;i<symbol_list.length;i++){
+      if (i>0){
+        symbols +=',';
+      }
+      symbols += '"' + symbol_list[i]+ '"'
+    }
+    query ='select * from yahoo.finance.historicaldata where symbol in (' + symbols + ')';
+    // ADD start
+    query += ' and startDate = "' + query_start + '"';
+    // ADD end
+    query += ' and endDate = "' + query_end + '"';
+    return query
+
+  },
+  _yqlQuery: function(query,callback){
+    if (!query || !callback){
+      console.error('Query and callback is required');
+      this.fire('finance-historical-error',{error:'Query and callback is required'});
+    } else {
+      var script = document.createElement('script');
+      var encodedQuery = encodeURIComponent(query);
+      var callback_name = 'yahoo_callback_wrapper' + new Date().getTime() + Math.floor((Math.random() * 10000) + 1);
+      var that = this;
+      window[callback_name] = function(json){
+        document.body.removeChild(script);
+        window[callback_name] = undefined;
+        that._busy = false;
+        callback(json);
+      }.bind(this)
+      script.src = 'https://query.yahooapis.com/v1/public/yql?q=' + encodedQuery+'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=' + callback_name
+      document.body.appendChild(script)
+    }
+  },
+  requestData: function(){
+    if (this.symbol && this.start && this.end && !this._busy){
+      this._busy = true;
+      this.set('data',[]);
+      this.fire('finance-historical-inicated');
+      this._yqlQuery(this._query, this._financeApiResponse.bind(this));
+    }
+  },
+  _financeApiResponse: function(data){
+    var that = this;
+    window.setTimeout(function(){
+      if (data.error){
+        that.requestData();
+        return null;
+      } else if (!data.query.results){
+        that.fire('finance-historical-error',{error:{description:'Invalid start,end or symbol'}});
+        return null;
+      }
+      var results = data.query.results.quote;
+      var j=0;
+      var init ="";
+      for (var i=0;i<results.length;i++){
+        if (init == ""){
+          var value = [results[i]]
+          that.push('data',value);
+          init = results[i].Symbol;
+        } else if (results[i].Symbol == init){
+          that.push('data.' + j, results[i])
+        } else {
+          j = j +1;
+          init = results[i].Symbol;
+          that.push('data', [results[i]]);
+        }
+      }
+      that.fire('finance-historical-ready',{data:that.data});
+    },this.delay)
+  }
+});
+</script>
+</dom-module>

@@ -28,7 +28,7 @@ import os
 import yaml
 import random
 import logging
-
+import BVA
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
     'twitter',
@@ -40,7 +40,8 @@ social_list = [
     'github',
     ]
 
-
+bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"],
+              ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"])
 # We read the relevant fields in the config.yaml file (config params for PicBit Backend)
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
@@ -145,6 +146,7 @@ class ComponentAttributes(ndb.Model):
   mostrar = ndb.IntegerProperty()
   component_directory = ndb.StringProperty()
   accessToken = ndb.StringProperty()
+  api_key = ndb.StringProperty()
 
 class BetaUser(ndb.Model):
   email = ndb.StringProperty(required=True)
@@ -168,7 +170,9 @@ class Component(ndb.Model):
   predetermined = ndb.BooleanProperty(default=False)
   # Preasigned version to load the component. It needs to be confirmed
   version = ndb.StringProperty()
-  attributes = ndb.StructuredProperty(ComponentAttributes)
+  attributes = ndb.StringProperty()
+  img = ndb.StringProperty()
+  tokenAttr = ndb.StringProperty()
 
 class UserComponent(ndb.Model):
   component_id = ndb.StringProperty(required=True)
@@ -297,24 +301,24 @@ def getCipher(token_entity_key):
 # to his dashboard (transactional operation)
 # Params: - general_component: Component Entity that it is desired to be served to the user
 # Returns: string that represents the version that will be served to the user
-@ndb.transactional()
-def setComponentVersion(general_component):
-  # print "====================================================="
-  # print "Entrada en la llamada de setting"
-  # print "====================================================="
-  version = ""
-  if component_versioning == "dynamic":
-    # We set the version that will be served to the user
-    version = general_component.version_list[general_component.version_index]
-    # We change the version_index field, that represents the version that will be served to the next user
-    general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
-    # Update the info about the component changed
-    general_component.put()
-  # If the component versioning is set as static, we always set the stable version for the component
-  elif component_versioning == "static":
-    version="stable"
+# @ndb.transactional()
+# def setComponentVersion(general_component):
+#   # print "====================================================="
+#   # print "Entrada en la llamada de setting"
+#   # print "====================================================="
+#   version = ""
+#   if component_versioning == "dynamic":
+#     # We set the version that will be served to the user
+#     version = general_component.version_list[general_component.version_index]
+#     # We change the version_index field, that represents the version that will be served to the next user
+#     general_component.version_index = (general_component.version_index + 1) % len(general_component.version_list)
+#     # Update the info about the component changed
+#     general_component.put()
+#   # If the component versioning is set as static, we always set the stable version for the component
+#   elif component_versioning == "static":
+#     version="stable"
 
-  return version
+#   return version
 
 def getComponentEntity(component_id):
   general_component = Component.query(Component.component_id == component_id).get()
@@ -326,16 +330,17 @@ def getComponentEntity(component_id):
 #########################################################################################
 
 # Adds to the user dashboard those component defined as predetermined in the system
-def assignPredeterminedComponentsToUser(entity_key):
-  # Obtains the predetermined components of the system and adds it to the User
-  # We consider that we will have at most 10 predetermined components in our system
-  # print "====================================================="
-  # print "Entrada en la primera llamada de la asignacion"
-  # print "====================================================="
-  predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
+# def assignPredeterminedComponentsToUser(entity_key):
+#   # Obtains the predetermined components of the system and adds it to the User
+#   # We consider that we will have at most 10 predetermined components in our system
+#   # print "====================================================="
+#   # print "Entrada en la primera llamada de la asignacion"
+#   # print "====================================================="
+#   predetermined_comps = Component.query(Component.predetermined == True).fetch(10)
   
-  for comp in predetermined_comps:
-    st = activateComponentToUser(comp.component_id, entity_key)
+
+#   for comp in predetermined_comps:
+#     st = activateComponentToUser(comp.component_id, entity_key, versions)
     
 
 # Set the version for the component in the case it will be added to the user dashboard
@@ -348,93 +353,95 @@ def assignPredeterminedComponentsToUser(entity_key):
 
 # Adds a given component to the user,
 # creating or updating the corresponding entities that store properties about this action
-def activateComponentToUser(component_id, entity_key): #No entiendo lo que pretende hacer
-  # print "====================================================="
-  # print "Entrada en la llamada de la activacion"
-  # print "====================================================="
-  user = entity_key.get()
-  general_component = Component.query(Component.component_id == component_id).get()
-  user_component = None
-  status = False
-  # We check if the user has added the corresponding social network to his/her profile
-  for social_network in user.net_list:
-    if general_component.rs == social_network.social_name:
-      #We check if the component provided is in the user component list
-      # If not, we create a new UserComponent Entity, setting the component version the user will use
-      for comp in user.components:
-        if comp.component_id == component_id:
-          user_component = comp
+# def activateComponentToUser(component_id, entity_key, versions): 
+#   # print "====================================================="
+#   # print "Entrada en la llamada de la activacion"
+#   # print "====================================================="
+#   version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
+#                   "finance-search": 5, "open-weather": 6}
+#   user = entity_key.get()
+#   general_component = Component.query(Component.component_id == component_id).get()
+#   user_component = None
+#   status = False
+#   # We check if the user has added the corresponding social network to his/her profile
+#   for social_network in user.net_list:
+#     if general_component.rs == social_network.social_name:
+#       #We check if the component provided is in the user component list
+#       # If not, we create a new UserComponent Entity, setting the component version the user will use
+#       for comp in user.components:
+#         if comp.component_id == component_id:
+#           user_component = comp
 
-      if not user_component == None:
-        # We set the field to active
-        # The user's preferences (heigh, width) does not change
-        # We get the version of the component that will be served to the user
-        # (the same version than the setted when the user activated the component for the first time)
-        version = user_component.version
-        if not user_component.active:
-          user_component.active = True
-          user.put()
-          status = True
-      else:
-        # We set the version of the component
-        general_component = getComponentEntity(component_id)
-        version = general_component.version
-        # We create a new UserComponent entity
-        user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
-        # We add the component to the component_list of the user
-        user.components.append(user_component)
-        user.put()
+#       if not user_component == None:
+#         # We set the field to active
+#         # The user's preferences (heigh, width) does not change
+#         # We get the version of the component that will be served to the user
+#         # (the same version than the setted when the user activated the component for the first time)
+#         version = user_component.version
+#         if not user_component.active:
+#           user_component.active = True
+#           user.put()
+#           status = True
+#       else:
+#         # We set the version of the component
+#         general_component = getComponentEntity(component_id)
+#         version = general_component.version
+#         # We create a new UserComponent entity
+#         user_component = UserComponent(component_id=component_id, x=0, y=0, height="0", width="0", listening=None, version=version)
+#         # We add the component to the component_list of the user
+#         user.components.append(user_component)
+#         user.put()
 
-        # We increase the counters that represents the times that a given component has been tested (general and versioned)
-        # print "============================================="
-        # print "El numero de indice antes de llamar a setComponentVersion: " 
-        # print general_component.version_index
-        # print "============================================="
-        new_version = setComponentVersion(general_component)
-        # print "============================================="
-        # print "El numero de indice despues de llamar a setComponentVersion: " 
-        # print general_component.version_index
-        # print "============================================="
-        general_component.version = new_version
-        general_component.test_count += 1
-        general_component.put()
-        # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
-        # versionedComponent.version == version)).get()
-        # versioned_component.test_count = versioned_component.test_count + 1
-        # versioned_component.put()
-        status = True
+#         # We increase the counters that represents the times that a given component has been tested (general and versioned)
+#         # print "============================================="
+#         # print "El numero de indice antes de llamar a setComponentVersion: " 
+#         # print general_component.version_index
+#         # print "============================================="
+#         new_version = versions[version_order[component_id]]
+#         # print "============================================="
+#         # print "El numero de indice despues de llamar a setComponentVersion: " 
+#         # print general_component.version_index
+#         # print "============================================="
+#         general_component.version = new_version
+#         general_component.test_count += 1
+#         general_component.put()
+#         # versioned_component = VersionedComponent.query(ndb.AND(VersionedComponent.component_id == component_id,
+#         # versionedComponent.version == version)).get()
+#         # versioned_component.test_count = versioned_component.test_count + 1
+#         # versioned_component.put()
+#         status = True
 
-      # We store in a ComponentTested entity the new version tested by the user
-      user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
-      if not user_component_tested == None:
-        # We update the field that represents the actual version that is being tested
-        user_component_tested.actual_version = version
-        # We add the version to the versions tested list, if is not was added previously
-        if not version in user_component_tested.versions_tested:
-          user_component_tested.versions_tested.append(version)
-          user_component_tested.put()
-      else:
-        # We create a new ComponentTested entity to store the versions of a component tested by the user
-        component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
-        component_tested.put()
-  return status
+#       # We store in a ComponentTested entity the new version tested by the user
+#       user_component_tested = ComponentTested.query(ndb.AND(ComponentTested.component_id == component_id, ComponentTested.user_id == user.user_id)).get()
+#       if not user_component_tested == None:
+#         # We update the field that represents the actual version that is being tested
+#         user_component_tested.actual_version = version
+#         # We add the version to the versions tested list, if is not was added previously
+#         if not version in user_component_tested.versions_tested:
+#           user_component_tested.versions_tested.append(version)
+#           user_component_tested.put()
+#       else:
+#         # We create a new ComponentTested entity to store the versions of a component tested by the user
+#         component_tested = ComponentTested(component_id=component_id, user_id=user.user_id, versions_tested=[version], actual_version=version)
+#         component_tested.put()
+#   return status
 
 
 # Removes the component from the user's dashboard
 # It turns the field active to False, thus the component will not be listed as a
 # component included in the user's dashboard
-def deactivateUserComponent(entity_key, component_id):
-  user = entity_key.get()
-  status = False
-  # We check if the component provided is in the user component list
-  for comp in user.components:
-    if comp.component_id == component_id and comp.active:
-      # Deactivates the component
-      comp.active = False
-      user.put()
-      status = True
+# def deactivateUserComponent(entity_key, component_id):
+#   user = entity_key.get()
+#   status = False
+#   # We check if the component provided is in the user component list
+#   for comp in user.components:
+#     if comp.component_id == component_id and comp.active:
+#       # Deactivates the component
+#       comp.active = False
+#       user.put()
+#       status = True
 
-  return status
+#   return status
 
 
 #####################################################################################
@@ -590,10 +597,25 @@ def insertUser(rs, ide, access_token, data=None): #FUNCIONA
   token.put()
   user.tokens.append(token)
 
+  user.put()
+  return user_key
+
+def assignComponents(user_key):
+  user = user_key.get()
+  # Setting up the versions for the components
+  versions = bva.getNewVersions()
+  comps = Component.query().fetch(15)
+  version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
+                  "finance-search": 5, "open-weather": 6}
+
+  for comp in comps:
+    version = versions[version_order[comp.component_id]]
+    uc = UserComponent(component_id=comp.component_id, x=0, y=0, height="0", width="0", version=version)
+    user.components.append(uc)
+    comp.version = version
+    comp.put()
   # Updates the user entity
   user.put()
-
-  return user_key
 
 
 # Actualiza la info de usuario proporcionada y retorna una lista de los elementos actualizados
@@ -631,7 +653,7 @@ def updateUser(entity_key, data): #FUNCIONA
   if data.has_key("component"):
     comp_name = data["component"]
     # Adds the component to the user
-    activated = activateComponentToUser(comp_name, entity_key)
+    # activated = activateComponentToUser(comp_name, entity_key)
     if activated:
       updated_data += ["component"]
 
@@ -747,33 +769,42 @@ def searchNetwork(entity_key): # FUNCIONA
   return json.dumps(ans)
 
 # Creates a component (Component Entity)
-def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, endpoint="", component_directory=""):
+def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, attributes="", tokenAttr="", img=""):
   # Generates a random initial value that represents the version of the component that will be
   # served to the next user who adds it to his dashboard
   # Depending on the social network, different attributes are needed
-  attributes = None
-  if rs == "twitter":
-    attributes = ComponentAttributes(component_id=name, access_token="", secret_token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock", consumer_key="J4bjMZmJ6hh7r0wlG9H90cgEe",
-                  consumer_secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf", 
-                  component_base="bower_components/twitter-timeline/static/", count=200, endpoint=endpoint)
-    attributes.put()
-  elif rs == "github":
-    attributes = ComponentAttributes(component_id=name, component_directory=component_directory, username=":user", 
-                  token="", mostrar=10)
-    attributes.put()
-  elif rs == "instagram":
-    attributes = ComponentAttributes(component_id=name, endpoint=endpoint, accessToken=" ")
-    attributes.put()
-  elif rs == "googleplus":
-    attributes = ComponentAttributes(component_id=name, token="")
-    attributes.put()
-  elif rs == "facebook":
-    attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
-    attributes.put()
+  # attributes = None
+  # if rs == "twitter":
+  #   attributes = ComponentAttributes(component_id=name, access_token="", secret_token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock", consumer_key="J4bjMZmJ6hh7r0wlG9H90cgEe",
+  #                 consumer_secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf", 
+  #                 component_base="bower_components/twitter-timeline/static/", count=200, endpoint=endpoint)
+  #   attributes.put()
+  # elif rs == "github":
+  #   attributes = ComponentAttributes(component_id=name, component_directory=component_directory, username=":user", 
+  #                 token="", mostrar=10)
+  #   attributes.put()
+  # elif rs == "instagram":
+  #   attributes = ComponentAttributes(component_id=name, endpoint=endpoint, accessToken=" ")
+  #   attributes.put()
+  # elif rs == "googleplus":
+  #   attributes = ComponentAttributes(component_id=name, token="", api_key=api_key)
+  #   attributes.put()
+  # elif rs == "facebook":
+  #   attributes = ComponentAttributes(component_id=name, access_token="", component_directory=component_directory)
+  #   attributes.put()
+  # elif rs == "pinterest":
+  #   # print "=========================="
+  #   # print "Entro a la parte de pinterest"
+  #   # print "=========================="
+  #   attributes = ComponentAttributes(component_id=name, access_token="", component_base='bower_components/pinterest-timeline-stable/')
+  #   attributes.put()
   initial_index = random.randint(0, len(version_list)-1)
+  # component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
+  #  rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
+  #  attributes=attributes)
   component = Component(component_id=name, url=url, input_type=input_t, output_type=output_t,
-   rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
-   attributes=attributes)
+    rs=rs, description=description, version_list=version_list, version_index=initial_index, predetermined=predetermined,
+    attributes=attributes, tokenAttr=tokenAttr, img=img)
   # We create a new VersionedComponent Entity for each version_added to the version_list
   # for version in version_list:
   #   versionedComponent = VersionedComponent(version=version, component_id=component.component_id)
@@ -781,7 +812,7 @@ def insertComponent(name, url="", description="", rs="", input_t=None, output_t=
   created = True
   # Saves the changes to the entity
 
-  component.version = setComponentVersion(component)
+  #component.version = setComponentVersion(component)
   component.test_count += 1
   component.put()
 
@@ -914,11 +945,12 @@ def getUserComponentList(user_id, component_detailed_info=False):
           component_info = {"component_id": comp.component_id,
                         "user_rate": component_rate}
       # Adds the component to the component list
-      component_list.append(component_info)
-  return component_list
+      component_list.append(json.dumps(component_info))
+  return json.dumps({'data':[json.loads(el) for el in component_list]})
 
 def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
   ans = []
+  print entity_key
   general_comp = {}
   if filter_by_user:
     # user id specified
@@ -947,58 +979,21 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["height"] = str(comp.height)
             general_comp["width"] = str(comp.width)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = {}
-            if general_comp["social_network"] == "twitter":
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-              general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-              general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-              general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-              general_comp["attributes"]["component_base"] = str(attributes.component_base)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["count"] = str(attributes.count)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/twitter-logo.png')
-              general_comp["tokenAttr"] = str('access_token')
-            elif general_comp["social_network"] == "github":
-              general_comp["attributes"]["username"] = str(attributes.username)
-              general_comp["attributes"]["token"] = str(attributes.token)
-              general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/github-icon.png')
-              general_comp["tokenAttr"] = str('token')
-            elif general_comp["social_network"] == "instagram":
-              general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-              general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/instagram-icon.png')
-              general_comp["tokenAttr"] = str('accessToken')
-            elif general_comp["social_network"] == "googleplus":
-              general_comp["attributes"]["token"] = str(attributes.token)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/google-icon.svg')
-              general_comp["tokenAttr"] = str('token')
-            elif general_comp["social_network"] == "facebook":
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/facebook-icon.png')
-              general_comp["tokenAttr"] = str('access_token')
+            general_comp["attributes"] = json.loads(info_comp.attributes)
+            general_comp["img"] = str(info_comp.img)
+            general_comp["tokenAttr"] = str(info_comp.tokenAttr)
+            
             if not rate == None:
               general_comp["rate"] = str(rate.rating_value)
             else:
               general_comp["rate"] = str(0)
             # ans = general_comp
-            ans.append(general_comp)
+            ans.append(json.dumps(general_comp))
 
 
       else:
         user = entity_key.get()
+        print user
         user_comps = user.components
         # Now we get the general info about the components used by the user
         for comp in user_comps:
@@ -1010,48 +1005,10 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
             general_comp["social_network"] = str(info_comp.rs)
             general_comp["description"] = str(info_comp.description)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = {}
-            if general_comp["social_network"] == "twitter":
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-              general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-              general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-              general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-              general_comp["attributes"]["component_base"] = str(attributes.component_base)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["count"] = str(attributes.count)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/twitter-logo.png')
-              general_comp["tokenAttr"] = str('access_token')
-            elif general_comp["social_network"] == "github":
-              general_comp["attributes"]["username"] = str(attributes.username)
-              general_comp["attributes"]["token"] = str(attributes.token)
-              general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/github-icon.png')
-              general_comp["tokenAttr"] = str('token')
-            elif general_comp["social_network"] == "instagram":
-              general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-              general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/instagram-icon.png')
-              general_comp["tokenAttr"] = str('accessToken')
-            elif general_comp["social_network"] == "googleplus":
-              general_comp["attributes"]["token"] = str(attributes.token)
-              general_comp["attributes"]["language"] = str(attributes.language)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/google-icon.svg')
-              general_comp["tokenAttr"] = str('token')
-            elif general_comp["social_network"] == "facebook":
-              general_comp["attributes"]["language"] = str(attributes.language)
-              general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-              general_comp["attributes"]["access_token"] = str(attributes.access_token)
-              json.dumps(general_comp["attributes"])
-              general_comp["img"] = str('images/components/facebook-icon.png')
-              general_comp["tokenAttr"] = str('access_token')
+            general_comp["attributes"] = json.loads(info_comp.attributes)
+            general_comp["img"] = str(info_comp.img)
+            general_comp["tokenAttr"] = str(info_comp.tokenAttr)
+            
             if not rate == None:
               general_comp["rate"] = str(rate.rating_value)
             else:
@@ -1079,48 +1036,10 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["height"] = str(comp.height)
               general_comp["width"] = str(comp.width)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = {}
-              if general_comp["social_network"] == "twitter":
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-                general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-                general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-                general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-                general_comp["attributes"]["component_base"] = str(attributes.component_base)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["count"] = str(attributes.count)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/twitter-logo.png')
-                general_comp["tokenAttr"] = str('access_token')
-              elif general_comp["social_network"] == "github":
-                general_comp["attributes"]["username"] = str(attributes.username)
-                general_comp["attributes"]["token"] = str(attributes.token)
-                general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/github-icon.png')
-                general_comp["tokenAttr"] = str('token')
-              elif general_comp["social_network"] == "instagram":
-                general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-                general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/instagram-icon.png')
-                general_comp["tokenAttr"] = str('accessToken')
-              elif general_comp["social_network"] == "googleplus":
-                general_comp["attributes"]["token"] = str(attributes.token)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/google-icon.svg')
-                general_comp["tokenAttr"] = str('token')
-              elif general_comp["social_network"] == "facebook":
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/facebook-icon.png')
-                general_comp["tokenAttr"] = str('access_token')
+              general_comp["attributes"] = json.loads(info_comp.attributes)
+              general_comp["img"] = str(info_comp.img)
+              general_comp["tokenAttr"] = str(info_comp.tokenAttr)
+              
               if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
@@ -1140,48 +1059,10 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
               general_comp["social_network"] = str(info_comp.rs)
               general_comp["description"] = str(info_comp.description)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = {}
-              if general_comp["social_network"] == "twitter":
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-                general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-                general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-                general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-                general_comp["attributes"]["component_base"] = str(attributes.component_base)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["count"] = str(attributes.count)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/twitter-logo.png')
-                general_comp["tokenAttr"] = str('access_token')
-              elif general_comp["social_network"] == "github":
-                general_comp["attributes"]["username"] = str(attributes.username)
-                general_comp["attributes"]["token"] = str(attributes.token)
-                general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/github-icon.png')
-                general_comp["tokenAttr"] = str('token')
-              elif general_comp["social_network"] == "instagram":
-                general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-                general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/instagram-icon.png')
-                general_comp["tokenAttr"] = str('accessToken')
-              elif general_comp["social_network"] == "googleplus":
-                general_comp["attributes"]["token"] = str(attributes.token)
-                general_comp["attributes"]["language"] = str(attributes.language)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = str('images/components/google-icon.svg')
-                general_comp["tokenAttr"] = str('token')
-              elif general_comp["social_network"] == "facebook":
-                general_comp["attributes"]["language"] = str(attributes.language)
-                general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-                general_comp["attributes"]["access_token"] = str(attributes.access_token)
-                json.dumps(general_comp["attributes"])
-                general_comp["img"] = 'images/components/facebook-icon.png'
-                general_comp["tokenAttr"] = 'access_token'
+              general_comp["attributes"] = json.loads(info_comp.attributes)
+              general_comp["img"] = str(info_comp.img)
+              general_comp["tokenAttr"] = str(info_comp.tokenAttr)
+              
               if not rate == None:
                 general_comp["rate"] = rate.rating_value
               else:
@@ -1200,48 +1081,10 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["social_network"] = str(component.rs)
           general_comp["description"] = str(component.description)
           general_comp["version"] = str(component.version)
-          general_comp["attributes"] = {}
-          if general_comp["social_network"] == "twitter":
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-            general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-            general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-            general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-            general_comp["attributes"]["component_base"] = str(attributes.component_base)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["count"] = str(attributes.count)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/twitter-logo.png')
-            general_comp["tokenAttr"] = str('access_token')
-          elif general_comp["social_network"] == "github":
-            general_comp["attributes"]["username"] = str(attributes.username)
-            general_comp["attributes"]["token"] = str(attributes.token)
-            general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/github-icon.png')
-            general_comp["tokenAttr"] = str('token')
-          elif general_comp["social_network"] == "instagram":
-            general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-            general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/instagram-icon.png')
-            general_comp["tokenAttr"] = str('accessToken')
-          elif general_comp["social_network"] == "googleplus":
-            general_comp["attributes"]["token"] = str(attributes.token)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/google-icon.svg')
-            general_comp["tokenAttr"] = str('token')
-          elif general_comp["social_network"] == "facebook":
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/facebook-icon.png')
-            general_comp["tokenAttr"] = str('access_token')
+          general_comp["attributes"] = json.loads(component.attributes)
+          general_comp["img"] = str(component.img)
+          general_comp["tokenAttr"] = str(component.tokenAttr)
+          
           if not rate == None:
             general_comp["rate"] = str(rate.rating_value)
           else:
@@ -1255,49 +1098,11 @@ def getComponents(entity_key=None, rs="", all_info=False, filter_by_user=False):
           general_comp["url"] = str(comp.url)
           general_comp["social_network"] = str(comp.rs)
           general_comp["description"] = str(comp.description)
-          eneral_comp["version"] = str(component.version)
-          general_comp["attributes"] = {}
-          if general_comp["social_network"] == "twitter":
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            general_comp["attributes"]["secret_token"] = str(attributes.secret_token)
-            general_comp["attributes"]["consumer_key"] = str(attributes.consumer_key)
-            general_comp["attributes"]["consumer_secret"] = str(attributes.consumer_secret)
-            general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-            general_comp["attributes"]["component_base"] = str(attributes.component_base)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["count"] = str(attributes.count)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/twitter-logo.png')
-            general_comp["tokenAttr"] = str('access_token')
-          elif general_comp["social_network"] == "github":
-            general_comp["attributes"]["username"] = str(attributes.username)
-            general_comp["attributes"]["token"] = str(attributes.token)
-            general_comp["attributes"]["mostrar"] = str(attributes.mostrar)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/github-icon.png')
-            general_comp["tokenAttr"] = str('token')
-          elif general_comp["social_network"] == "instagram":
-            general_comp["attributes"]["accessToken"] = str(attributes.accessToken)
-            general_comp["attributes"]["endpoint"] = str(attributes.endpoint)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/instagram-icon.png')
-            general_comp["tokenAttr"] = str('accessToken')
-          elif general_comp["social_network"] == "googleplus":
-            general_comp["attributes"]["token"] = str(attributes.token)
-            general_comp["attributes"]["language"] = str(attributes.language)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/google-icon.svg')
-            general_comp["tokenAttr"] = str('token')
-          elif general_comp["social_network"] == "facebook":
-            general_comp["attributes"]["language"] = str(attributes.language)
-            general_comp["attributes"]["component_directory"] = str(attributes.component_directory)
-            general_comp["attributes"]["access_token"] = str(attributes.access_token)
-            json.dumps(general_comp["attributes"])
-            general_comp["img"] = str('images/components/facebook-icon.png')
-            general_comp["tokenAttr"] = str('access_token')
+          general_comp["version"] = str(comp.version)
+          general_comp["attributes"] = json.loads(comp.attributes)
+          general_comp["img"] = str(comp.img)
+          general_comp["tokenAttr"] = str(comp.tokenAttr)
+          
           if not rate == None:
             general_comp["rate"] = str(rate.rating_value)
           else:
@@ -1595,3 +1400,6 @@ def deleteSession(hashed_id):
 # app = webapp2.WSGIApplication([
 #       ('/', MainPage),
 # ], debug=True)
+
+def getBVA():
+  return bva

@@ -1,0 +1,45 @@
+{
+  "name": "github-icons",
+  "version": "1.1.4",
+  "description": "Octicons iron-icon",
+  "authors": [
+    "Boris van Hoytema",
+    "Polymer Team"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "icon",
+    "github"
+  ],
+  "main": "github-icons.html",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bvhme/github-icons"
+  },
+  "homepage": "https://github.com/bvhme/github-icons",
+  "dependencies": {
+    "iron-icon": "polymerelements/iron-icon#^1.0.0",
+    "iron-iconset-svg": "polymerelements/iron-iconset-svg#^1.0.0",
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "paper-styles": "polymerelements/paper-styles#^1.0.2",
+    "iron-component-page": "polymerelements/iron-component-page#1.0.0",
+    "iron-flex-layout": "polymerelements/iron-flex-layout#^1.0.0",
+    "iron-meta": "polymerelements/iron-meta#^1.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
+    "web-component-tester": "^4.0.0"
+  },
+  "_release": "1.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.1.4",
+    "commit": "aa1efc4c5d7c247e7386f72cb060ea43c7a0c91f"
+  },
+  "_source": "https://github.com/newatoms/github-icons.git",
+  "_target": "^1.1.4",
+  "_originalSource": "github-icons",
+  "_direct": true
+}

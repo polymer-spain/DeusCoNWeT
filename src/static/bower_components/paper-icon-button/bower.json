@@ -1,7 +1,7 @@
 {
   "name": "paper-icon-button",
   "private": true,
-  "version": "1.1.2",
+  "version": "1.1.4",
   "license": "http://polymer.github.io/LICENSE.txt",
   "description": "A material design icon button",
   "main": [
@@ -36,5 +36,10 @@
     "web-component-tester": "^4.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
+<<<<<<< HEAD
   "ignore": []
 }
+=======
+  "version": "0.5.6"
+}
+>>>>>>> master

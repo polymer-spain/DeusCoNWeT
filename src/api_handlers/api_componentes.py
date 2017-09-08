@@ -38,7 +38,7 @@ with open(configFile, "r") as ymlfile:
 domain = cfg["domain"]
 
 
-social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest"]
+social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest", ""]
 
 class ComponentRatingHandler(SessionHandler):
     """
@@ -126,7 +126,7 @@ class ComponentListHandler(SessionHandler):
 
         # Social_network,filter_param and list_format are optional params
         social_network = self.request.get("social_network", default_value="")
-        filter_param = self.request.get("filter",default_value="general")
+        filter_param = self.request.get("filter",default_value="user")
         list_format = self.request.get("list_format", default_value="reduced")
 
         # Lists of posible values for each param
@@ -142,6 +142,7 @@ class ComponentListHandler(SessionHandler):
                     component_list = mongoDB.getComponents(user_id, social_network, format_flag, user_filter)
                     component_list_aux = json.loads(component_list)
                     if not len(component_list_aux["data"]) == 0:
+                        # In this case the list of components is returned
                         self.response.content_type = "application/json"
                         self.response.write(component_list)
 
@@ -195,18 +196,15 @@ class ComponentListHandler(SessionHandler):
             component_id = self.request.POST["component_id"]
             description = self.request.POST["description"]
             social_network = self.request.POST["social_network"]
+            img = self.request.POST["img"]
             input_type = self.request.POST.getall("input_type")
             output_type = self.request.POST.getall("output_type")
             version_list = self.request.POST.getall("versions")
+            attributes = self.request.POST["attributes"]
+            tokenAttr = ""
+            if self.request.POST.has_key("tokenAttr"):
+                tokenAttr = self.request.POST["tokenAttr"]
 
-            endpoint = ""
-            component_directory = ""
-            if self.request.POST.has_key("endpoint"):
-                endpoint = self.request.POST["endpoint"]
-            if self.request.POST.has_key("component_directory"):
-                component_directory = self.request.POST["component_directory"]
-
-            # Predetermined is an optional param (default_value=False)
             predetermined = None
             if self.request.POST.has_key("predetermined"):
                 if self.request.POST["predetermined"] in ["True","true"]:
@@ -229,7 +227,8 @@ class ComponentListHandler(SessionHandler):
                             # print "=========================="
                             # Adds the component to datastore
                             mongoDB.insertComponent(component_id, url=url, description=description, rs=social_network, input_t=input_type, output_t=output_type, 
-                                                    version_list=version_list, predetermined=predetermined, endpoint=endpoint, component_directory=component_directory)
+                                                    version_list=version_list, predetermined=predetermined, attributes=attributes, tokenAttr=tokenAttr, img=img)
+              
                             response = {"status": "Component uploaded succesfully"}
                             self.response.write(json.dumps(response))
     
@@ -240,7 +239,6 @@ class ComponentListHandler(SessionHandler):
                     else:
                         response = {"error": "Bad value for 'predetermined' param (it must be 'True' or 'False')"}
                         self.response.write(json.dumps(response))
-
                         self.response.set_status(400)
                 else:
                     response = {"error": "The versions param must contains stable as one of its values"}
@@ -500,3 +498,12 @@ class ComponentHandler(SessionHandler):
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(400)
+
+class BVAHandler(SessionHandler):
+  def get(self):
+    bva = ndb_pb.getBVA()
+    resp = {"times_called":bva.times_called}
+    
+    self.response.content_type = "application/json"
+    self.response.write(json.dumps(resp))
+    self.response.set_status(200)

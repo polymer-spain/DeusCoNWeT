@@ -1,0 +1,140 @@
+#!/bin/bash
+
+# Default bowerrc file
+BOWERFILE='.bowerrc'
+
+# HELP option
+usage="
+Usage:
+
+    $(basename "$0") [<command>] [<options>]   Install versions of the components in the correct folder
+Commands:
+
+    install                 Install a package locally
+Options:
+
+    \e[33m--save\e[39m                  Save as bower dependencie
+Example:
+
+    bower install  googletimeline-plus#v0.9-stable
+
+  Package can be a file with multiple components
+
+    bower install versions.txt
+
+IMPORTANT:
+    The version of the component must be v{version_number}-{branch}. For example v0.9-stable
+"
+
+# DEFAULT SETTINGS
+SAVE=""
+BOWER_DIRECTORY="bower_components"
+
+## COMMAND PARSE
+if [ $# -eq 0 ]
+then
+    echo -e "$usage"
+    exit 1
+fi
+while [[ $# -gt 0 ]]
+do
+    key="$1"
+    case $key in
+        i|install)
+            command="install"
+            package="$2"
+            shift
+            ;;
+        --save)
+            SAVE=$key
+            ;;
+        --help | -h)
+            echo -e "$usage"
+            exit 0
+            ;;
+        *)
+            echo -e "$usage"
+            exit 1
+            ;;
+    esac
+shift
+done
+
+
+
+# LOOK FOR BOWER DIRECTORY IN BOWERRC
+if [ -f "$BOWERFILE" ]
+then
+    key="directory"
+    re="\"($key)\": \"([^\"]*)\""
+    bower_directory="bower_components"
+    while read -r l; do
+        if [[ $l =~ $re ]]; then
+            name="${BASH_REMATCH[1]}"
+            value="${BASH_REMATCH[2]}"
+            bower_directory=$value
+            break
+        fi
+    done < $BOWERFILE
+fi
+
+# GET PACKAGE NAME and BRANCH/HASH OPTION
+# args: $1 package name
+function install_package(){
+  local import_name=$1
+  local split=(${import_name//#/ })
+  local package_name=${split[0]}
+
+  local real_folder="$BOWER_DIRECTORY/$package_name"
+
+  # CHECK IF VERSION IS NOT EMPTY
+  if [ "${#split[@]}" -gt 1 ]
+  then
+      # CHECK IF VERSION IS CORRECTLY WRITTEN
+      local version=${split[1]}
+      local version_branch=(${version//-/ })
+      
+      if [ "${#version_branch[@]}" -gt 1 ]
+      then
+          local branch=${version_branch[1]}
+          local real_folder="$real_folder-$branch"
+      else
+          echo -e "\n[Error]: Package must be written in the correct format: v{version_number}-{branch}. Ex: v0.9-stable"
+          echo -e "$usage"
+          return 2
+      fi
+
+  fi
+  # CHECK IF THIS COMPONENT IS ALREADY INSTALLED
+  if [ -d "$real_folder" ]
+  then
+      echo -e "\e[92m$package_name\e[39m is already installed"
+      return 1
+  fi
+
+
+  # INSTALL BOWER COMPONENT
+  bower $command -F --allow-root $import_name $SAVE
+  local status=$?
+
+  # CHECK IF BOWER FINISHED CORRECTLY
+  if [ $status -eq 0 ]
+  then
+      # MOVER COMPONENT TO RELATIVE PATH (ADDING BRACH VERSION AT THE END OF THE FOLDER NAME)
+      local folder="$BOWER_DIRECTORY/$package_name"
+      mv $folder $real_folder
+  fi
+  return $status
+}
+
+# CHECK IF PACKAGE IS A FILE
+if [ -f "$package" ]
+then
+  while IFS='' read -r line || [[ -n "$line" ]]; do
+    install_package $line
+  done < "$package"
+
+else
+  install_package $package
+  exit $?
+fi
