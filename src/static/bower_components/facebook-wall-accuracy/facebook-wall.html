@@ -389,6 +389,7 @@ access_token={{access_token}}&summary=true -->
         changeData: function (data) {
             for (var i = 0; i < data.length; i++) {
                 if (this.probability(this.accuracy_probability)) {
+
                     data[i].from.name = "Usuario";
                     if (data[i].description) {
                         console.log('Cambiado numero ', i, ': ');
