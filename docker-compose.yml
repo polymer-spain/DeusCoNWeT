@@ -8,7 +8,7 @@ services:
       - 443:443
     volumes: 
       #- etc/letsencrypt/live/centauro.ls.fi.upm.es:/app/ssl
-      - /home/miguel/DeusCoNWeT:/app
+      #- /home/miguel/DeusCoNWeT:/var/www
       - /home/miguel/logs/picbit:/logs
     restart: always
     command: ['bash', '/app/server_config/init.sh']
