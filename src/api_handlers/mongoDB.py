@@ -929,7 +929,7 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
       if all_info:
         # complete information
         # Info for the components used by the specified user
-        user = User.objects.get(id=document_id)
+        user = User.objects.get(id=document_id).included(ComponentAttributes)
         user_comps = user.components
         print "Entra por aqui"
         for comp in user_comps:

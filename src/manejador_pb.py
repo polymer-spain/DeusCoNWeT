@@ -25,8 +25,8 @@ import re
 import sys
 import os
 import pprint as pp
-sys.path.insert(0, '/var/www/src/api_handlers')
-sys.path.insert(0, '/var/www/src/api_handlers/lib')
+sys.path.insert(0, '/app/src/api_handlers')
+sys.path.insert(0, '/app/src/api_handlers/lib')
 import yaml
 import api_usuarios, api_componentes, api_oauth, api_auxiliar
 import mimetypes
