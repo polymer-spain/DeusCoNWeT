@@ -1,14 +1,22 @@
 version: '3'
 
 services:
-  picbit:
-    image: 'deus/picbit'
+  picbitTest:
+    image: 'deus/picbit:mongo'
     ports: 
-      - 80:80
-      - 443:443
+      #- 80:80
+      - 8080:443
     volumes: 
-      #- etc/letsencrypt/live/centauro.ls.fi.upm.es:/app/ssl
-      #- /home/miguel/DeusCoNWeT:/var/www
-      - /home/miguel/logs/picbit:/logs
+      - /home/miguel/DeusCoNWeT:/var/www
+      - /home/miguel/logs/picbitMongo:/logs
     restart: always
-    command: ['bash', '/app/server_config/init.sh']
+    command: ['bash', '/var/www/server_config/init.sh']
+  picbit:
+    image: 'deus/picbit:mongo'
+    ports: 
+      #- 80:80
+      - 8000:443
+    volumes: 
+      - /home/miguel/logs/picbitMongo:/logs
+    restart: always
+    command: ['bash', '/var/www/server_config/init.sh']

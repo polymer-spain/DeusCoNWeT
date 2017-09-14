@@ -5,5 +5,6 @@
 #						   or dynamic (serve random version of the component) basis. Posible values: static | dynamic
 
 domain: centauro.ls.fi.upm.es
+domainTest: test.centauro.ls.fi.upm.es
 #domain: localhost
 component_versioning: dynamic

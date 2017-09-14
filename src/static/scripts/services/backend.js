@@ -9,7 +9,7 @@ function ($http, $location, $rootScope, $cookies) {
   // }else {
   //   this.endpoint = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
   // }
-  this.endpoint = 'https://centauro.ls.fi.upm.es';
+  this.endpoint = window.location.origin;
   // Envia el token y el identificador del token correspondiente a una red social
   // POST /api/oauth/{red_social}/login
   // PARAMS: @token_id

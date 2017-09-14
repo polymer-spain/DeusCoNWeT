@@ -114,9 +114,6 @@ class OauthSignUpHandler(SessionHandler):
             token_id = self.request.POST["token_id"]
             user_identifier = self.request.POST["user_identifier"]
             # Checks if the username was stored previously
-            # logging.info('access_token: ' +access_token)
-            # logging.info('token_id: ' +token_id)
-            # logging.info('user_identifier: ' +user_identifier)
             stored_credentials = mongoDB.searchToken(token_id, social_network)
             if stored_credentials == None: # Not found
                 user_data = {}

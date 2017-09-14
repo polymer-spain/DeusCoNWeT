@@ -35,7 +35,13 @@ configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
-domain = cfg["domain"]
+# CONFIGURE TEST AND PRODUCCION VERSION
+MODE = os.getenv('VERSION', 'test')
+
+if MODE == 'test':
+    domain = cfg['domainTest']
+else:
+    domain = cfg["domain"]
 
 
 social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest", ""]
@@ -222,10 +228,6 @@ class ComponentListHandler(SessionHandler):
                         # We check if the component exists in our system
                         component_stored = mongoDB.searchComponent(component_id)
                         if component_stored == None:
-                            # print "=========================="
-                            # print "Voy a insertar el componente de " + social_network
-                            # print "=========================="
-                            # Adds the component to datastore
                             mongoDB.insertComponent(component_id, url=url, description=description, rs=social_network, input_t=input_type, output_t=output_type, 
                                                     version_list=version_list, predetermined=predetermined, attributes=attributes, tokenAttr=tokenAttr, img=img)
               
@@ -286,7 +288,7 @@ class ComponentHandler(SessionHandler):
                     component = mongoDB.getComponent(user_id, component_id, format_flag)
                     if not component == None:
                         comp_aux = json.load(component)
-                        comp_aux["ref"] = "centauro.ls.fi.upm.es/bower_components/" + comp_aux["component_id"] + "-" + comp_aux["version"]
+                        comp_aux["ref"] = domain + "/bower_components/" + comp_aux["component_id"] + "-" + comp_aux["version"]
                         component = json.dumps(comp_aux)
                         self.response.content_type = "application/json"
                         self.response.write(component)

@@ -29,13 +29,24 @@
 
 import urllib, json
 import test_utils
+import os
+import yaml
+basepath = os.path.dirname(__file__)
+configFile = os.path.abspath(os.path.join(basepath, "../../api_handlers/config.yaml"))
+with open(configFile, "r") as ymlfile:
+    cfg = yaml.load(ymlfile)
 
 """
 Es necesario cambiar los parametros que van en los atributos y ponerlo como has comentado tu,
 con un JSON dumpificado y pasado como script vale?
 """
+MODE = os.getenv('VERSION', 'test')
 
-uri = "https://centauro.ls.fi.upm.es"
+if MODE == 'test':
+    uri = "https://" + cfg['domainTest']
+else:
+    uri = "https://" + cfg['domain']
+
 basepath = "/api/componentes"
 request_uri = uri + basepath
 test_utils.openConnection(True)

@@ -62,8 +62,14 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
 
 
 # Connect mongoCfg
+MODE = os.getenv('VERSION', 'test')
 
-connect(mongoCfg['database'], port=mongoCfg['port'], host=mongoCfg['host'], username=mongoCfg['user'],password=mongoCfg['pwd'])
+if MODE == 'test':
+    database = mongoCfg['databaseTest']
+else:
+    database = mongoCfg["database"]
+
+connect(database, port=mongoCfg['port'], host=mongoCfg['host'], username=mongoCfg['user'],password=mongoCfg['pwd'])
 
 
 
@@ -246,9 +252,6 @@ def getCipher(token_entity_key):
 # Returns: string that represents the version that will be served to the user
 
 def setComponentVersion(general_component):
-  # print "====================================================="
-  # print "Entrada en la llamada de setting"
-  # print "====================================================="
   version = ""
   if component_versioning == "dynamic":
     # We set the version that will be served to the user
@@ -279,9 +282,6 @@ def getComponentEntity(component_id):
 def assignPredeterminedComponentsToUser(entity_key):
   # Obtains the predetermined components of the system and adds it to the User
   # We consider that we will have at most 10 predetermined components in our system
-  # print "====================================================="
-  # print "Entrada en la primera llamada de la asignacion"
-  # print "====================================================="
   predetermined_comps = Component.objects(predetermined=True).limit(10)
   
   for comp in predetermined_comps:
@@ -335,7 +335,6 @@ def activateComponentToUser(component_id, mongo_user_id): #No entiendo lo que pr
 
           # We increase the counters that represents the times that a given component has been tested (general and versioned)
           new_version = setComponentVersion(general_component)
-          # print "============================================="
           general_component.version = new_version
           general_component.test_count += 1
           general_component.save()
@@ -931,7 +930,6 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
         # Info for the components used by the specified user
         user = User.objects.get(id=document_id).included(ComponentAttributes)
         user_comps = user.components
-        print "Entra por aqui"
         for comp in user_comps:
           # Returns the info about the active components in the user dashboard
           if comp.active:
@@ -965,7 +963,6 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
       else:
         user = User.objects.get(id=document_id)
         user_comps = user.components
-        print len(user_comps)
         # Now we get the general info about the components used by the user
         for comp in user_comps:
           if comp.active:
@@ -1262,7 +1259,6 @@ def getGitHubAPIKey():
 def createSession(user_key, hashed_id):
   stored_session_query = Session.objects(user_key=user_key)
   if stored_session_query.count() > 0:
-    print "Session encontrada: " + str(stored_session_query.count())
     stored_session = stored_session_query[0]
     stored_session.delete()
   # We create a new session assigned to the user

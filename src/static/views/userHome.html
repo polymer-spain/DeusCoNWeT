@@ -132,7 +132,7 @@
                 <login-facebook data-role="login" ng-show="loginSelected == 'facebook'" key_app="928341650551653" scope="public_profile,read_stream" static></login-facebook>
                 <twitter-login data-role="login" ng-show="loginSelected == 'twitter'" endpoint="{{domain}}/api/oauth/twitter/request_token" static></twitter-login>
                 <instagram-login data-role="login" ng-show="loginSelected == 'instagram'" client_id="34af286560fc492cbabc62285f098047" redirect_uri="{{domain}}"></instagram-login>
-                <pinterest-login data-role="login" ng-show="loginSelected == 'pinterest'" client_id="4860892995748113255" client_secret="e6c2689affe436017db35146f9eff98199aa3b26ad05a4ba6c15d060798b510e" redirect_uri="https://centauro.ls.fi.upm.es"></pinterest-login>
+                <pinterest-login data-role="login" ng-show="loginSelected == 'pinterest'" client_id="4860892995748113255" client_secret="e6c2689affe436017db35146f9eff98199aa3b26ad05a4ba6c15d060798b510e" redirect_uri="{{domain}}"></pinterest-login>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-primary" ng-click="closeModal('#login-modal')">Close</button>

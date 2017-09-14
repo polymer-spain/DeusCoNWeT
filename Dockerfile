@@ -1,8 +1,11 @@
-FROM mgood/appengine-python
+FROM httpd:2.4
 
-RUN apt-get update -y && apt-get install -y vim less git stunnel4 net-tools curl
+RUN apt-get update -y && apt-get install -y vim less git net-tools curl python-pip python-dev build-essential
+RUN pip install --upgrade pip
+
+RUN pip install pycrypto mongoengine python-memcached
 RUN mkdir -p /var/www
-RUN pip install pycrypto mongoengine
+COPY ./server_config/website.conf /etc/apache2/sites-enabled
+COPY ./server_config/apache2.conf /etc/apache2/
+
 COPY . /var/www/
-COPY ./server_config/stunnel4 /etc/default/ 
-COPY ./server_config/stunnel.* /etc/stunnel/

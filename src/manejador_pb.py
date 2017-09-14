@@ -25,8 +25,8 @@ import re
 import sys
 import os
 import pprint as pp
-sys.path.insert(0, '/app/src/api_handlers')
-sys.path.insert(0, '/app/src/api_handlers/lib')
+sys.path.insert(0, '/var/www/src/api_handlers')
+sys.path.insert(0, '/var/www/src/api_handlers/lib')
 import yaml
 import api_usuarios, api_componentes, api_oauth, api_auxiliar
 import mimetypes
@@ -117,6 +117,7 @@ class staticFiles(webapp2.RequestHandler):
       self.response.headers.add_header('Content-Type', mimetypes.guess_type(abspath)[0])
     except:
       self.response.set_status(404)
+
 ## Return a handler for URL defined on app.yaml like static
 def handlerHelper(files):
   class handler(webapp2.RequestHandler):

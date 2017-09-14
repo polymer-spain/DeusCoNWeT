@@ -8,6 +8,9 @@ import urllib
 import json
 import time
 import ssl
+import os
+import yaml
+
 # Global vars
 connection = None
 remoteConnection = True
@@ -16,6 +19,17 @@ nTestOK = 0
 nTestError = 0
 nPreTest = 0
 
+basepath = os.path.dirname(__file__)
+configFile = os.path.abspath(os.path.join(basepath, "../../api_handlers/config.yaml"))
+with open(configFile, "r") as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+MODE = os.getenv('VERSION', 'test')
+
+if MODE == 'test':
+    uri = cfg['domainTest']
+else:
+    uri = cfg['domain']
 # Auxiliar class to color the program outputs
 class bcolors:
     HEADER = '\033[95m'
@@ -31,9 +45,9 @@ class bcolors:
 def openConnection(remote=False):
     global connection,remoteConnection
     if remote:
-        connection = httplib.HTTPSConnection("centauro.ls.fi.upm.es",443,context=ssl._create_unverified_context())
+        connection = httplib.HTTPSConnection(uri,443,context=ssl._create_unverified_context())
     else:
-        connection = httplib.HTTPConnection("centauro.ls.fi.upm.es")
+        connection = httplib.HTTPConnection(uri)
         remoteConnection = False
 
 def closeConnection():
