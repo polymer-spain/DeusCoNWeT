@@ -118,6 +118,7 @@ class staticFiles(webapp2.RequestHandler):
     except:
       self.response.set_status(404)
 
+
 ## Return a handler for URL defined on app.yaml like static
 def handlerHelper(files):
   class handler(webapp2.RequestHandler):
@@ -136,6 +137,7 @@ def createStatic(handler):
     url = handler['url']
     files = handler['static_files']
     return (url, handlerHelper(files))
+
 
 ## LOAD APP
 defined_url = [ url for url in cfg['handlers'] if url.has_key('static_files')]

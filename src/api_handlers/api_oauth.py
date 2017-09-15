@@ -34,6 +34,7 @@ import mongoDB
 from mongoDB import Token, User
 import datetime
 import logging
+from twython import Twython
 
 # Imports for TwitterHandler
 sys.path.insert(1, 'api_handlers/lib')
@@ -44,7 +45,9 @@ basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
-domain = cfg["domain"]
+
+
+domain = cfg["domainTest"]
 
 client = None
 
@@ -59,6 +62,9 @@ base_authorization_url = \
 callback_uri = "https://" + domain \
     + "/api/oauth/twitter/authorization"
 # Request to Twitter the request_token and authorization URL
+
+twitter = Twython(consumer_key, consumer_secret)
+
 client = oauth.TwitterClient(consumer_key, consumer_secret,
         callback_uri)
 
@@ -74,13 +80,11 @@ class SessionHandler(webapp2.RequestHandler):
     """
 
     def login(self, user_key):
+        print "User_key", user_key
         message = user_key + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
         logging.info(hash_id)
-        # Store in memcache hash-user_id pair
-        # memcache.add(hash_id, user_key)
-        # Create a new session in the system
         mongoDB.createSession(user_key, hash_id)
         return hash_id
 
@@ -113,6 +117,7 @@ class OauthSignUpHandler(SessionHandler):
             access_token = self.request.POST["access_token"]
             token_id = self.request.POST["token_id"]
             user_identifier = self.request.POST["user_identifier"]
+
             # Checks if the username was stored previously
             stored_credentials = mongoDB.searchToken(token_id, social_network)
             if stored_credentials == None: # Not found
@@ -124,8 +129,10 @@ class OauthSignUpHandler(SessionHandler):
                     user_key = mongoDB.insertUser(social_network,
                             token_id, access_token, user_data)
                     mongoDB.assignComponents(user_key)
+                    
                     # Creates the session
                     session_id = self.login(str(user_key.id))
+                    
                     # Returns the session, user_id and social_network cookie
                     self.response.set_cookie("session", session_id,
                             path="/", domain=domain, secure=True)
@@ -181,7 +188,7 @@ class OauthLoginHandler(SessionHandler):
                 user_key = mongoDB.modifyToken(token_id,
                         access_token, social_network)
                 user_id = mongoDB.getUserId(user_key)
-                session_id = self.login(user_key)
+                session_id = self.login(str(user_key.id))
 
                 # Gets the user_id to generate the user cookie
                 user_id = mongoDB.getUserId(user_key)
@@ -276,14 +283,11 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
-                logging.info('Se pide a mongoDB.getUserId')
                 logged_user_id = mongoDB.getUserId(logged_user)
-                logging.info('Responde mongoDB.getUserId')
 
                 # Obtains user credentials
-                logging.info('Se pide a mongoDB.getToken')
                 user_credentials = mongoDB.getToken(token_id, social_network)
-                logging.info('Se pide a mongoDB.getToken')
+
                 if not user_credentials == None:
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
@@ -631,13 +635,6 @@ class GitHubContainerHandler(SessionHandler):
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
     def post(self):
-        # tok1 = "80dbc6c5b"
-        # tok2 = "35c8ee515"
-        # tok3 = "b8d18cc8a"
-        # tok4 = "489646d3c"
-        # tok5 = "8457"
-        # git_tok = mongoDB.GitHubAPIKey(token=tok1 + tok2 + tok3 + tok4 + tok5)
-        # git_tok.put()
         url = "github.com"
         # authorize_url = \
         # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
@@ -645,11 +642,7 @@ class GitHubContainerHandler(SessionHandler):
         client_id = "ae271d42c068cae023b9"
         client_secret = "7834524345411e5b112c9715949ba33861db61a4"
         access_token = ""
-        # print "=================================="
-        # print "Body de la peticion a Github"
-        # print self.request.body
-        # print "=================================="
-        connection = httplib.HTTPSConnection(url)
+
         # Cogemos el codigo de la peticion
         try:
             body = json.loads(self.request.body)
@@ -910,7 +903,11 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         """
         # Return the authorization URL
         self.response.content_type = "application/json"
-        response = {"oauth_url": client.get_authorization_url()}
+        callback_url = self.request.get("callback", default_value="https://" + domain)
+        auth = twitter.get_authentication_tokens(callback_url=callback_url)
+
+        memcache.add(auth['oauth_token'], auth['oauth_token_secret'], time=20*60)
+        response = {"oauth_url": auth['auth_url']}
         self.response.write(json.dumps(response))
 
 
@@ -928,34 +925,60 @@ class TwitterAuthorizationHandler(SessionHandler):
         self -- info about the request built by webapp2
         """
         # Gets the params in the request
-        auth_token = self.request.get("oauth_token")
+        global consumer_key
+        global consumer_secret
+        oauth_token = self.request.get("oauth_token")
         oauth_verifier = self.request.get("oauth_verifier")
+        tw = Twython(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
+
         # Retrieves user info
-        user_info = client.get_user_info(auth_token,
-                auth_verifier=oauth_verifier)
+        user_info = tw.get_authorized_tokens(oauth_verifier)
         # Stores in memcache the session id associated with the oauth_verifier
         #and data associated to the logged user
-        key_verifier = "oauth_verifier_" + oauth_verifier
-        data = {"token_id": user_info["username"],
-                "access_token": user_info["token"]
+        key_verifier = oauth_verifier
+        data = {"token_id": user_info["screen_name"],
+                "access_token": user_info["oauth_token"]
                 }
-        memcache.add(key_verifier, data)
+        memcache.add(key_verifier, data, time=20*60)
 
         # Set the status for the response
         self.response.set_status(200)
 
 class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
-    def get(self, authorization_id):
+    def get(self, oauth_verifier):
         """Manages the info returned by the callback from Twitter
         Keyword arguments:
         self -- info about the request built by webapp2
-        authorization_id -- oauth_verifier that defines the authorization flow
+        oauth_verifier -- oauth_verifier that defines the authorization flow
         """
-        key_verifier = "oauth_verifier_" + authorization_id
-        twitter_user_data = memcache.get(key_verifier)
+        global consumer_key
+        global consumer_secret
+        
+        # Get oauth_token from request
+        oauth_token = self.request.get('oauth_token')
+
+        if not oauth_token:
+            reponse = {'error', "The oauth token is empty"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(404)
+        # Get oauth token secret from memcache. Stored in the first step
+        oauth_token_secret = memcache.get(oauth_token)
+        
+        if not oauth_token:
+            reponse = {'error', "The oauth token is not valid"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(404)
+
+        memcache.delete(oauth_token)
+        tw = Twython(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
+        twitter_user_data = tw.get_authorized_tokens(oauth_verifier)
+        memcache.add(oauth_verifier, twitter_user_data, time=20*60)
+
         # Return the user's token id that authorized the application
         if not twitter_user_data == None:
-            response = {"token_id": twitter_user_data["token_id"]}
+            response = {"token_id": twitter_user_data["screen_name"]}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(200)
@@ -1001,11 +1024,10 @@ class TwitterSignUpHandler(SessionHandler):
         user_identifier = self.request.get("user_identifier", default_value="")
 
         if not oauth_verifier == "":
-            key_verifier = "oauth_verifier_" + oauth_verifier
-            twitter_user_data = memcache.get(key_verifier)
+            twitter_user_data = memcache.get(oauth_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = mongoDB.searchToken(twitter_user_data["token_id"], "twitter")
+                stored_credentials = mongoDB.searchToken(twitter_user_data["screen_name"], "twitter")
                 if stored_credentials == None:
                     user_info = {}
                     if not user_identifier == "":
@@ -1014,13 +1036,13 @@ class TwitterSignUpHandler(SessionHandler):
                         if not user_id_repeated:
                             user_info["user_id"] = user_identifier
                             user_key = mongoDB.insertUser("twitter",
-                            twitter_user_data["token_id"], twitter_user_data["access_token"], user_info)
-                            ndb_pb.assignComponents(user_key)
+                            twitter_user_data["screen_name"], twitter_user_data["oauth_token"], user_info)
+                            mongoDB.assignComponents(user_key)
                             # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
-                            memcache.delete(key_verifier)
+                            memcache.delete(oauth_verifier)
 
                             # Returns the session, user_id and social_network cookie
-                            session_id = self.login(user_key)
+                            session_id = self.login(str(user_key.id))
                             self.response.set_cookie("session",
                                     value=session_id, path="/", domain=domain,
                                     secure=True)
@@ -1076,20 +1098,16 @@ class TwitterLoginHandler(SessionHandler):
         user_identifier = self.request.get("user_identifier", default_value="")
 
         if not oauth_verifier == "":
-            key_verifier = "oauth_verifier_" + oauth_verifier
-            twitter_user_data = memcache.get(key_verifier)
+            twitter_user_data = memcache.get(oauth_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = mongoDB.searchToken(twitter_user_data["token_id"], "twitter")
+                stored_credentials = mongoDB.searchToken(twitter_user_data["screen_name"], "twitter")
                 if not stored_credentials == None:
                     # We store the new set of credentials
-                    user_key = mongoDB.modifyToken(twitter_user_data["token_id"],
-                            twitter_user_data["access_token"], "twitter")
+                    user_key = mongoDB.modifyToken(twitter_user_data["screen_name"],
+                            twitter_user_data["oauth_token"], "twitter")
                     user_id = mongoDB.getUserId(user_key)
-                    session_id = self.login(user_key)
-
-                    # Gets the user_id to generate the user cookie
-                    user_id = mongoDB.getUserId(user_key)
+                    session_id = self.login(str(user_key))
 
                     # Returns the session, social_network and user cookie
                     self.response.set_cookie("session", session_id,

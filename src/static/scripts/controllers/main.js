@@ -83,7 +83,7 @@ angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguag
 			});
 			break;
 			case 'twitter':
-			uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+			uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier + '?oauth_token=' + e.detail.token;
 			$http.get(uri).success(function (responseData) {
 				e.detail.userId = responseData.token_id;
 				$scope.loginProcess(e.detail);

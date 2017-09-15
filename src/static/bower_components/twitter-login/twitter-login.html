@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <iron-ajax
                id="requestToken"
-               url="{{endpoint}}"
+               url="{{endpoint}}?callback_url={{callback_url}}"
                method="GET"
                handleAs="json"
                on-response="_authentication"
@@ -109,6 +109,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: false,
           reflectToAttribute: true
         },
+        callback_url: {
+          type:String,
+          reflectToAttribute: true
+        }
       },
       _largeAndDisconnected: function (logged,sort) {
         return !logged && !sort;
@@ -128,6 +132,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _authentication: function(event, detail, sender) {
         var oauth_url = detail.response.oauth_url;
+        console.log(oauth_url);
         var win = window.open(oauth_url, "Autoriza la aplicacion", 'width=800, height=600');
         var back = this;
         var pollTimer  =  window.setInterval(function() {
