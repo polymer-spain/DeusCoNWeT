@@ -80,7 +80,6 @@ class SessionHandler(webapp2.RequestHandler):
     """
 
     def login(self, user_key):
-        print "User_key", user_key
         message = user_key + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
@@ -933,6 +932,7 @@ class TwitterAuthorizationHandler(SessionHandler):
 
         # Retrieves user info
         user_info = tw.get_authorized_tokens(oauth_verifier)
+        print "Datos", oauth_token, oauth_token_secret, oauth_verifier, user_info['oauth_token']
         # Stores in memcache the session id associated with the oauth_verifier
         #and data associated to the logged user
         key_verifier = oauth_verifier
@@ -1036,7 +1036,7 @@ class TwitterSignUpHandler(SessionHandler):
                         if not user_id_repeated:
                             user_info["user_id"] = user_identifier
                             user_key = mongoDB.insertUser("twitter",
-                            twitter_user_data["screen_name"], twitter_user_data["oauth_token"], user_info)
+                            twitter_user_data["screen_name"], twitter_user_data["oauth_token"], user_info, secret=twitter_user_data['oauth_token_secret'])
                             mongoDB.assignComponents(user_key)
                             # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
                             memcache.delete(oauth_verifier)

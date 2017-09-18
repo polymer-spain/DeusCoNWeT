@@ -173,6 +173,7 @@ class Token(Document):
   identifier = StringField()
   token = StringField()
   social_name = StringField()
+  secret = StringField() #Optional
 
 class SocialUser(Document):
   social_name = StringField(required=True)
@@ -501,7 +502,7 @@ def getUserId(user_id):
   :param data: Data about the User
   :return key, user: Key is the document ID and User is the document (Document ~= Entity)
 """
-def insertUser(rs, ide, access_token, data=None):
+def insertUser(rs, ide, access_token, data=None, secret=None):
   user = User()
   # We add to the user's net list the social network used to sign up to the system
   user_net = SocialUser(social_name=rs).save()
@@ -529,10 +530,13 @@ def insertUser(rs, ide, access_token, data=None):
   # Inserts the user entity
   user.save()
 
-  token = Token(identifier=ide, token="", social_name=rs).save()
+  token = Token(identifier=ide, token="", social_name=rs, secret=secret).save()
   # Ciphers the access token and stores in the datastore
   cipher = getCipher(str(token.id))
   token.token = encodeAES(cipher, access_token)
+  if secret != None:
+    cipher = getCipher(str(token.id))
+    token.secret = encodeAES(cipher, secret)
   token.save()
   user.tokens.append(token)
 
@@ -1285,3 +1289,10 @@ def dropDB():
   User.objects().delete()
   Token.objects().delete()
   SocialUser.objects().delete()
+def getSecret(token):
+
+  if token == None:
+    return None
+
+  cipher = getCipher(str(token.id))
+  return decodeAES(cipher, token.secret)

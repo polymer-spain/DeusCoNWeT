@@ -22,34 +22,63 @@
 
 import webapp2
 # Imports for OAuthTwitterTimelineHandler
-import oauth
+from twython import Twython, exceptions
+import mongoDB
+from mongoDB import User
 import urllib2
-
+import json
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
 
     def get(self):
-        consumer_key = self.request.get('consumer_key', default_value=''
-                )
-        consumer_secret = self.request.get('consumer_secret',
-                default_value='')
-        access_token = self.request.get('access_token', default_value=''
-                )
-        secret_token = self.request.get('secret_token', default_value=''
-                )
-        count = self.request.get('count', default_value='20')
+        consumer_key = self.request.get('consumer_key', default_value='')
+        consumer_secret = self.request.get('consumer_secret', default_value='')
+        access_token = self.request.get('access_token', default_value='')
 
-        client = oauth.TwitterClient(consumer_key, consumer_secret,
-                'oob')
+        cookie_value = self.request.cookies.get("session")
+        # Check if the user cookies
+        if not cookie_value:
+            self.response.content_type = "application/json"
+            response = {'error':'Could not authenticate you'}
+            self.response.write(json.dumps(response))
+            self.response.set_status(401)
+        else:
+            userInfo = mongoDB.getSessionOwner(cookie_value)
+            print userInfo
+            userSession = User.objects(id=userInfo)
+            if len(userSession) == 0:
+                self.response.content_type = "application/json"
+                response = {'error':'Invalid session cookie'}
+                self.response.write(json.dumps(response))
+                self.response.set_status(401)
+                count = self.request.get('count', default_value='20')
+                return None
+            tokens = userSession[0]['tokens']
+            twitter_token = None
 
-        respuesta = \
-            client.make_request('https://api.twitter.com/1.1/statuses/home_timeline.json'
-                                , token=access_token,
-                                secret=secret_token,
-                                additional_params={'count': count},
-                                protected=True)
-        self.response.headers.add_header('Access-Control-Allow-Origin', '*')
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.write(respuesta.content)
+            for token in tokens:
+                if token['social_name'] == 'twitter':
+                    twitter_token = token
+
+            if not token:
+                self.response.content_type = "application/json"
+                response = {'error':'Access token is not valid'}
+                self.response.write(json.dumps(response))
+                self.response.set_status(401)
+                count = self.request.get('count', default_value='20')
+            else:
+                secret = mongoDB.getSecret(twitter_token)
+                tw = Twython(consumer_key, consumer_secret, access_token, secret)
+                try:
+                    response = tw.get_home_timeline()
+                    self.response.headers.add_header('Access-Control-Allow-Origin', '*')
+                    self.response.headers['Content-Type'] = 'application/json'
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(200)
+                except exceptions.TwythonAuthError:
+                    self.response.content_type = "application/json"
+                    response = {'error':'Could not authenticate you'}
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(401)
 
 
 class instagramRequest(webapp2.RequestHandler):
