@@ -8,7 +8,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   // TODO se deberan coger de la lista que se registra en usuario
   $scope.listComponentAdded = [];
   $scope.componentsRated = [];
-  $rootScope.user.tokens.twitter = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
 
   // loads references for this
   (function () {
@@ -393,9 +392,13 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $rootScope.user = $rootScope.user || {
           tokens: {}
         };
-        $rootScope.user.tokens[social_network] = token;
-        $scope.setToken(social_network, token);
-        $('#login-modal').modal('toggle');
+        if (social_network !== 'twitter'){
+          $rootScope.user.tokens[social_network] = token;
+          $scope.setToken(social_network, token);
+          $('#login-modal').modal('toggle');
+        } 
+          
+
 
         switch (social_network) {
           case 'googleplus':
@@ -406,9 +409,14 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             break;
           case 'twitter':
             uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
+            uri += '?oauth_token=' + e.detail.token;
             $http.get(uri).success(function (responseData) {
               e.detail.userId = responseData.token_id;
-              $backend.setNewNetwork(token, responseData.token_id, social_network).error(registerTokenError);
+              $backend.setNewNetwork(token, responseData.token_id, social_network, e.detail.oauth_verifier).then(function(res){
+                $rootScope.user.tokens[social_network] = res.data.token;
+                $scope.setToken(social_network, res.data.token);
+                $('#login-modal').modal('toggle');
+              }, registerTokenError);
             }).error(function () {
               console.log('Problemas al intentar obtener el token_id de un usuario');
             });

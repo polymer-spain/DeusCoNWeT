@@ -38,12 +38,11 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
         # Check if the user cookies
         if not cookie_value:
             self.response.content_type = "application/json"
-            response = {'error':'Could not authenticate you'}
+            response = {'error':'Could not authenticate you. Cookie session missing'}
             self.response.write(json.dumps(response))
             self.response.set_status(401)
         else:
             userInfo = mongoDB.getSessionOwner(cookie_value)
-            print userInfo
             userSession = User.objects(id=userInfo)
             if len(userSession) == 0:
                 self.response.content_type = "application/json"
@@ -58,8 +57,8 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
             for token in tokens:
                 if token['social_name'] == 'twitter':
                     twitter_token = token
-
-            if not token:
+            print "Token encontrado", twitter_token
+            if not twitter_token:
                 self.response.content_type = "application/json"
                 response = {'error':'Access token is not valid'}
                 self.response.write(json.dumps(response))
@@ -67,6 +66,7 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
                 count = self.request.get('count', default_value='20')
             else:
                 secret = mongoDB.getSecret(twitter_token)
+                print access_token, secret, consumer_key, consumer_secret
                 tw = Twython(consumer_key, consumer_secret, access_token, secret)
                 try:
                     response = tw.get_home_timeline()

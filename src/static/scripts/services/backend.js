@@ -225,9 +225,10 @@ function ($http, $location, $rootScope, $cookies) {
     return $http(request);
   };
 
-  this.setNewNetwork = function(access_token, token_id,social_network){
+  this.setNewNetwork = function(access_token, token_id, social_network, oauth_verifier ){
     var uri = this.endpoint + '/api/oauth/' + social_network + '/credenciales';
     var params = 'access_token=' + access_token + '&token_id=' + token_id
+    if (oauth_verifier) params += '&oauth_verifier=' + oauth_verifier
     var request = {
       method: social_network === 'github'? 'POST': 'PUT',
       url: uri,

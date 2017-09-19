@@ -615,7 +615,7 @@ Insert a new token in the database
 :param access_token: new access_token ValueError
 :param user_id: username's Picbit 
 """
-def insertToken(document_id, social_name, access_token, user_id):
+def insertToken(document_id, social_name, access_token, user_id, secret=None):
   # We create a Token Entity in the datastore
   user = User.objects(id=document_id)
   if user.count() > 0:
@@ -625,6 +625,10 @@ def insertToken(document_id, social_name, access_token, user_id):
   cipher = getCipher(str(tok_aux.id))
   access_token = encodeAES(cipher, access_token)
   tok_aux.token = access_token
+  if secret != None:
+    cipher = getCipher(str(tok_aux.id))
+    tok_aux.secret = encodeAES(cipher, secret)
+  
   tok_aux.save()
   # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
@@ -933,6 +937,8 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
         # complete information
         # Info for the components used by the specified user
         user = User.objects.get(id=document_id).included(ComponentAttributes)
+        if not User:
+          return None
         user_comps = user.components
         for comp in user_comps:
           # Returns the info about the active components in the user dashboard
@@ -952,7 +958,7 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
             general_comp["height"] = str(comp.height)
             general_comp["width"] = str(comp.width)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = json.loads(ComponentAttributes(info_comp.attributes).to_json())
+            general_comp["attributes"] = json.loads(info_comp.attributes.id)
             general_comp["img"] = str(info_comp.img)
             general_comp["tokenAttr"] = str(info_comp.tokenAttr)
             
@@ -980,7 +986,7 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
             general_comp["social_network"] = str(info_comp.rs)
             general_comp["description"] = str(info_comp.description)
             general_comp["version"] = str(comp.version)
-            general_comp["attributes"] = json.loads(ComponentAttributes(info_comp.attributes).to_json())
+            general_comp["attributes"] = json.loads(info_comp.attributes.id)
             general_comp["img"] = str(info_comp.img)
             general_comp["tokenAttr"] = str(info_comp.tokenAttr)
             
@@ -1010,7 +1016,7 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
               general_comp["height"] = str(comp.height)
               general_comp["width"] = str(comp.width)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = json.loads(ComponentAttributes(info_comp.attributes).to_json())
+              general_comp["attributes"] = json.loads(info_comp.attributes.id)
               general_comp["img"] = str(info_comp.img)
               general_comp["tokenAttr"] = str(info_comp.tokenAttr)
               
@@ -1032,7 +1038,7 @@ def getComponents(document_id=None, rs="", all_info=False, filter_by_user=False)
               general_comp["social_network"] = str(info_comp.rs)
               general_comp["description"] = str(info_comp.description)
               general_comp["version"] = str(comp.version)
-              general_comp["attributes"] = json.loads(ComponentAttributes(info_comp.attributes).to_json())
+              general_comp["attributes"] = json.loads(info_comp.attributes.id)
               general_comp["img"] = str(info_comp.img)
               general_comp["tokenAttr"] = str(info_comp.tokenAttr)
               
@@ -1293,6 +1299,5 @@ def getSecret(token):
 
   if token == None:
     return None
-
   cipher = getCipher(str(token.id))
   return decodeAES(cipher, token.secret)

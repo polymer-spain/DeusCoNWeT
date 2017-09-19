@@ -503,10 +503,15 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                             social_network)
                     if stored_credentials == None:
                         # Adds the token to the user credentials list
-                        mongoDB.insertToken(user, social_network, access_token, token_id)
+                        secret = None
+                        if social_network== 'twitter':
+                            oauth_verifier = self.request.POST['oauth_verifier']
+                            twitter_data = memcache.get(oauth_verifier)
+                            secret = twitter_data['oauth_token_secret']
+                        mongoDB.insertToken(user, social_network, twitter_data['oauth_token'], token_id, secret=secret)
                         #Builds the response
                         user_id = mongoDB.getUserId(user)
-                        response = {"user_id": user_id}
+                        response = {"user_id": user_id, "token": twitter_data['oauth_token']}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(201)
@@ -928,6 +933,7 @@ class TwitterAuthorizationHandler(SessionHandler):
         global consumer_secret
         oauth_token = self.request.get("oauth_token")
         oauth_verifier = self.request.get("oauth_verifier")
+        oauth_token_secret = memcache.get(oauth_token)
         tw = Twython(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
 
         # Retrieves user info
@@ -958,7 +964,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
         oauth_token = self.request.get('oauth_token')
 
         if not oauth_token:
-            reponse = {'error', "The oauth token is empty"}
+            response = {'error', "The oauth token is empty"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(404)

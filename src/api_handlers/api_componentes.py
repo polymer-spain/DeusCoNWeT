@@ -145,6 +145,8 @@ class ComponentListHandler(SessionHandler):
                     format_flag = True if list_format == "complete" and filter_param == "user" else False
                     user_filter = True if filter_param == "user" else False
                     # Get the component list, according to the filters given
+                    print "User id", user_id, social_network, format_flag, user_filter
+
                     component_list = mongoDB.getComponents(user_id, social_network, format_flag, user_filter)
                     component_list_aux = json.loads(component_list)
                     if not len(component_list_aux["data"]) == 0:
