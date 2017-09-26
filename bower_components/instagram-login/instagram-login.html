@@ -1,0 +1,181 @@
+<!--
+@license
+Copyright (c) 2015 Ana Isabel Lopera Martínez
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<dom-module id="instagram-login">
+  <style is="custom-style">
+    :host {
+      display: block;
+    }
+    .large{
+      background: rgba(81,127,164,1);
+      background: -moz-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -webkit-gradient(left top, right top, color-stop(0%, rgba(81,127,164,1)), color-stop(53%, rgba(102,151,189,1)), color-stop(100%, rgba(89,128,158,1)));
+      background: -webkit-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -o-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -ms-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: linear-gradient(to right, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#517fa4', endColorstr='#59809e', GradientType=1 );
+      color: #fff;
+      border-radius: 3px;
+      padding-left: 5px;
+      padding-right: 5px;
+      text-transform: none;
+      width: 205px;
+      height: 50px;
+      font-size: 16px;
+    }
+
+    .sort{
+      background: rgba(81,127,164,1);
+      background: -moz-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -webkit-gradient(left top, right top, color-stop(0%, rgba(81,127,164,1)), color-stop(53%, rgba(102,151,189,1)), color-stop(100%, rgba(89,128,158,1)));
+      background: -webkit-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -o-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: -ms-linear-gradient(left, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      background: linear-gradient(to right, rgba(81,127,164,1) 0%, rgba(102,151,189,1) 53%, rgba(89,128,158,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#517fa4', endColorstr='#59809e', GradientType=1 );
+      border-radius: 3px;
+      height: 46px;
+      width: 82px;
+    }
+
+    .icon{
+      margin-right: 5px;
+      --iron-icon-width: 30px;
+      --iron-icon-height: 25px;
+    }
+
+    .disconnected{
+      background: grey;
+    }
+
+  </style>
+
+  <template>
+
+
+    <!-- large and disconnected -->
+    <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
+      <paper-button class="large" title="Instagram" on-click="_login">
+        <iron-icon src="instagram-login.png" class="icon"></iron-icon>
+        Log in with Instagram
+      </paper-button>
+    </template>
+
+    <!-- large and connected -->
+    <template is="dom-if" if="[[_largeAndConnected(logged, sort)]]">
+      <paper-button class="large logout" title="Instagram" on-click="_logout_func">
+        <iron-icon src="instagram-login.png" class="icon"></iron-icon>
+        Log out from Instagram
+      </paper-button>
+    </template>
+
+    <!-- sort and disconnected -->
+    <template is="dom-if" if="[[_sortAndDisconnected(logged, sort)]]">
+      <paper-button class="sort" title="Instagram" on-click="_login">
+        <iron-icon src="instagram-login.png" class="icon"></iron-icon>
+      </paper-button>
+    </template>
+
+    <!-- sort and connected -->
+    <template is="dom-if" if="[[_sortAndConnected(logged, sort)]]">
+      <paper-button class="sort disconnected" title="Instagram" on-click="_logout_func">
+        <iron-icon src="instagram-login.png" class="icon"></iron-icon>
+      </paper-button>
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: "instagram-login",
+      properties: {
+        logged: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        sort: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        clientId: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        redirectUri: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        access_token: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        userId: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        }
+      },
+      _login: function(event, detail, sender) {
+        var oauth_url = "https://instagram.com/oauth/authorize?client_id=" + this.clientId
+        + "&redirect_uri=" + this.redirectUri + "&response_type=token";
+        var win = window.open(oauth_url, "Autoriza la aplicación",'width=800, height=600');
+        var back = this;
+        var polTimer = window.setInterval(function(){
+          try {
+            if(win.document.URL.indexOf('access_token') != -1){
+              window.clearInterval(polTimer);
+              var url = win.document.URL;
+              var patron = "access_token"+"=([^&#]*)";
+              var exp = new RegExp(patron);
+              back.access_token = exp.exec(url)[1];
+              var splited = back.access_token.split('.');
+              back.userId = splited[0];
+
+              back.fire('instagram-logged',{token:back.access_token,redSocial:'instagram',userId:back.userId});
+              win.close();
+              back.logged = true;
+            }
+          }catch(e){
+
+          }
+        }, 100);
+      },
+      _logout_func: function(event, detail, sender){
+        /* Borrar datos de la base de datos */
+        var back = this;
+        back.logged = false
+      },
+
+      _largeAndDisconnected: function (logged,sort) {
+        return !logged && !sort;
+      },
+      _largeAndConnected: function(logged, sort) {
+        return logged && !sort;
+      },
+      _sortAndDisconnected: function(logged, sort) {
+        return !logged && sort; 
+      },
+      _sortAndConnected: function(logged, sort) {
+        return logged && sort; 
+      }
+
+    })
+  </script>
+</dom-module>

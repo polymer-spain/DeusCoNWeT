@@ -1,0 +1,36 @@
+{
+  "name": "login-facebook",
+  "version": "2.0.0",
+  "homepage": "https://github.com/Mortega5/login-facebook",
+  "authors": [
+    "Miguel Ortega Moreno <miguel.ortega.moreno5@gmail.com>"
+  ],
+  "main": "login-facebook.html",
+  "keywords": [
+    "polymer",
+    "login",
+    "facebook"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "iron-icon": "PolymerElements/iron-icon#~1.0.4",
+    "paper-button": "PolymerElements/paper-button#~1.0.6",
+    "polymer": "Polymer/polymer#^1.1.0"
+  },
+  "_release": "2.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.0",
+    "commit": "3cf63060c1d0aef702652d17e0419e3b13d854e4"
+  },
+  "_source": "https://github.com/mortega5/login-facebook.git",
+  "_target": "~2.0.0",
+  "_originalSource": "login-fb"
+}

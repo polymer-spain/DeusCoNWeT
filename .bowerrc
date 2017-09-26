@@ -1,5 +1,10 @@
 {
    "directory": "src/static/bower_components",
-   "registry": "http://localhost:5555"
+   "registry": {
+      "search": [
+      "http://localhost:5555",
+      "https://bower.herokuapp.com"
+      ]
+    }
 }
 

@@ -1,0 +1,36 @@
+{
+  "name": "linkedin-login",
+  "version": "2.0.0",
+  "authors": [
+    "Ana Isabel Lopera <lopera.martinez.ana.isabel@gmail.com>"
+  ],
+  "description": "Element providing solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer"
+  ],
+  "main": "linkedin-login.html",
+  "license": "MIT",
+  "homepage": "https://github.com/ailopera/linkedin-login/",
+  "ignore": [
+    "/.*",
+    "/tests/",
+    "bower_components"
+  ],
+  "dependencies": {
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.5",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.5",
+    "paper-button": "PolymerElements/paper-button#~1.0.7"
+  },
+  "devDependencies": {},
+  "_release": "2.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.0",
+    "commit": "1baa34c7f37b86570d9c94d0a46519b78a8ae139"
+  },
+  "_source": "https://github.com/ailopera/linkedin-login.git",
+  "_target": "~2.0.0",
+  "_originalSource": "linkedin-login"
+}

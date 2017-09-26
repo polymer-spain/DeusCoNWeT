@@ -1,0 +1,190 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<dom-module id="github-login">
+  <style is="custom-style">
+    .large{
+      background: rgba(71,68,67,1);
+      background: -moz-linear-gradient(left, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      background: -webkit-gradient(left top, right top, color-stop(0%, rgba(71,68,67,1)), color-stop(58%, rgba(87,87,87,1)), color-stop(100%, rgba(71,68,67,1)));
+      background: -webkit-linear-gradient(left, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      background: -o-linear-gradient(left, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      background: -ms-linear-gradient(left, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      background: linear-gradient(to right, rgba(71,68,67,1) 0%, rgba(87,87,87,1) 58%, rgba(71,68,67,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#474443', endColorstr='#474443', GradientType=1 );
+      color: #fff;
+      border-radius: 3px;
+      text-transform: none;
+      width: 205px;
+      height: 50px;
+      font-size: 16px;
+    }
+    .sort{
+      background-image: linear-gradient(#202d5f, #614381);
+      border-radius: 3px;
+      cursor: pointer;
+      vertical-align: center;
+      margin: 0;
+      height: 46px;
+      width: 82px;
+    }
+
+    .disconnected {
+      background: rgb(102,102,102);
+    }
+
+    .icon{
+      margin-left: -12px;
+      margin-right: 6px;
+      --iron-icon-width: 24px;
+      --iron-icon-height: 24px;
+      background-repeat:no-repeat;
+    }
+
+    .sortIcon{
+      --iron-icon-width: 30px;
+      --iron-iron-height: 25px;
+    }
+
+  </style>
+
+  <template>
+    <iron-ajax 
+               id="githubcode" url="http://github-login-lab.appspot.com/oauth/github"
+               method="GET"
+               params='{
+                       "action": "request_token",
+                       "code": "{{code}}"
+                       }'
+               handleAs="json"
+               on-response='response'>
+    </iron-ajax>
+
+    <!-- large and disconnected -->
+    <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
+      <paper-button class="large" title="Github" on-click="_login">
+        <iron-icon src='images/github-image.png' class="icon" ></iron-icon>
+        <span>Login with GitHub</span>
+      </paper-button>
+    </template>
+
+    <!-- large and connected -->
+    <template is="dom-if" if="[[_largeAndConnected(logged, sort)]]">
+      <paper-button class="large disconnected" title="Github" on-click="_logout" >
+        <iron-icon src="images/github-image.png" class="icono" ></iron-icon>
+        <span>Logout from GitHub</span>
+      </paper-button>
+    </template>
+
+    <!-- sort and disconnected -->
+    <template is="dom-if" if="[[_sortAndDisconnected(logged, sort)]]">
+
+      <paper-button class="sort" title="Github" on-click="_login" >
+        <iron-icon src='images/github-image.png' class="sortIcon" ></iron-icon>
+      </paper-button>
+    </template>
+
+    <!-- sort and connected -->
+    <template is="dom-if" if="[[_sortAndConnected(logged, sort)]]">
+      <paper-button class="sort disconnected" title="Github" on-click="_logout" >
+        <iron-icon src="images/github-image.png" class="sortIcon"></iron-icon>
+      </paper-button>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: "github-login",
+      properties: {
+        logged: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        sort: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        endpoint: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        access_token: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        code: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        scope: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        }
+      },
+
+      _response: function(e, d, s){
+        this.accessToken = s.response;
+        this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
+      },
+
+      _login: function(event, detail, sender){
+        // Generamos la direccion donde vamos a realizar la peticion
+        var url = 'https://github.com/login/oauth/authorize?';
+        url += 'scope='+this.scope;
+        url+='&client_id='+this.client_id;
+        url+='&redirect_uri='+this.endpoint;
+        // Guardamos en una variable el scope de la ventana principal
+        var back = this;
+        // Abrimos la ventana para que se realice la autenticacion
+        var win = window.open(url, "Autentícate", 'width=800, height=600');
+        // Escuchamos la direccion hasta que cambia con el codigo
+        // NOTA: el callback y la ventana actual deben tener el mismo:
+        // dominio,puerto y protocolo
+        var pollTimer = window.setInterval(function() {
+          try {
+            // Esperamos a que nos devuelan un token
+            if (win.document.URL.indexOf('code') != -1) {
+              // Eliminamos el timer
+              window.clearInterval(pollTimer);
+              // Sacamos el codigo mediante expresion regular
+              var url =   win.document.URL;
+              var patron = "code"+"=([^&#]*)";
+              var exp = new RegExp(patron);
+              // Ponemos en valor en una variable de la ventana principal
+              back.code = exp.exec(url)[1];
+              // Llamamos a backend para que obtenga el token
+              back.$.githubcode.go();
+              back.logged = true;
+              win.close();
+            }
+          } catch (e) {
+          }
+        }, 100);
+      },
+      _logout: function(event, detail, sender){
+        var back = this;
+        this.logged = false;
+      },
+      _largeAndDisconnected: function (logged,sort) {
+        return !logged && !sort;
+      },
+      _largeAndConnected: function(logged, sort) {
+        return logged && !sort;
+      },
+      _sortAndDisconnected: function(logged, sort) {
+        return !logged && sort; 
+      },
+      _sortAndConnected: function(logged, sort) {
+        return logged && sort; 
+      }
+    })
+  </script>
+</dom-module>

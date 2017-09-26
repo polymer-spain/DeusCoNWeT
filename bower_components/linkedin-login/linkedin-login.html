@@ -1,0 +1,184 @@
+<!--
+@license
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+
+
+<dom-module id="linkedin-login">
+
+  <style is="custom-style">
+
+    :host {
+      display: block;
+    }
+    .large{
+      color: #fff;
+      border-radius: 3px;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      text-transform: none;
+      width: 205px;
+      height: 50px;
+      font-size: 16px;
+      background-image: url("linkedinLogin.png");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+
+    .sort{
+      background: #007bb6;
+      border-radius: 3px;
+      cursor: pointer;
+      text-transform: none;
+      height: 46px;
+      width: 82px;
+    }
+
+    .disconnected{
+      background: grey;
+    }
+
+    .icon{
+      margin-top: 2px;
+      --iron-icon-width: 24px;
+      --iron-icon-height: 24px;
+    }
+  </style>
+
+  <template>
+
+    <!-- large and disconnected -->
+    <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
+      <paper-button class="large" title="Linkedin" on-click="_login">
+        
+      </paper-button>
+    </template>
+
+    <!-- large and connected -->
+    <template is="dom-if" if="[[_largeAndConnected(logged, sort)]]">
+      <paper-button class="large disconnected" title="Linkedin" on-click="_logout">
+        <iron-icon src="linkedin-logout.png" class="icon"></iron-icon>
+        <span>Log out from Linkedin</span>
+      </paper-button>
+    </template>
+
+    <!-- sort and disconnected -->
+    <template is="dom-if" if="[[_sortAndDisconnected(logged, sort)]]">
+      <paper-button class="sort" title="Linkedin" on-click="_login">
+        <iron-icon src="linkedin-sort.png" class="icon"></iron-icon>
+      </paper-button>
+    </template>
+
+    <!-- sort and connected -->
+    <template is="dom-if" if="[[_sortAndConnected(logged, sort)]]">
+      <paper-button class="sort disconnected" title="Linkedin" on-click="_logout">
+        <iron-icon src="linkedin-sort.png" class="icon"></iron-icon>
+      </paper-button>
+    </template>
+
+  </template>
+
+  <script type="text/javascript">
+    // Setup an event listener to make an API call once auth is complete
+    function onLinkedInLoad(){
+      IN.Event.on(IN, "customLogin", getProfileData);
+      
+
+    }
+
+    // Handle the successful return from the API call
+    function onSuccess(data){
+      var url = data.siteStandardProfileRequest.url;
+      var patron = "authToken"+"=([^&#]*)";
+      var exp = new RegExp(patron);
+      var acToken = exp.exec(url)[1];
+      document.querySelector("linkedin-login").fire("linkedin-logged",{token:acToken,redSocial:"linkedin",userId:data.id});
+
+    }
+
+    //Handle an error response from the API call
+    function onError(error){
+      IN.User.authorize(getProfileData);
+    }
+
+    // Use the API call wrapper to request the member"s basic profile data
+    function getProfileData(){
+      IN.API.Raw("/people/~").result(onSuccess).error(onError);
+    }
+  </script>
+
+  <script>
+    Polymer({
+      is: "linkedin-login",
+      properties: {
+        logged: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        sort: {
+          type: Boolean,
+          value: false,
+          refrectToAttrbiute: true
+        },
+        apiKey: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        },
+        estado: {
+          type: String,
+          value: "",
+          refrectToAttrbiute: true
+        }
+      },
+
+      _largeAndDisconnected: function (logged,sort) {
+        return !logged && !sort;
+      },
+      _largeAndConnected: function(logged, sort) {
+        return logged && !sort;
+      },
+      _sortAndDisconnected: function(logged, sort) {
+        return !logged && sort; 
+      },
+      _sortAndConnected: function(logged, sort) {
+        return logged && sort; 
+      },
+      ready: function() {
+        var script = document.createElement("script");
+        var back = this;
+        script.type ="text/javascript";
+        script.src = "https://platform.linkedin.com/in.js"
+        script.text = " api_key:" + this.apiKey + "\nonLoad:    onLinkedInLoad\n   authorize: true\n  lang:      es_ES"
+        script.id = "scriptlinkedin"
+        document.body.appendChild(script);
+        document.addEventListener("customLogin", function(){
+          IN.API.Raw("/people/~").result(onSuccess).error(onError);
+        })
+      },
+
+      _login: function(){
+        var back = this;
+        var authevent = new CustomEvent("customLogin", {});
+        document.dispatchEvent(authevent);
+        back.logged=true;
+      },
+
+      _logout: function(){
+        this.logged=false;
+      },
+    });
+  </script>
+</dom-module>
