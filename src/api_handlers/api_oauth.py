@@ -187,7 +187,7 @@ class OauthLoginHandler(SessionHandler):
                 user_key = mongoDB.modifyToken(token_id,
                         access_token, social_network)
                 user_id = mongoDB.getUserId(user_key)
-                session_id = self.login(str(user_key.id))
+                session_id = self.login(user_key)
 
                 # Gets the user_id to generate the user cookie
                 user_id = mongoDB.getUserId(user_key)
