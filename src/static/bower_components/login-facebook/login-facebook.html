@@ -11,13 +11,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+
 <dom-module id="login-facebook">
 
   <style is="custom-style">
-    :host{
+    :host {
       font-size: 16px;
     }
-    .large{
+
+    .large {
       background-color: #3B579D;
       color: #fff;
       border-radius: 3px;
@@ -27,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       cursor: pointer;
     }
 
-    .sort{
+    .sort {
       background: #3B579D;
       border-radius: 3px;
       cursor: pointer;
@@ -38,14 +40,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     .icon {
       --iron-icon-width: 15px;
       --iron-icon-height: 22px;
-      margin-right:5px;
+      margin-right: 5px;
       vertical-align: bottom;
     }
+
     .disconnect {
       background: grey;
     }
 
-    #logout{
+    #logout {
       background-color: #04334a;
       height: 100%;
       width: 100%;
@@ -124,55 +127,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           reflectToAttribute: true
         }
       },
-      
-      _largeAndDisconnected: function (logged,sort) {
+
+      _largeAndDisconnected: function (logged, sort) {
         return !logged && !sort;
       },
-      _largeAndConnected: function(logged, sort) {
+      _largeAndConnected: function (logged, sort) {
         return logged && !sort;
       },
-      _sortAndDisconnected: function(logged, sort) {
-        return !logged && sort; 
+      _sortAndDisconnected: function (logged, sort) {
+        return !logged && sort;
       },
-      _sortAndConnected: function(logged, sort) {
-        return logged && sort; 
+      _sortAndConnected: function (logged, sort) {
+        return logged && sort;
       },
 
-      ready: function() {
+      ready: function () {
+        window.fbAsyncInit = function () {
+          FB.init({//Se incia variables necesarias
+            appId: this.key_app,//Key App
+            cookie: false,
+            status: true,// enable cookies to allow the server to
+            xfbml: true,  // parse social plugins on this page
+            version: 'v2.10' // use version 2.2
+          });
+          FB.AppEvents.logPageView();
+        }.bind(this);
         //Se realizara la carga del SDK de Facebook
         var script = document.createElement('script');
         script.type = "text/javascript";
-        script.text = "	(function(d, s, id) { \
-var js, fjs = d.getElementsByTagName(s)[0];\
-if (d.getElementById(id)) return;\
-js = d.createElement(s); js.id = id;\
-js.src = '//connect.facebook.net/en_US/sdk.js';\
-fjs.parentNode.insertBefore(js, fjs);\
-}(document, 'script', 'facebook-jssdk'));\
-";
+        script.text = '(function(d, s, id){\
+          var js, fjs = d.getElementsByTagName(s)[0];\
+          if (d.getElementById(id)) {return;}\
+          js = d.createElement(s); js.id = id;\
+          js.src = "https://connect.facebook.net/en_US/sdk.js";\
+          fjs.parentNode.insertBefore(js, fjs);\
+        }(document, "script", "facebook-jssdk"));\
+';
         document.body.appendChild(script);
+
       },
 
-      _login:function() {
-        FB.init({//Se incia variables necesarias
-          appId      : this.key_app,//Key App
-          cookie     : true,
-          status     : true,// enable cookies to allow the server to
-          xfbml      : true,  // parse social plugins on this page
-          version    : 'v2.3' // use version 2.2
-        });
+      _login: function () {
+
         var back = this;
-
-        FB.login(function(response) {
-          back.acToken=response.authResponse.accessToken;
+        FB.login(function (response) {
+          back.acToken = response.authResponse.accessToken;
           back.userId = response.authResponse.userID;
-          back.logged= back.static ? false : true;
-          this.acToken=response.authResponse.accessToken;
+          back.logged = back.static ? false : true;
+          this.acToken = response.authResponse.accessToken;
           this.userId = response.authResponse.userID;
-          back.fire('facebook-logged',{token:this.acToken,redSocial:'facebook',userId:this.userId});}, {scope: this.scope});
+          back.fire('facebook-logged', { token: this.acToken, redSocial: 'facebook', userId: this.userId });
+        }, { scope: back.scope });
       },
 
-      _logout:function() {
+      _logout: function () {
         this.logged = false;
       }
 
