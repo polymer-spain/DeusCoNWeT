@@ -6,7 +6,7 @@ BVA_FOLDER = '../../api_handlers/lib/'
 sys.path.insert(1, BVA_FOLDER)
 import BVA
 
-components = ["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"]
+components = ["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather","spotify-component"]
 versions = ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"]
 
 bva = BVA.BVA(components,versions)

@@ -153,4 +153,4 @@
     });
 
   }]);
-})(wrap(document));
+})(document);

@@ -12,9 +12,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   // loads references for this
   (function () {
     if ($scope.user.references) {
-      $scope.user.references.forEach(function (value, index) {
+      $scope.user.references.forEach(function (ref, index) {
         var $jq = window.$;
-        var $link = $('<link rel="import">').attr('href', $scope.user.references[index]);
+         ref = ref.replace("stable","maintenance");
+        var $link = $('<link rel="import">').attr('href', ref);
         $('body').append($link);
         window.setTimeout(function () {
           window.$ = $jq
@@ -423,7 +424,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             break;
           case 'pinterest':
             break;
-          case 'github':
+          case 'spotify':
             break;
           default:
             $backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
@@ -437,6 +438,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $('#login-modal twitter-login').bind('twitter-logged', loginCallback);
     $('#login-modal login-facebook').bind('facebook-logged', loginCallback);
     $('#login-modal pinterest-login').bind('pinterest-logged', loginCallback);
-
+    $('#login-modal spotify-login').bind('spotify-logged', loginCallback);
   })();
 }]);

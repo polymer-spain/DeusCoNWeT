@@ -1,6 +1,6 @@
 {
   "name": "finance-search",
-  "version": "1.0.2-structural",
+  "version": "1.0.2-usability",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -21,17 +21,16 @@
     "polymer": "Polymer/polymer#^1.2.0",
     "finance-chart": "*",
     "search-company": "*",
-    "finance-historical": "*",
-    "googleplus-timeline": "v0.9.2-stable"
+    "finance-historical": "*"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "1.0.2-structural",
+  "_release": "1.0.2-usability",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.2-structural",
-    "commit": "122b019f4bdc3f55d218b2b9af37feba4ebe3fdc"
+    "tag": "v1.0.2-usability",
+    "commit": "4deb479e55ed3294fc94b236568d3d8eddead94a"
   },
   "_source": "https://github.com/Mortega5/finance-search.git",
   "_target": "^1.0.2-stable",

@@ -86,7 +86,11 @@
           redirect_uri="https://centauro.ls.fi.upm.es" data-role="login"></pinterest-login>
           <hr>
         </div>
-
+        <div class="horizontal center layout loginSection" ng-class="{logged: existToken('spotify')}">
+          <p>{{language.user_profile.permission}}</p>
+          <spotify-login class="component" client_id="a7b3de70814a40908fd482a8eb525878" redirect_uri="https://centauro.ls.fi.upm.es" data-role="login"></spotify-login>
+          <hr>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" ng-click="closeForm()" class="btn btn-default">{{language.close}}</button>

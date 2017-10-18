@@ -9,7 +9,7 @@ import BVA
 
 class BVA_tester(unittest.TestCase):
     def setUp(self):
-        self.components = ["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"]
+        self.components = ["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather","spotfy-component"]
         self.versions = ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"]
 
 

@@ -909,7 +909,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         self.response.content_type = "application/json"
         callback_url = self.request.get("callback", default_value="https://" + domain)
         auth = twitter.get_authentication_tokens(callback_url=callback_url)
-
+        print "Datos a añadir", auth
         memcache.add(auth['oauth_token'], auth['oauth_token_secret'], time=20*60)
         response = {"oauth_url": auth['auth_url']}
         self.response.write(json.dumps(response))
@@ -969,6 +969,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(404)
         # Get oauth token secret from memcache. Stored in the first step
+        print "Intentando coger el secret de la memcache: ", oauth_token
         oauth_token_secret = memcache.get(oauth_token)
         
         if not oauth_token:
@@ -980,8 +981,9 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
         memcache.delete(oauth_token)
         tw = Twython(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
         twitter_user_data = tw.get_authorized_tokens(oauth_verifier)
+        print "Metiendo los datos completos: ", twitter_user_data, oauth_verifier
         memcache.add(oauth_verifier, twitter_user_data, time=20*60)
-
+        print "Recuperando datos: ", memcache.get(oauth_verifier)
         # Return the user's token id that authorized the application
         if not twitter_user_data == None:
             response = {"token_id": twitter_user_data["screen_name"]}
@@ -1030,6 +1032,7 @@ class TwitterSignUpHandler(SessionHandler):
         user_identifier = self.request.get("user_identifier", default_value="")
 
         if not oauth_verifier == "":
+            print "oauth verifier para postear datos:", oauth_verifier
             twitter_user_data = memcache.get(oauth_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously

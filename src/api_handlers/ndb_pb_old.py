@@ -38,9 +38,10 @@ social_list = [
     'linkedin',
     'googleplus',
     'github',
+    'spotify'
     ]
 
-bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"],
+bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather","spotify-component"],
               ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"])
 # We read the relevant fields in the config.yaml file (config params for PicBit Backend)
 basepath = os.path.dirname(__file__)
@@ -606,7 +607,7 @@ def assignComponents(user_key):
   versions = bva.getNewVersions()
   comps = Component.query().fetch(15)
   version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
-                  "finance-search": 5, "open-weather": 6}
+                  "finance-search": 5, "open-weather": 6, "spotify-component": 7}
 
   for comp in comps:
     version = versions[version_order[comp.component_id]]

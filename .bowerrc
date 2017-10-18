@@ -1,5 +1,8 @@
 {
    "directory": "src/static/bower_components",
-   "registry": "http://localhost:5555"
+   "registry": {
+	"search":["http://centauro.ls.fi.upm.es:5555", "https://bower.herokuapp.com"],
+	"register":"http://centauro.ls.fi.upm.es:5555"
+    }
 }
 

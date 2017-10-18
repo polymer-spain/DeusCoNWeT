@@ -32,7 +32,7 @@ sys.path.insert(1, 'lib')
 from mongoengine import *
 from pprint import pprint
 import BVA
-bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"],
+bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather","spotify-component"],
               ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"])
 #import pdb; pdb.set_trace(); # comando para depurar 
 # Definimos la lista de redes sociales con las que trabajamos
@@ -725,7 +725,7 @@ def assignComponents(user):
   versions = bva.getNewVersions()
   comps = Component.objects()
   version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
-                  "finance-search": 5, "open-weather": 6}
+                  "finance-search": 5, "open-weather": 6, "spotify-component": 7}
   user.components = []
   for comp in comps:
     version = versions[version_order[comp.component_id]]

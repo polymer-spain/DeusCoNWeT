@@ -184,3 +184,18 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/finance-search',
         }, doseq=True)
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
+aux={"token":""}
+params = urllib.urlencode({"url": 'https://github.com/magasuan/spotify-component',
+        "component_id": 'spotify-component',
+        "description": 'Web component to see your playlist in Spotify using Polymer',
+        "social_network": 'spotify',
+        "input_type": 'None',
+        "output_type": 'playlist',
+        "versions": versions_list,
+        "predetermined": 'True',
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'token',
+        "img": 'images/components/Spotify.png'
+        }, doseq=True)
+test_utils.make_request("PUT", request_uri, params, 201, None)
+

@@ -19,7 +19,7 @@
     "tag": "0.5.6",
     "commit": "1f51f746d517c7bbfafca704691a05da8be1d48e"
   },
-  "_source": "git://github.com/Polymer/core-dropdown.git",
-  "_target": "~0.5.6",
+  "_source": "https://github.com/Polymer/core-dropdown.git",
+  "_target": "^0.5",
   "_originalSource": "Polymer/core-dropdown"
 }

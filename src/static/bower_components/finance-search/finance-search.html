@@ -15,8 +15,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../googleplus-timeline/googleplus-timeline.html">
-
 <!--
 An element providing a solution to no problem in particular.
 
@@ -43,7 +41,6 @@ Example:
         width: var(--finance-search-width, 400px);
         height: var(--finance-search-width, 260px);
         min-height: 260px;
-        min-width: 400px;
         background-color: #3F51B5;
         border-radius: 2px;
         box-sizing: content-box;
@@ -112,7 +109,7 @@ Example:
           </div>
         </template>
       </template>
-      <search-company symbol="{{company_symbol}}" company="{{fullname}}"></search-company>
+      <search-company  symbol="{{company_symbol}}" company="{{fullname}}"></search-company>
       <div class="container">
         <div id="empty" class="horizontal layout center-center post empty" hidden>
           <p>No hay datos sobre {{fullname}}</p>

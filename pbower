@@ -16,11 +16,11 @@ Options:
     \e[33m--save\e[39m                  Save as bower dependencie
 Example:
 
-    bower install  googletimeline-plus#v0.9-stable
+    pbower install  googletimeline-plus#v0.9-stable
 
   Package can be a file with multiple components
 
-    bower install versions.txt
+    pbower install versions.txt
 
 IMPORTANT:
     The version of the component must be v{version_number}-{branch}. For example v0.9-stable
@@ -67,18 +67,19 @@ if [ -f "$BOWERFILE" ]
 then
     key="directory"
     re="\"($key)\": \"([^\"]*)\""
-    bower_directory="bower_components"
+    BOWER_DIRECTORY="bower_components"
     while read -r l; do
         if [[ $l =~ $re ]]; then
             name="${BASH_REMATCH[1]}"
             value="${BASH_REMATCH[2]}"
-            bower_directory=$value
+            BOWER_DIRECTORY=$value
             break
         fi
     done < $BOWERFILE
 fi
 
-# GET PACKAGE NAME and BRANCH/HASH OPTION
+echo "Directory encontrado: $BOWER_DIRECTORY"
+# GET PACKAGE NAME and BRANCH/HASH OPTIONi
 # args: $1 package name
 function install_package(){
   local import_name=$1
@@ -114,7 +115,7 @@ function install_package(){
 
 
   # INSTALL BOWER COMPONENT
-  bower $command -F --allow-root $import_name $SAVE
+  bower $command  --allow-root $import_name $SAVE
   local status=$?
 
   # CHECK IF BOWER FINISHED CORRECTLY
