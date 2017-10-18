@@ -48,6 +48,8 @@ api_url =[
 
     (r'/api/aux/twitterTimeline', api_auxiliar.OAuthTwitterTimelineHandler),
     (r'/api/aux/instagramTimeline', api_auxiliar.instagramRequest),
+    (r'/api/aux/facebookToken', api_auxiliar.OAuthFacebookAccessToken),
+    (r'/api/aux/facebookTimeline', api_auxiliar.OAuthFacebookTimeline),
 
     (r'/api/oauth/twitter/signup',api_oauth.TwitterSignUpHandler),
     (r'/api/oauth/twitter/login', api_oauth.TwitterLoginHandler),

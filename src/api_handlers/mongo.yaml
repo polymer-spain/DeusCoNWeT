@@ -1,6 +1,6 @@
 host: localhost
-pwd: euser:7394
-user: deusConwet
+pwd: test
+user: deus
 port: 27017
 database: picbit
 databaseTest: picbitTest

@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <dom-module id="login-facebook">
 
@@ -59,6 +60,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
   </style>
   <template>
+      <iron-ajax id="requestToken" url="{{endpoint}}/api/aux/facebookToken?access_token={{token}}"
+      method="GET" handleAs='json' on-response="_responseToken"></iron-ajax>
+
     <!-- Large and disconnected button-->
     <template is="dom-if" if="[[_largeAndDisconnected(logged, sort)]]">
       <paper-button class="large" title="Facebook" on-click="_login">
@@ -125,7 +129,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: "",
           reflectToAttribute: true
-        }
+        },
+        endpoint: {
+          type: String,
+          value: 'https://centauro.ls.fi.upm.es',
+          reflectToAttribute: true
+        },
+        token: String,
       },
 
       _largeAndDisconnected: function (logged, sort) {
@@ -171,17 +181,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         var back = this;
         FB.login(function (response) {
-          back.acToken = response.authResponse.accessToken;
+          back.token = response.authResponse.accessToken;
           back.userId = response.authResponse.userID;
           back.logged = back.static ? false : true;
-          this.acToken = response.authResponse.accessToken;
-          this.userId = response.authResponse.userID;
-          back.fire('facebook-logged', { token: this.acToken, redSocial: 'facebook', userId: this.userId });
+          
+          back.$.requestToken.generateRequest();
         }, { scope: back.scope });
       },
-
+      _responseToken: function(e){
+        this.token =e.detail.response.access_token;
+        this.fire('facebook-logged', { token: this.token, redSocial: 'facebook', userId: this.userId });
+      },
       _logout: function () {
         this.logged = false;
+        FB._logout(function(){this.fire('facebook-logout')}.bind(this));
       }
 
     });
