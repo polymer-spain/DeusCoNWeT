@@ -1,6 +1,6 @@
 {
   "name": "facebook-wall",
-  "version": "0.9.3-complexity",
+  "version": "0.9.4-complexity",
   "keywords": [
     "polymer",
     "web-components",
@@ -19,7 +19,9 @@
     "paper-material": "PolymerElements/paper-material",
     "paper-button": "PolymerElements/paper-button",
     "web-component-tester": "Polymer/web-component-tester#~4.2.1",
-    "test-fixture": "PolymerElements/test-fixture#^1.0.0"
+    "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+    "moment": "^2.18.1",
+    "polymer": "1.2"
   },
   "devDependencies": {
     "polymer-test-tools": "Polymer/polymer-test-tools#master",
@@ -27,7 +29,8 @@
     "sinon": "http://sinonjs.org/releases/sinon-1.10.2.js"
   },
   "resolutions": {
-    "mocha": "^2.3.0"
+    "mocha": "^2.3.0",
+    "polymer": "^1.0.0"
   },
   "authors": [
     "Miguel Ortega Moreno <miguel.ortega.moreno5@gmail.com>"
@@ -43,14 +46,14 @@
     "tests",
     "*.*~"
   ],
-  "_release": "0.9.3-complexity",
+  "_release": "0.9.4-complexity",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.3-complexity",
-    "commit": "23831a526f80c3d3e2ce619ec2c02aafe86a8f12"
+    "tag": "v0.9.4-complexity",
+    "commit": "74038da66f995e29850b4b2252b20681201064d3"
   },
   "_source": "https://github.com/Mortega5/facebook-wall.git",
-  "_target": "v0.9.3-complexity",
+  "_target": "v0.9.4-complexity",
   "_originalSource": "facebook-wall",
   "_direct": true
 }

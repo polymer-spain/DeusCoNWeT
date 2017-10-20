@@ -508,7 +508,8 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                             oauth_verifier = self.request.POST['oauth_verifier']
                             twitter_data = memcache.get(oauth_verifier)
                             secret = twitter_data['oauth_token_secret']
-                        mongoDB.insertToken(user, social_network, twitter_data['oauth_token'], token_id, secret=secret)
+                            mongoDB.insertToken(user, social_network, twitter_data['oauth_token'], token_id, secret=secret)
+                            access_token = twitter_data['oauth_token']
                         #Builds the response
                         user_id = mongoDB.getUserId(user)
                         response = {"user_id": user_id, "token": twitter_data['oauth_token']}

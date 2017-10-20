@@ -1,6 +1,6 @@
 {
   "name": "facebook-wall",
-  "version": "0.9.3-structural",
+  "version": "0.9.4-structural",
   "keywords": [
     "polymer",
     "web-components",
@@ -46,14 +46,14 @@
     "tests",
     "*.*~"
   ],
-  "_release": "0.9.3-structural",
+  "_release": "0.9.4-structural",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.3-structural",
+    "tag": "v0.9.4-structural",
     "commit": "e6a42a492b8659f2e1771803201ed7c41d9f55f0"
   },
   "_source": "https://github.com/Mortega5/facebook-wall.git",
-  "_target": "v0.9.3-structural",
+  "_target": "v0.9.4-structural",
   "_originalSource": "facebook-wall",
   "_direct": true
 }
