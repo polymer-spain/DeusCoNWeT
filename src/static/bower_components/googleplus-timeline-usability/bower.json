@@ -1,0 +1,31 @@
+{
+  "name": "googleplus-timeline",
+  "version": "0.8-stable",
+  "authors": [
+    "Ana Isabel Lopera  <lopera.martinez.ana.isabel@gmail.com>"
+  ],
+  "description": "Polymer Web Component that obtains Google Plus feed for an user.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "googleplus"
+  ],
+  "main": "googleplus-timeline.html",
+  "license": "https://github.com/ailopera/googleplus-timeline/LICENSE",
+  "homepage": "https://github.com/ailopera/googleplus-timeline",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0",
+    "paper-styles": "PolymerElements/paper-styles#~1.0.13",
+    "iron-image": "PolymerElements/iron-image#~1.2.0",
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.6"
+    
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}

@@ -11,11 +11,10 @@
   <template>
     <style is="custom-style" include="iron-flex iron-flex-alignment">
       /* Globales */
-
-       :host {
+      :host {
         display: inline-block;
-        width:  var(--googleplus-timeline-width, 350px);
-        height:  var(--googleplus-timeline-height, 350px);
+        width: var(--googleplus-timeline-width, 350px);
+        height: var(--googleplus-timeline-height, 350px);
         min-height: 350px;
         min-width: 350px;
         border-radius: 10px;
@@ -44,6 +43,10 @@
       a:hover>span {
         color: #2ebd59;
       }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d2d174e37ce3ad903f2c53d8c64dad751dd459ae
       /* Toolbar */
 
       #tool {
@@ -69,18 +72,6 @@
         border: none;
         width: 30px;
         height: 30px;
-      }
-      button:hover {
-        top: 10px;
-        right: 10px;
-        width: 40px;
-        height: 40px;
-      }
-      button:focus {
-        top: 10px;
-        right: 10px;
-        width: 40px;
-        height: 40px;
       }
       /* Header dom repeat */
 
@@ -189,26 +180,25 @@
     </div>
     <template is="dom-repeat" items="{{res}}" class='repeat' id='dom'>
       <paper-expansion-panel class="styled" summary="Created by: {{item.owner.id}}">
-        <div class="header"  class='cab horizontal layout'>
-
-          <a href="{{item.external_urls.spotify}}" target='_blank'>
-              <img class='imagenes' alt='Imagen de la playlist' sizing="cover" preload src="{{item.images.1.url}}" ></img>
+        <div class="header" class='cab horizontal layout'>
+          <div class='horizontal layout'>
+            <a href="{{item.external_urls.spotify}}" target='_blank'>
+              <img class='imagenes' alt='Imagen de la playlist' sizing="cover" preload src="{{item.images.1.url}}"></img>
             </a>
-          <div class='playlist flex vertical layout'>
-            <p class='playtit'>p l a y l i s t</p>
+            <div class='playlist flex vertical layout'>
+              <p class='playtit'>p l a y l i s t</p>
 
-            <p class='nombreLista'>{{item.name}}</p>
+              <p class='nombreLista'>{{item.name}}</p>
 
-            <div class='horizontal layout'>
-              <span>Created by:</span>
-              <a href="{{item.owner.external_urls.spotify}}" target='_blank'>
-                    <span class='owner'>{{item.owner.id}}</span>
-                  </a>
+              <div class='horizontal layout'>
+                <span>Created by:</span>
+                <a href="{{item.owner.external_urls.spotify}}" target='_blank'>
+                  <span class='owner'>{{item.owner.id}}</span>
+                </a>
+              </div>
             </div>
+
           </div>
-
-
-
         </div>
 
         <div>
@@ -242,8 +232,6 @@
     <iron-ajax auto id="cons" url="https://api.spotify.com/v1/me/playlists?limit=20&after=0aV6DOiouImYTqrR5YlIqx" headers="{{headers}}"
       handle-as="json" on-response="respuestaSPFY"></iron-ajax>
 
-
-
   </template>
   <script>
     Polymer({
@@ -263,7 +251,7 @@
         },
         refresh_time: {
           type: Number,
-          value: 60000,
+          value: 120000,
           reflectToAttribute: true
         }
       },

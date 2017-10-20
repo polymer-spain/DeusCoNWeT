@@ -1,0 +1,52 @@
+{
+ "kind": "plus#peopleFeed",
+ "etag": "\"FT7X6cYw9BSnPtIywEFNNGVVdio/O9hTR3m8tAQKjevlkfuBOi1Zlug\"",
+ "title": "Google+ List of Visible People",
+ "totalItems": 4,
+ "items": [
+  {
+   "kind": "plus#person",
+   "etag": "\"FT7X6cYw9BSnPtIywEFNNGVVdio/iNdJcri8bifEzDHo8flY6apSfSM\"",
+   "objectType": "person",
+   "id": "114562083342340135920",
+   "displayName": "Ana Isabel Lopera",
+   "url": "https://plus.google.com/114562083342340135920",
+   "image": {
+    "url": "https://lh3.googleusercontent.com/-j8JjAgelUec/AAAAAAAAAAI/AAAAAAAAALU/hPEQ9nyc6Mk/photo.jpg?sz=50"
+   }
+  },
+  {
+   "kind": "plus#person",
+   "etag": "\"FT7X6cYw9BSnPtIywEFNNGVVdio/ecO9qIfc-O3CtgsrX4Gm58apaf0\"",
+   "objectType": "page",
+   "id": "117105793163182226623",
+   "displayName": "Google Cloud",
+   "url": "https://plus.google.com/+googlecloud",
+   "image": {
+    "url": "https://lh6.googleusercontent.com/-X94QCdk41Dk/AAAAAAAAAAI/AAAAAAAALrA/qeRgs05tbfQ/photo.jpg?sz=50"
+   }
+  },
+  {
+   "kind": "plus#person",
+   "etag": "\"FT7X6cYw9BSnPtIywEFNNGVVdio/ltJ_N1ZpRF2_IUW13B_nE9bNf3g\"",
+   "objectType": "page",
+   "id": "111395306401981598462",
+   "displayName": "Google Developers",
+   "url": "https://plus.google.com/+GoogleDevelopers",
+   "image": {
+    "url": "https://lh6.googleusercontent.com/-Fgp8KFpgQqE/AAAAAAAAAAI/AAAAAAAAY1o/Ch6QYQwEmQo/photo.jpg?sz=50"
+   }
+  },
+  {
+   "kind": "plus#person",
+   "etag": "\"FT7X6cYw9BSnPtIywEFNNGVVdio/qvIGMeSKZ6Al8cV10ixXxHWhOFo\"",
+   "objectType": "page",
+   "id": "107187849809354688692",
+   "displayName": "Polymer",
+   "url": "https://plus.google.com/+PolymerProject",
+   "image": {
+    "url": "https://lh6.googleusercontent.com/-90wHGmiWUzs/AAAAAAAAAAI/AAAAAAAAAT4/GFxDJPUx9zM/photo.jpg?sz=50"
+   }
+  }
+ ]
+}

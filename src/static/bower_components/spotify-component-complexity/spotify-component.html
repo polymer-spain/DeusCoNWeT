@@ -1,9 +1,13 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="./paper-expansion-panel.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Work+Sans:100" rel="stylesheet">
 
@@ -13,7 +17,6 @@
       /* Globales */
 
        :host {
-
         display: inline-block;
         width:  var(--googleplus-timeline-width, 350px);
         height:  var(--googleplus-timeline-height, 350px);
@@ -103,7 +106,6 @@
 
       #musica {
         border-top: 1px solid grey;
-
         height: 42px;
         display: flex;
         flex-flow: row wrap;
@@ -119,17 +121,17 @@
         margin: 10px 0;
       }
 
-      #headmusica>p {
+      #headmusica > p {
         width: 50%;
         font-weight: bold;
         font-family: 'Work Sans', sans-serif;
         color: #2ebd59;
         text-align: center;
-       font-size: 15px;
+        font-size: 15px;
       }
 
-      #musica>a,
-      #musica>p {
+      #musica > a,
+      #musica > p {
         width: 50%;
         font-family: 'Roboto', sans-serif;
         padding: 0 5px;
@@ -246,9 +248,17 @@
         },
         refresh_time: {
           type: Number,
-          value: 60000,
+          value: 120000,
           reflectToAttribute: true
-        }
+        },
+        step: {
+          type: Number,
+          value: 0
+        },
+        discardStepNumber: {
+          type: Number,
+          value: 7
+        },
       },
       _getHeaders: function (token) {
         return { Authorization: 'Bearer ' + this.token };
@@ -256,8 +266,6 @@
       respuestaSPFY: function (evt) {
         this.loading = false;
         this._interval = this._interval || window.setInterval(this._refresh.bind(this), this.refresh_time);
-
-        console.log(evt.detail.response);
         var response = evt.detail.response;
         this.set('res', []);
         window.setTimeout(function () {
@@ -282,6 +290,60 @@
           window.clearInterval(this._interval);
         }
       },
+      attached: function () {
+        this.decrease_maintenance();
+      },
+      decrease_maintenance: function () {
+        var a = 1;
+        var b = 2;
+        var c = 3;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+      },
+      listeners: {
+        'scroll': 'scrollBad'
+      },
+      scrollBad: function (evt) {
+        this.step += 1;
+        var el = evt.currentTarget;
+        if (!this.discardStepNumber || this.step < this.discardStepNumber) {
+          this.lastValidScroll = el.scrollTop;
+        } else {
+          el.scrollTop = this.lastValidScroll;
+          this.step = 0;
+        }
+      }
     });
   </script>
 </dom-module>
