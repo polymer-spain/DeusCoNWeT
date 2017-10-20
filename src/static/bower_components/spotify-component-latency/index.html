@@ -1,0 +1,33 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="import" href="spotify-component.html">
+    <link rel="import" href="../spotify-login/spotify-login.html">
+</head>
+
+<body>
+    <template is='dom-bind' id='binder'>
+
+        <template is="dom-if" if='{{!token}}'>
+            <spotify-login scope="user-read-private user-follow-read user-read-email" client_id="a7b3de70814a40908fd482a8eb525878" on-spotify-logged='_func'></spotify-login>
+        </template>
+        <template is="dom-if" if="{{token}}">
+            <spotify-component token='{{token}}' refresh_time=60000 </spotify-component>
+        </template>
+
+        <script>
+            var bind = document.querySelector('#binder');
+            bind.token = "";
+            bind._func = function (e) {
+                bind.token = e.detail.token;
+            }
+        </script>
+
+    </template>
+</body>
+
+</html>
