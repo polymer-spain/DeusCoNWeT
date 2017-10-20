@@ -32,7 +32,10 @@ sys.path.insert(1, 'lib')
 from mongoengine import *
 from pprint import pprint
 import BVA
-bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather","spotify-component"],
+import dateutil.parser
+import pdb
+
+bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather", "spotify-component"],
               ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"])
 #import pdb; pdb.set_trace(); # comando para depurar 
 # Definimos la lista de redes sociales con las que trabajamos
@@ -209,6 +212,12 @@ class GitHubAPIKey(Document):
 class Session(Document):
   user_key = StringField() # Era el valor del ID pero no se setear esto a un valor virtual
   hashed_id = StringField()
+
+class FacebookPosts(Document):
+  user_id = StringField()
+  post = StringField()
+  post_id = StringField()
+  updated_date = DateTimeField()
 
 #####################################################################################
 # Definicion de metodos y variables para el cifrado de claves
@@ -1301,3 +1310,27 @@ def getSecret(token):
     return None
   cipher = getCipher(str(token.id))
   return decodeAES(cipher, token.secret)
+
+# Facebook post
+
+def createPosts(user_id, posts):
+  allPosts = []
+  for post in posts['data']:
+    post_id = str(post['id'])
+    facebookPost = FacebookPosts.objects(post_id=post_id)
+    if len(facebookPost) == 0:
+      facebookPost = FacebookPosts()
+      facebookPost.post_id = post_id
+      facebookPost.user_id = str(user_id)
+      facebookPost.updated_date = dateutil.parser.parse(post['updated_time'])
+      facebookPost.post = json.dumps(post)
+      allPosts.append(facebookPost)
+  if len(allPosts) > 0:
+    FacebookPosts.objects.insert(allPosts)
+def getPosts(user_id):
+  posts = json.loads(FacebookPosts.objects(user_id=user_id).to_json())
+
+  posts = [json.loads(post['post']) for post in posts]
+  
+  return posts
+
