@@ -19,21 +19,20 @@
     "paper-fab": "PolymerElements/paper-fab#1.1.2",
     "iron-ajax": "PolymerElements/iron-ajax#1.2.1",
     "paper-button": "PolymerElements/paper-button#1.0.15",
-    "paper-expansion-panel": "Collaborne/paper-expansion-panel#1.1.0",
     "iron-collapse": "PolymerElements/iron-collapse/iron-collapse#1.3.0",
     "paper-styles": "PolymerElements/paper-styles/paper-styles#1.1.5",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#1.3.7",
     "iron-icons": "PolymerElements/iron-icons/iron-icons#1.2.1"
   },
-  "version": "1.0.3-accuracy",
-  "_release": "1.0.3-accuracy",
+  "version": "1.0.5-accuracy",
+  "_release": "1.0.5-accuracy",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.3-accuracy",
-    "commit": "a1865f6af7c14626c254acf2095db688d63570d9"
+    "tag": "v1.0.5-accuracy",
+    "commit": "86eda2286b56abb4dbabaf7abc8f75482ebbf97b"
   },
   "_source": "https://github.com/magasuan/spotify-component.git",
-  "_target": "v1.0.3-accuracy",
+  "_target": "v1.0.5-accuracy",
   "_originalSource": "spotify-component",
   "_direct": true
 }

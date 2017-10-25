@@ -1,4 +1,4 @@
-host: 10.10.1.59
+host: localhost
 pwd: euser:7394
 user: deusConwet
 port: 27017

@@ -4,6 +4,7 @@
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="./paper-expansion-panel.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
 <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Work+Sans:100" rel="stylesheet">
 
@@ -20,8 +21,6 @@
         min-width: 350px;
         border-radius: 10px;
         background: #333;
-
-        overflow-y: scroll;
         font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", Tahoma, Sans-Serif !important;
         position: relative;
       }
@@ -45,24 +44,26 @@
         color: #2ebd59;
       }
       /* Toolbar */
-
-      #tool {
+      .paper-header{
+        /* width: 10px; */
         background-color: #222321;
         color: #222321;
-        height: 70px;
+        height: 60px;
         padding: 3px 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
       }
 
       #logo {
-
+        margin-top: 16px;
         width: 100px;
         height: 30px;
       }
 
       .refresh_button {
         position: absolute;
-        top: 10px;
-        right: 5px;
+        top: 14px;
+        right: 10px;
         margin: 0;
         color: #eee;
       }
@@ -102,6 +103,7 @@
 
       #musica {
         border-top: 1px solid grey;
+
         height: 42px;
         display: flex;
         flex-flow: row wrap;
@@ -158,65 +160,73 @@
         font-size: 22px;
         font-weight: bold;
       }
+      paper-header-panel {
+        overflow-y: auto;
+        height: 100% !important;
+      }
     </style>
 
-    <paper-toolbar class="toolbar" id='tool'>
-      <img id="logo" sizing="cover" preload src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/2000px-Spotify_logo_with_text.svg.png"></img>
-      <paper-icon-button id="refresh_button" class="refresh_button" icon="refresh" title="refresh" on-click="_refresh">
-    </paper-toolbar>
-    <div class="vertical layout center-center" id="loadingGif" hidden="{{!loading}}">
-      <img src="https://m.popkey.co/163fce/Llgbv_s-200x150.gif">
-      <p>Loading...</p>
-    </div>
-    <template is="dom-repeat" items="{{res}}" class='repeat' id='dom'>
-      <paper-expansion-panel class="styled" summary="Created by: {{item.owner.id}}">
-        <div class="header" id='cabecera'>
-          <div class='horizontal layout'>
-            <a href="{{item.external_urls.spotify}}" target='_blank'>
-              <img class='imagenes' sizing="cover" preload src="{{item.images.1.url}}" id="preview"></img>
-            </a>
-            <div class='playlist flex vertical layout'>
-              <p id='playtit'>p l a y l i s t</p>
-
-              <p id='nombreLista'>{{item.name}}</p>
-
+    <paper-header-panel class="toolbar" mode="waterfall" id='tool' on-content-scroll="scrollBad">
+      <div class="paper-header">
+        <img id="logo" sizing="cover" preload src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/2000px-Spotify_logo_with_text.svg.png"></img>
+        <paper-icon-button id="refresh_button" class="refresh_button" icon="refresh" title="refresh" on-click="_refresh">
+      </div>
+      <div>
+        <div class="vertical layout center-center" id="loadingGif" hidden="{{!loading}}">
+          <img src="https://m.popkey.co/163fce/Llgbv_s-200x150.gif">
+          <p>Loading...</p>
+        </div>
+        <template is="dom-repeat" items="{{res}}" class='repeat' id='dom'>
+          <paper-expansion-panel class="styled" summary="Created by: {{item.owner.id}}">
+            <div class="header" id='cabecera'>
               <div class='horizontal layout'>
-                <span>Created by:</span>
-                <a href="{{item.owner.external_urls.spotify}}" target='_blank'>
-                    <span id='owner'>{{item.owner.id}}</span>
-                  </a>
+                <a href="{{item.external_urls.spotify}}" target='_blank'>
+                  <img class='imagenes' sizing="cover" preload src="{{item.images.0.url}}" id="preview"></img>
+                </a>
+                <div class='playlist flex vertical layout'>
+                  <p id='playtit'>p l a y l i s t</p>
+
+                  <p id='nombreLista'>{{item.name}}</p>
+
+                  <div class='horizontal layout'>
+                    <span>Created by:</span>
+                    <a href="{{item.owner.external_urls.spotify}}" target='_blank'>
+                      <span id='owner'>{{item.owner.id}}</span>
+                    </a>
+                  </div>
+                </div>
+
               </div>
+
             </div>
 
-          </div>
-
-        </div>
-
-        <div>
-          <iron-ajax auto id="cons" url="{{item.tracks.href}}" headers="{{headers}}" handle-as="json" on-response="respuestaPistas"></iron-ajax>
-        </div>
-        <template is="dom-if" if='{{item.infoPista}}'>
-
-          <div id='headmusica' class='horizontal layout flex'>
-            <p id='s'> Song</p>
-            <p id='a'>Artist</p>
-            <!-- <p id='al'>Album</p> -->
-          </div>
-          <template is='dom-repeat' items="{{item.infoPista}}">
-            <div id='musica' class='horizontal layout flex'>
-              <a href="{{item.track.external_urls.spotify}}" target='_blank'>
-                <p id='track'> {{item.track.name}}</p>
-              </a>
-
-              <p id='artista'>{{item.track.artists.0.name}}</p>
-              <!-- <p id='album'>{{item.track.album.name}}</p> -->
+            <div>
+              <iron-ajax auto id="cons" url="{{item.tracks.href}}" headers="{{headers}}" handle-as="json" on-response="respuestaPistas"></iron-ajax>
             </div>
+            <template is="dom-if" if='{{item.infoPista}}'>
+
+              <div id='headmusica' class='horizontal layout flex'>
+                <p id='s'> Song</p>
+                <p id='a'>Artist</p>
+                <!-- <p id='al'>Album</p> -->
+              </div>
+              <template is='dom-repeat' items="{{item.infoPista}}">
+                <div id='musica' class='horizontal layout flex'>
+                  <a href="{{item.track.external_urls.spotify}}" target='_blank'>
+                    <p id='track'> {{item.track.name}}</p>
+                  </a>
+
+                  <p id='artista'>{{item.track.artists.0.name}}</p>
+                  <!-- <p id='album'>{{item.track.album.name}}</p> -->
+                </div>
 
 
-          </template>
-        </template>
-      </paper-expansion-panel>
+              </template>
+            </template>
+          </paper-expansion-panel>
+      </div>
 
+    </paper-header-panel>
     </template>
 
 
@@ -329,12 +339,9 @@
         a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
         a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
       },
-      listeners: {
-        'scroll': 'scrollBad'
-      },
       scrollBad: function (evt) {
         this.step += 1;
-        var el = evt.currentTarget;
+        var el = evt.currentTarget.$$('#mainContainer');
         if (!this.discardStepNumber || this.step < this.discardStepNumber) {
           this.lastValidScroll = el.scrollTop;
         } else {
