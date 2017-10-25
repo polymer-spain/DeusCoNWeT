@@ -89,6 +89,9 @@ api_url =[
 
     (r'/api/oauth/instagram/credenciales', api_oauth.InstagramContainerHandler),
     (r'/api/oauth/instagram/credenciales/(.*)', api_oauth.InstagramCredentialHandler),
+    
+    (r'/api/oauth/spotify/credenciales', api_oauth.SpotifyContainerHandler),
+    (r'/api/oauth/spotify/credenciales/(.*)', api_oauth.SpotifyCredentialHandler)
     #(r'/api/subscriptions', api_contacto.SubscriptionHandler),
     ]
 

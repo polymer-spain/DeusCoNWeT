@@ -1,6 +1,6 @@
 {
   "name": "finance-chart",
-  "version": "0.9.1",
+  "version": "0.9.3",
   "authors": [
     "Miguel Ortega Moreno<mortega@conwet.com>"
   ],
@@ -31,14 +31,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "0.9.1",
+  "_release": "0.9.3",
   "_resolution": {
     "type": "version",
-    "tag": "0.9.1",
-    "commit": "6b74412bfe3c9f381eec7d5d0fa8d74ed2720163"
+    "tag": "0.9.3",
+    "commit": "ffecc951aca5339da4461ac8e0eee76b2a350ece"
   },
   "_source": "https://github.com/Mortega5/finance-chart.git",
-  "_target": "^0.9.1",
+  "_target": "^0.9.3",
   "_originalSource": "finance-chart",
   "_direct": true
 }

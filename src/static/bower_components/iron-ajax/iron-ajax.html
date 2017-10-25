@@ -44,12 +44,6 @@ element.
     is: 'iron-ajax',
 
     /**
-     * Fired before a request is sent.
-     *
-     * @event iron-ajax-presend
-     */
-
-    /**
      * Fired when a request is sent.
      *
      * @event request
@@ -324,17 +318,6 @@ element.
         value: false
       },
 
-      /**
-       * Changes the [`completes`](iron-request#property-completes) promise chain 
-       * from `generateRequest` to reject with an object
-       * containing the original request, as well an error message.
-       * If false (default), the promise rejects with an error message only.
-       */
-      rejectWithRequest: {
-        type: Boolean,
-        value: false
-      },
-
       _boundHandleResponse: {
         type: Function,
         value: function() {
@@ -413,7 +396,7 @@ element.
       }
       var header;
 
-      if (typeof this.headers === 'object') {
+      if (this.headers instanceof Object) {
         for (header in this.headers) {
           headers[header] = this.headers[header].toString();
         }
@@ -446,8 +429,7 @@ element.
         handleAs: this.handleAs,
         jsonPrefix: this.jsonPrefix,
         withCredentials: this.withCredentials,
-        timeout: this.timeout,
-        rejectWithRequest: this.rejectWithRequest,
+        timeout: this.timeout
       };
     },
 
@@ -470,17 +452,6 @@ element.
         this._discardRequest.bind(this, request)
       );
 
-      var evt = this.fire('iron-ajax-presend', {
-        request: request,
-        options: requestOptions
-      }, {bubbles: this.bubbles, cancelable: true});
-
-      if (evt.defaultPrevented) {
-        request.abort();
-        request.rejectCompletes(request);
-        return request;
-      }
-
       request.send(requestOptions);
 
       this._setLastRequest(request);
@@ -489,18 +460,12 @@ element.
       this.fire('request', {
         request: request,
         options: requestOptions
-      }, {
-        bubbles: this.bubbles,
-        composed: true
-      });
+      }, {bubbles: this.bubbles});
 
       this.fire('iron-ajax-request', {
         request: request,
         options: requestOptions
-      }, {
-        bubbles: this.bubbles,
-        composed: true
-      });
+      }, {bubbles: this.bubbles});
 
       return request;
     },
@@ -511,14 +476,8 @@ element.
         this._setLastError(null);
         this._setLoading(false);
       }
-      this.fire('response', request, {
-        bubbles: this.bubbles,
-        composed: true
-      });
-      this.fire('iron-ajax-response', request, {
-        bubbles: this.bubbles,
-        composed: true
-      });
+      this.fire('response', request, {bubbles: this.bubbles});
+      this.fire('iron-ajax-response', request, {bubbles: this.bubbles});
     },
 
     _handleError: function(request, error) {
@@ -542,18 +501,12 @@ element.
       this.fire('iron-ajax-error', {
         request: request,
         error: error
-      }, {
-        bubbles: this.bubbles,
-        composed: true
-      });
+      }, {bubbles: this.bubbles});
 
       this.fire('error', {
         request: request,
         error: error
-      }, {
-        bubbles: this.bubbles,
-        composed: true
-      });
+      }, {bubbles: this.bubbles});
     },
 
     _discardRequest: function(request) {

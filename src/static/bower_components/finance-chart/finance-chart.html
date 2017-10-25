@@ -17,8 +17,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../chart-elements/chart-line.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="stylesheet" href="../octicons/build/font/octicons.css">
-<link rel="import" href="../github-icons/github-icons.html">
 <!--
 Show a chart of finance value of any company using Chart.js and Chart.Zoom.js
 
@@ -189,13 +187,14 @@ Example:
       
       .graph {
         position: absolute;
-        top: 7px;
-        right: 5px;
+        top: 5px;
+        right: 4px;
         z-index: 1000;
         padding: 8px;
         font-weight: bold;
-        height:32px;
-        width:32px;
+        width: 18px;
+        background-size: 100% 100%;
+        height: 18px;
       }
       
       .graph:hover,
@@ -228,45 +227,45 @@ Example:
       on-finance-historical-error="errorHandler" on-finance-historical-ready="historicalReady"></finance-historical>
     <finance-value id="value" symbol="[[symbol]]" data="{{current}}" accuracy="[[accuracy]]"></finance-value>
     <template is="dom-if" if="{{_is_ready}}">
-      <template is="dom-repeat" items="{{historical}}">
-        <div class="flip-container" id$="flipContainer-{{index}}">
+      <template is="dom-if" if="{{historical.length}}">
+        <div class="flip-container" id="flipContainer">
           <div class="flipper vertical layout center-center">
             <div class="front">
               <paper-icon-button class="refresh" icon="refresh" on-click="updateData"></paper-icon-button>
-              <paper-icon-button class="graph" icon="github:graph" on-click="flip"></paper-icon-button>
-              <template is="dom-repeat" items="{{_getCurrent(current,index)}}" as="now">
+              <img alt="show full historical data" src="pie-chart-512.png" title="show full historical data" class="graph" on-click="flip"></img>
+              <template is="dom-if" if="{{current}}">
                 <div class="left info">
-                  <p class="name">{{now.Name}}</p>
+                  <p class="name">{{symbol}}</p>
                   <div class="extra flex">
                     <div>
                       <p class="text low">Low</p>
                       <p class="text high">High:</p>
-                      <p class="text">Vol</p>
-                      <p class="text">Curr.</p>
+                      <p class="text">Vol:</p>
+                      <p class="text">Close:</p>
                     </div>
                     <div>
-                      <p class="text">{{_getLow(now)}}</p>
-                      <p class="text">{{_getHigh(now)}}</p>
-                      <p class="text">{{now.Volume}}</p>
-                      <p class="text">{{now.LastTradePriceOnly}}</p>
+                      <p class="text">{{current.Low}}</p>
+                      <p class="text">{{current.High}}</p>
+                      <p class="text">{{current.Volume}}</p>
+                      <p class="text">{{current.Close}}</p>
                     </div>
                   </div>
                 </div>
                 <div class="right info">
-                  <p class$="{{_getStyle(now)}} change">
-                    <iron-icon class="trending" icon="{{_getTrending(now)}}"></iron-icon> {{_getChange(now)}}</p>
-                  <chart-line class="sortChart" data="[[_getData(item,index)]]" options="{{_getShortOptions()}}"></chart-line>
+                  <p class$="{{_getStyle(current)}} change">
+                    <iron-icon class="trending" icon="{{_getTrending(current)}}"></iron-icon> {{_getChange(current)}}</p>
+                  <chart-line class="sortChart" data="[[_getData(historical)]]" options$="{{_getShortOptions()}}"></chart-line>
                 </div>
               </template>
             </div>
             <div class="back">
-              <paper-icon-button title="Show resume" alt="Show resume" icon="arrow-back" on-click="flip" data-index$="{{index}}"></paper-icon-button>
-              <chart-line class="fullChart" data="[[_getData(item, index)]]" options="{{_getOptions(options, item, index, current)}}"></chart-line>
+              <paper-icon-button title="Show resume" alt="Show resume" icon="arrow-back" on-click="flip"></paper-icon-button>
+              <chart-line class="fullChart" data="[[_getData(historical)]]" options$="{{_getOptions(options, current, symbol)}}"></chart-line>
             </div>
           </div>
         </div>
       </template>
-      <template is="dom-if" if="{{historical.lenght == 0}}"></template>
+      <template is="dom-if" if="{{!historical.lenght}}"></template>
     </template>
   </template>
   <script src="../Chart.Zoom.js/Chart.Zoom.js"></script>
@@ -318,13 +317,13 @@ Example:
           Current values for symbol company
         */
         current: {
-          type: Array,
-          value: function () { return [] },
+          type: Object,
+          value: function () { return {} },
           notify: true,
         },
         _is_ready: {
           type: Boolean,
-          computed: '_checkReady(current.*, historical.*)',
+          computed: '_checkReady(current, historical.*)',
           notify: true
         },
         accuracy: {
@@ -354,16 +353,15 @@ Example:
         this.$.historical.requestData();
       },
       _checkReady: function (current, historical) {
-        return current.base.length > 0 && historical.base.length > 0;
+        return current && historical.base.length > 0;
       },
       /**
         Flip between resume information and full chart
       **/
       flip: function (event) {
-        var index = event.model.index;
-        this.$$('#flipContainer-' + index).classList.toggle('flip');
+        this.$$('#flipContainer').classList.toggle('flip');
       },
-      _getOptions: function (options, data, index, current) {
+      _getOptions: function (options, data, symbol) {
         function isObject(item) {
           return (item && typeof item === 'object' && !Array.isArray(item) && item !== null);
         }
@@ -383,7 +381,7 @@ Example:
           }
           return output;
         }
-        var name = current[index] ? current[index].Name : 'Empty';
+        var name = symbol;
         var default_properties = {
           maintainAspectRatio: false,
           scales: {
@@ -438,7 +436,7 @@ Example:
             enabled: true,
           },
           zoom: {
-            enabled: false,
+            enabled: true,
           },
           legend: {
             display: false
@@ -461,7 +459,7 @@ Example:
           labels: [],
           datasets: [
             {
-              label: fullData[0].Symbol + '(high)',
+              label: this.symbol + '(high)',
               backgroundColor: "rgba(220,220,220,0.0)",
               borderColor: "#4CAF50",
               borderWidth: 1,
@@ -472,7 +470,7 @@ Example:
               data: []
             },
             {
-              label: fullData[0].Symbol + '(close)',
+              label: this.symbol + '(close)',
               backgroundColor: "rgba(220,220,220,0.0)",
               borderColor: "#1976D2",
               borderWidth: 1,
@@ -483,7 +481,7 @@ Example:
               data: []
             },
             {
-              label: fullData[0].Symbol + '(low)',
+              label: this.symbol + '(low)',
               backgroundColor: "rgba(220,220,220,0.0)",
               borderColor: "rgba(223, 91, 35, 1)",
               borderWidth: 1,
@@ -506,17 +504,15 @@ Example:
         }
         return data
       },
-      _getCurrent: function (current, index) {
-        return [current[index]];
-      },
       _getChange: function (current) {
-        var change = current.Change;
-        var perc = Math.round(current.Change / current.LastTradePriceOnly * 10000) / 100;
-        change += '(' + perc + '%)';
+        // Round to 2 dec
+        var change = Math.round( (current.Close - current.Open ) * 100) / 100;
+        var perc = Math.round( Math.abs(change) * 10000 / current.Open) / 100;
+        change += ' (' + perc + '%)';
         return change;
       },
       _getStyle: function (current) {
-        var change = current.Change;
+        var change = current.Close - current.Open;
         var color = "";
         if (change < 0) {
           color = 'decrease'
@@ -528,7 +524,7 @@ Example:
         return color;
       },
       _getTrending: function (current) {
-        var change = current.Change;
+        var change = current.Close - current.Open;
         if (change < 0) {
           return "trending-down";
         } else if (change > 0) {
@@ -553,3 +549,4 @@ Example:
 
   </script>
 </dom-module>
+

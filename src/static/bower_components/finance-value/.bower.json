@@ -1,5 +1,6 @@
 {
   "name": "finance-value",
+  "version": "0.9.3",
   "authors": [
     "Miguel Ortega Moreno <mortega@conwet.com>"
   ],
@@ -26,13 +27,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "5f1fc7b6f1",
+  "_release": "0.9.3",
   "_resolution": {
-    "type": "branch",
-    "branch": "master",
-    "commit": "5f1fc7b6f14d48e2cf5540c07c4256af66eecca5"
+    "type": "version",
+    "tag": "0.9.3",
+    "commit": "ae654a76d6cbc4e71123d40e80ab30ce75e83c56"
   },
   "_source": "https://github.com/Mortega5/finance-value.git",
-  "_target": "*",
-  "_originalSource": "finance-value"
+  "_target": "^0.9.3",
+  "_originalSource": "finance-value",
+  "_direct": true
 }

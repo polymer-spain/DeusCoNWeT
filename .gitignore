@@ -4,7 +4,6 @@ static/views/backup-home.html
 node_modules
 grunt*
 images/min
-build
 .brackets.json
 *.*~
 file.log
