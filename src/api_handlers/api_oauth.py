@@ -508,10 +508,12 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                             oauth_verifier = self.request.POST['oauth_verifier']
                             twitter_data = memcache.get(oauth_verifier)
                             secret = twitter_data['oauth_token_secret']
-                        mongoDB.insertToken(user, social_network, twitter_data['oauth_token'], token_id, secret=secret)
+                            access_token = twitter_data['oauth_token']
+                            
                         #Builds the response
+                        mongoDB.insertToken(user, social_network, access_token, token_id, secret=secret)
                         user_id = mongoDB.getUserId(user)
-                        response = {"user_id": user_id, "token": twitter_data['oauth_token']}
+                        response = {"user_id": user_id, "token": access_token}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(201)
@@ -1189,3 +1191,33 @@ class PinterestContainerHandler(OAuthCredentialsContainerHandler):
     """
     def put(self):
         self.put_credentials("pinterest")
+
+
+class SpotifyContainerHandler(OAuthCredentialsContainerHandler): 
+    """
+    Class that represents the List of Spotify credentials resource.
+    Methods:
+        put -- Adds a new set of credentials (token_id and access_token in Spotify)
+    """
+    def put(self):
+        self.put_credentials("spotify")
+
+class SpotifyCredentialHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the Spotify token resource.
+    Methods:
+        get -- Returns the Spotify access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Spotify for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Spotify for the user authenticated
+    """
+    def get(self, token_id):
+        self.get_credentials("spotify", token_id)
+
+    def delete(self, token_id):
+        self.delete_credentials("spotify", token_id)
+
+    def post(self, token_id):
+        self.update_credentials("spotify", token_id)

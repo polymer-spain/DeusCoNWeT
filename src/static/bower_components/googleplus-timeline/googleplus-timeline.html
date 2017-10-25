@@ -40,8 +40,8 @@
       display: inline-block;
       width:  var(--googleplus-timeline-width, 450px);
       height:  var(--googleplus-timeline-height, 450px);
-      min-height: 350px;
-      min-width: 300px;
+      min-height: 200px;
+      min-width: 200px;
       color:#2e2e2e;
       }
       /* Header styles */
@@ -313,7 +313,7 @@
       }
    </style>
 <template id="template">
-  <iron-ajax id="requestFollowing" url="https://test.centauro.ls.fi.upm.es&access_token={{token}}"
+  <iron-ajax id="requestFollowing" url="https://people.googleapis.com/v1/people/me/connections?key={{api_key}}&access_token={{token}}"
     method="GET" handleAs='json' on-response="_responseFollowings">
   </iron-ajax>
   <iron-ajax id="requestPosts" method="GET" handleAs='json' on-response="_responsePosts">

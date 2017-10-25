@@ -24,6 +24,7 @@
     "iron-flex-layout": "PolymerElements/iron-flex-layout#1.3.7",
     "iron-icons": "PolymerElements/iron-icons/iron-icons#1.2.1"
   },
+<<<<<<< HEAD
   "version": "1.0.5-structural",
   "_release": "1.0.5-structural",
   "_resolution": {
@@ -33,6 +34,17 @@
   },
   "_source": "https://github.com/magasuan/spotify-component.git",
   "_target": "v1.0.5-structural",
+=======
+  "version": "1.0.4-structural",
+  "_release": "1.0.4-structural",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.4-structural",
+    "commit": "3d13a67a89a9ba070825bf764e11baaadcccd564"
+  },
+  "_source": "https://github.com/magasuan/spotify-component.git",
+  "_target": "v1.0.4-structural",
+>>>>>>> 857721fd075130f232c37722802b0d0d8e9e08e8
   "_originalSource": "spotify-component",
   "_direct": true
 }

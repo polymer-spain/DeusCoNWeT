@@ -629,7 +629,7 @@ def insertToken(document_id, social_name, access_token, user_id, secret=None):
   user = User.objects(id=document_id)
   if user.count() > 0:
     user = user[0]
-  tok_aux = Token(identifier=user_id, token="", social_name=social_name).save()
+  tok_aux = Token(identifier=user_id, token="", social_name=social_name)
   # Ciphers access token that will be stored in the datastore
   cipher = getCipher(str(tok_aux.id))
   access_token = encodeAES(cipher, access_token)
@@ -642,7 +642,7 @@ def insertToken(document_id, social_name, access_token, user_id, secret=None):
   # We add the Token Entity to the user credentials list
   user.tokens.append(tok_aux)
   # We add the social network to the user's nets list
-  social_aux = SocialUser(social_name="social_name").save()
+  social_aux = SocialUser(social_name=social_name)
   if not social_aux in user.net_list:
     social_network = SocialUser(social_name=social_name).save()
     user.net_list.append(social_network)

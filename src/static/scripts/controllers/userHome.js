@@ -422,8 +422,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
               console.log('Problemas al intentar obtener el token_id de un usuario');
             });
             break;
-          case 'pinterest':
-            break;
+          // case 'pinterest':
+          //   break;
           case 'spotify':
             break;
           default:

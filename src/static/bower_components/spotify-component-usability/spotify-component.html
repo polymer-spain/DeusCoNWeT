@@ -12,7 +12,6 @@
   <template>
     <style is="custom-style" include="iron-flex iron-flex-alignment">
       /* Globales */
-
       :host {
         display: inline-block;
         width: var(--googleplus-timeline-width, 350px);
@@ -43,7 +42,10 @@
       a:hover>span {
         color: #2ebd59;
       }
+<<<<<<< HEAD
+=======
 
+>>>>>>> d2d174e37ce3ad903f2c53d8c64dad751dd459ae
       /* Toolbar */
       .paper-header{
         /* width: 10px; */
@@ -72,7 +74,10 @@
         width: 30px;
         height: 30px;
       }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 857721fd075130f232c37722802b0d0d8e9e08e8
       /* Header dom repeat */
 
       .cab {
@@ -106,7 +111,6 @@
         font-size: 11px;
         letter-spacing: 1px;
       }
-
       /* Desplegable */
 
       #musica {
@@ -209,6 +213,7 @@
 
             </div>
 
+<<<<<<< HEAD
             <div>
               <iron-ajax auto id="cons" url="{{item.tracks.href}}" headers="{{headers}}" handle-as="json" on-response="respuestaPistas"></iron-ajax>
             </div>
@@ -224,6 +229,10 @@
                   <a href="{{item.track.external_urls.spotify}}" target='_blank'>
                     <p id='track'> {{item.track.name}}</p>
                   </a>
+=======
+          </div>
+        </div>
+>>>>>>> 857721fd075130f232c37722802b0d0d8e9e08e8
 
                   <p id='artista'>{{item.track.artists.0.name}}</p>
                   <!-- <p id='album'>{{item.track.album.name}}</p> -->
@@ -241,8 +250,6 @@
 
     <iron-ajax auto id="cons" url="https://api.spotify.com/v1/me/playlists?limit=20&after=0aV6DOiouImYTqrR5YlIqx" headers="{{headers}}"
       handle-as="json" on-response="respuestaSPFY"></iron-ajax>
-
-    <!-- d -->
 
   </template>
   <script>

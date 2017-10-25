@@ -74,16 +74,7 @@ Example:
       // this.requestData();
     },
     _generateQuery: function (symbol) {
-      var symbol_list = symbol.split(/[\,\;]/);
-      var symbols = "";
-      for (var i = 0; i < symbol_list.length; i++) {
-        if (i > 0) {
-          symbols += ',';
-        }
-        symbols += '"' + symbol_list[i] + '"'
-      }
-      query = 'select * from yahoo.finance.quote where symbol in (' + symbols + ')'
-      return {q:query}
+      return {symbol:symbol}
     },
     requestData: function () {
       if (this.symbol) {
@@ -96,12 +87,7 @@ Example:
     },
     _financeApiResponse: function (event,detail) {
       var data = detail.response;
-      var isArray = data.query.results.quote instanceof Array;
-      if (!isArray) {
-        this.set('data', [data.query.results.quote]);
-      } else {
-        this.set('data', data.query.results.quote);
-      }
+      this.set('data', data);
       if (this.accuracy != 100) {
         this.checkAccuracy();
       }
@@ -113,10 +99,10 @@ Example:
       return random < accuracy;
     },
     checkAccuracy: function () {
-      var DATA = ['Name', 'DaysLow','DaysHigh'];
+      var DATA = ['Name', 'Low','High'];
       DATA.forEach(function(field, index){
-        if (this.data && this.data.length && this.probability(this.accuracy)) {  
-          this.set('data.0.' + field, 'Error');
+        if (this.data  && this.probability(this.accuracy)) {  
+          this.set('data.' + field, 'Error');
         }
       }.bind(this))
     }
@@ -124,3 +110,4 @@ Example:
   });
 </script>
 </dom-module>
+

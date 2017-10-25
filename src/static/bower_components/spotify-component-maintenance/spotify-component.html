@@ -272,8 +272,6 @@
       respuestaSPFY: function (evt) {
         this.loading = false;
         this._interval = this._interval || window.setInterval(this._refresh.bind(this), this.refresh_time);
-
-        //console.log(evt.detail.response);
         var response = evt.detail.response;
         this.set('res', []);
         window.setTimeout(function () {

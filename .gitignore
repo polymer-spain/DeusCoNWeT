@@ -4,10 +4,11 @@ static/views/backup-home.html
 node_modules
 grunt*
 images/min
-build
 .brackets.json
 *.*~
 file.log
 readlog.sh
 database
 .vscode
+mongo.yaml
+config.yaml

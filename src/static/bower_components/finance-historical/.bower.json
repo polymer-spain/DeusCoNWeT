@@ -1,6 +1,6 @@
 {
   "name": "finance-historical",
-  "version": "0.9.1",
+  "version": "0.9.3",
   "authors": [
     "Miguel ortega Moreno <mortega@conwet.com>"
   ],
@@ -27,13 +27,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "0.9.1",
+  "_release": "0.9.3",
   "_resolution": {
     "type": "version",
-    "tag": "0.9.1",
-    "commit": "567bb8783a087a92d8c4dc721aeda0e3daf6d3df"
+    "tag": "0.9.3",
+    "commit": "10d24b7c9631c6e179f14fdc60651e8fa16aa331"
   },
   "_source": "https://github.com/Mortega5/finance-historical.git",
-  "_target": "^0.9.1",
-  "_originalSource": "finance-historical"
+  "_target": "^0.9.3",
+  "_originalSource": "finance-historical",
+  "_direct": true
 }
