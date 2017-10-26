@@ -14,10 +14,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     if ($scope.user.references) {
       $scope.user.references.forEach(function (ref, index) {
         var $jq = window.$;
-        if (ref.match("security")) {
-          
-        }
-        var newref = ref.replace("security","maintenance");
+          // ref = ref.replace("stable","maintenance");
         var $link = $('<link rel="import">').attr('href', ref);
         $('body').append($link);
         window.setTimeout(function () {
