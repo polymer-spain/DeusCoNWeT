@@ -32,6 +32,7 @@ import api_usuarios, api_componentes, api_oauth, api_auxiliar
 import mimetypes
 import logging
 
+print "EJECUTANDO EN MODO: ", os.getenv('VERSION','test')
 ## API URLS and handlers
 api_url =[
     (r'/api/componentes/bva', api_componentes.BVAHandler),

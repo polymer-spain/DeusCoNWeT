@@ -1,4 +1,4 @@
 #! /bin/bash
 
-service apache2 start
+apache2ctl start
 watch ls

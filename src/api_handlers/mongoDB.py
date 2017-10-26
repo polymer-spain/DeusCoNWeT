@@ -67,12 +67,18 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
 # Connect mongoCfg
 MODE = os.getenv('VERSION', 'test')
 
-if MODE == 'test':
-    database = mongoCfg['databaseTest']
-else:
+print "Modo en el que se utiliza: ", MODE
+if MODE == 'proc':
     database = mongoCfg["database"]
+    username = mongoCfg['user']
+    password = mongoCfg['pwd']
 
-connect(database, port=mongoCfg['port'], host=mongoCfg['host'], username=mongoCfg['user'],password=mongoCfg['pwd'])
+else:
+    database = mongoCfg['databaseTest']
+    username = mongoCfg['userTest']
+    password = mongoCfg['pwdTest']
+
+connect(database, port=mongoCfg['port'], host=mongoCfg['host'], username=username,password=password)
 
 
 

@@ -17,12 +17,39 @@ Los miembros de este grupo son:
 
 Antes de desplegar el portal es necesario configurar los dominios en los que se va a ejecutar, es decir, hay que especificar la direccion sobre la que la vamos a ejecutar. Para ello es necesario cambiar los siguientes ficheros:
 
+#### Config.yaml
 
-#### [Config.yaml](https://github.com/polymer-spain/DeusCoNWeT/blob/develop/src/api_handlers/config.yaml)
+Es la configuración general del portal. Por ejemplo:
 
-Indicaremos en la variable `domain` el mismo dominio que se indico en Services.js. Esta variable hace referencia a la direccion de nuestro servicio de backend. En este caso no indicaremos el protocolo:
 ```yaml
-    domain: example-project-13.appspot.com
+domain: centauro.ls.fi.upm.es
+domainTest: test.centauro.ls.fi.upm.es
+#domain: localhost
+component_versioning: dynamic
+APP_ID: <app id de facebook>
+APP_SECRET: <app secrect de facebook>
+FACEBOOK_CONFIG:
+  url: https://graph.facebook.com/v2.10/me/feed
+  fields: "name,updated_time,attachments,story_tags,place,from,icon,message,object_id,likes,source,story,type, message_tags"
+  url_id: https://graph.facebook.com/v2.10/me?fields=id
+  url_friends: https://graph.facebook.com/v2.10/me/friends
+  locale: es_es
+```
+
+#### mongo.yaml
+
+Fichero de configuración de la conexión con la base de datos. Por ejemplo:
+
+```yaml
+host: 10.10.1.88
+port: 27017
+pwd: euser:7394
+user: deusConwet
+database: picbit
+pwdTest: test
+userTest: deus
+databaseTest: picbitTes
+
 ```
 
 #### [App.yaml](https://github.com/polymer-spain/DeusCoNWeT/blob/develop/src/app.yaml)

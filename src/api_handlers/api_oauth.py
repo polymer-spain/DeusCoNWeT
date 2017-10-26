@@ -47,7 +47,11 @@ with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
 
-domain = cfg["domainTest"]
+MODE = os.getenv("VERSION", "test")
+if MODE == "proc":
+    domain = cfg["domain"]
+else:
+    domain = cfg["domainTest"]
 
 client = None
 
