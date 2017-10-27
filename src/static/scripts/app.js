@@ -28,6 +28,7 @@
                 $rootScope.user = JSON.parse(requestUser.response);
                 tokens = $backend.getTokens($rootScope.user.token_ids);
                 $rootScope.user.tokens = tokens;
+                $rootScope.user.renew = {};
                 $rootScope.isLogged = true;
                 if (!$rootScope.unauthorized) {
                   $location.path('/user/' + userId);
@@ -59,6 +60,7 @@
                 $rootScope.user = JSON.parse(responseUser.response);
                 var tokens = $backend.getTokens($rootScope.user.token_ids);
                 $rootScope.user.tokens = tokens;
+                $rootScope.user.renew = {};
                 $rootScope.isLogged = true;
                 return $q.when(session);
 
@@ -90,6 +92,7 @@
                 $rootScope.user = JSON.parse(responseUser.response);
                 tokens = $backend.getTokens($rootScope.user.token_ids);
                 $rootScope.user.tokens = tokens;
+                $rootScope.user.renew = {};
                 $rootScope.isLogged = true;
                 return $q.when(session);
 

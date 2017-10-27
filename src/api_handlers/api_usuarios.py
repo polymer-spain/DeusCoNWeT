@@ -140,6 +140,7 @@ class UserHandler(SessionHandler):
                     str(ident) + "-" + str(version) + static + str(ident) + ".html"
               refs_list.append(ref)
             user_info["references"] = refs_list
+            user_info["scopes"] = cfg["scopes"]
             logging.info('Se va a contesta y cerrar la conexión')
             logging.info(json.dumps(user_info))
             self.response.content_type = "application/json"
@@ -161,6 +162,8 @@ class UserHandler(SessionHandler):
               user_dict["email"] = user_info["email"]
             if user_info["private_phone"] == False:
               user_dict["phone"] = user_info["phone"]
+            
+            # We add reference to components and scopes
             for comp in user_info["components"]:
               dict_comp = json.loads(comp)
               ident = dict_comp["component_id"]
@@ -171,7 +174,9 @@ class UserHandler(SessionHandler):
               ref = "/bower_components/" + \
                     ident + "-" + version + static + ident + ".html"
               refs_list.append(ref)
+
             user_dict["references"] = refs_list
+            user_dict["scopes"] = cfg["scopes"]
             self.response.content_type = "application/json"
             self.response.write(json.dumps(user_dict))
             self.response.set_status(200)
