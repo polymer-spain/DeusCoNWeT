@@ -48,13 +48,15 @@ Element providing solution to no problem in particular.
       display: inline-block;
       --github-events-width: 450px;
       --github-events-height: 450px;
+      min-height: 250px;
+  		min-width: 300px;
       font-family: helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       color:#2e2e2e;
     }
 
     paper-header-panel {
-      width: var(--github-events-width);
-      height: var(--github-events-height);
+      width: 100%;
+      height: 100%;
       @apply(--shadow-elevation-3dp);
       border-radius: 8px;
       background: #e8e2e2;
@@ -82,6 +84,8 @@ Element providing solution to no problem in particular.
     .title {
       font-weight: bold;
       font-size: 1.3em;
+      margin:0;
+      text-align:center;
     }
     .event {
       min-height: 100px;
@@ -109,7 +113,7 @@ Element providing solution to no problem in particular.
       margin:5px auto 10px auto;
     }
     .header .name {
-      margin: auto 12px;			
+      margin: auto 12px;
     }
     .header iron-icon {
       width: 40px;
@@ -131,6 +135,7 @@ Element providing solution to no problem in particular.
     }
     .event > .content {
       margin: 10px 3px;
+      width: 100%;
     }
 
     .additionalInfo {
@@ -152,6 +157,8 @@ Element providing solution to no problem in particular.
     }
     .loading {
       margin:auto;
+      width: 50%;
+      height: auto;
     }
     .deletedBranch{
       font-weight: bold;
@@ -159,7 +166,7 @@ Element providing solution to no problem in particular.
     }
   </style>
 
-  <template id="template"> 
+  <template id="template">
     <iron-ajax
                id="request"
                method="GET"
@@ -492,7 +499,7 @@ Element providing solution to no problem in particular.
 
               </div>
             </div>
-          </paper-material>						
+          </paper-material>
         </template>
 
         <!-- Show more button -->
@@ -505,8 +512,8 @@ Element providing solution to no problem in particular.
         </template>
         <!-- loading screen-->
         <template is="dom-if" if="{{_noEvents(events.length)}}">
-          <div class="vertical center-justified layout">
-            <img class="loading" src="http://www.schultzlawoffice.com/img/loading/loading-x.gif">
+          <div class="vertical center-center layout">
+            <img class="loading" src="loading.gif">
           </div>
         </template>
       </div>
@@ -598,11 +605,15 @@ Element providing solution to no problem in particular.
           this.$.refresh.setAttribute("headers", '{"Authorization":"token '+this.token + '"}');
         }
         var back = this;
-        window.setInterval(function(){back.$.request.generateRequest();}, back.refresh_time);
+        this._interval = window.setInterval(function(){back.$.request.generateRequest();}, back.refresh_time);
 
         this.$.requestLanguage.generateRequest();
       },
-
+      detached: function() {
+        if(this._interval){
+          window.clearInterval(this._interval);
+        }
+      },
       // AJAX RESPONSE
       _response: function(event,detail){
         this.$.panelHeader.style.cursor = "default";
@@ -722,7 +733,7 @@ Element providing solution to no problem in particular.
             var dif = current_date.getFullYear() - date.getFullYear()
             time = dif==1 ? dif + " " + this.language_data.year : dif + " " + this.language_data.years;
             /* Meses */
-          } else if ((current_date.getMonth() - date.getMonth()) != 0) { 
+          } else if ((current_date.getMonth() - date.getMonth()) != 0) {
             var dif = current_date.getMonth() - date.getMonth();
             time = dif==1 ? dif + " " + this.language_data.month : dif + " " + this.language_data.months;
             /* Dias */
@@ -796,7 +807,7 @@ Element providing solution to no problem in particular.
 
       // PROCESS
       _processUrl: function(component_directory, idioma) {
-        return component_directory + "language/" + idioma; 
+        return component_directory + "language/" + idioma;
       },
       _processEventUrl: function(username) {
         return "https://api.github.com/users/" + username + "/received_events";
@@ -805,14 +816,14 @@ Element providing solution to no problem in particular.
         return page == 0? {}: {page: page};
       },
       _processRefreshHeader: function(etag) {
-        this.$.refresh.headers["If-None-Match"] = etag;       
+        this.$.refresh.headers["If-None-Match"] = etag;
       },
 
 
       // BOOLEAN FUNCTION
       _showLoadMore: function(lastPage, page, show){
         return lastPage > page && !show;
-      },      
+      },
       _checkPostType: function(origin, type) {
         return origin === type;
       },

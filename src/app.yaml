@@ -1,5 +1,4 @@
 application: example-project-13
-
 version: stable
 runtime: python27
 threadsafe: true
@@ -11,6 +10,8 @@ handlers:
   static_files: ../favicon.ico
   upload: favicon\.ico
 
+- url: /.well-known
+  static_dir: static/.well-known
 - url: /
   static_files: static/index.html
   upload: index\.html

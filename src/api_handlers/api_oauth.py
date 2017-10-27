@@ -5,7 +5,7 @@
   Copyright 2015 Ana Isabel Lopera Martínez
   Copyright 2015 Miguel Ortega Moreno
   Copyright 2015 Juan Francisco Salamanca Carmona
-  
+
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -26,31 +26,39 @@ import yaml
 import httplib
 import hashlib
 import urllib
-from google.appengine.ext import ndb
-from google.appengine.api import memcache
+import sys
+import memcache as mc
+memcache = mc.Client(['127.0.0.1:11211'], debug=0)
 import time
-import ndb_pb
-from ndb_pb import Token, User
+import mongoDB
+from mongoDB import Token, User
 import datetime
+import logging
+from twython import Twython
 
 # Imports for TwitterHandler
+sys.path.insert(1, 'api_handlers/lib')
 import oauth
-from google.appengine.api import channel
-
+#import pdb; pdb.set_trace(); # comando para depurar
 # Import config vars
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
-domain = cfg["domain"]
+
+MODE = os.getenv("VERSION", "test")
+if MODE == "proc":
+    domain = cfg["domain"]
+else:
+    domain = cfg["domainTest"]
 
 client = None
 
 # Configuration params in order to perform the request to Twitter
-consumer_key = "tuprQMrGCdGyz7QDVKdemEWXl"
+consumer_key = "BOySBn8XHlyYDQiGiqZ1tzllx"
 consumer_secret = \
-    "byQEyUYKZm1R7ZatsSWoFLX0lYn8hRONBU4AAyGLFRDWVg7rzm"
+    "xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE"
 request_token_url = \
     "https://api.twitter.com/oauth/request_token"
 base_authorization_url = \
@@ -58,11 +66,14 @@ base_authorization_url = \
 callback_uri = "https://" + domain \
     + "/api/oauth/twitter/authorization"
 # Request to Twitter the request_token and authorization URL
+
+twitter = Twython(consumer_key, consumer_secret)
+
 client = oauth.TwitterClient(consumer_key, consumer_secret,
         callback_uri)
 
-# Generic handlers for the session management, login, logout and actions 
-# related to user credentials 
+# Generic handlers for the session management, login, logout and actions
+# related to user credentials
 class SessionHandler(webapp2.RequestHandler):
     """
     Class that handles the session of the application
@@ -73,24 +84,22 @@ class SessionHandler(webapp2.RequestHandler):
     """
 
     def login(self, user_key):
-        message = str(user_key.id()) + str(time.time())
+        message = user_key + str(time.time())
         cypher = hashlib.sha256(message)
         hash_id = cypher.hexdigest()
-        # Store in memcache hash-user_id pair
-        # memcache.add(hash_id, user_key)
-        # Create a new session in the system
-        ndb_pb.createSession(user_key, hash_id)
+        logging.info(hash_id)
+        mongoDB.createSession(user_key, hash_id)
         return hash_id
 
     def getUserInfo(self, hashed_id):
         # user = memcache.get(hashed_id)
-        user_key = ndb_pb.getSessionOwner(hashed_id)
+        user_key = mongoDB.getSessionOwner(hashed_id)
         return user_key
 
     def logout(self, hashed_id):
         logout_status = False
         # status = memcache.delete(hashed_id)
-        status = ndb_pb.deleteSession(hashed_id)
+        status = mongoDB.deleteSession(hashed_id)
         if status == 2:
             logout_status = True
         return logout_status
@@ -98,7 +107,7 @@ class SessionHandler(webapp2.RequestHandler):
 
 class OauthSignUpHandler(SessionHandler):
     """ Defines the logic for the signup action, in those social networks that
-        act as authentication services in PicBit, and have 
+        act as authentication services in PicBit, and have
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
             post_signup - Implements the signup action. Stores the pair of
@@ -111,21 +120,22 @@ class OauthSignUpHandler(SessionHandler):
             access_token = self.request.POST["access_token"]
             token_id = self.request.POST["token_id"]
             user_identifier = self.request.POST["user_identifier"]
+
             # Checks if the username was stored previously
-            stored_credentials = ndb_pb.searchToken(token_id, social_network)
-            if stored_credentials == None:
+            stored_credentials = mongoDB.searchToken(token_id, social_network)
+            if stored_credentials == None: # Not found
                 user_data = {}
-                user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
+                user_id_repeated = True if not mongoDB.getUser(user_identifier) == None else False
                 if not user_id_repeated:
                     user_data["user_id"] = user_identifier
                     # Generate a valid username for a new user
-                    user_key = ndb_pb.insertUser(social_network,
+                    user_key = mongoDB.insertUser(social_network,
                             token_id, access_token, user_data)
-                    # Assigns to the user a predetermined set of components
-                    ndb_pb.assignPredeterminedComponentsToUser(user_key)
+                    mongoDB.assignComponents(user_key)
+                    
                     # Creates the session
-                    session_id = self.login(user_key)
-
+                    session_id = self.login(str(user_key.id))
+                    
                     # Returns the session, user_id and social_network cookie
                     self.response.set_cookie("session", session_id,
                             path="/", domain=domain, secure=True)
@@ -174,17 +184,17 @@ class OauthLoginHandler(SessionHandler):
             token_id = self.request.POST["token_id"]
 
             # Checks if the username was stored previously
-            stored_credentials = ndb_pb.searchToken(token_id,
+            stored_credentials = mongoDB.searchToken(token_id,
                     social_network)
             if not stored_credentials == None:
                 # We store the new set of credentials
-                user_key = ndb_pb.modifyToken(token_id,
+                user_key = mongoDB.modifyToken(token_id,
                         access_token, social_network)
-                user_id = ndb_pb.getUserId(user_key)
+                user_id = mongoDB.getUserId(user_key)
                 session_id = self.login(user_key)
 
                 # Gets the user_id to generate the user cookie
-                user_id = ndb_pb.getUserId(user_key)
+                user_id = mongoDB.getUserId(user_key)
                 # Returns the session cookie
                 self.response.set_cookie("session", session_id, path="/", domain=domain, secure=True)
                 self.response.set_cookie("social_network", social_network, path="/", domain=domain, secure=True)
@@ -200,7 +210,7 @@ class OauthLoginHandler(SessionHandler):
                 {"error": "The token_id provided does not belong to any user in the system. Consider perform a signup request instead"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)
+                self.response.set_status(401)
         except KeyError:
             response = \
                 {"error": "You must provide a valid pair of access_token and token_id in the request"}
@@ -211,7 +221,7 @@ class OauthLoginHandler(SessionHandler):
 
 class OauthLogoutHandler(SessionHandler):
     """ Defines the logic for the logout action, in those social networks that
-        act as authentication services in PicBit, and have 
+        act as authentication services in PicBit, and have
         a client authorization flow (for example, GooglePlus or Facebook)
         Methods:
             post_logout - Implements the logout action. Invalidates the
@@ -258,7 +268,7 @@ class OauthLogoutHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
-            
+
         else:
             response = \
                 {"error": "This request requires a secure_cookie with the session identifier"}
@@ -276,30 +286,39 @@ class OauthCredentialsHandler(SessionHandler):
             # Searchs for user"s credentials
             if not logged_user == None:
                 # Obtains user info
-                logged_user_id = ndb_pb.getUserId(logged_user)
+                logged_user_id = mongoDB.getUserId(logged_user)
 
                 # Obtains user credentials
-                user_credentials = ndb_pb.getToken(token_id, social_network)
+                user_credentials = mongoDB.getToken(token_id, social_network)
+
                 if not user_credentials == None:
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],
-                            "access_token": user_credentials["token"]}
+                            "access_token": user_credentials["token"],
+                            "token_id": user_credentials["token_id"]}
+                        logging.info('Se intenta responde: ya existe el usuario')
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
+                        logging.info('Se ha respondido: 200')
+
                     else:
                         response = {"user_id": user_credentials["user_id"]}
+                        logging.info('Se intenta responde: ya existe el usuario: el usuario de las credencialeses igual al recibido: 200')
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
+                        logging.info('Se ha respondido: 200')
                 else:
                     response = \
                         {"error": "The active user does not have a pair of token_id" \
                          + " and access_token in " + social_network + " stored in the system"}
                     self.response.content_type = "application/json"
+                    logging.info('Se responde que no existe en el sistema')
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
+                    logging.info('Se ha respondido: 400')
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
@@ -319,37 +338,37 @@ class OauthCredentialsHandler(SessionHandler):
                 {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(400)       
-        
+                self.response.set_status(400)
+
         # If we don't provide a cookie in the request, we search for the token in the system
         # and return a 200 o 404 status. It is a request included in the login flow of the system
         else:
-            user_credentials = ndb_pb.getToken(token_id,social_network)
+            user_credentials = mongoDB.getToken(token_id,social_network)
             if not user_credentials == None:
                 response = {"user_id": user_credentials["user_id"]}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
-                self.response.set_status(200)   
+                self.response.set_status(200)
             else:
                 response =  {"error": "Token not found in the system"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(404)
 
-    
+
     def delete_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
             # Searchs for user"s credentials
             logged_user_key = self.getUserInfo(cookie_value)
             if not logged_user_key == None:
-                logged_user_id = ndb_pb.getUserId(logged_user_key)
-                token = ndb_pb.getToken(token_id, social_network)
+                logged_user_id = mongoDB.getUserId(logged_user_key)
+                token = mongoDB.getToken(token_id, social_network)
                 if not token == None:
                     token_owner_id = token['user_id']
                     if logged_user_id == token_owner_id:
                         # Deletes the token from the user
-                        token_deleted = ndb_pb.deleteCredentials(logged_user_key, social_network, token_id)
+                        token_deleted = mongoDB.deleteCredentials(logged_user_key, social_network, token_id)
                         if token_deleted:
                             response = \
                                 {"status": "Credentials deleted successfully"}
@@ -408,24 +427,24 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
         if not cookie_value == None:
             user = self.getUserInfo(cookie_value)
             if not user == None:
-                logged_user_id = ndb_pb.getUserId(user)
+                logged_user_id = mongoDB.getUserId(user)
                 try:
                     # Gets the data from the request form
                     access_token = self.request.POST["access_token"]
 
                     # Checks if the username was stored previously
-                    stored_credentials = ndb_pb.getToken(token_id,
+                    stored_credentials = mongoDB.getToken(token_id,
                             social_network)
                     if not stored_credentials == None:
                         token_owner_id = stored_credentials['user_id']
                         if token_owner_id == logged_user_id:
                             # We update the user credentials
-                            user_id = ndb_pb.modifyToken(token_id, access_token,
+                            user_id = mongoDB.modifyToken(token_id, access_token,
                                     social_network)
                             # Builds the response
                             response = {"user_id": stored_credentials["user_id"]}
                             self.response.content_type = "application/json"
-                            self.response.write(json.dumps(response))    
+                            self.response.write(json.dumps(response))
                             self.response.set_status(200)
                         else:
                             response = \
@@ -438,7 +457,7 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
                         {"error": "Credentials not found in the system"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
-                        self.response.set_status(404)        
+                        self.response.set_status(404)
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
@@ -483,31 +502,40 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     # Gets the data from the request form
                     access_token = self.request.POST["access_token"]
                     token_id = self.request.POST["token_id"]
-
                     # Checks if the username was stored previously
-                    stored_credentials = ndb_pb.getToken(token_id,
+                    stored_credentials = mongoDB.getToken(token_id,
                             social_network)
                     if stored_credentials == None:
                         # Adds the token to the user credentials list
-                        ndb_pb.insertToken(user, social_network, access_token, token_id)
+                        secret = None
+                        if social_network== 'twitter':
+                            oauth_verifier = self.request.POST['oauth_verifier']
+                            twitter_data = memcache.get(oauth_verifier)
+                            secret = twitter_data['oauth_token_secret']
+                            access_token = twitter_data['oauth_token']
+                            
                         #Builds the response
-                        user_id = ndb_pb.getUserId(user)
-                        response = {"user_id": user_id}
+                        mongoDB.insertToken(user, social_network, access_token, token_id, secret=secret)
+                        user_id = mongoDB.getUserId(user)
+                        response = {"user_id": user_id, "token": access_token}
                         self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))    
+                        self.response.write(json.dumps(response))
                         self.response.set_status(201)
+                        print "Responde 201"
                     else:
                         response = \
                         {"error": "This set of credentials already exists in the system"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
-                        self.response.set_status(400)    
+                        self.response.set_status(400)
+                        print "Responde 400 credentials"
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
+                    print "Responde 400 valid pair"
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970,1,1,0,0,0)
@@ -528,12 +556,15 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
+                print "Responde 400 cookie"
         else:
             response = \
                 {"error": "You must provide a session cookie"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(401)
+            print "Responde 401"
+
 
 
 ##################################################################################
@@ -543,7 +574,7 @@ class OAuthCredentialsContainerHandler(SessionHandler):
 # HANDLERS FOR RESOURCES RELATED TO FACEBOOK
 class FacebookHandler(OauthCredentialsHandler):
     """
-    Class that represents the Facebook token resource. 
+    Class that represents the Facebook token resource.
     Methods:
         get -- Returns the Facebook access_token and token_id
                for a user authenticated
@@ -557,8 +588,8 @@ class FacebookHandler(OauthCredentialsHandler):
         self.delete_credentials("facebook", token_id)
 
 class FacebookLoginHandler(OauthLoginHandler):
-    """ This class is a resource that represents the login 
-    action using the Facebook credentials to autenticate in PicBit 
+    """ This class is a resource that represents the login
+    action using the Facebook credentials to autenticate in PicBit
     """
     def post(self):
         self.post_login("facebook")
@@ -571,16 +602,25 @@ class FacebookSignUpHandler(OauthSignUpHandler):
         self.post_signup("facebook")
 
 class FacebookLogoutHandler(OauthLogoutHandler):
-    """ This class is a resource that represents the logout 
-    action using the Facebook credentials to autenticate in PicBit 
+    """ This class is a resource that represents the logout
+    action using the Facebook credentials to autenticate in PicBit
     """
     def post(self):
         self.post_logout("facebook")
 
+class FacebookCredentialsHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Facebook credentials resource.
+    Methods:
+        put -- Adds a new set of credentials (token_id and access_token in Facebook)
+    """
+    def put(self):
+        self.put_credentials("facebook")
+
 # HANDLERS FOR RESOURCES RELATED TO GITHUB
 class GitHubCredentialHandler(OAuthCredentialProviderHandler):
     """
-    Class that represents the GitHub token resource. 
+    Class that represents the GitHub token resource.
     Methods:
         get -- Returns the GitHub access_token and token_id
                for a user authenticated
@@ -598,9 +638,9 @@ class GitHubCredentialHandler(OAuthCredentialProviderHandler):
     def post(self,token_id):
         self.update_credentials("github", token_id)
 
-class GitHubContainerHandler(webapp2.RequestHandler):
+class GitHubContainerHandler(SessionHandler):
     """
-    Class that represents the List of Github credentials resource. 
+    Class that represents the List of Github credentials resource.
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
@@ -609,66 +649,115 @@ class GitHubContainerHandler(webapp2.RequestHandler):
         # authorize_url = \
         # "http://test-backend.example-project-13.appspot.com/api/oauth/github?action=request_token"
         access_token_url = "/login/oauth/access_token"
-        client_id = "1f21e4d820abd2cb5a7a"
-        client_secret = "b24d6b5f298e85514bebc70abcbf100a8ef8a5f4"
+        client_id = "ae271d42c068cae023b9"
+        client_secret = "7834524345411e5b112c9715949ba33861db61a4"
         access_token = ""
-        connection = httplib.HTTPSConnection(url)
 
         # Cogemos el codigo de la peticion
-        code = self.request.get("code")
+        try:
+            body = json.loads(self.request.body)
+            code = body["code"]
+            # print "===================================="
+            # print "Valor de code: " + code
+            # print "===================================="
+            params_token = urllib.urlencode({"client_id": client_id,
+                    "client_secret": client_secret, "code": code})
+            # Realizamos la peticion en la conexion
+            connection.request("POST", access_token_url, params_token)
+            # Cogemos la respuesta de la peticion y realizamos un split
+            # para coger el valor del token
+            response_token = connection.getresponse()
+            data_token = response_token.read()
+            # print "===========================================================" + data_token
+            access_token = data_token.split("&")
+            access_token = access_token[0].split("=")[1]
+            # logging.info('Ya tiene codigo: ' + access_token)
+            # Gestion de la respuesta de webapp
+            # self.response.content_type = "application/json"
+            # response = {"token": "" + access_token + ""}
+            # self.response.write(json.dumps(response))
+            # connection.close()
+            # self.response.set_status(200)
 
-        # Indicamos los parametros de la peticion a github
-        params_token = urllib.urlencode({"client_id": client_id,
-                "client_secret": client_secret, "code": code})
+            # Obtenemos la informacion del usuario registrado para
+            # almacenar correctamente la informacion
 
-        # Realizamos la peticion en la conexion
-        connection.request("POST", access_token_url, params_token)
+            cookie_value = self.request.cookies.get("session")
+            if not cookie_value == None:
+                user = self.getUserInfo(cookie_value)
+                if not user == None:
+                    # Obtenemos los detalles del usuario autenticado
+                    connectionAPI = httplib.HTTPSConnection("api.github.com")
+                    headers = {"Accept": "application/vnd.github.v3+json",
+                                "User-Agent": "PicBit-App",
+                                "Authorization": "token " + mongoDB.getGitHubAPIKey()}
+                    connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
+                    response = connectionAPI.getresponse()
+                    response_content = response.read()
+                    user_details = json.loads(response_content)
+                    # logging.info("User details: " + str(user_details))
+                    response = {"token": access_token}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    # Buscamos el par id usuario/token autenticado en la base
+                    stored_credentials = mongoDB.searchToken(str(user_details["login"
+                            ]), "github")
+                    print "================================="
+                    print user_details["login"]
+                    print "================================="
+                    if stored_credentials == None:
+                        print "============================="
+                        print "Voy a hacer el insertToken"
+                        print "============================="
+                        # Almacena las credenciales en una entidad Token
+                        user_credentials = mongoDB.insertToken(user, "github", access_token,
+                                            user_details["login"])
+                        self.response.set_status(201)
+                    else:
+                        print "=========================="
+                        print "Se llama a modifyToken"
+                        print "=========================="
+                        # Almacenamos el access token recibido
+                        user_id = mongoDB.modifyToken(str(user_details["login"]),
+                                access_token, "github")
+                        self.response.set_status(200)
+                else:
+                    # We invalidate the session cookies received
+                    expire_date = datetime.datetime(1970,1,1,0,0,0)
+                    self.response.set_cookie("session", "",
+                        path="/", domain=domain, secure=True, expires=expire_date)
+                    # We delete and invalidate other cookies received, like the user logged nickname
+                    # and social network in which the user performed the login
+                    if not self.request.cookies.get("social_network") == None:
+                        self.response.set_cookie("social_network", "",
+                            path="/", domain=domain, secure=True, expires=expire_date)
+                    if not self.request.cookies.get("user") == None:
+                        self.response.set_cookie("user", "",
+                            path="/", domain=domain, secure=True, expires=expire_date)
 
-        # Cogemos la respuesta de la peticion y realizamos un split
-        # para coger el valor del token
-        response_token = connection.getresponse()
-        data_token = response_token.read()
-        access_token = data_token.split("&")
-        access_token = access_token[0].split("=")[1]
-
-        # Gestion de la respuesta de webapp
-        self.response.content_type = "application/json"
-        response = {"token": "" + access_token + ""}
-        self.response.write(json.dumps(response))
-        connection.close()
-        self.response.set_status(200)
-
-        # Obtenemos los detalles del usuario autenticado
-        connectionAPI = httplib.HTTPSConnection("api.github.com")
-        headers = {"Accept": "application/vnd.github.v3+json",
-                   "User-Agent": "PicBit-App",
-                   "Authorization": "token GITHUB_TOKEN"}
-        connectionAPI.request("GET", "/user", params_token, headers)
-        response = connectionAPI.getresponse()
-        aux = response.read()
-        user_details = json.loads(aux)
-
-        # Buscamos el par id usuario/token autenticado en la base
-        stored_credentials = ndb_pb.searchToken(str(user_details["id"
-                ]), "github")
-        if stored_credentials == None:
-
-            # Almacena las credenciales en una entidad Token
-            user_credentials = ndb_pb.insertUser("github",
-                    str(user_details["id"]), access_token)
-            self.response.set_status(201)
-        else:
-
-            # Almacenamos el access token recibido
-            user_id = ndb_pb.modifyToken(str(user_details["id"]),
-                    access_token, "github")
-            self.response.set_status(200)
-
+                    # Builds the response
+                    response = \
+                        {"error": "The cookie session provided does not belongs to any active user"}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(400)
+            else:
+                response = \
+                    {"error": "You must provide a session cookie"}
+                self.response.content_type = "application/json"
+                self.response.write(json.dumps(response))
+                self.response.set_status(401)
+        except KeyError:
+            response = \
+                {"error": "You must provide a valid code value in the request"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(400)
 
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
 class GooglePlusHandler(OauthCredentialsHandler):
     """
-    Class that represents the GooglePlus token resource. 
+    Class that represents the GooglePlus token resource.
     Methods:
         get -- Returns the GooglePlus access_token and token_id
                for a user authenticated
@@ -682,8 +771,8 @@ class GooglePlusHandler(OauthCredentialsHandler):
         self.delete_credentials("googleplus", token_id)
 
 class GooglePlusLoginHandler(OauthLoginHandler):
-    """ This class is a resource that represents the login 
-    action using the GooglePlus credentials to autenticate in PicBit 
+    """ This class is a resource that represents the login
+    action using the GooglePlus credentials to autenticate in PicBit
     """
     def post(self):
         self.post_login("googleplus")
@@ -697,16 +786,24 @@ class GooglePlusSignUpHandler(OauthSignUpHandler):
 
 class GooglePlusLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout
-    action using the GooglePlus credentials to autenticate in PicBit 
+    action using the GooglePlus credentials to autenticate in PicBit
     """
     def post(self):
         self.post_logout("googleplus")
 
+class GooglePlusCredentialsHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Googleplus credentials resource.
+    Methods:
+        put -- Adds a new set of credentials (token_id and access_token in Googleplus)
+    """
+    def put(self):
+        self.put_credentials("googleplus")
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
 class InstagramCredentialHandler(OAuthCredentialProviderHandler):
     """
-    Class that represents the Instagram token resource. 
+    Class that represents the Instagram token resource.
     Methods:
         get -- Returns the Instagram access_token and token_id
                for a user authenticated
@@ -726,9 +823,9 @@ class InstagramCredentialHandler(OAuthCredentialProviderHandler):
 
 class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     """
-    Class that represents the List of Instagram credentials resource. 
+    Class that represents the List of Instagram credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+        put -- Adds a new set of credentials (token_id and access_token in Instagram)
     """
     def put(self):
         self.put_credentials("instagram")
@@ -737,7 +834,7 @@ class InstagramContainerHandler(OAuthCredentialsContainerHandler):
 # HANDLERS FOR RESOURCES RELATED TO LINKEDIN
 class LinkedinCredentialHandler(OAuthCredentialProviderHandler):
     """
-    Class that represents the Linkedin token resource. 
+    Class that represents the Linkedin token resource.
     Methods:
         get -- Returns the Linkedin access_token and token_id
                for a user authenticated
@@ -757,9 +854,9 @@ class LinkedinCredentialHandler(OAuthCredentialProviderHandler):
 
 class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
     """
-    Class that represents the List of Linkedin credentials resource. 
+    Class that represents the List of Linkedin credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+        post -- Adds a new set of credentials (token_id and access_token in Linkedin)
     """
     def put(self):
         self.put_credentials("linkedin")
@@ -768,7 +865,7 @@ class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
 # HANDLERS FOR RESOURCES RELATED TO STACKOVERFLOW
 class StackOverflowCredentialHandler(OAuthCredentialProviderHandler):
     """
-    Class that represents the StackOverflow token resource. 
+    Class that represents the StackOverflow token resource.
     Methods:
         get -- Returns the StackOverflow access_token and token_id
                for a user authenticated
@@ -788,35 +885,39 @@ class StackOverflowCredentialHandler(OAuthCredentialProviderHandler):
 
 class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     """
-    Class that represents the List of Stackoverflow credentials resource. 
+    Class that represents the List of Stackoverflow credentials resource.
     Methods:
-        post -- Adds a new set of credentials (token_id and access_token in GitHub)
+        post -- Adds a new set of credentials (token_id and access_token in Stackoverflow)
     """
     def put(self):
         self.put_credentials("stackoverflow")
 
 # HANDLERS FOR RESOURCES RELATED TO TWITTER
-# Handler that manages the first step in the Twitter login flow 
+# Handler that manages the first step in the Twitter login flow
 # (obtain the request token and request url to initiate the login in client)
 class TwitterRequestLoginHandler(webapp2.RequestHandler):
     """ This resource represents the first step in the Twitter
-        login flow, in which the server must request to Twitter a 
+        login flow, in which the server must request to Twitter a
         request_token that identifies the login flow in a temporal way
         and provides the url in which the user must access and authorize
         the access of his/her credentials.
-        It is the first step in a login flow of three steps. 
+        It is the first step in a login flow of three steps.
         The second step is performed in frontend and the third step is a
         callback received from Twitter endpoint.
     """
     def get(self):
         global client
         """ Handles the first step in the Twitter login flow
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request build by webapp2
         """
         # Return the authorization URL
         self.response.content_type = "application/json"
-        response = {"oauth_url": client.get_authorization_url()}
+        callback_url = self.request.get("callback", default_value="https://" + domain)
+        auth = twitter.get_authentication_tokens(callback_url=callback_url)
+        print "Datos a añadir", auth
+        memcache.add(auth['oauth_token'], auth['oauth_token_secret'], time=20*60)
+        response = {"oauth_url": auth['auth_url']}
         self.response.write(json.dumps(response))
 
 
@@ -825,43 +926,73 @@ class TwitterAuthorizationHandler(SessionHandler):
     """ This class is a resource that represents the authorization
         step in the Twitter Login flow, in which the Twitter Endpoint returns
         asyncronously the credentials for the user authenticated in the flow.
-        It is the third step in a login flow of three steps.  
+        It is the third step in a login flow of three steps.
     """
 
     def get(self):
         """ Manages the callback from Twitter in the Twitter oauth flow.
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request built by webapp2
         """
         # Gets the params in the request
-        auth_token = self.request.get("oauth_token")
+        global consumer_key
+        global consumer_secret
+        oauth_token = self.request.get("oauth_token")
         oauth_verifier = self.request.get("oauth_verifier")
+        oauth_token_secret = memcache.get(oauth_token)
+        tw = Twython(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
+
         # Retrieves user info
-        user_info = client.get_user_info(auth_token,
-                auth_verifier=oauth_verifier)
-        # Stores in memcache the session id associated with the oauth_verifier 
+        user_info = tw.get_authorized_tokens(oauth_verifier)
+        print "Datos", oauth_token, oauth_token_secret, oauth_verifier, user_info['oauth_token']
+        # Stores in memcache the session id associated with the oauth_verifier
         #and data associated to the logged user
-        key_verifier = "oauth_verifier_" + oauth_verifier
-        data = {"token_id": user_info["username"],
-                "access_token": user_info["token"]
+        key_verifier = oauth_verifier
+        data = {"token_id": user_info["screen_name"],
+                "access_token": user_info["oauth_token"]
                 }
-        memcache.add(key_verifier, data)
-        
+        memcache.add(key_verifier, data, time=20*60)
+
         # Set the status for the response
         self.response.set_status(200)
 
 class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
-    def get(self, authorization_id):
+    def get(self, oauth_verifier):
         """Manages the info returned by the callback from Twitter
-        Keyword arguments: 
+        Keyword arguments:
         self -- info about the request built by webapp2
-        authorization_id -- oauth_verifier that defines the authorization flow
+        oauth_verifier -- oauth_verifier that defines the authorization flow
         """
-        key_verifier = "oauth_verifier_" + authorization_id
-        twitter_user_data = memcache.get(key_verifier)
+        global consumer_key
+        global consumer_secret
+        
+        # Get oauth_token from request
+        oauth_token = self.request.get('oauth_token')
+
+        if not oauth_token:
+            response = {'error', "The oauth token is empty"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(404)
+        # Get oauth token secret from memcache. Stored in the first step
+        print "Intentando coger el secret de la memcache: ", oauth_token
+        oauth_token_secret = memcache.get(oauth_token)
+        
+        if not oauth_token:
+            reponse = {'error', "The oauth token is not valid"}
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps(response))
+            self.response.set_status(404)
+
+        memcache.delete(oauth_token)
+        tw = Twython(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
+        twitter_user_data = tw.get_authorized_tokens(oauth_verifier)
+        print "Metiendo los datos completos: ", twitter_user_data, oauth_verifier
+        memcache.add(oauth_verifier, twitter_user_data, time=20*60)
+        print "Recuperando datos: ", memcache.get(oauth_verifier)
         # Return the user's token id that authorized the application
         if not twitter_user_data == None:
-            response = {"token_id": twitter_user_data["token_id"]}
+            response = {"token_id": twitter_user_data["screen_name"]}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(200)
@@ -873,7 +1004,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
 
 class TwitterHandler(OauthCredentialsHandler):
     """
-    Class that represents the Twitter token resource. 
+    Class that represents the Twitter token resource.
     Methods:
         get -- Returns the Twitter access_token and token_id
                for a user authenticated
@@ -886,6 +1017,14 @@ class TwitterHandler(OauthCredentialsHandler):
     def delete(self, token_id):
         self.delete_credentials("twitter", token_id)
 
+class TwitterCredentialsHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Twitter credentials resource.
+    Methods:
+        post -- Adds a new set of credentials (token_id and access_token in Twitter)
+    """
+    def put(self):
+        self.put_credentials("twitter")
 
 class TwitterSignUpHandler(SessionHandler):
     """ This class is a resource that represents the sign-up
@@ -897,28 +1036,28 @@ class TwitterSignUpHandler(SessionHandler):
     def post(self):
         oauth_verifier = self.request.get("oauth_verifier", default_value="None")
         user_identifier = self.request.get("user_identifier", default_value="")
-        
+
         if not oauth_verifier == "":
-            key_verifier = "oauth_verifier_" + oauth_verifier
-            twitter_user_data = memcache.get(key_verifier)
+            print "oauth verifier para postear datos:", oauth_verifier
+            twitter_user_data = memcache.get(oauth_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter") 
+                stored_credentials = mongoDB.searchToken(twitter_user_data["screen_name"], "twitter")
                 if stored_credentials == None:
                     user_info = {}
                     if not user_identifier == "":
                         # Checks if the user_id taken exists in the system
-                        user_id_repeated = True if not ndb_pb.getUser(user_identifier) == None else False
+                        user_id_repeated = True if not mongoDB.getUser(user_identifier) == None else False
                         if not user_id_repeated:
                             user_info["user_id"] = user_identifier
-                            user_key = ndb_pb.insertUser("twitter",
-                            twitter_user_data["token_id"], twitter_user_data["access_token"], user_info)
-
+                            user_key = mongoDB.insertUser("twitter",
+                            twitter_user_data["screen_name"], twitter_user_data["oauth_token"], user_info, secret=twitter_user_data['oauth_token_secret'])
+                            mongoDB.assignComponents(user_key)
                             # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
-                            memcache.delete(key_verifier)
-                            
+                            memcache.delete(oauth_verifier)
+
                             # Returns the session, user_id and social_network cookie
-                            session_id = self.login(user_key)
+                            session_id = self.login(str(user_key.id))
                             self.response.set_cookie("session",
                                     value=session_id, path="/", domain=domain,
                                     secure=True)
@@ -928,17 +1067,17 @@ class TwitterSignUpHandler(SessionHandler):
                             self.response.set_cookie("user",
                                     value=user_identifier, path="/", domain=domain,
                                     secure=True)
-                            
+
                             # Builds the response
                             response = {"status": "User logged successfully", "user_id": user_identifier}
                             self.response.content_type = "application/json"
-                            self.response.write(json.dumps(response))                    
+                            self.response.write(json.dumps(response))
                             self.response.set_status(201)
                         else:
                             response = {"error": "The user_identifier provided for the sign up has been already taken"}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
-                            self.response.set_status(400)    
+                            self.response.set_status(400)
                     else:
                         response = {"error": "You must provide a valid user_identifier in the request"}
                         self.response.content_type = "application/json"
@@ -974,21 +1113,17 @@ class TwitterLoginHandler(SessionHandler):
         user_identifier = self.request.get("user_identifier", default_value="")
 
         if not oauth_verifier == "":
-            key_verifier = "oauth_verifier_" + oauth_verifier
-            twitter_user_data = memcache.get(key_verifier)
+            twitter_user_data = memcache.get(oauth_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = ndb_pb.searchToken(twitter_user_data["token_id"], "twitter")
+                stored_credentials = mongoDB.searchToken(twitter_user_data["screen_name"], "twitter")
                 if not stored_credentials == None:
                     # We store the new set of credentials
-                    user_key = ndb_pb.modifyToken(twitter_user_data["token_id"],
-                            twitter_user_data["access_token"], "twitter")
-                    user_id = ndb_pb.getUserId(user_key)
-                    session_id = self.login(user_key)
+                    user_key = mongoDB.modifyToken(twitter_user_data["screen_name"],
+                            twitter_user_data["oauth_token"], "twitter")
+                    user_id = mongoDB.getUserId(user_key)
+                    session_id = self.login(str(user_key))
 
-                    # Gets the user_id to generate the user cookie
-                    user_id = ndb_pb.getUserId(user_key)
-                    
                     # Returns the session, social_network and user cookie
                     self.response.set_cookie("session", session_id,
                             path="/", domain=domain, secure=True)
@@ -1024,8 +1159,69 @@ class TwitterLoginHandler(SessionHandler):
             self.response.set_status(400)
 
 class TwitterLogoutHandler(OauthLogoutHandler):
-    """ This class is a resource that represents the logout 
-    action using the Twitter credentials to autenticate in PicBit 
+    """ This class is a resource that represents the logout
+    action using the Twitter credentials to autenticate in PicBit
     """
     def post(self):
         self.post_logout("twitter")
+
+
+# HANDLERS FOR RESOURCES RELATED TO PINTEREST
+class PinterestCredentialHandler(OAuthCredentialProviderHandler):
+    """
+    Class that represents the Pinterest token resource.
+    Methods:
+        get -- Returns the Pinterest access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Pinterest for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Pinterest for the user authenticated
+    """
+    def get(self, token_id):
+        self.get_credentials("pinterest", token_id)
+
+    def delete(self, token_id):
+        self.delete_credentials("pinterest", token_id)
+
+    def post(self, token_id):
+        self.update_credentials("pinterest", token_id)
+
+class PinterestContainerHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the List of Instagram credentials resource.
+    Methods:
+        put -- Adds a new set of credentials (token_id and access_token in Instagram)
+    """
+    def put(self):
+        self.put_credentials("pinterest")
+
+
+class SpotifyContainerHandler(OAuthCredentialsContainerHandler): 
+    """
+    Class that represents the List of Spotify credentials resource.
+    Methods:
+        put -- Adds a new set of credentials (token_id and access_token in Spotify)
+    """
+    def put(self):
+        self.put_credentials("spotify")
+
+class SpotifyCredentialHandler(OAuthCredentialsContainerHandler):
+    """
+    Class that represents the Spotify token resource.
+    Methods:
+        get -- Returns the Spotify access_token and token_id
+               for a user authenticated
+        delete -- Deletes the pair of token_id and access_token
+                  in Spotify for the user authenticated
+        post -- Updates the pair of token_id and access_token in
+                Spotify for the user authenticated
+    """
+    def get(self, token_id):
+        self.get_credentials("spotify", token_id)
+
+    def delete(self, token_id):
+        self.delete_credentials("spotify", token_id)
+
+    def post(self, token_id):
+        self.update_credentials("spotify", token_id)

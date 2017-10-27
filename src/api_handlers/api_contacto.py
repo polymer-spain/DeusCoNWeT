@@ -22,12 +22,10 @@
 import webapp2
 import json
 import httplib
-import ndb_pb
+import mongoDB
 
 # Imports for ContactHandler
 from google.appengine.api import mail
-
-
 class ContactHandler(webapp2.RequestHandler):
     """ Class that represent the contact resource, used for customer support.
     Method:
@@ -72,8 +70,8 @@ class SubscriptionHandler(webapp2.RequestHandler):
             email = self.request.POST['email']
             name = self.request.POST['name']
             surname = self.request.POST['surname']
-            if not ndb_pb.subscribedUser(email):
-                ndb_pb.newBetaUser(email, name, surname)
+            if not mongoDB.subscribedUser(email):
+                mongoDB.newBetaUser(email, name, surname)
                 self.response.set_status(201)
             else:
                 self.response.set_status(200)

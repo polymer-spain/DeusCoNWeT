@@ -1,183 +1,142 @@
 /*global angular, document, console*/
-angular.module('picbit').controller('MainController', ['$scope', '$location', '$timeout', '$backend', '$http', '$window', '$cookies', '$rootScope', 'RequestLanguage', function ($scope, $location, $timeout, $backend, $http, $window, $cookies, $rootScope, RequestLanguage) {
+angular.module('picbit').controller('MainController', ['$scope', 'RequestLanguage', '$location', '$cookies', '$backend', '$http', '$rootScope', function ($scope, RequestLanguage, $location, $cookies, $backend, $http, $rScope) {
+	'use strict';
 
-  'use strict';
+	if ($location.host() === "localhost"){
+		$scope.domain = "http://" + $location.host() + ":" + $location.port();
+	}else {
+		$scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
+	}
 
-/*  if ($cookies.get('user')) {
-    $backend.getUser($cookies.get('user')).then(function(response) {
-      $rootScope.user = response.data;
-    });
-  }*/
+	// Language control
+	$scope.idioma = $cookies.get('language') || window.navigator.language.toLowerCase().split('-')[0];
+	$scope.setLanguage = function(lang){
+		var file = lang + "_"+ lang + ".json";
+		$scope.idioma = lang;
+		RequestLanguage.language(file).success(function (data){
+			$scope.language = data;
+			$scope.languageSelected = data.lang[$scope.idioma];
+		});
+	};
+	$scope.setLanguage($scope.idioma);
 
-  $rootScope.isLogged = $rootScope.user ? true : false; // Registrar el estado de logueado
-  $scope.domain = 'https://' + $location.host(); // Dominio bajo el que ejecutamos
-  $scope.sended = false; // popup de notificar
-  $scope.idioma = $cookies.get('language') || $window.navigator.language;
-  $scope.popupOpened = false;
+	$scope.logout = function (parent) {
+		$('html').css('cursor','wait');
+		$backend.logout().then(function() {
+			$('html').css('cursor','');
+			if (parent){
+				document.getElementById(parent).close();
+			}
+			$location.path('/');
+		}, function(){
+			$('html').css('cursor','');
+			$location.path('/');
+			//console.error('Error ' + response.status + ': Fallo al intentar realizar un logout del usurio ' + $rScope.user.name);
+		});
+	};
+	// Login callback function
+	$scope.loginProcess = function(userData){
+		/* Cogemos el identificador del usuario */
+		function newUser(userData) {
+			$rScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
+			$location.path('/selectId');
+		}
+		$rScope.token = userData.token;
+		if ($location.$$path.indexOf('profile') === -1) {
+			$backend.getUserId(userData.userId, userData.redSocial)
+			.then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
+				/* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
+				var user = responseUserId.data;
+				$backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
+				.then(function() {
+					$location.path('/user/' + user.user_id);
+				}, function(responseLogin) {
+					console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login');
+				});
+			}, function(){
+				newUser(userData);
+			});
+		} else {
+			$backend.sendData(userData.token, $scope.user.user_id, userData.redSocial);
+		}
+	};
+	$scope.pathname = window.location.pathname;
+	$scope.goto = function(view){
+		if (view.indexOf(':user') > -1){
+			view = view.replace(/:user/g,$rScope.user.user_id);
+		}
+		$location.path(view); // path not hash
 
-  /* Listen popup when he's close */
-  $scope.loadListener = function(){
-    document.querySelector('#loginModal').addEventListener('iron-overlay-closed', function(){
-      $scope.$apply(function() {
-        $scope.popupOpened = false;
-      });
-    });
-  };
-  $scope.languageRequest = function(file){
-    RequestLanguage.language(file).success(function (data){
-      $scope.language = data;
-      $scope.languageSelected = data.lang[$scope.idioma];
-    });
-  };
+	};
+	var loginCallback = function (e) {
+		//$scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
+		$('#login-popup').modal('hide');
 
-  $scope.changelanguage = function (language, closeMenu) {
-    var file;
-    $scope.idioma = language;
-    $cookies.put('language', language);
-    file = $scope.idioma === 'es' ? 'es_es.json' : 'en_en.json';
-    $scope.languageRequest(file);
+		var socialNetwork = e.detail.redSocial;
+		var uri;
+		switch(socialNetwork) {
+			case 'googleplus':
+			uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
+			$http.get(uri).success(function (responseData) {
+				e.detail.userId = responseData.id;
+				$scope.loginProcess(e.detail);
+			});
+			break;
+			case 'twitter':
+			uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier + '?oauth_token=' + e.detail.token;
+			$http.get(uri).success(function (responseData) {
+				e.detail.userId = responseData.token_id;
+				$scope.loginProcess(e.detail);
+			}).error(function() {
+				console.log('Problemas al intentar obtener el token_id de un usuario' );
+			});
+			break;
+			default:
+			$scope.loginProcess(e.detail);
+			break;
+		}
+	};
 
-    if(closeMenu) {
-      document.querySelector('#language').close();
+	// Binding login callback
+	(function(){
+		$('#login-popup google-login').bind('google-logged', loginCallback);
+		$('#login-popup twitter-login').bind('twitter-logged', loginCallback);
+		$('#login-popup login-facebook').bind('facebook-logged', loginCallback);
+	})();
+
+	// avoid language errors
+	$scope.$watch('language.delete', function(newValue) {
+		$('.icon-delete > span').html(newValue);
+	});
+
+	$scope.showToastr = function(type, message, options, onclick, onclose){
+		var default_options = {
+			"closeButton": true,
+			"debug": false,
+			"newestOnTop": false,
+			"progressBar": false,
+			"positionClass": "toast-bottom-right",
+			"preventDuplicates": false,
+			"onclick": null,
+			"showDuration": "300",
+			"hideDuration": "1000",
+			"timeOut": "5000",
+			"extendedTimeOut": "5000",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "fadeIn",
+			"hideMethod": "fadeOut",
+		};
+    Object.assign(default_options, options);
+    
+    toastr.options = default_options;
+
+    if (onclick){
+      toastr.options.onclick = onclick;
     }
-  };
-
-  /* Monitorizamos el lenguage */
-
-  if ($scope.idioma === 'es') {
-    $scope.languageRequest('es_es.json');
-    $cookies.put('language', 'es');
-  } else {
-    $scope.languageRequest('en_en.json');
-    $cookies.put('language', 'en');
-  }
-
-  $scope.loginProcess = function(userData){
-    /* Cogemos el identificador del usuario */
-    function newUser(userData) {
-      $rootScope.register = {token: userData.token, redSocial: userData.redSocial, tokenId: userData.userId, oauthVerifier: userData.oauth_verifier};
-      $scope.changeView('/selectId');
+    if (onclose){
+      toastr.options.onCloseClick = onclose;
     }
-    $rootScope.token = userData.token;
-    if ($location.$$path.indexOf('profile') === -1) {
-      $backend.getUserId(userData.userId, userData.redSocial)
-        .then(function (responseUserId) { /* Si devuelve un 200, ya existe el usuario*/
-        /* Pedimos la información del usuario y la almacenamos para poder acceder a sus datos */
-        $rootScope.user = responseUserId.data;
-        $backend.sendData(userData.token, userData.userId, responseUserId.data.user_id, userData.redSocial, userData.oauth_verifier)
-          .then(function() {
-          $scope.changeView('/user/' + $rootScope.user.user_id);
-        }, function(responseLogin) {
-          console.error('Error ' + responseLogin.status + ': al intentar mandar los datos de login'); 
-        });
-      }, function(){newUser(userData)});
-    } else {
-      $backend.sendData(userData.token, $rootScope.user.user_id, userData.redSocial);
-    }
-  };
-
-  $scope.logged = function (e) {
-    $scope.$apply(function () {
-      $scope.hidePopup();// escondemos el popup y cambiamos la direccion del usuario
-
-      if (e.detail.redSocial === 'googleplus') { // Comprobamos si es google para buscar el id
-        var uri;
-        uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + e.detail.token;
-        $http.get(uri).success(function (responseData) {
-          e.detail.userId = responseData.id;
-          $scope.loginProcess(e.detail);
-          // ¿Por qué twitter si tiene salida de error si no funciona la peticion mientras que los demas(Google+ y facebook) no?)
-        });
-      } else if (e.detail.redSocial === 'twitter') {
-        var uri = $backend.endpoint + '/api/oauth/twitter/authorization/' + e.detail.oauth_verifier;
-        $http.get(uri).success(function (responseData) {
-          e.detail.userId = responseData.token_id;
-          $scope.loginProcess(e.detail);
-        }).error(function() {
-          console.log('Problemas al intentar obtener el token_id de un usuario' );
-        });
-      } else {
-        $scope.loginProcess(e.detail);
-      }
-    });
-  };
-
-  $scope.changeView = function (view, name) {
-    $location.hash('');
-    if (name) {
-      $scope.user ? $location.path('user/' + $scope.user.user_id) : $location.path('');
-    }else {
-      $location.path(view); // path not hash
-    }
-  };
-
-  /* NOTE its needed because the dropmenu do not correctly the binding.
-   * Its know path but it dont redirect to them because the binding is done after.
-   */
-  $scope.goto = function(addr, parent) {
-    switch(addr) {
-      case 'home':
-        $scope.changeView('user/' + $rootScope.user.user_id);
-        break;
-      case 'profile':
-        $scope.changeView('user/' + $rootScope.user.user_id + '/profile');
-        break;
-    }
-    if (parent){
-      document.getElementById(parent).close();
-    }
-  };
-
-  $scope.logout = function (parent) {
-    $backend.logout().then(function() {
-      if (parent){
-        document.getElementById(parent).close();
-      }
-      $scope.changeView('/');
-    }, function(response){
-      console.error('Error ' + response.status + ': Fallo al intentar realizar un logout del usurio ' + $rootScope.user.name);
-    });
-  };
-  $scope.showPopup = function (e) {
-    var element = e.target;
-    var id = element.getAttribute('data-dialog') || element.parentElement.getAttribute('data-dialog');
-    var dialog = document.getElementById(id);
-    if (dialog && !$rootScope.isLogged) {
-      dialog.open();
-      $scope.popupOpened = true;
-    }
-  };
-  $scope.hidePopup = function() {
-    var element = document.getElementById('loginModal');
-
-    if (element) {
-      element.close();
-    }
-  };
-
-  $window.addEventListener('scroll', function() {
-    $scope.$apply(function() {
-      var size = 	document.body.scrollTop;
-      $scope.scrolled = size > 0;
-    });
-  });
-
-  $scope.dropmenu  =  function(){
-    document.querySelector('#dropmenu').toggle();
-  };
-
-  $scope.calculateWidthUserDropdown = function() {
-    return '200px';
-  };
-
-  /* Escuhas de los botones*/
-  (function(){
-    document.querySelector('body').addEventListener('google-logged', $scope.logged);
-    document.querySelector('body').addEventListener('linkedin-logged', $scope.logged);
-    document.querySelector('body').addEventListener('github-logged', $scope.logged);
-    document.querySelector('body').addEventListener('instagram-logged', $scope.logged);
-    document.querySelector('body').addEventListener('twitter-logged', $scope.logged);
-    document.querySelector('body').addEventListener('facebook-logged', $scope.logged);
-    document.querySelector('body').addEventListener('sof-logged', $scope.logged);
-  })();
-}]);
+		toastr[type](message);
+	};
+}]);// end angular.module

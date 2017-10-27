@@ -1,0 +1,97 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+<dom-module id="star-rate">
+	<template>
+		<style is="custom-style">
+		</style>
+		<template is="dom-repeat" items="{{currentStars}}">
+			<template is="dom-if" if="{{_hideFullStar(item)}}">
+				<iron-icon icon="{{_checkStarType(item)}}">
+				</iron-icon>
+			</template>
+			<template is="dom-if" if="{{_hideHalfStar(item)}}">
+				<iron-icon icon="star-half">
+				</iron-icon>
+			</template>
+		</template>
+	</template>
+	<script>
+		Polymer({
+			is:'star-rate',
+			properties:{
+				default: {
+					type: 'Number',
+					value: this.value
+				},
+				readOnly:{
+					type: 'Boolean',
+					value: false,
+					reflectToAttribute:true
+				},
+				rated: {
+					type: 'Boolean',
+					value: false,
+					reflectToAttribute:true
+				},
+				stars:{
+					type: 'Number',
+					value: 5,
+					reflectToAttribute:true
+				},
+				value:{
+					type: 'Number',
+					value: 0,
+					reflectToAttribute:true
+				},
+			},
+			onHovered: function(e,d,t) {
+				if (!this.readOnly && !this.rated){
+					this.value = parseFloat(t.dataset.item, 10 );
+				}
+			},
+
+			ready : function() {
+				this.currentStars = [];
+				for (var i = 0; i<= this.stars - 1; i++) {
+					this.push('currentStars',i+1);
+				};
+				this.default = this.value;
+			},
+
+			setvalue: function(e,d,t) {
+				if (!this.readOnly &&!this.rated) {
+					this.value = parseFloat(t.dataset.item, 10 );
+					this.rated=true;
+				}
+			},
+			halfStar: function(e,d,t) {
+				if (!this.readOnly &&!this.rated) {
+					this.value = parseFloat(t.dataset.item,10);
+				}
+			},
+
+			fullStar: function(e,d,t) {
+				if (!this.readOnly &&!this.rated) {
+					this.value = parseFloat(t.dataset.item,10);
+				}
+			},
+			onMouseout: function(e,d,t) {
+				if (!this.readOnly &&!this.rated) {
+					this.value=this.default;
+				}
+			},
+			_checkStarType: function(item){
+				return item <= this.value ? 'star': 'star-border';
+			},
+			_hideFullStar: function(item){
+				return (item-this.value)!=0.5
+			},
+			_hideHalfStar: function(item){
+				return this.value==item-0.5;
+			}
+		})
+	</script>
+</dom-module>

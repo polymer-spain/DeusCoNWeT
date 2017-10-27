@@ -4,7 +4,7 @@ import test_utils
 
 # Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto (funcionalidades de alto nivel)
 # (api/componentes y api/usuarios)
-# Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados | --help]
+# Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados | dashboard_versionado | --help]
 # El versionado estático/dinámico se prueba en dashboard_predeterminados
 def main():
 	components_basepath = "/api/componentes"
@@ -21,7 +21,7 @@ def main():
 		option = sys.argv[1]
 
 
-	if option in ["dashboard", "dashboard_borrado", "dashboard_predeterminados"]:
+	if option in ["dashboard", "dashboard_borrado", "dashboard_predeterminados", "dashboard_versionado"]:
 		# We open the connection with the server
 		test_utils.openConnection(False) # Realizamos pruebas en local (remote=False)
 
@@ -33,12 +33,12 @@ def main():
 		session1 = test_utils.do_login_or_signup("googleplus", token_id_login, access_token_login, user_id1)
 		session2 = test_utils.do_login_or_signup("googleplus", token_id_login2, access_token_login2, user_id2)
 
-		# PRE-TESTs. Añadimos dos componentes a utilizar en las pruebas
+		# PRE-TESTs. Añadimos un componente, utilizado en las pruebas
 		print "PRETEST 3: Subir un componente al sistema (para asegurarnos de que existe en el sistema)."
 		print "Componente no predeterminado, con 2 versiones. Id: linkedin-timeline"
 		print "Ignorar el status de salida de este TEST"
 		print "Status esperado: 201 "
-		versions_list = ["stable", "usability_defects"]
+		versions_list = ["stable", "usability_defects", "accuracy_defects", "latency_defects"]
 		params = urllib.urlencode({'url': 'https://github.com/JuanFryS/linkedin-timeline',
 	            'component_id': 'linkedin-timeline',
 	            'description': 'Web component to obtain the timeline of the social network Linkedin using Polymer',
@@ -51,7 +51,7 @@ def main():
 		test_utils.make_request("PUT", components_basepath, params, 201, None, preTest=True)
 
 
-		# PRETEST 
+		# PRETEST
 		print "PRETEST 4: Añadimos credenciales de linkedin al perfil de usuario 2"
 		print "Status esperado: 201"
 		request_uri = "/api/oauth/linkedin/credenciales"
@@ -271,9 +271,9 @@ def main():
 			}, doseq=True)
 			test_utils.make_request("PUT", request_uri, params, 201, None, preTest=True)
 
-			# TEST 21: Creamos un nuevo usuario en el sistema (Realizando login mediante facebook)
+			# PRETEST 21: Creamos un nuevo usuario en el sistema (Realizando login mediante facebook)
 			request_uri = "/api/oauth/facebook/signup"
-			print "TEST 21: Signup de usuario 3 en el sistema\n Ignorar el status de este caso"
+			print "PRETEST 21: Signup de usuario 3 en el sistema\n Ignorar el status de este caso"
 			print "Probaremos que al añadir un nuevo usuario al sistema, se le añadan los componentes predeterminados"
 			print "Ignorar el status de salida de este TEST"
 			print "Status esperado: 201 "
@@ -284,8 +284,8 @@ def main():
 			session3 = test_utils.make_request("POST", request_uri, params, 201, None, True)
 
 
-			# TEST 22: Creamos un nuevo usuario en el sistema (Realizando login mediante facebook)
-			print "TEST 22: Signup de usuario 4 en el sistema\n Ignorar el status de este caso"
+			# PRETEST 22: Creamos un nuevo usuario en el sistema (Realizando login mediante facebook)
+			print "PRETEST 22: Signup de usuario 4 en el sistema\n Ignorar el status de este caso"
 			print "Probaremos que al añadir un nuevo usuario al sistema, se le añadan los componentes predeterminados"
 			print "Ignorar el status de salida de este TEST"
 			print "Status esperado: 201 "
@@ -295,8 +295,8 @@ def main():
 			 'user_identifier': user_id4 })
 			session4 = test_utils.make_request("POST", request_uri, params, 201, None, True)
 
-			# TEST 23: Creamos un nuevo usuario en el sistema (Realizando login mediante googleplus)
-			print "TEST 23: Signup de usuario 5 en el sistema\n Ignorar el status de este caso"
+			# PRETEST 23: Creamos un nuevo usuario en el sistema (Realizando login mediante googleplus)
+			print "PRETEST 23: Signup de usuario 5 en el sistema\n Ignorar el status de este caso"
 			print "Probaremos que al añadir un nuevo usuario al sistema, se le añadan los componentes predeterminados"
 			print "Ignorar el status de salida de este TEST"
 			print "Status esperado: 201 "
@@ -323,7 +323,7 @@ def main():
 			# Tests de obtención de componentes de usuario
 			params = urllib.urlencode({})
 			request_uri = components_basepath + "?filter=user&list_format=complete"
-			
+
 			# TEST 26
 			print "TEST 26: Listamos los detalles sobre los componentes de usuario 3."
 			print "(Deben aparecer los componentes predeterminados y el añadido)"
@@ -347,6 +347,105 @@ def main():
 			test_utils.do_logout("googleplus", session4)
 			test_utils.do_logout("googleplus", session5)
 
+		# Opcion para probar el Round-Robin implementado para el versionado de componentes
+		elif option == "dashboard_versionado":
+			# Declaracion de variables auxiliares
+			user_id3 = "id_usuario3"
+			user_id4 = "id_usuario4"
+			user_id5 = "id_usuario5"
+			user_id6 = "id_usuario6"
+
+			session3 = None
+			session4 = None
+			session5 = None
+			session6 = None
+
+			token_id_login3 = "id_component_users_test_token3"
+			token_id_login4 = "id_component_users_test_token4"
+			token_id_login5 = "id_component_users_test_token5"
+			token_id_login6 = "id_component_users_test_token6"
+
+			access_token_login3 = "googleTEST3"
+			access_token_login4 = "googleTEST4"
+			access_token_login5 = "googleTEST5"
+			access_token_login6 = "googleTEST6"
+
+			# Login / Sign-up en el sistema de los usuarios de prueba
+			session3 = test_utils.do_login_or_signup("googleplus", token_id_login3, access_token_login3, user_id3)
+			session4 = test_utils.do_login_or_signup("googleplus", token_id_login4, access_token_login4, user_id4)
+			session5 = test_utils.do_login_or_signup("googleplus", token_id_login5, access_token_login5, user_id5)
+			session6 = test_utils.do_login_or_signup("googleplus", token_id_login6, access_token_login6, user_id6)
+			print "################### PRUEBAS VERSIONADO ######################"
+			print "PRETEST: Añadimos un componente con tres versiones al sistema"
+			version_list = ['stable', 'usability_defects', 'latency_defects']
+			print "PRETEST 7: Añadimos un componente cualquiera al sistema (No predeterminado)"
+			print "Status esperado: 201 "
+			request_uri = "/api/componentes"
+			params = urllib.urlencode({'url': 'https://github.com/JuanFryS/google-posts',
+					'component_id': 'google-posts',
+					'description': 'Web component to obtain your google plus timeline',
+					'social_network': 'googleplus',
+					'input_type': 'None',
+					'output_type': 'text',
+					'versions': version_list,
+					'predetermined': "False"
+			}, doseq=True)
+			test_utils.make_request("PUT", request_uri, params, 201, None, preTest=True)
+
+			print "TEST 29: Añadimos el componente al usuario 3"
+			print "Status esperado: 200"
+			request_uri = users_basepath + "/" + user_id3
+			params = urllib.urlencode({'component': 'google-posts'})
+			test_utils.make_request("POST", request_uri, params, 200, session3, preTest=False)
+
+			print "TEST 30: Añadimos el componente al usuario 4"
+			print "Status esperado: 200"
+			request_uri = users_basepath + "/" + user_id4
+			params = urllib.urlencode({'component': 'google-posts'})
+			test_utils.make_request("POST", request_uri, params, 200, session4, preTest=False)
+
+			print "TEST 31: Añadimos el componente al usuario 5"
+			print "Status esperado: 200"
+			request_uri = users_basepath + "/" + user_id5
+			params = urllib.urlencode({'component': 'google-posts'})
+			test_utils.make_request("POST", request_uri, params, 200, session5, preTest=False)
+
+			print "TEST 32: Añadimos el componente al usuario 6"
+			print "Status esperado: 200"
+			request_uri = users_basepath + "/" + user_id6
+			params = urllib.urlencode({'component': 'google-posts'})
+			test_utils.make_request("POST", request_uri, params, 200, session6, preTest=False)
+
+			print "TEST 33: Obtenemos la información sobre el usuario 3"
+			print "Status esperado: 200 (Comprobar si se le ha asignado la versión correcta)"
+			request_uri = users_basepath + "/" + user_id3 + "?component_info=detailed"
+			params = urllib.urlencode({})
+			test_utils.make_request("GET", request_uri, params, 200, session3, preTest=False)
+
+			print "TEST 34: Obtenemos la información sobre el usuario 4"
+			print "Status esperado: 200 (Comprobar si se le ha asignado la versión correcta)"
+			request_uri = users_basepath + "/" + user_id4 + "?component_info=detailed"
+			params = urllib.urlencode({})
+			test_utils.make_request("GET", request_uri, params, 200, session4, preTest=False)
+
+			print "TEST 35: Obtenemos la información sobre el usuario 5"
+			print "Status esperado: 200 (Comprobar si se le ha asignado la versión correcta)"
+			request_uri = users_basepath + "/" + user_id5 + "?component_info=detailed"
+			params = urllib.urlencode({})
+			test_utils.make_request("GET", request_uri, params, 200, session5, preTest=False)
+
+			print "TEST 36: Obtenemos la información sobre el usuario 6"
+			print "Status esperado: 200 (Comprobar si se le ha asignado la versión correcta)"
+			request_uri = users_basepath + "/" + user_id6 + "?component_info=detailed"
+			params = urllib.urlencode({})
+			test_utils.make_request("GET", request_uri, params, 200, session6, preTest=False)
+
+			# Cerramos las tres sesiones iniciadas en esta opcion de testeo
+			test_utils.do_logout("googleplus", session3)
+			test_utils.do_logout("googleplus", session4)
+			test_utils.do_logout("googleplus", session5)
+			test_utils.do_logout("googleplus", session6)
+
 		# Cerramos todas las sesiones iniciadas en los tests
 		test_utils.do_logout("googleplus", session1)
 		test_utils.do_logout("googleplus", session2)
@@ -358,10 +457,10 @@ def main():
 	elif option == "help":
 		print "Script para hacer pruebas a la API de Componentes y Usuarios de PicBit, en conjunto (funcionalidades de alto nivel) "
 		print "(api/componentes y api/usuarios)"
-		print "Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados| help]"
+		print "Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados | dashboard_versionado | help]"
 	else:
 		print "ERROR: opción incorrecta"
-		print "Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados| help]"
+		print "Uso: python api_componentes_usuarios_tester.py [dashboard | dashboard_borrado | dashboard_predeterminados | dashboard_versionado | help]"
 
 if __name__ == "__main__":
 	main()

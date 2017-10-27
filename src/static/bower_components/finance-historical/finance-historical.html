@@ -1,0 +1,117 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<!--
+An polymer element providing finance historical of companies
+
+Example:
+```
+<finance-historical symbol="yhoo" end="2010-03-10" start="2009-9-11"></finance-historical>
+```
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="finance-historical">
+  <template>
+  <style>
+  :host {
+    visibility: hidden;
+  }
+  </style>
+  <iron-ajax id="request_historical" url="https://centauro.ls.fi.upm.es:4444/stock/historical" method="GET" params="{{query_param}}" handleAs='json'
+      on-response="historical_response" on-error="historical_error">
+  </iron-ajax>
+</template>
+
+<script>
+Polymer({
+  is: 'finance-historical',
+
+  properties: {
+    query_param: {
+      type: String,
+      computed:'getParams(symbol,start,end)'
+    },
+  /**
+    * Symbol of the company(ies) which we want take data
+    **/
+    symbol: {
+      type: String,
+      notify: true,
+      observer: "updateData"
+    },
+    /**
+    * End date interval
+    */
+    end: {
+      type: String,
+      notify:true
+    },
+    /**
+    * Start date interval
+    */
+    start: {
+      type: String,
+      notify: true
+    },
+    /**
+    * Data of company(ies) found
+    **/
+    data: {
+      type: Array,
+      value: function(){return [ ]},
+      notify: true
+    },
+    delay: {
+      type:Number,
+      value:0,
+      reflectToAttribute: true
+    }
+  },
+  ready: function(){
+    this.requestData();
+  },
+  updateData: function(){
+    this.requestData();
+  },
+  getParams: function(symbol,start,end){
+    if (!end){
+      var end_date = new Date();
+      end = end_date.getDay() + end_date.getMonth+1 + end_date.getFullYear();
+    }
+    return {symbol:symbol, start_date:start, end_date:end};
+  },
+  requestData: function(){
+    if (this.symbol && this.start && this.end && !this._busy){
+      this._busy = true;
+      this.set('data',[]);
+      this.fire('finance-historical-inicated');
+      this.$.request_historical.generateRequest();
+    }
+  },
+  historical_response: function(event,detail){
+    var that = this;
+    window.setTimeout(function(){
+      that.set('data',detail.response);
+      that._busy = false;
+      that.fire('finance-historical-ready',{data:that.data});
+    },this.delay)
+  },
+  historical_error: function() {
+    this.fire('finance-historical-error',{error:{description:'Invalid start,end or symbol'}});
+  }
+});
+</script>
+</dom-module>
+

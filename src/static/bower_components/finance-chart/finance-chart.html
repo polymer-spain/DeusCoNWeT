@@ -1,0 +1,552 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<script src="../moment/moment.js"></script>
+<link rel="import" href="../finance-historical/finance-historical.html">
+<link rel="import" href="../finance-value/finance-value.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../chart-elements/chart-line.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<!--
+Show a chart of finance value of any company using Chart.js and Chart.Zoom.js
+
+Example:
+```
+
+<finance-chart symbol="googl" end="2016-10-31" start="2016-9-31"></finance-chart>
+
+```
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="finance-chart">
+  <template>
+    <style is="custom-style">
+       :host {
+        display: inline-block;
+        box-sizing: border-box;
+        width: var(--fiance-chart-width, 400px);
+        height: var(--finance-chart-height, 200px);
+      }
+      
+      p {
+        margin: 0;
+      }
+      
+      .fullChart {
+        width: 100%;
+        height: 100%;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        @apply(--finance-chart-fullchart);
+      }
+      
+      .sortChart {
+        width: 200px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        margin: 0 auto;
+      }
+      /* entire container, keeps perspective */
+      
+      .flip-container {
+        perspective: 1000px;
+      }
+      /* flip the pane when hovered */
+      
+      .flip-container.flip .flipper {
+        transform: rotateY(180deg);
+      }
+      
+      .flip-container,
+      .front,
+      .back {
+        width: 100%;
+        height: 100%;
+      }
+      /* flip speed goes here */
+      
+      .flipper {
+        transition: 0.8s;
+        transform-style: preserve-3d;
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
+      /* hide back of pane during swap */
+      
+      .front,
+      .back {
+        backface-visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      /* front pane, placed above back */
+      
+      .front {
+        z-index: 2;
+        /* for firefox 31 */
+        color: #eee;
+        transform: rotateY(0deg);
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #3F51B5;
+        height: 160px;
+        @apply(--finance-chart-front);
+      }
+      /* back, initially hidden pane */
+      
+      .back {
+        transform: rotateY(180deg);
+      }
+      
+      .info {
+        height: 100%;
+        float: left;
+        text-align: center;
+        display: inline-flex;
+        flex-direction: column;
+      }
+      
+      .left {
+        width: 33.33%;
+      }
+      
+      .left>p {
+        flex: 1;
+      }
+      
+      .right {
+        width: 66.66%;
+      }
+      
+      .change {
+        padding: 0 8px;
+        flex: 1;
+        font-weight: bold;
+      }
+      
+      .increase {
+        color: #9fea48;
+      }
+      
+      .decrease {
+        color: #f44336;
+      }
+      
+      .extra {
+        display: inline-flex;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        padding: 5px 8px;
+        background-color: #F9F9F9;
+        color: #333;
+        box-sizing: border-box;
+        text-align: left;
+      }
+      
+      .extra>div {
+        width: 50%;
+      }
+      
+      .name {
+        text-shadow: 0px 0px 2px #333;
+        color: white;
+        font-weight: bold;
+        max-height: 35px;
+      }
+      
+      .text {
+        font-size: 14px;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        padding: 3px 0;
+        min-height: 15px;
+      }
+      
+      paper-icon-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 1000;
+      }
+      
+      .graph {
+        position: absolute;
+        top: 5px;
+        right: 4px;
+        z-index: 1000;
+        padding: 8px;
+        font-weight: bold;
+        width: 18px;
+        background-size: 100% 100%;
+        height: 18px;
+      }
+      
+      .graph:hover,
+      paper-icon-button:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 100%;
+      }
+      
+      .trending {
+        padding-bottom: 2px;
+      }
+      
+      .refresh {
+        position: absolute;
+        right: 5px;
+        top: -20px;
+        color: white;
+        z-index: 100;
+        padding: 5px;
+        width: 32px;
+        height: 32px;
+      }
+      
+      .refresh:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 100%;
+      }
+    </style>
+    <finance-historical id="historical" symbol="[[symbol]]" end="[[end]]" delay="[[delay]]" start="[[start]]" data="{{historical}}"
+      on-finance-historical-error="errorHandler" on-finance-historical-ready="historicalReady"></finance-historical>
+    <finance-value id="value" symbol="[[symbol]]" data="{{current}}" accuracy="[[accuracy]]"></finance-value>
+    <template is="dom-if" if="{{_is_ready}}">
+      <template is="dom-if" if="{{historical.length}}">
+        <div class="flip-container" id="flipContainer">
+          <div class="flipper vertical layout center-center">
+            <div class="front">
+              <paper-icon-button class="refresh" icon="refresh" on-click="updateData"></paper-icon-button>
+              <img alt="show full historical data" src="pie-chart-512.png" title="show full historical data" class="graph" on-click="flip"></img>
+              <template is="dom-if" if="{{current}}">
+                <div class="left info">
+                  <p class="name">{{symbol}}</p>
+                  <div class="extra flex">
+                    <div>
+                      <p class="text low">Low</p>
+                      <p class="text high">High:</p>
+                      <p class="text">Vol:</p>
+                      <p class="text">Close:</p>
+                    </div>
+                    <div>
+                      <p class="text">{{current.Low}}</p>
+                      <p class="text">{{current.High}}</p>
+                      <p class="text">{{current.Volume}}</p>
+                      <p class="text">{{current.Close}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="right info">
+                  <p class$="{{_getStyle(current)}} change">
+                    <iron-icon class="trending" icon="{{_getTrending(current)}}"></iron-icon> {{_getChange(current)}}</p>
+                  <chart-line class="sortChart" data="[[_getData(historical)]]" options$="{{_getShortOptions()}}"></chart-line>
+                </div>
+              </template>
+            </div>
+            <div class="back">
+              <paper-icon-button title="Show resume" alt="Show resume" icon="arrow-back" on-click="flip"></paper-icon-button>
+              <chart-line class="fullChart" data="[[_getData(historical)]]" options$="{{_getOptions(options, current, symbol)}}"></chart-line>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template is="dom-if" if="{{!historical.lenght}}"></template>
+    </template>
+  </template>
+  <script src="../Chart.Zoom.js/Chart.Zoom.js"></script>
+  <script>
+    Polymer({
+      is: 'finance-chart',
+
+      properties: {
+        /**
+          * Symbol name of a company
+        **/
+        symbol: {
+          type: String,
+          notify: true,
+          observer: "updateData"
+        },
+        /**
+          End Date value for take data
+        **/
+        end: {
+          type: Date,
+          notify: true,
+          value: new Date()
+        },
+        /**
+          Inicial Date value for take data
+        **/
+        start: {
+          type: Date,
+          notify: true
+        },
+        /**
+        Historical values for symbol company
+        **/
+        historical: {
+          type: Array,
+          value: function () { return [] },
+          notify: true
+        },
+        /**
+         Options for full chart. Consult http://www.chartjs.org/docs/
+        */
+        options: {
+          type: Object,
+          value: function () { return {} },
+          notify: true
+        },
+        /**
+          Current values for symbol company
+        */
+        current: {
+          type: Object,
+          value: function () { return {} },
+          notify: true,
+        },
+        _is_ready: {
+          type: Boolean,
+          computed: '_checkReady(current, historical.*)',
+          notify: true
+        },
+        accuracy: {
+          type: Number,
+          value: 100,
+          reflectToAttribute: true
+        },
+        delay: {
+          type: Number,
+          value: 0,
+          reflectToAttribute: true
+        },
+        refresh_time: {
+          type: Number,
+          value:60000
+        }
+      },
+      attached: function(){
+        this._interval= window.setInterval(this.updateData.bind(this),this.refresh_time)
+      },
+      detached: function(){
+        window.clearInterval(this._interval);
+      },
+      updateData: function () {
+        this.fire('finance-chart-reload',{});
+        this.$.value.requestData();
+        this.$.historical.requestData();
+      },
+      _checkReady: function (current, historical) {
+        return current && historical.base.length > 0;
+      },
+      /**
+        Flip between resume information and full chart
+      **/
+      flip: function (event) {
+        this.$$('#flipContainer').classList.toggle('flip');
+      },
+      _getOptions: function (options, data, symbol) {
+        function isObject(item) {
+          return (item && typeof item === 'object' && !Array.isArray(item) && item !== null);
+        }
+        function mergeDeep(target, source) {
+          let output = Object.assign({}, target);
+          if (isObject(target) && isObject(source)) {
+            Object.keys(source).forEach(function (key) {
+              if (isObject(source[key])) {
+                if (!(key in target))
+                  Object.assign(output, { [key]: source[key] });
+                else
+                  output[key] = mergeDeep(target[key], source[key]);
+              } else {
+                Object.assign(output, { [key]: source[key] });
+              }
+            });
+          }
+          return output;
+        }
+        var name = symbol;
+        var default_properties = {
+          maintainAspectRatio: false,
+          scales: {
+            xAxes: [{
+              type: 'time',
+              time: {
+                displayFormats: {
+                  day: 'DD-MMM.YY',
+                  month: 'DD-MMM.YY',
+                  year: "DD-MMM.YY",
+                  week: "DD-MMM.YY"
+                }
+              }
+            }],
+            yAxes: [{
+              type: 'linear'
+            }]
+          },
+          pan: {
+            enabled: true,
+            mode: 'xy'
+          },
+          zoom: {
+            enabled: true,
+            mode: 'xy',
+          },
+          title: {
+            display: true,
+            text: name
+          },
+          legend: {
+            labels: {
+              boxWidth: 15
+            }
+          },
+        }
+        return mergeDeep(default_properties, options);
+      },
+      _getShortOptions: function () {
+        var options = {
+          scales: {
+            xAxes: [{
+              type: 'time',
+              display: false
+            }],
+            yAxes: [{
+              type: 'linear',
+              display: true
+            }]
+          },
+          pan: {
+            enabled: true,
+          },
+          zoom: {
+            enabled: true,
+          },
+          legend: {
+            display: false
+          },
+          elements: {
+            point: {
+              radius: 2
+            }
+          }
+        }
+        return options;
+      },
+      _getData: function (fullData) {
+        var HIGH = 0;
+        var CLOSE = 1;
+        var LOW = 2;
+
+        // get historical
+        var data = {
+          labels: [],
+          datasets: [
+            {
+              label: this.symbol + '(high)',
+              backgroundColor: "rgba(220,220,220,0.0)",
+              borderColor: "#4CAF50",
+              borderWidth: 1,
+              pointBackgroundColor: "#4CAF50",
+              pointBorderColor: "#fff",
+              pointHoverBackgroundColor: "#fff",
+              pointHoverBorderColor: "rgba(220,220,220,1)",
+              data: []
+            },
+            {
+              label: this.symbol + '(close)',
+              backgroundColor: "rgba(220,220,220,0.0)",
+              borderColor: "#1976D2",
+              borderWidth: 1,
+              pointBackgroundColor: "#1976D2",
+              pointBorderColor: "#fff",
+              pointHoverBackgroundColor: "#fff",
+              pointHoverBorderColor: "rgba(220,220,220,1)",
+              data: []
+            },
+            {
+              label: this.symbol + '(low)',
+              backgroundColor: "rgba(220,220,220,0.0)",
+              borderColor: "rgba(223, 91, 35, 1)",
+              borderWidth: 1,
+              pointBackgroundColor: "rgba(223, 91, 35, 1)",
+              pointBorderColor: "#fff",
+              pointHoverBackgroundColor: "#fff",
+              pointHoverBorderColor: "rgba(220,220,220,1)",
+              data: []
+            }
+          ],
+        };
+        for (var i = fullData.length - 1; i >= 0; i--) {
+          var date = new Date(fullData[i].Date);
+
+          data.labels.push(date);
+          data.datasets[CLOSE].data.push(fullData[i].Close)
+          data.datasets[HIGH].data.push(fullData[i].High)
+          data.datasets[LOW].data.push(fullData[i].Low)
+
+        }
+        return data
+      },
+      _getChange: function (current) {
+        // Round to 2 dec
+        var change = Math.round( (current.Close - current.Open ) * 100) / 100;
+        var perc = Math.round( Math.abs(change) * 10000 / current.Open) / 100;
+        change += ' (' + perc + '%)';
+        return change;
+      },
+      _getStyle: function (current) {
+        var change = current.Close - current.Open;
+        var color = "";
+        if (change < 0) {
+          color = 'decrease'
+        } else if (change > 0) {
+          color = "increase"
+        } else {
+          color = 'stable';
+        }
+        return color;
+      },
+      _getTrending: function (current) {
+        var change = current.Close - current.Open;
+        if (change < 0) {
+          return "trending-down";
+        } else if (change > 0) {
+          return "trending-up";
+        } else {
+          return 'trending-flat';
+        }
+      },
+      _getLow: function (current) {
+        return current.DaysLow || current.YearLow
+      },
+      _getHigh: function (current) {
+        return current.DaysHigh || current.YearHigh
+      },
+      historicalReady: function () {
+        this.fire('finance-chart-ready', { data: this.historical });
+      },
+      errorHandler: function (e) {
+        this.fire('finance-chart-error', e)
+      }
+    });
+
+  </script>
+</dom-module>
+

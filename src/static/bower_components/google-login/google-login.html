@@ -33,6 +33,7 @@ limitations under the License.
   <style is="custom-style">
     :host {
       display: inline-block;
+      font-size: 16px;
     }
     .large {
       background: #DF4A32;
@@ -43,7 +44,6 @@ limitations under the License.
       vertical-align: center;
       width: 205px;
       height: 50px;
-      font-size: 16px;
     }
 
     .sort{
@@ -119,7 +119,7 @@ limitations under the License.
         scope: {
           type: String,
           reflectToAttribute: true,
-          value: "https://www.googleapis.com/auth/userinfo.profile",
+          value: "https://www.googleapis.com/auth/plus.login",
           notify: true
         },
 
@@ -183,7 +183,7 @@ limitations under the License.
               var url =   win.document.URL;
               var patron = "access_token"+"=([^&#]*)";
               var exp = new RegExp(patron);
-              back.acToken = exp.exec(url)[1];0
+              back.acToken = exp.exec(url)[1];
               back.fire("google-logged",{token: back.acToken,redSocial:"googleplus"});
               back.logged= back.static?false:true;
               win.close();

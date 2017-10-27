@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  picbitTest:
+    image: 'deus/picbit:mongo'
+    ports: 
+      #- 80:80
+      - 8080:443
+    volumes: 
+      - /home/miguel/DeusCoNWeT:/var/www
+      - /home/miguel/logs/picbitMongo:/logs
+    restart: always
+    environment:
+      - TERM=xterm
+      - VERSION=test
+    command: ['bash', '/var/www/server_config/init.sh']
+  picbit:
+    image: 'deus/picbit:mongo'
+    ports: 
+      #- 80:80
+      - 8000:443
+    volumes: 
+      - /home/miguel/logs/picbit/apache:/var/log/apache2
+      - /etc/ssl/private:/etc/ssl/private
+      - /etc/ssl/certs:/etc/ssl/certs
+    restart: always
+    environment:
+      - TERM=xterm
+      - VERSION=proc
+    command: ['bash', '/var/www/server_config/init.sh']

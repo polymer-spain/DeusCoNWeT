@@ -1,53 +1,44 @@
-html {
-  background-image: url('../images/landingimage.jpg');
-  background-size: 100% 100%;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+#view {
+	margin: 0px 5%;
+	padding-top: 0;
+	position: absolute;
+	top: 64px;
+	right: 0;
+	left: 0;
+	bottom: 40px;
+	min-height: 0px !important;
 }
 
-.information {
-  height:460px;
-  color: whitesmoke;
-  width:100%;
-  border-radius: 15px;
-  background-color:rgba(46, 45, 45, 0.2);
-  padding: 2% 4%;
+#about {
+	width: 100%;
+	height: auto !important;
+	min-height: auto !important;
+	max-height: 100%;
+	overflow: auto;
 }
 
-.information > div {
-  margin: auto auto;
+#about .members{
+	width: 350px;
+	height: 100px;
+	background-color: #ccc;
+	margin: 3% 90px;
+	border-radius: 7px;
+	border: 2px solid black;
 }
-.information .right {
-  min-width: 300px;
-  font-size:18px;
-  margin:0;
+#about .members > .image {
+	border-radius: 30%;
+	margin:0px 5px;
+	padding:5px;
 }
-.information .left {
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-#groupImg {
-  width: 400px;
-  height: 400px;
+#about .members > .image > img {
+	max-width: 75px;
+	max-height: 85px;
+	border-radius: 100%;
+	border: 2px solid #333;
+	margin: auto;
+	background-color:rgba(238, 238, 238, 0.71);
 }
 
-#social  paper-icon-button {
-  border-radius:5px;
-  margin:5px 10px;
-}
-paper-icon-button /deep/ iron-icon div {
-  background-repeat: no-repeat;
-}
-#social .facebook {
-  background-color:#3B5998;
-}
-#social .twitter {
-  background-color: #5DD7FC; 
-}
-#social .github {
-  background-color: #fff;
-  border-radius: 100%;
-}
-#social .googleplus {
-  background-color: #DC4A38;
+#about .members > .info {
+	margin:auto 5px;
 }

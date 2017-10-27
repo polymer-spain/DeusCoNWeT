@@ -43,9 +43,13 @@ A typical use case inside an AppEngine controller would be:
 note however this software is unsupported. Please don't email me about it. :)
 """
 
-from google.appengine.api import memcache
+import memcache as mc
+import sys, os, inspect
 from google.appengine.api import urlfetch
-from google.appengine.ext import db
+print urlfetch
+memcache = mc.Client(['127.0.0.1:11211'], debug=0)
+
+from mongoDB import AuthToken
 
 from cgi import parse_qs
 #ImportError: No module named django.utils
@@ -94,23 +98,6 @@ def get_oauth_client(service, key, secret, callback_url):
     return YammerClient(key, secret, callback_url)
   else:
     raise Exception, "Unknown OAuth service %s" % service
-
-
-class AuthToken(db.Model):
-  """Auth Token.
-
-  A temporary auth token that we will use to authenticate a user with a
-  third party website. (We need to store the data while the user visits
-  the third party website to authenticate themselves.)
-
-  TODO: Implement a cron to clean out old tokens periodically.
-  """
-
-  service = db.StringProperty(required=True)
-  token = db.StringProperty(required=True)
-  secret = db.StringProperty(required=True)
-  created = db.DateTimeProperty(auto_now_add=True)
-
 
 class OAuthClient():
 
@@ -238,8 +225,10 @@ class OAuthClient():
       """, self.service_name, auth_token).get()
 
       if not result:
-        logging.error("The auth token %s was not found in our db" % auth_token)
-        raise Exception, "Could not find Auth Token in database"
+	logging.info(auth_token)
+      	logging.error("The auth token %s was not found in our db" % auth_token)
+	#raise Exception, "Could not find Auth Token in database"
+	#raise Exception, "auth_token" + auth_token
       else:
         auth_secret = result.secret
 

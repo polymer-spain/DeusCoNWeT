@@ -7,6 +7,9 @@ import httplib
 import urllib
 import json
 import time
+import ssl
+import os
+import yaml
 
 # Global vars
 connection = None
@@ -16,6 +19,17 @@ nTestOK = 0
 nTestError = 0
 nPreTest = 0
 
+basepath = os.path.dirname(__file__)
+configFile = os.path.abspath(os.path.join(basepath, "../../api_handlers/config.yaml"))
+with open(configFile, "r") as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+MODE = os.getenv('VERSION', 'test')
+
+if MODE == 'test':
+    uri = cfg['domainTest']
+else:
+    uri = cfg['domain']
 # Auxiliar class to color the program outputs
 class bcolors:
     HEADER = '\033[95m'
@@ -28,12 +42,12 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def openConnection(remote=True):
+def openConnection(remote=False):
     global connection,remoteConnection
     if remote:
-        connection = httplib.HTTPSConnection("test-backend.example-project-13.appspot.com")
+        connection = httplib.HTTPSConnection(uri,443,context=ssl._create_unverified_context())
     else:
-        connection = httplib.HTTPConnection("localhost:8080")
+        connection = httplib.HTTPConnection(uri)
         remoteConnection = False
 
 def closeConnection():
@@ -90,7 +104,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
     global connection, nTest, nTestOK, nTestError, remoteConnection, nPreTest
     nTest += 1
     print "Realizando petición ", method, " ", request_uri
-    headers = {"User-Agent": "PicBit-App"}
+    headers = {"User-Agent": "PicBit-App","Content-Type":"application/x-www-form-urlencoded"}
     session_cookie = None
     # Adds the cookie session header
     if not session == None:
@@ -113,6 +127,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
 
         # We print a Log for the response obtained from the server
         print bcolors.FAIL + "\t!!! STATUS: ERROR (STATUS " + str(response.status) + ")"
+        print response.read()
         print "\tDatos de la respuesta: " + responseData + bcolors.ENDC +"\n"
 
     else:
@@ -131,7 +146,7 @@ def make_request(method, request_uri, params, status_ok, session, printHeaders=F
     if not session_cookie == None and printHeaders:
         print "\tCookie de la respuesta: " + session_cookie + "\n"
 
-    # We introduce a sligth latency (0.5 seconds) in order to emulate a "remote" behavior of the tests against the dev_server
+    # We introduce a sligth latency (1 second) in order to emulate a "remote" behavior of the tests against the dev_server
     if not remoteConnection:
         time.sleep(1)
 
@@ -147,4 +162,3 @@ def tests_status():
     print 'Test Ok: ', nTestOK
     print "Tests Erróneos: ", nTestError, bcolors.ENDC
     print '==============================='
-

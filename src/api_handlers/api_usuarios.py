@@ -17,12 +17,15 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 """
-
+import sys
+sys.path.insert(1, 'api_handlers/')
 import webapp2, json
-import ndb_pb
-from google.appengine.api import memcache
+import memcache as mc
+memcache = mc.Client(['127.0.0.1:11211'], debug=0)
 from api_oauth import SessionHandler
-
+import logging
+import mongoDB
+import pprint
 # Import config vars and datetime package (to manage request/response cookies)
 import datetime, os, yaml
 basepath = os.path.dirname(__file__)
@@ -31,8 +34,6 @@ with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
 domain = cfg["domain"]
-
-
 class UserListHandler(SessionHandler):
 
   """
@@ -49,7 +50,7 @@ class UserListHandler(SessionHandler):
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
-        users_list = ndb_pb.getUsers()
+        users_list = mongoDB.getUsers()
         if len(users_list) == 0:
           self.response.set_status(204)
         else:
@@ -92,22 +93,55 @@ class UserHandler(SessionHandler):
   def get(self, user_id):
     cookie_value = self.request.cookies.get("session")
     component_info = self.request.get("component_info", default_value="reduced")
+    refs_list = []
     if not cookie_value == None:
       # Obtains info related to the user authenticated in the system
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
         # Obtains the info related to the resource requested
         component_detailed_info = True if component_info == "detailed" else False
-        user_info = ndb_pb.getUser(user_id, component_detailed_info)
+        user_info = mongoDB.getUser(user_id, component_detailed_info)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
           self.response.set_status(404)
         else:
           # Obtains the user_id to check if the user active is the resource owner
-          user_logged_id = ndb_pb.getUserId(user_logged_key)
+          user_logged_id = mongoDB.getUserId(user_logged_key)
           # Depending on the user making the request, the info returned will be one or another
           if user_id == user_logged_id:
+            user_profile = mongoDB.getProfile(user_id)
+            if user_profile == None:
+              user_info["age"] = ""
+              user_info["studies"] = ""
+              user_info["tech_exp"] = ""
+              user_info["social_nets_use"] = ""
+              user_info["gender"] = ""
+              user_info["name"] = ""
+              user_info["surname"] = ""
+            else:
+              user_profile = json.loads(user_profile)
+              user_info["age"] = user_profile["age"]
+              user_info["studies"] = user_profile["studies"]
+              user_info["tech_exp"] = user_profile["tech_exp"]
+              user_info["social_nets_use"] = user_profile["social_nets_use"]
+              user_info["gender"] = user_profile["gender"]
+              user_info["name"] = user_profile["name"]
+              user_info["surname"] = user_profile["surname"]
+            components_list_js = mongoDB.getComponents()
+            components_list = json.loads(components_list_js)
+            for comp in components_list["data"]:
+              ident = comp["component_id"]
+              #component = mongoDB.getComponentEntity(ident)
+              version = comp["version"]
+              static = "/"
+              if str(ident) == "twitter-timeline": static = "/static/"
+              ref = "/bower_components/" + \
+                    str(ident) + "-" + str(version) + static + str(ident) + ".html"
+              refs_list.append(ref)
+            user_info["references"] = refs_list
+            logging.info('Se va a contesta y cerrar la conexión')
+            logging.info(json.dumps(user_info))
             self.response.content_type = "application/json"
             self.response.write(json.dumps(user_info))
             self.response.set_status(200)
@@ -117,11 +151,27 @@ class UserHandler(SessionHandler):
                           "image": user_info["image"],
                           "website": user_info["website"],
                           "networks": user_info["nets"],
-                          "components": user_info["components"]}
+                          "components": user_info["components"],
+                          "age": "",
+                          "studies": "",
+                          "tech_exp": "",
+                          "social_nets_use": "",
+                          "gender": ""}
             if user_info["private_email"] == False:
               user_dict["email"] = user_info["email"]
             if user_info["private_phone"] == False:
               user_dict["phone"] = user_info["phone"]
+            for comp in user_info["components"]:
+              dict_comp = json.loads(comp)
+              ident = dict_comp["component_id"]
+              preversion = mongoDB.getComponentEntity(comp["component_id"])
+              version = preversion.version
+              static = "/"
+              if ident == "twitter-timeline": static = "/static/"
+              ref = "/bower_components/" + \
+                    ident + "-" + version + static + ident + ".html"
+              refs_list.append(ref)
+            user_dict["references"] = refs_list
             self.response.content_type = "application/json"
             self.response.write(json.dumps(user_dict))
             self.response.set_status(200)
@@ -148,7 +198,7 @@ class UserHandler(SessionHandler):
     # (We only return an object verifying that the user_id requested exists in the system)
     else:
       self.response.content_type = "application/json"
-      user = ndb_pb.getUser(user_id)
+      user = mongoDB.getUser(user_id)
       if not user == None:
         self.response.set_status(200)
       else:
@@ -161,14 +211,14 @@ class UserHandler(SessionHandler):
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
-        user_logged_id = ndb_pb.getUserId(user_logged_key)
-        user_info = ndb_pb.getUser(user_id)
+        user_logged_id = mongoDB.getUserId(user_logged_key)
+        user_info = mongoDB.getUser(user_id)
         # Checks if the user active is the owner of the resource (if exists)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
           self.response.set_status(404)
-        elif not user_info == None and user_logged_id==user_id: 
+        elif not user_info == None and user_logged_id == user_id: 
           values = self.request.POST
           # Dict that contains the user values and fields to be updated
           update_data = {}
@@ -202,7 +252,7 @@ class UserHandler(SessionHandler):
               update_data["private_email"] = private_email
           if values.has_key("component"):
             component_id = values.get("component")      
-            component = ndb_pb.getComponent(user_logged_key, component_id)
+            component = mongoDB.getComponent(user_logged_key, component_id)
             # If the component_id provided in the request exists in the system and the user has not added it previously,
             # we add the component_id provided to the list of user's data to be updated
             if not component == None:
@@ -210,7 +260,7 @@ class UserHandler(SessionHandler):
           
           # Updates the resource and return the proper response to the client
           if not len(update_data) == 0:
-            updated_info = ndb_pb.updateUser(user_logged_key, update_data)    
+            updated_info = mongoDB.updateUser(user_logged_key, update_data)    
             if not len(updated_info) == 0:
               self.response.content_type = "application/json"
               self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
@@ -265,9 +315,9 @@ class UserHandler(SessionHandler):
     if not cookie_value == None:
       user_logged_key = self.getUserInfo(cookie_value)
       if not user_logged_key == None:
-        user_logged_id = ndb_pb.getUserId(user_logged_key)
+        user_logged_id = mongoDB.getUserId(user_logged_key)
         # It is neccesary to get the parameters from the request
-        user_info = ndb_pb.getUser(user_id)
+        user_info = mongoDB.getUser(user_id)
         if user_info == None:
           self.response.content_type = "application/json"
           self.response.write(json.dumps({"error": "The user requested does not exist"}))
@@ -279,7 +329,7 @@ class UserHandler(SessionHandler):
           self.response.delete_cookie("session")
 
           # Deletes the user from the datastore
-          ndb_pb.deleteUser(user_logged_key)
+          mongoDB.deleteUser(user_logged_key)
           
           # Builds the response
           self.response.set_status(204)
@@ -309,3 +359,196 @@ class UserHandler(SessionHandler):
       self.response.content_type = "application/json"
       self.response.write(json.dumps({"error": "The user is not authenticated"}))
       self.response.set_status(401)
+
+class ProfileHandler(SessionHandler):
+
+  """
+      Class that defines the user resource
+      It acts as the handler of the /usuarios/{user_id}/profile resource
+      Methods:
+      post -- Modifies the info related to an user profile
+  """
+
+  def post(self, user_id):
+    cookie_value = self.request.cookies.get("session")
+    if not cookie_value == None:
+      user_logged_key = self.getUserInfo(cookie_value)
+      if not user_logged_key == None:
+        users_logged_id = mongoDB.getUserId(user_logged_key)
+        user_info = mongoDB.getUser(user_id)
+        if user_info == None:
+          self.response.content_type = "application/json"
+          self.response.write({"error": "The requested user does not exist"})
+          self.response.set_status(404)
+        elif not user_info == None and user_logged_id == user_id:
+          values = self.request.POST
+          # Dictionary in which the updated data will be stored
+          updated_data = {}
+
+          if values.hasKey("age"):
+            updated_data["age"] = int(values.get("age"))
+          if values.hasKey("studies"):
+            updated_data["studies"] = values.get("studies")
+          if values.hasKey("tech_exp"):
+            updated_data["tech_exp"] = values.get("tech_exp")
+          if values.hasKey("social_nets_use"):
+            updated_data["social_nets_use"] = values.get("social_nets_use")
+          if values.hasKey("gender"):
+            updated_data["gender"] = values.get("gender")
+          if values.hasKey("name"):
+            updated_data["name"] = values.get("name")
+          if values.hasKey("surname"):
+            updated_data["surname"] = values.get("surname")
+
+          if not len(updated_data) == 0:
+            updated_info = mongoDB.updateProfile(user_id, updated_data)
+            if not len(updated_info) == 0:
+              self.response.content_type = "application/json"
+              self.response.write(json.dumps({"details": "The update has been successfully executed", "status": "Updated", "updated": update_data.keys()}))
+              self.response.set_status(200)
+            else:
+              self.response.content_type = "application/json"
+              self.response.write(json.dumps({"details": "Resource not modified (check parameters and values provided)", "status": "Not Modified"}))
+              self.set_status(304)
+        else:
+          self.response.content_type = "application/json"
+          self.response.write(json.dumps({"error": "You don\"t have the proper rights to modify this resource" +
+            " (The cookie session header does not match with the resource requested)"}))
+          self.response.set_status(401)
+      else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", "",
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+
+        # Builds the response
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
+        self.response.set_status(400)
+    else:
+      self.response.content_type = "application/json"
+      self.response.write(json.dumps({"error": "The user is not authenticated"}))
+      self.response.set_status(401)
+
+class UserCredentialsHandler(SessionHandler):
+
+  """
+      Class that defines the user credentials resource
+      It acts as the handler of the /usuarios/{user_id}/credentials resource
+      Methods:
+      get -- Gets the info about a user credentials
+  """
+
+  def get(self, user_id):
+    cookie_value = self.request.cookies.get("session")
+    if not cookie_value == None:
+      user_logged_key = self.getUserInfo(cookie_value)
+      if not user_logged_key == None:
+        user_logged_id = mongoDB.getUserId(user_logged_key)
+        user_info = mongoDB.getUser(user_id)
+        # Checks if the user active is the owner of the resource (if exists)
+        if user_info == None:
+          self.response.content_type = "application/json"
+          self.response.write(json.dumps({"error": "The user requested does not exist"}))
+          self.response.set_status(404)
+        elif not user_info == None and user_logged_key == user_id:
+          cred_info = mongoDB.getUserTokens(user_id)
+          if cred_info == None:
+            self.response.content_type = "application/json"
+            self.response.write(json.dumps({"error": "The user has not credentials added to his profile"}))
+            self.response.set_status(404)
+          else:
+            self.response.content_type = "application/json"
+            self.response.write(cred_info)
+            self.response.set_status(200)
+        else:
+          self.response.content_type = "application/json"
+          self.response.write(json.dumps({"error": "You don\"t have the proper rights to modify this resource" +
+            " (The cookie session header does not match with the resource requested)"}))
+          self.response.set_status(401)
+      else:
+        # We invalidate the session cookies received
+        expire_date = datetime.datetime(1970,1,1,0,0,0)
+        self.response.set_cookie("session", "",
+            path="/", domain=domain, secure=True, expires=expire_date)
+        # We delete and invalidate other cookies received, like the user logged nickname
+        # and social network in which the user performed the login
+        if not self.request.cookies.get("social_network") == None:
+            self.response.set_cookie("social_network", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+        if not self.request.cookies.get("user") == None:
+            self.response.set_cookie("user", "",
+                path="/", domain=domain, secure=True, expires=expire_date)
+
+        # Builds the response
+        self.response.content_type = "application/json"
+        self.response.write(json.dumps({"error": "The session cookie header does not belong to an active user in the system"}))
+        self.response.set_status(400)
+    else:
+      self.response.content_type = "application/json"
+      self.response.write(json.dumps({"error": "The user is not authenticated"}))
+      self.response.set_status(401)
+
+# Additional classes for handling resources
+# class AssignComponentsHandler(SessionHandler):
+#   def get(self, user_id):
+#     cookie_value = self.request.cookies.get("session")
+#     if not cookie_value == None:
+#       user = self.getUserInfo(cookie_value)
+#       if not user == None:
+#         user_logged = mongoDB.getUserId(user)
+#         user_info = mongoDB.getUser(user_id)
+#         # print "========================================="
+#         # print "Respuesta de getUser: " + str(user_info == None)
+#         # print "========================================="
+#         if user_info == None:
+#           self.response.content_type = "application/json"
+#           self.response.write({"error": "The user does not exist"})
+#           self.response.set_status(404)
+#         elif not user_info == None and user_logged == user_id:
+#           # print "========================================="
+#           # print "Va a realizarse la llamada para la asignacion"
+#           # print "========================================="
+#           mongoDB.assignPredeterminedComponentsToUser(user)
+#           # resp = {"resp": "OK"}
+#           # self.response.content_type = "application/json"
+#           # self.response.write(resp)
+#           # self.response.set_status(200)
+#         # else:
+#         #   print "======================================="
+#         #   print "Entro por donde me sale el bolo"
+#         #   print "======================================="
+#       else:
+#         # We invalidate the session cookies received
+#         expire_date = datetime.datetime(1970,1,1,0,0,0)
+#         self.response.set_cookie("session", "",
+#             path="/", domain=domain, secure=True, expires=expire_date)
+#         # We delete and invalidate other cookies received, like the user logged nickname
+#         # and social network in which the user performed the login
+#         if not self.request.cookies.get("social_network") == None:
+#           self.response.set_cookie("social_network", "",
+#               path="/", domain=domain, secure=True, expires=expire_date)
+#         if not self.request.cookies.get("user") == None:
+#           self.response.set_cookie("user", "",
+#               path="/", domain=domain, secure=True, expires=expire_date)
+
+#         # Builds the response
+#         response = \
+#           {"error": "The cookie session provided does not belongs to any active user"}
+#         self.response.content_type = "application/json"
+#         self.response.write(json.dumps(response))
+#         self.response.set_status(400)
+#     else:
+#       response = \
+#           {"error": "You must provide a session cookie"}
+#       self.response.content_type = "application/json"
+#       self.response.write(json.dumps(response))
+#       self.response.set_status(401)

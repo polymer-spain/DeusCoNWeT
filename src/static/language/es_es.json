@@ -1,56 +1,113 @@
 {
-  "language":"Idioma",
-  "title": "Bienvenido a PicBit",
-  "login": "Entrar",
-  "send": "Enviar",
-  "logout": "Desconectar",
-  "entry": "Accede con tu Red Social",
-  "select_network": "Selecciona tu red social",
-  "slogan": "Mantente informado de toda la actividad en las redes de tus grupos de amigos",
-  "coming": "¡Proximamente!",
-  "sub": "Suscribete a la beta",
-  "contact":"Contactar",
-  "about":"Sobre nosotros",
-  "privacy":"privacidad",
-  "about_first": "DEUS es un grupo de trabajo centrado principalmente en tecnologías de Google, especialmente aquellas más innovadoras: lenguaje de programación Go!, componentes web Polymer, GoogleCloud (CloudSQL y Cloud Datastore), AppEngine o Google Analytics.",
-  "about_second": "Nació como una plataforma para formar a estudiantes en tecnologías punteras, abordar proyectos de investigación y, al mismo tiempo, proporcionales una toma de contacto con la forma de trabajo a nivel profesional. Cuenta actualmente con varios estudiantes de TFG y Prácticum, distribuidos en varias líneas de trabajo.",
-  "lang": {
-    "es":"Español",
-    "en":"English"
-  },
-  "profile":"Perfil",
-  "settings":"Configuración",
-  "user_action": {
-    "add" : "Añadir",
-    "delete": "Borrar",
-    "modify": "Modificar",
-    "help": "Ayuda"
-  },
-  "user_profile": {
-    "title" : "Datos Personales",
-    "name" : "Nombre",
-    "surname" : "Apellidos",
-    "email" : "Email",
-    "save" : "Guardar",
-    "social" : "Redes sociales conectadas"
-  },
-  "twitter_timeline": {
-    "title" : "Tu Timeline",
-    "refresh" : "Refrescar",
-    "Load more" : "Mostrar mas"
-  },
-  "help": {
-    "add":"permite añadir un nuevo componente a tu timeline. Busca el componente que quieres añadir y arrastralo hasta el lugar donde quieras colocarlo.",
-    "delete": "permite eliminar los componentes ya añadidos al timeline. Selecciona el componente que quieras eliminar y presiona sobre el botón.",
-    "modify": "permite modificar la posición de un componentes. Seleciona el componente de la lista, y arrastre el componente que se ha selecionado. Una vez se termine, deselecionelo pulsando de nuevo en su nombre en la lista."
-  },
-  "close": "Cerrar",
-  "select_id": {
-    "title":"Selecciona tu nombre de usuario",
-    "input_title": "Nombre de usuario",
-    "userIdError": "* Nombre de usuario ya existente",
-    "invalid_username": "Solo letras, numeros, '-', o '_'"
-  },
-  "componentAddedEmpty": "No hay componentes añadidos",
-  "componentListEmpty": "No tenemos más componentes"
+	"language":"Idioma",
+	"title": "Bienvenido a PicBit",
+	"login": "Entrar",
+	"send": "Enviar",
+	"logout": "Desconectar",
+	"entry": "Accede con tu Red Social",
+	"select_network": "Selecciona tu red social",
+	"slogan": "Mantente informado de toda la actividad en las redes de tus grupos de amigos",
+	"coming": "¡Proximamente!",
+	"sub": "Suscribete a la beta",
+	"contact":"Contactar",
+	"about":"Sobre nosotros",
+	"privacy":"privacidad",
+	"home": "Dashboard",
+	"about_first": "DEUS es un grupo de trabajo centrado principalmente en tecnologías de Google, especialmente aquellas más innovadoras: lenguaje de programación Go!, componentes web Polymer, GoogleCloud (CloudSQL y Cloud Datastore), AppEngine o Google Analytics.",
+	"about_second": "Nació como una plataforma para formar a estudiantes en tecnologías punteras, abordar proyectos de investigación y, al mismo tiempo, proporcionales una toma de contacto con la forma de trabajo a nivel profesional. Cuenta actualmente con varios estudiantes de TFG y Prácticum, distribuidos en varias líneas de trabajo.",
+	"lang": {
+		"es":"Español",
+		"en":"English"
+	},
+	"profile":"Perfil",
+  "survey": "Danos tu opinion sobre",
+	"settings":"Configuración",
+	"user_action": {
+		"add" : "Añadir",
+		"delete": "Borrar",
+		"modify": "Modificar",
+		"help": "Ayuda"
+	},
+	"user_profile": {
+		"title" : "Datos Personales",
+		"name" : "Nombre",
+		"surname" : "Apellidos",
+		"email" : "Email",
+		"save" : "Guardar",
+		"email_label": "Email",
+		"social" : "Redes sociales conectadas",
+		"profile_settings":"Configuración de usuario",
+		"user_information": "Información de usuario",
+		"picture": "Imagen",
+		"upload": "Subir una nueva imagen",
+		"profession": "Profesión",
+		"phone": "Teléfono",
+		"age": "Edad",
+		"permission": "Pulse el botón para otorgar permisos"
+	},
+	"twitter_timeline": {
+		"title" : "Tu Timeline",
+		"refresh" : "Refrescar",
+		"Load more" : "Mostrar mas"
+	},
+	"help": {
+		"add":"permite añadir un nuevo componente a tu timeline. Busca el componente que quieres añadir y arrastralo hasta el lugar donde quieras colocarlo.",
+		"delete": "permite eliminar los componentes ya añadidos al timeline. Selecciona el componente que quieras eliminar y presiona sobre el botón.",
+		"modify": "permite modificar la posición de un componentes. Seleciona el componente de la lista, y arrastre el componente que se ha selecionado. Una vez se termine, deselecionelo pulsando de nuevo en su nombre en la lista."
+	},
+	"close": "Cerrar",
+	"select_id": {
+		"title":"Selecciona tu nombre de usuario",
+		"input_title": "Nombre de usuario",
+		"userIdError": "* Nombre de usuario ya existente",
+		"invalid_username": "Solo letras, numeros, '-', o '_'"
+	},
+	"componentAddedEmpty": "No hay componentes añadidos",
+	"componentListEmpty": "No tenemos más componentes",
+	"catalog": {
+		"show": "Mostrar Catalogo",
+		"componentList": "Lista de Componentes",
+		"search": "Buscar",
+		"rate": "Valoración",
+		"rateUp": "y más",
+		"clear":"Borrar"
+	},
+	"questionary": {
+		"component": {
+			"verybad": "Muy malo",
+			"bad": "Malo",
+			"neutral": "En la media",
+			"good": "Bueno",
+			"verygood": "Muy bueno"
+		},
+    "about": "Valore el componente: ",
+    "emptyQuestions": "* Debe rellenar todas las preguntas",
+		"yes":"Si",
+		"no": "No",
+		"amplied": {
+			"verybad": "Completamente en desacuerdo",
+			"bad": "En desacuerdo",
+			"neutral": "Ni de acuerdo ni desacuerdo",
+			"good": "De acuerdo",
+			"verygood": "Completamente de acuerdo"
+		},
+		"define": "¿Qué nota le darías al componente?",
+		"help": "¿Te gustaría realizar un pequeño cuestionario sobre los componentes que has utilizado?",
+		"difficulty": "El componente es difícil de usar" ,
+		"design": "El diseño del componente me parece agradable/apropiado",
+		"information": "La información del componente se muestra de manera concisa y clara.",
+		"share": "¿Recomendarías este componente?",
+		"recommend": "¿Usarías  este componente?",
+		"end": "El cuestionario ha terminado. Gracias por tu tiempo.",
+		"advantage": "Indique una característica a destacar del componente",
+		"advantage_sort":"Ventaja del componente",
+		"drawback":"Indique un defecto a destacar del componente",
+		"drawback_sort":"Defecto del componente"
+	},
+	"delete":"Borrar",
+	"noToken": "Sin permisos",
+	"noTokenDescription": "Haz click para loguearte con esta red social antes de usarlo.",
+  "loginTitle": "Logueate antes de usar ",
+  "loginRequest": "El componente necesita permisos para funcionar correctamente. Logueate para poder usarlo",
+	"add_token_error": "Ya existe un usuario con esa cuenta, intentelo con otra"
 }

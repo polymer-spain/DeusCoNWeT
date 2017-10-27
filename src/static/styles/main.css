@@ -1,164 +1,119 @@
 @font-face {
-  font-family: archistico;
-
-  src: url('../fonts/ArchisticoBold.ttf');
+	font-family: archistico;
+	src: url('../fonts/ArchisticoBold.ttf');
 }
 
-body,html
-{
-  min-width: 1024px;
-  height: 100%;
-  margin: 0;
-
-  color: rgb(255, 255, 255);
-  background-attachment: fixed;
+@font-face {
+	font-family: fortune;
+	src: url(../fonts/FortuneCity.ttf);
+}
+#view {
+	position:relative;
+}
+#view > div {
+	position: absolute;
+	min-height: 100%;
+	min-width: 100%;
 }
 
-#header
-{
-  height: 80px;
-  padding-right: 3%;
-  padding-left: 3%;
-  min-width: 600px;
-  background-color: rgba(0,0,0,.6);
-}
-#header .logoPicbit
-{
-  height: 50px;
+/* MAIN PAGE */
 
-  cursor: pointer;
+body {
+	background-image: url('../images/landingpage.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: 100% 100%;
+	background-color: black;
+	background-color:rgba(0,0,0,0.7);
+	height: auto;
+	min-height: 100vh;
 }
-#name
-{
-  font-family: archistico;
-  font-size: 60px;
-
-  margin: 0;
-
-  color: #cbc7c7;
+paper-toolbar.header {
+	background-color: transparent;
 }
-#name:hover
-{
-  cursor: pointer;
+paper-toolbar.header paper-icon-button.logo {
+	margin-right: 5px;
+	padding:0px !important;
 }
-#language
-{
-  margin-right: 2%;
-  padding-top: 25px;
+paper-toolbar.header .title {
+	color:white;
+	font-size: 40px !important;
+	line-height: 50px !important;
+	font-family: fortune;
+	letter-spacing: 3px;
+	text-transform: capitalize;
+	cursor: pointer;
 }
-
-#language /deep/ paper-menu
-{
-  color: black;
+.dropdown {
+	padding: 0;
 }
-
-#language /deep/ iron-dropdown
-{
-  margin-top: 65px;
-  margin-left: 20px;
+.dropdown > .dropdown-toggle{
+	border:none;
+	background-color:transparent;
+	text-shadow:none;
+	box-shadow: none;
+	color:white;
 }
-.loginButton
-{
-  margin-top: 18px;
-  padding-right: 10px;
-  cursor:pointer;
-  border-radius: 3px;
+.dropdown-menu {
+	min-width: inherit;
+	width: 100%;
 }
-
-#language span
-{
-  vertical-align: middle;
+.dropdown-menu li {
+	text-align: center;
 }
-
-#userButton
-{
-  padding: 0;
-  padding-bottom: 5px;
-
-  cursor: pointer;
+.dropdown-menu li a {
+	padding: 3px 5px;
 }
-#userButton /deep/ span
-{
-  vertical-align: middle;
+.user-button .dropdown-toggle{
+	max-width: 150px;
+	min-width: 100px;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
+	background-color:transparent;
+	color:white;
+	text-shadow: none;
+	font-weight: bold;
+	text-transform: uppercase;
+	border:0px;
+	box-shadow: none;
 }
-#userButton /deep/ .dropdown-trigger {
-  padding:0;
-}
-#userButton /deep/ iron-dropdown
-{
-  margin-top: 38px;
-  min-width: 117px;
-}
-paper-item
-{
-  font-size: 14px !important;
-
-  cursor: pointer;
-
-  color: black;
-  border-bottom: 1px solid #aaa;
-  outline: none;
-  background-color: #eee;
+paper-toolbar.footer {
+	background-color: transparent;
 }
 
-footer paper-button
-{
-  font-size: 12px;
+.log-button {
+	margin:auto 15px;
 }
-
-footer paper-button:hover {
-  background-color: #b71c1c;
+#login-popup .modal-content {
+	margin-top:60%;
 }
-#header .loginButton:hover
-{
-  background-color: #b71c1c;
+#landing-page{
+	padding-top:10%;
 }
-paper-item:hover
-{
-  background-color: #aaa;
+#landing-page h1,
+#landing-page h3 {
+	color:#eee;
+	max-width: 500px;
+	text-align: center;
 }
-
-footer
-{
-  position: fixed;
-  z-index: 10;
-  bottom: 0;
-
-  width: 100%;
-  padding: 7px;
-
-  background-color: rgba(0,0,0,.6);
+#landing-page paper-button{
+	margin-top:50px;
 }
-paper-dialog {
-  max-width: 500px;
+.button-login {
+  margin:8px 0;
 }
-
-paper-button.blue:hover {
-  background-color: #64b5f6;
-  color:white;
+.footer > paper-button:hover{
+	color: cadetblue;
 }
-
-#loginModal {
-  min-width: 350px;
-  background-color: rgba(206, 206, 206, 0.83);
-  color:white;
+paper-button > a,
+paper-button >a:hover{
+	text-decoration: none;
+	color:inherit;
 }
-#loginModal .content {
-  padding: 20px;
-  margin-bottom: 0;
-}
-#loginModal .tittle{
-  text-align: center;
-}
-#loginModal .tittle paper-icon-button{
-  position:absolute;
-  top:15px;
-  right: 5px;
-}
-
-.view
-{
-  height: 83%;
-  margin: 0 150px;
-  padding-top: 5%;
+/* USERHOME */
+.toast-error,
+.toast-info,
+.toast-warn,
+.toast.success {
+	opacity: 1 !important;
 }

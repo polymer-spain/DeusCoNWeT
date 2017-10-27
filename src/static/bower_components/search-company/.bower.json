@@ -1,0 +1,37 @@
+{
+  "name": "search-company",
+  "version": "0.9.3",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "An element providing a solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed"
+  ],
+  "main": "search-company.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/<USERNAME>/seed-element/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  },
+  "_release": "0.9.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.9.3",
+    "commit": "a816e62d37a9f6db7acc2fb8134b405f19cf0008"
+  },
+  "_source": "https://github.com/Mortega5/search-company.git",
+  "_target": "^0.9.3",
+  "_originalSource": "search-company",
+  "_direct": true
+}

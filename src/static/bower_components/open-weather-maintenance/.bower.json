@@ -1,0 +1,42 @@
+{
+  "name": "open-weather",
+  "version": "0.9.2-maintenance",
+  "authors": [
+    "miguel ortega moreno <mortega@conwet.com"
+  ],
+  "description": "A polymer element for showing the current weather",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "seed",
+    "weather",
+    "open-weather-maps",
+    "web-components"
+  ],
+  "main": "open-weather.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/<USERNAME>/seed-element/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
+    "weather-icons": "^2.0.10",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.11",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  },
+  "_release": "0.9.2-maintenance",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.9.2-maintenance",
+    "commit": "f0f1b86324dbe99950852b22b6d24ca063758534"
+  },
+  "_source": "https://github.com/Mortega5/open-weather.git",
+  "_target": "v0.9.2-maintenance",
+  "_originalSource": "open-weather",
+  "_direct": true
+}

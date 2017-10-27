@@ -1,7 +1,6 @@
 /*global angular, document*/
-angular.module("picbit").controller("SelectidController", ["$scope", "$backend", "$rootScope", function ($scope, $backend, $rootScope) {
+angular.module("picbit").controller("SelectidController", ["$scope", "$backend", "$rootScope", "$location",function ($scope, $backend, $rootScope, $location) {
   "use strict";
-  $scope.prueba = true;
   $scope.showSendButton = false;
 
   /* Check if the username selected is already used. If not send it to DB*/
@@ -22,7 +21,7 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
           element.invalid = false;
           $rootScope.register = undefined;
           /*TODO mandar al tutorial de bienvenida, y almacenar los datos en $rootScope.user*/
-          $scope.changeView("/user/" + userId);
+          $location.path("/user/" + userId);
         });
       });
     } else {
@@ -30,12 +29,12 @@ angular.module("picbit").controller("SelectidController", ["$scope", "$backend",
       element.invalid = false;
     }
   };
-  
+
   /* Clear the input camp*/
-  $scope.clearInput = function (event) {
-    document.querySelector('#username_input').value = "";  
-  }
-  
+  $scope.clearInput = function () {
+    document.querySelector('#username_input').value = "";
+  };
+
   /* Show button only when the input isn't void */
   document.querySelector("paper-input").addEventListener("bind-value-changed", function(event) {
       $scope.showSendButton = event.detail.value !== "" ? true : false;

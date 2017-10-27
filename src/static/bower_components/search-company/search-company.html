@@ -1,0 +1,243 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-spinner/paper-spinner.html">
+<link rel="import" href="../paper-spinner/paper-spinner-lite.html">
+<!--
+An polymer element to look for ticker symbol by company name. It does not support spaces.
+
+Example:
+```
+<search-company></search-company>
+```
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="search-company">
+  <template>
+    <style is="custom-style">
+       :host {
+        display: inline-block;
+        box-sizing: border-box;
+        position: relative;
+        font-size: 16px;
+        font-family: 'Source Sans Pro', sans-serif;
+        height: var(--search-company-height, 40px);
+      }
+      
+      p {
+        margin: 0;
+      }
+      
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 15px;
+        height: 100%;
+        border: 1px solid #CBD3DD;
+        font-size: 1.125em;
+        @apply(--search-company-input)
+      }
+      
+      .results {
+        position: relative;
+        box-sizing: border-box;
+        min-width: 100%;
+        left: 0;
+        max-height: 200px;
+        z-index: 9999;
+        display: block;
+        overflow: auto;
+        border: 1px solid #CBD3DD;
+        background: #FFF;
+        @apply(--search-company-results);
+      }
+      
+      .results>.option {
+        overflow: hidden;
+        padding: 5px 15px;
+        white-space: nowrap;
+      }
+      
+      .results>.option:hover {
+        background-color: #f0f0f0;
+        cursor: pointer;
+      }
+      
+      .results[loading]>.option:hover,
+      .results[error]>.option:hover {
+        background-color: inherit;
+        cursor: inherit;
+      }
+      
+      .results[error] {
+        text-align: center;
+      }
+      
+      .results[loading] {
+        text-align: center;
+        height: auto;
+        overflow: hidden;
+        padding-top: 3px;
+        @apply(--search-company-results-loading);
+      }
+      
+      paper-spinner-lite {
+        --paper-spinner-stroke-width: 1px;
+        width: 20px;
+        height: 20px;
+      }
+    </style>
+    <iron-ajax id="searchCompany" url="https://centauro.ls.fi.upm.es:4444/company?q={{company}}" on-response="_searchSymbolResponse"
+      on-error="_searchSymbolResponseError"></iron-ajax>
+
+    <input aria-label="type a company name" id="company" value="{{company::input}}" placeholder="Company"></input>
+    <template is="dom-if" if="{{_showBox(company,_selected)}}">
+      <div class="results" loading$="{{_loading}}" error$="{{_error}}">
+        <template is="dom-repeat" items="{{_list}}">
+          <p class="option" on-click="_select" data-index$="{{index}}" data-symbol$="{{item.e}}:{{item.t}}">{{item.n}}</p>
+        </template>
+        <template is="dom-if" if="{{_error}}">
+          <p class="option">No results</p>
+        </template>
+        <template is="dom-if" if="{{_loading}}">
+          <paper-spinner-lite active></paper-spinner-lite>
+        </template>
+      </div>
+    </template>
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'search-company',
+
+      properties: {
+        _list: {
+          type: Array,
+          value: function () { return [] }
+        },
+        /*
+        * Value of the input.
+        */
+        company: {
+          type: String,
+          observer: '_filterCompanies',
+          notify: true
+        },
+        _params: {
+          type: Object,
+          value: {}
+        },
+        _error: {
+          type: Boolean,
+          value: false
+        },
+        _selected: {
+          type: String,
+          value: ''
+        },
+        /*
+        ** Symbol of the company selected
+        */
+        symbol: {
+          type: String,
+          value: '',
+          notify: true
+        },
+        _loading: {
+          type: Boolean,
+          value: true
+        },
+        delay: {
+          type: Number,
+          value: 0,
+          reflectToAttribute: true
+        },
+        oldValue: {
+          type: String,
+          value: ''
+        }
+      },
+      listeners: {
+        'tap': 'focus'
+      },
+      wait: function (ms) {
+        var start = new Date().getTime();
+        var end = start;
+        while (end < start + ms) {
+          end = new Date().getTime();
+        }
+      },
+      _filterCompanies: function (newValue, oldValue) {
+        if (newValue && newValue !== this._selected) {
+          this._selected = "";
+          this._setLoading();
+          if (this._interval) {
+            window.clearTimeout(this._interval);
+          }
+          this._interval = window.setTimeout(this._searchName.bind(this), 400);
+        } else {
+          this.set('_list', []);
+          this._error = false;
+        }
+        if (this.delay) {
+          this.wait(this.delay);
+        }
+      },
+      _searchSymbolResponse: function (event, detail) {
+        this._loading = false;
+        if (detail.response && detail.response.matches && detail.response.matches.length > 0) {
+          this.set('_list', detail.response.matches);
+        } else {
+          this.fire('search-company-error', detail);
+        }
+      },
+      _searchSymbolResponseError: function () {
+        this._loading = false;
+        this._error = true;
+        this.set('_list', []);
+      },
+      _searchName: function () {
+        if (!this.company) {
+          console.error('Text is required');
+          this.fire('search-company-error', { error: 'Company required' });
+        } else {
+          this.$.searchCompany.generateRequest();
+        }
+      },
+      _select: function (e) {
+        // Select element and change input
+        this.symbol = e.target.getAttribute('data-symbol');
+        this._selected = e.target.innerHTML;
+        this.company = e.target.innerHTML;
+        this.set('_list', []);
+        this.fire('search-company-selected', { symbol: this.symbol, company: this.company });
+      },
+      _setLoading: function () {
+        this.set('_list', []);
+        this._loading = true;
+        this._error = false;
+      },
+      _showBox: function (company, selected) {
+        return company && !selected && company !== selected;
+      },
+      focus: function () {
+        this.$.company.focus();
+      }
+    });
+  </script>
+</dom-module>
+

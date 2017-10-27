@@ -1,0 +1,352 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="./paper-expansion-panel.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Work+Sans:100" rel="stylesheet">
+
+<dom-module id="spotify-component">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment">
+      /* Globales */
+
+       :host {
+        display: inline-block;
+        width:  var(--googleplus-timeline-width, 350px);
+        height:  var(--googleplus-timeline-height, 350px);
+        min-height: 350px;
+        min-width: 350px;
+        border-radius: 10px;
+        background: #333;
+        font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", Tahoma, Sans-Serif !important;
+        position: relative;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      span {
+        color: #eee;
+      }
+
+      a {
+        text-transform: none;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      a:hover,
+      a:hover>span {
+        color: #2ebd59;
+      }
+      /* Toolbar */
+      .paper-header{
+        /* width: 10px; */
+        background-color: #222321;
+        color: #222321;
+        height: 60px;
+        padding: 3px 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+
+      #logo {
+        margin-top: 16px;
+        width: 100px;
+        height: 30px;
+      }
+
+      .refresh_button {
+        position: absolute;
+        top: 14px;
+        right: 10px;
+        margin: 0;
+        color: #eee;
+      }
+      /* Header dom repeat */
+
+      #cabecera {
+        width: 100%;
+        padding: 12px 2px;
+        color: #eee;
+      }
+
+      .imagenes {
+        width: 80px;
+        height: 80px;
+      }
+
+      #nombreLista {
+        font-size: 18px;
+        color: white;
+      }
+
+      #playtit {
+        text-transform: uppercase;
+      }
+
+      #owner {
+        font-weight: bolder;
+      }
+
+      .playlist {
+        margin-left: 10px;
+        color: #aaaaaa;
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
+      /* Desplegable */
+
+      #musica {
+        border-top: 1px solid grey;
+
+        height: 42px;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        padding: 0 8px;
+        color: #eee;
+        font-size: 12px;
+        margin-left: 12px;
+        margin-right: 12px;
+      }
+
+      #headmusica {
+        margin: 10px 0;
+      }
+
+      #headmusica>p {
+        width: 50%;
+        font-weight: bold;
+        font-family: 'Work Sans', sans-serif;
+        color: #2ebd59;
+        text-align: center;
+        font-size: 15px;
+      }
+
+      #musica>a,
+      #musica>p {
+        width: 50%;
+        font-family: 'Roboto', sans-serif;
+        padding: 0 5px;
+        box-sizing: border-box;
+      }
+
+
+      #artista,
+      #album,
+      #track {
+        white-space: nowrap;
+        overflow: hidden;
+
+        overflow-wrap: break-word;
+        text-overflow: ellipsis;
+      }
+
+      #loadingGif {
+        width: 100%;
+        height: calc(100% - 64px);
+        position: absolute;
+        z-index: 1000;
+        background-color: rgba(51, 51, 51, 0.65);
+        text-align: center;
+        color: #eee;
+        text-transform: uppercase;
+        font-family: 'Work Sans', sans-serif;
+        font-size: 22px;
+        font-weight: bold;
+      }
+      paper-header-panel {
+        overflow-y: auto;
+        height: 100% !important;
+      }
+    </style>
+
+    <paper-header-panel class="toolbar" mode="waterfall" id='tool' on-content-scroll="scrollBad">
+      <div class="paper-header">
+        <img id="logo" sizing="cover" preload src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/2000px-Spotify_logo_with_text.svg.png"></img>
+        <paper-icon-button id="refresh_button" class="refresh_button" icon="refresh" title="refresh" on-click="_refresh">
+      </div>
+      <div>
+        <div class="vertical layout center-center" id="loadingGif" hidden="{{!loading}}">
+          <img src="https://m.popkey.co/163fce/Llgbv_s-200x150.gif">
+          <p>Loading...</p>
+        </div>
+        <template is="dom-repeat" items="{{res}}" class='repeat' id='dom'>
+          <paper-expansion-panel class="styled" summary="Created by: {{item.owner.id}}">
+            <div class="header" id='cabecera'>
+              <div class='horizontal layout'>
+                <a href="{{item.external_urls.spotify}}" target='_blank'>
+                  <img class='imagenes' sizing="cover" preload src="{{item.images.0.url}}" id="preview"></img>
+                </a>
+                <div class='playlist flex vertical layout'>
+                  <p id='playtit'>p l a y l i s t</p>
+
+                  <p id='nombreLista'>{{item.name}}</p>
+
+                  <div class='horizontal layout'>
+                    <span>Created by:</span>
+                    <a href="{{item.owner.external_urls.spotify}}" target='_blank'>
+                      <span id='owner'>{{item.owner.id}}</span>
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div>
+              <iron-ajax auto id="cons" url="{{item.tracks.href}}" headers="{{headers}}" handle-as="json" on-response="respuestaPistas"></iron-ajax>
+            </div>
+            <template is="dom-if" if='{{item.infoPista}}'>
+
+              <div id='headmusica' class='horizontal layout flex'>
+                <p id='s'> Song</p>
+                <p id='a'>Artist</p>
+                <!-- <p id='al'>Album</p> -->
+              </div>
+              <template is='dom-repeat' items="{{item.infoPista}}">
+                <div id='musica' class='horizontal layout flex'>
+                  <a href="{{item.track.external_urls.spotify}}" target='_blank'>
+                    <p id='track'> {{item.track.name}}</p>
+                  </a>
+
+                  <p id='artista'>{{item.track.artists.0.name}}</p>
+                  <!-- <p id='album'>{{item.track.album.name}}</p> -->
+                </div>
+
+
+              </template>
+            </template>
+          </paper-expansion-panel>
+      </div>
+
+    </paper-header-panel>
+    </template>
+
+
+    <iron-ajax auto id="cons" url="https://api.spotify.com/v1/me/playlists?limit=20&after=0aV6DOiouImYTqrR5YlIqx" headers="{{headers}}"
+      handle-as="json" on-response="respuestaSPFY"></iron-ajax>
+
+
+
+  </template>
+  <script>
+    Polymer({
+      is: 'spotify-component',
+      properties: {
+        token: String,
+        nombre: String,
+        dueño: String,
+        res: {
+          value: function () { return []; },
+          type: Array,
+          notify: true
+        },
+        headers: {
+          type: Object,
+          computed: '_getHeaders(token)'
+        },
+        refresh_time: {
+          type: Number,
+          value: 120000,
+          reflectToAttribute: true
+        },
+        step: {
+          type: Number,
+          value: 0
+        },
+        discardStepNumber: {
+          type: Number,
+          value: 6
+        },
+      },
+      _getHeaders: function (token) {
+        return { Authorization: 'Bearer ' + this.token };
+      },
+      respuestaSPFY: function (evt) {
+        this.loading = false;
+        this._interval = this._interval || window.setInterval(this._refresh.bind(this), this.refresh_time);
+        var response = evt.detail.response;
+        this.set('res', []);
+        window.setTimeout(function () {
+          var items = response.items;
+          for (var i = 0; i < items.length; i++) {
+            this.set('res', response.items);
+            //console.log(items[i].nombre);
+          }
+        }.bind(this), 100);
+      },
+      respuestaPistas: function (evt) {
+        var response = evt.detail.response;
+        //console.log(response);
+        this.set('res.' + evt.model.index + ".infoPista", response.items);
+      },
+      _refresh: function () {
+        this.loading = true;
+        this.$.cons.generateRequest();
+      },
+      detached: function () {
+        if (this._interval) {
+          window.clearInterval(this._interval);
+        }
+      },
+      attached: function () {
+        this.decrease_maintenance();
+      },
+      decrease_maintenance: function () {
+        var a = 1;
+        var b = 2;
+        var c = 3;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+        a = a && b ? a : c; a = a && b ? a : c; a = a && b ? a : c;
+      },
+      scrollBad: function (evt) {
+        this.step += 1;
+        var el = evt.currentTarget.$$('#mainContainer');
+        if (!this.discardStepNumber || this.step < this.discardStepNumber) {
+          this.lastValidScroll = el.scrollTop;
+        } else {
+          el.scrollTop = this.lastValidScroll;
+          this.step = 0;
+        }
+      }
+    });
+  </script>
+</dom-module>

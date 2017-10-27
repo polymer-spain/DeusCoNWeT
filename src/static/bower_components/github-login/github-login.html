@@ -52,14 +52,11 @@
 
   <template>
     <iron-ajax 
-               id="githubcode" url="http://github-login-lab.appspot.com/oauth/github"
-               method="GET"
-               params='{
-                       "action": "request_token",
-                       "code": "{{code}}"
-                       }'
+               id="githubcode"
+	       url="{{endpoint}}"
+               method="POST"
                handleAs="json"
-               on-response='response'>
+               on-response='_response'>
     </iron-ajax>
 
     <!-- large and disconnected -->
@@ -127,11 +124,16 @@
           type: String,
           value: "",
           refrectToAttrbiute: true
-        }
+        },
+				client_id: {
+					type: String,
+					value:'',
+					refrectToAttrbiute: true
+				},
       },
 
-      _response: function(e, d, s){
-        this.accessToken = s.response;
+      _response: function(e){
+        this.accessToken = e.detail.response.token;
         this.fire('github-logged',{token:this.accessToken,redSocial:'github'});
       },
 
@@ -140,7 +142,7 @@
         var url = 'https://github.com/login/oauth/authorize?';
         url += 'scope='+this.scope;
         url+='&client_id='+this.client_id;
-        url+='&redirect_uri='+this.endpoint;
+        // url+='&redirect_uri='+this.endpoint;
         // Guardamos en una variable el scope de la ventana principal
         var back = this;
         // Abrimos la ventana para que se realice la autenticacion
@@ -158,10 +160,13 @@
               var url =   win.document.URL;
               var patron = "code"+"=([^&#]*)";
               var exp = new RegExp(patron);
+              var body; 
               // Ponemos en valor en una variable de la ventana principal
               back.code = exp.exec(url)[1];
+	      body = {code:back.code, action: "request_token"}
               // Llamamos a backend para que obtenga el token
-              back.$.githubcode.go();
+	      back.$.githubcode.body = JSON.stringify(body);
+              back.$.githubcode.generateRequest();
               back.logged = true;
               win.close();
             }

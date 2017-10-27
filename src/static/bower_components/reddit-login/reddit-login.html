@@ -1,0 +1,225 @@
+<!--
+@license
+@author Javier Caballero Abenza. All rights reserved.
+
+`reddit-login`
+polymer login for reddit
+
+@demo demo/index.html 
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<dom-module id="reddit-login">
+  <template>
+
+    <iron-ajax
+       id="request_token" 
+       url="https://www.reddit.com/api/v1/access_token" 
+       method="POST"
+       headers="{{token_headers}}" 
+       params="{{token_params}}" 
+       handleAs='json' 
+       on-response="_token_received"
+       on-error="_error_received"
+       last-error="{{last_error}}" 
+       >
+    </iron-ajax>
+
+    <style is="custom-style">
+      :host {
+        display: block;
+        position: relative;
+        text-align: center;
+        vertical-align: center;
+        min-height: 46px;
+        min-width: 82px;
+        max-height: 46px;
+        max-width: 82px;
+        border-radius: 3px;
+        cursor: pointer;        
+      }
+      paper-button{
+        background: var(--paper-blue-200);
+        padding: 0;
+        margin: 0;
+      }
+
+      .icon{
+        padding: 2px;
+        --iron-icon-width: 50px;
+        --iron-icon-height: 40px;
+      }
+
+      .disconnect{
+        background: grey;
+      }
+
+    </style>
+
+      <!-- When the user is not logged this template is used-->
+    <template is="dom-if" if="{{!logged}}">
+        <paper-button raised title="Reddit" on-click="login">
+          <iron-icon src="logo-reddit.png" class="icon"></iron-icon>
+        </paper-button>   
+    </template>
+
+    <!-- When the user is logged this template is used-->
+    <template is="dom-if" if="{{logged}}">
+      <paper-button raised class="disconnect" title="Reddit" on-click="logout">
+        <iron-icon src="logo-reddit.png" class="icon"></iron-icon>
+      </paper-button>  
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'reddit-login',
+
+      properties: {
+
+        logged: {
+          type: Boolean,
+          value: false
+        },
+
+        state:{
+          type: String,
+          value: "RandomString"
+        },
+
+        login_url: {
+          type: String,
+          value: "https://www.reddit.com/api/v1/authorize"
+        },
+
+        scope:{
+          /*By default it ask for every permission*/
+          type: String,
+          value: "identity edit flair history modconfig modflair modlog modposts modwiki mysubreddits privatemessages read report save submit subscribe vote wikiedit wikiread"
+        },
+
+        duration:{
+          /*temporary or permanent (default)*/
+          type: String,
+          value: "permanent"
+        },
+
+        redirect_uri: String,
+
+        client_id: String,
+
+        client_secret: String,        
+
+        access_code: String,
+
+        access_token: String,
+
+        token_headers:{
+          type: String,
+          computed: "_token_headers(client_id, client_secret)"
+        },
+
+        token_params:{
+          type: String,
+          computed: "_token_params(access_code, redirect_uri)"
+        },
+
+        last_error: String,
+
+      },
+
+      _token_headers:function(client_id, client_secret){
+        return {Authorization: "Basic " + btoa(client_id + ":" + client_secret)};
+      },
+
+      _token_params: function(access_code, redirect_uri){
+        return {grant_type: "authorization_code", code: access_code, redirect_uri: redirect_uri};
+      },
+
+      _token_received: function(event, detail){
+        this.access_token = detail.response.access_token;
+        this.refresh_token = detail.response.refresh_token;
+        console.log(this.access_token+'/n'+this.refresh_token);
+        this.fire('reddit-logged',
+        {
+          token:this.access_token,
+          refreshToken:this.refresh_token, 
+          redSocial:'reddit'
+        });
+      },
+
+      _error_received: function(event, detail){
+        console.log('reddit-login_ERROR: '+this.last_error.status+': '+this.last_error.statusText);
+      },
+
+      _makeHeaders: function(user,pass){
+        return ;
+      },
+
+      login: function(){
+        var oauthURL = this.login_url + "?" +
+        "client_id="+ this.client_id + "&" +
+        "response_type=code" + "&" +
+        "state=" + this.state + "&" +
+        "redirect_uri="+ this.redirect_uri + "&" +
+        "duration="+ this.duration + "&" +
+        "scope=" + this.scope;
+
+        //GET to the Reddit oauth URI to obtain the access_code
+        var win = window.open(oauthURL,"Autoriza la app",'width=800, height=600');
+        
+        //Catching the access_code from the response URL
+        var back = this;
+
+        var loop = window.setInterval(function(){
+
+          try {
+
+            var url = win.document.URL;
+
+            if(url.indexOf('state') != -1 && url.indexOf('code') != -1){
+              window.clearInterval(loop);
+              
+              //access_code from URL
+              var patron = "code"+"=([^&#]*)";
+              var exp = new RegExp(patron);
+              back.access_code = exp.exec(url)[1];
+              //State from URL
+              patron = "state"+"=([^&#]*)";
+              exp = new RegExp(patron);
+              var new_state = exp.exec(url)[1];
+
+              //State received must be equal to local state
+              if(new_state != back.state){
+                console.log("reddit-login: Different state received from the server");
+              }
+              //Ask for the access token
+              else{
+                back.$.request_token.generateRequest();
+                win.close();
+              }
+            }
+            else if(url.indexOf('error') != -1){
+              window.clearInterval(loop);
+              var patron = "error"+"=([^&#]*)";
+              var exp = new RegExp(patron);
+              var error = exp.exec(url)[1];
+              console.log('Error: '+error)
+              win.close();
+            }
+              
+          }catch(e){
+          }
+        }, 100);
+        
+      }
+
+
+    });
+  </script>
+</dom-module>

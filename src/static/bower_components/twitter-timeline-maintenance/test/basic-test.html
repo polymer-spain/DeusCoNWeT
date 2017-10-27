@@ -1,0 +1,487 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../static/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../static/bower_components/web-component-tester/browser.js"></script>
+    <script src="../static/bower_components/test-fixture/test-fixture-mocha.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../static/twitter-timeline.html">
+
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <test-fixture id='timeline'>
+      <template>
+        <twitter-timeline endpoint="http://twitter-timeline-app.appspot.com/oauth/twitter" access-token="3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf" secret-token="OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock" consumer-key="J4bjMZmJ6hh7r0wlG9H90cgEe" consumer-secret="8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf" count="200" language="{{language}}" component_base="./">
+        </twitter-timeline>
+      </template>
+    </test-fixture>
+    <script>
+
+      describe('timeline component', function(){
+        var language = {
+          "title" : "Tu timeline",
+          "refresh" : "Refrescar",
+          "load_more":  "Mostrar más",
+          "seconds" : "segundos",
+          "minutes" : "minutos",
+          "hour" : "hora",
+          "hours" : "horas",
+          "day" : "día",
+          "days" : "días",
+          "month": "mes",
+          "months": "meses",
+          "year": "año",
+          "years": "años",
+          "january" : "Enero",
+          "february" : "Febrero",
+          "march" : "Marzo",
+          "april" : "Abril",
+          "may" : "Mayo",
+          "june" : "Junio",
+          "july" : "Julio",
+          "august" : "Agosto",
+          "september" : "Septiembre",
+          "october" : "Octubre",
+          "november" : "Noviembre",
+          "december" : "Diciembre",
+          "of" : "de"
+        };
+        beforeEach(function(){
+          myEl.$.requesttimeline.generateRequest = sinon.stub();
+          myEl.$.requestLanguage.generateRequest = sinon.stub();
+          myEl.language_data = language;
+          myEl._changeTime = sinon.stub();
+        });
+        afterEach(function(){
+          sinon.restore();
+        });
+
+        describe('attached function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.attached);
+            done();
+          });
+          it('is called', function(done){
+            myEl.attached();
+            sinon.assert.called(myEl.$.requestLanguage.generateRequest);
+            done();
+          });
+        });
+
+        describe('_calculateLanguageUrl function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._calculateLanguageUrl);
+            done();
+          });
+          it('returns the language url', function(done){
+            var component_directory = "./";
+            var file = "es_es.json"
+            var check = myEl._calculateLanguageUrl(component_directory, file);
+            assert.equal(check, "./language/es_es.json")
+            done();
+          });
+        });
+
+        describe('_calculatetimelineParams function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._calculatetimelineParams);
+            done();
+          });
+          it('returns the timeline parameters', function(done){
+            var accessToken = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
+            var secretToken = "OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock";
+            var consumerKey = "J4bjMZmJ6hh7r0wlG9H90cgEe";
+            var consumerSecret = "8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf";
+            var count = "200";
+            var resp = myEl._calculatetimelineParams(accessToken, secretToken, consumerKey, consumerSecret, count);
+            assert.equal(resp.access_token, accessToken);
+            assert.equal(resp.secret_token, secretToken);
+            assert.equal(resp.consumer_key, consumerKey);
+            assert.equal(resp.consumer_secret, consumerSecret);
+            assert.equal(resp.count, count);
+            done();
+          });
+        });
+
+        describe('_getUserurl function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._getUserurl);
+            done();
+          });
+          it('returns an url from a user', function(done){
+            var user = "JuanFryS";
+            var check = "https://twitter.com/JuanFryS";
+            resp = myEl._getUserurl(user);
+            assert.equal(resp, check);
+            done()
+          });
+        });
+
+        describe('_getStatusUrl function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._getStatusUrl);
+            done();
+          });
+          it('returns an url with an id', function(done){
+            var id = "719812261834043400";
+            var id_str = "719812261834043392";
+            var check = "https://twitter.com/719812261834043400/status/719812261834043392"
+            resp = myEl._getStatusUrl(id, id_str);
+            assert.equal(resp, check);
+            done()
+          });
+        });
+
+        describe('_getTextId function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._getTextId);
+            done();
+          });
+          it('returns text plus an index', function(done){
+            var index = "12";
+            var check = "Text12"
+            resp = myEl._getTextId(index);
+            assert.equal(resp, check);
+            done()
+          });
+        });
+
+        describe('_withoutStatus function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._withoutStatus);
+            done();
+          });
+          it('returns the opposite of the parameter', function(done){
+            var status = true;
+            var resp = myEl._withoutStatus(status);
+            assert.isFalse(resp);
+            done();
+          });
+        })
+
+        describe('_filter function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl._filter);
+            done();
+          });
+          it('returns a false when the item is empty', function(done){
+            var item = {};
+            resp = myEl._filter(item);
+            assert.isFalse(resp);
+            done()
+          });
+          it('returns a true when the item is passed properly', function(done){
+            myEl.events = [{
+              "created_at": "Mon Apr 11 10:41:24 +0000 2016",
+              "id": 719475430940622848,
+              "id_str": "719475430940622848",
+              "text": "RT @viguerapablo: come say hi on saturday! @Groopify will be at the startup job fair organised by @campusmadrid --&gt; \"Startup Job Fair\" http\u2026",
+              "truncated": false
+            }];
+            myEl.index = 31;
+            var item = {"id": 719475430940622848}
+            resp = myEl._filter(item);
+            assert.isTrue(resp);
+            done();
+          });
+        });
+
+        describe('_language_changed function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+            myEl.component_base = "";
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._languageChanged);
+            done();
+          });
+          it('changes the "language" file', function(done){
+            myEl.language = "";
+            var newVal = "en";
+            var oldVal = "es";
+            myEl._languageChanged(newVal, oldVal);
+            assert.equal(myEl.language, newVal);
+            done();
+          });
+          it('changes the "languageFile" file', function(done){
+            myEl.language = "";
+            var newVal = "es";
+            var oldVal = "en";
+            myEl._languageChanged(newVal, oldVal);
+            assert.equal(myEl.language, newVal);
+            done();
+          });
+          it('makes a request when component_directory is defined', function(done){
+            myEl.component_base = "./";
+            var newVal = "es";
+            var oldVal = "en";
+            myEl._languageChanged(newVal, oldVal);
+            sinon.assert.called(myEl.$.requestLanguage.generateRequest);
+            done();
+          });
+        });
+
+        describe('renderTemplate function',function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+          afterEach(function(){
+            sinon.restore();
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl.renderTemplate)
+            done();
+          });
+          it('calls the render function', function(done){
+            var render = sinon.spy(myEl.$.tweets, 'render');
+            myEl.renderTemplate();
+            sinon.assert.called(render);
+            done();
+          });
+        });
+
+        describe('_response function',function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+          afterEach(function(){
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._response)
+            done();
+          });
+        });
+
+        describe('_language_response function'  , function(){
+          var detail = {response: language};
+          var event = {};
+
+          before(function(){
+            myEl = fixture('timeline');
+            myEl._changeTime = sinon.stub();
+          });
+          after(function(){
+            sinon.restore();
+          })
+          it('is defined', function(done) {
+            assert.isDefined(myEl._language_response);
+            done();
+          });
+          it('calls requesttimeline when this.event is empty', function(done){
+            myEl.events = [];
+            myEl._language_response(event, detail);
+            sinon.assert.called(myEl.$.requesttimeline.generateRequest);
+            done();
+          });
+          it('calls _changeTime when this.event is already defined', function(done){
+            var events = [{event: "event"}, {event2: "event2"}];
+            myEl.events = events;
+            myEl._language_response(event, detail);
+            sinon.assert.calledWith(myEl._changeTime, events);
+            done();
+          });
+        });
+
+        describe('refresh_func function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.refresh_func);
+            done();
+          });
+          it('makes a request', function(done){
+            myEl.refresh_func();
+            sinon.assert.called(myEl.$.requesttimeline.generateRequest);
+            done();
+          });
+        });
+
+        describe('toDisplay function', function(){
+          before(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.toDisplay);
+            done();
+          });
+          it('sets this.show to false when the index is greater or equal than the number of events', function(done){
+            myEl.index = 2; myEl.events = []; myEl.show = true;
+            myEl.toDisplay();
+            assert.isFalse(myEl.show);
+            done();
+          });
+          it('sets index plus 20 when the index is less than the number of events', function(done){
+            myEl.index = 0; myEl.show = true;
+            myEl.events = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
+            check = myEl.index + 20; 
+            myEl.toDisplay();
+            assert.equal(myEl.index, check);
+            assert.isTrue(myEl.show);
+            done();
+          });
+          it('sets this.show to false when the index is greater or equal than the number of events after having added 20 to the index', function(done){
+            myEl.index = 0; myEl.show = true;
+            myEl.events = [];
+            myEl.toDisplay();
+            assert.isFalse(myEl.show);
+            done();
+          });
+        });
+
+        describe('_changeTime function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+
+          it('is defined', function(done){
+            assert.isDefined(myEl._changeTime);
+            done();
+          });
+          it('sets the time to correct time', function(done){
+            var spy = sinon.spy(myEl, 'set');
+            myEl.language_data = language;
+            var list = [
+              {
+                "created_at" : "2016-04-29T02:46:09+0000"
+              }
+            ];
+            myEl._changeTime(list);        
+            sinon.assert.called(spy)
+            done();
+            spy.reset();
+          });
+
+        });
+
+        describe('parseURL function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.parseURL);
+            done();
+          });
+          it('parses the url', function(done){
+            tweet = "Hola @JuanFryS http://www.google.es #Prueba";
+            tweetParsed = 'Hola @JuanFryS <a style="color:rgb(57, 145, 212)" href=http://www.google.es target="_blank">http://www.google.es</a> #Prueba'
+            var result = myEl.parseURL(tweet);
+            assert.equal(result, tweetParsed);
+            done();
+          });
+        });
+
+        describe('parseUsername function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.parseUsername);
+            done();
+          });
+          it('parses the username', function(done){
+            tweet = "Hola @JuanFryS http://www.google.es #Prueba";
+            tweetParsed = 'Hola <a style="color:rgb(57, 145, 212)" href="https://twitter.com/JuanFryS "target="_blank">@JuanFryS</a> http://www.google.es #Prueba'
+            var result = myEl.parseUsername(tweet);
+            assert.equal(result, tweetParsed);
+            done();
+          });
+        });
+
+        describe('parseHashtag function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.parseHashtag);
+            done();
+          });
+          it('parses the hashtag', function(done){
+            tweet = "Hola @JuanFryS http://www.google.es #Prueba";
+            tweetParsed = 'Hola @JuanFryS http://www.google.es <a style="color:rgb(57, 145, 212)" href="https://twitter.com/hashtag/Prueba "target="_blank">#Prueba</a>'
+            var result = myEl.parseHashtag(tweet);
+            assert.equal(result, tweetParsed);
+            done();
+          });
+        });
+
+        describe('parser function', function(){
+          beforeEach(function(){
+            myEl = fixture('timeline');
+            myEl.parseURL = sinon.stub();
+            myEl.parseUsername = sinon.stub();
+            myEl.parseHashtag = sinon.stub();
+          });
+          afterEach(function(){
+            sinon.restore();
+          });
+          it('is defined', function(done){
+            assert.isDefined(myEl.parser);
+            done();
+          });
+          it("does not do anything when the parameter's length is zero", function(done){
+            var lista = [];
+            myEl.parser(lista);
+            sinon.assert.notCalled(myEl.parseURL);
+            done();
+          });
+          it('calls differents parsers when the list is passed properly', function(done){
+            var lista = [{"text": "Test text"}];
+            myEl.parser(lista);
+            sinon.assert.called(myEl.parseURL);
+            done();
+          });
+          it('returns the list after be parsed', function(done){
+            var lista = [{"text": "Test text"}];
+            var result = myEl.parser(lista);
+            assert.equal(lista, result);
+            done();
+          });
+        });
+
+      });
+    </script>
+  </body>
+</html>
