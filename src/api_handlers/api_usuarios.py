@@ -136,6 +136,7 @@ class UserHandler(SessionHandler):
               version = comp["version"]
               static = "/"
               if str(ident) == "twitter-timeline": static = "/static/"
+              if version == "security": version= "stable"
               ref = "/bower_components/" + \
                     str(ident) + "-" + str(version) + static + str(ident) + ".html"
               refs_list.append(ref)
@@ -171,6 +172,7 @@ class UserHandler(SessionHandler):
               version = preversion.version
               static = "/"
               if ident == "twitter-timeline": static = "/static/"
+              if version == "security": version= "stable"
               ref = "/bower_components/" + \
                     ident + "-" + version + static + ident + ".html"
               refs_list.append(ref)

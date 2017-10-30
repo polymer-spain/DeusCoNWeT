@@ -26,14 +26,29 @@ domain: centauro.ls.fi.upm.es
 domainTest: test.centauro.ls.fi.upm.es
 #domain: localhost
 component_versioning: dynamic
-APP_ID: <app id de facebook>
-APP_SECRET: <app secrect de facebook>
+APP_ID: 123747765045661
+APP_SECRET: 62f8896c4428d87f0c60c014d2cc2df1
 FACEBOOK_CONFIG:
   url: https://graph.facebook.com/v2.10/me/feed
   fields: "name,updated_time,attachments,story_tags,place,from,icon,message,object_id,likes,source,story,type, message_tags"
   url_id: https://graph.facebook.com/v2.10/me?fields=id
   url_friends: https://graph.facebook.com/v2.10/me/friends
   locale: es_es
+scopes: 
+  googleplus:
+    default: "https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly"
+    security: >
+      https://www.googleapis.com/auth/contacts
+      https://www.googleapis.com/auth/plus.me
+  facebook:
+    default: "user_posts,user_friends"
+    security: "public_profile,read_stream, user_friends, email, user_about_me, user_actions, user_actions, user_actions, user_actions, user_actions, user_actions, user_birthday, publish_pages, publish_actions, rsvp_event, pages_manage_cta"
+  pinterest:
+    default: "read_public,read_relationships"
+    security: "read_public,write_public,read_relationships,write_relationships"
+  spotify:
+    default: "user-read-private user-follow-read user-read-email"
+    security: "user-read-private user-read-email user-follow-modify user-follow-read user-top-read user-read-playback-state"
 ```
 
 #### mongo.yaml

@@ -36,7 +36,7 @@ import dateutil.parser
 import pdb
 
 bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather", "spotify-component"],
-              ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"])
+              ["stable", "latency", "accuracy", "maintenance", "complexity", "structural", "usability", "security"])
 #import pdb; pdb.set_trace(); # comando para depurar 
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
