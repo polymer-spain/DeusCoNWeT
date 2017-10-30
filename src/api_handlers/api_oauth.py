@@ -289,6 +289,7 @@ class OauthCredentialsHandler(SessionHandler):
                 logged_user_id = mongoDB.getUserId(logged_user)
 
                 # Obtains user credentials
+                print "Se intenta obtener el token con: ", token_id, social_network
                 user_credentials = mongoDB.getToken(token_id, social_network)
 
                 if not user_credentials == None:
