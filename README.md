@@ -26,8 +26,8 @@ domain: centauro.ls.fi.upm.es
 domainTest: test.centauro.ls.fi.upm.es
 #domain: localhost
 component_versioning: dynamic
-APP_ID: 123747765045661
-APP_SECRET: 62f8896c4428d87f0c60c014d2cc2df1
+APP_ID: <your_facebook_app_id>
+APP_SECRET: <your_facebook_app_secret>
 FACEBOOK_CONFIG:
   url: https://graph.facebook.com/v2.10/me/feed
   fields: "name,updated_time,attachments,story_tags,place,from,icon,message,object_id,likes,source,story,type, message_tags"
