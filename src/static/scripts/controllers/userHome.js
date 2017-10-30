@@ -424,8 +424,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             break;
           // case 'pinterest':
           //   break;
-          case 'spotify':
-            break;
+         case 'spotify':
+           break;
           default:
             $backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
             break;
