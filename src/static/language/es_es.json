@@ -109,5 +109,5 @@
 	"noTokenDescription": "Haz click para loguearte con esta red social antes de usarlo.",
   "loginTitle": "Logueate antes de usar ",
   "loginRequest": "El componente necesita permisos para funcionar correctamente. Logueate para poder usarlo",
-	"add_token_error": "Ya existe un usuario con esa cuenta, intentelo con otra"
+	"add_token_error": "Ya existe un usuario con esa cuenta. Utiliza esa cuenta para entrar en la plataforma"
 }
