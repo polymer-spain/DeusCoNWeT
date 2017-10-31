@@ -1,4 +1,4 @@
-host: localhost
+host: 10.10.1.88
 pwdTest: euser:7394
 userTest: deusConwet
 pwd: euser:7394
