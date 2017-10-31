@@ -87,7 +87,7 @@
 #userHome .elementbox-div {
   height: 20px;
   text-align: right;
-}15px
+}
 #userHome .elementbox:hover .elementbox-remove{
   display: inline-block;
 }
@@ -284,7 +284,7 @@
   font-size:14px;
 
 }
-#login-modal .login-body pinterest-login {
+#login-modal .login-body [data-role="login"] {
   margin:auto;
 }
 #rate-modal .questionText{
