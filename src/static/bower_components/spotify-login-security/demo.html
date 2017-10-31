@@ -1,0 +1,20 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <title>Document</title>
+        <link rel="import" href="spotify-login.html">
+    </head>
+    <body>
+        <spotify-login scope="user-read-private user-read-email user-follow-modify user-follow-read user-top-read user-read-playback-state" client_id="a7b3de70814a40908fd482a8eb525878" on-spotify-logged='_func' redirect_uri="http://localhost:8080"></spotify-login>
+    </body>
+	<script>
+           document.addEventListener("WebComponentsReady",function(){
+                window.setTimeout(function(){
+                  document.querySelector('spotify-login').click()
+                },500);
+            });
+        </script>
+    </html>

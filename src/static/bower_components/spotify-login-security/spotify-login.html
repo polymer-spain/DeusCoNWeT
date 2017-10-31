@@ -1,0 +1,122 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<dom-module id="spotify-login">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-family:Circular,Helvetica,Arial,sans-serif;
+            }
+            paper-button{
+                margin:0;
+                font-weight: normal !important;
+            }
+            .large {
+                background: #2ebd59;
+                color: #fff;
+                border-radius: 50px;
+                cursor: pointer;
+                text-transform: none;
+                vertical-align: center;
+                width: 205px;
+                height: 50px;
+                font-size: 16px;
+               
+            }
+            #icono{
+                width: 30px;
+                height: 30px;
+                align-self: auto;
+                margin-right: 10px;
+            }
+        </style>
+
+        <iron-ajax id="requestToken" url="https://api.spotify.com/v1/me" headers="{{headers}}"
+        method="GET" handleAs='json' on-response="_responseToken"></iron-ajax>
+        
+         
+         <paper-button class="large vertical-layout center-center" title="Spotify" on-click="_login">
+            <iron-icon id="icono" src="https://assets.ifttt.com/images/channels/51464135/icons/on_color_large.png"></iron-icon>
+            <span>Log in with Spotify</span>
+          </paper-button>
+         
+          
+    </template>
+          
+    <script>
+        Polymer({
+            is: 'spotify-login',
+            properties: {
+                logged: {
+                    type: Boolean,
+                    value: false,
+                    refrectToAttrbiute: true
+                },
+                client_id: {
+					type: String,
+					value:'',
+					refrectToAttrbiute: true
+				},
+                access_token: {
+                    type: String,
+                    value: "",
+                    refrectToAttrbiute: true
+                },
+                scope: {
+                    type: String,
+                    value: "",
+                    refrectToAttrbiute: true
+                },
+                headers: {
+                    type:Object,
+                    computed: '_getHeaders(token)'
+                },
+                redirect_uri: {
+                    type: String,
+                    value:'',
+                    refrectToAttrbiute: true
+                }
+            },
+	    listeners: {
+              "tap":"_login"
+            },
+            _login: function(event, detail, sender){
+                var url = "https://accounts.spotify.com/authorize?&response_type=token"
+                url += '&scope='+this.scope;
+                url+='&client_id='+this.client_id;
+                url+='&redirect_uri='+this.redirect_uri;
+                var back = this;
+                var win = window.open(url, "Autentícate", 'width=800, height=600');
+                var pollTimer = window.setInterval(function() {
+                    try{
+                        if(win.document.URL.indexOf('access_token') != -1){
+                            window.clearInterval(pollTimer);
+                            var url =   win.document.URL;
+                            var patron = "access_token"+"=([^&#]*)";
+                            var exp = new RegExp(patron);
+                            back.token = exp.exec(url)[1];
+                            //back.fire("spotify-logged",{token: back.acToken,redSocial:"spotify"});
+                            back.logged= back.static?false:true;
+                            win.close();
+                            back.$.requestToken.generateRequest();
+                        }                       
+                    } catch(e){    
+                    }
+                }, 100);
+            },
+            _getHeaders: function (token) {
+                return { Authorization: 'Bearer ' + this.token };
+              },
+            _responseToken: function(e){
+                this.userId = e.detail.response.id;
+                this.fire('spotify-logged', {token: this.token, redSocial: 'spotify', userId: this.userId});
+            }
+        });
+    </script>
+</dom-module>

@@ -3,6 +3,9 @@ angular.module("picbit").controller("CatalogCtrl", ['$scope', '$rootScope',  fun
   $scope.checkToken = function(item, index){
     // check if itrequires token 
     // if it's required, check if it exists
+
+    // BORRAR!!!!!!!
+    item.version == "security";
     return !item.social_network || ($rootScope.user.tokens[item.social_network] !== undefined && item.version !== "security") || $rootScope.user.renew[item.social_network];
   }
 
