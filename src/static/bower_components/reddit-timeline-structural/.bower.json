@@ -12,7 +12,8 @@
     "paper-header-panel": "PolymerElements/paper-header-panel#^1.0.0",
     "paper-icon-button": "PolymerElements/paper-icon-button#^1.0.0",
     "paper-menu": "PolymerElements/paper-menu#^1.0.0",
-    "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.0"
+    "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.0",
+    "finance-chart": "^0.9.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
@@ -21,15 +22,15 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
   "homepage": "https://github.com/Mortega5/reddit-timeline",
-  "version": "1.0.2-stable",
-  "_release": "1.0.2-stable",
+  "version": "1.0.3-structural",
+  "_release": "1.0.3-structural",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.2-stable",
-    "commit": "cba5703255272c23627cc7b4e55e72023c7e8b19"
+    "tag": "v1.0.3-structural",
+    "commit": "a2e079c2b3c849cac7a804fd8483f79d4098c7b7"
   },
   "_source": "https://github.com/Mortega5/reddit-timeline.git",
-  "_target": "v1.0.2-stable",
+  "_target": "v1.0.3-structural",
   "_originalSource": "reddit-timeline",
   "_direct": true
 }

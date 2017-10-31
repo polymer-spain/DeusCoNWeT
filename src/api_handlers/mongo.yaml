@@ -1,6 +1,6 @@
 host: 10.10.1.88
-pwdTest: euser:7394
-userTest: deusConwet
+pwdTest: test
+userTest: deus
 pwd: euser:7394
 user: deusConwet
 port: 27017

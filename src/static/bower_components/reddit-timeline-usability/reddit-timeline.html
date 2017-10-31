@@ -29,7 +29,7 @@ Polymer component to show your favourite subreddits feed
         width: 470px;
         height: 400px;
         background: #EEE;
-        --title-color: #24a0ed;
+        --title-color: #005c96;
         overflow: hidden;
         position: relative;
         box-shadow: 2px 2px 10px rgba(51, 51, 51, 0.5);
@@ -54,12 +54,15 @@ Polymer component to show your favourite subreddits feed
 
       paper-toolbar {
         text-transform: none;
-        --paper-toolbar-background: -webkit-linear-gradient(top, #2196F3, #64B5F6);
+        z-index: 100000;
+        --paper-toolbar-background: #333;
         color: white;
       }
 
       .menu {
-        margin-right: 0px !important;
+        margin: 8px 8px 8px 9px;
+        font-size: 16px;
+        transform: scale(1.5, 1);
       }
 
       .content {
@@ -73,6 +76,7 @@ Polymer component to show your favourite subreddits feed
       .icon {
         width: 50px;
         height: 45px;
+        margin-top: -5px;
       }
 
       .post {
@@ -116,7 +120,7 @@ Polymer component to show your favourite subreddits feed
       .detail .title {
         font-size: 13.5pt;
         font-family: arial, sans-serif;
-        color: var(--title-color);
+        color: #005c96;
         cursor: pointer;
       }
 
@@ -179,10 +183,16 @@ Polymer component to show your favourite subreddits feed
       .playBig {
         position: absolute;
         z-index: 1;
-        right: 5px;
+        margin: 0;
         bottom: 25px;
+        right: 25px;
         background: none;
-        fill: var(--paper-grey-400);
+        fill: #bdbdbd;
+        color: #333;
+        border: 2px solid #333;
+        border-radius: 100%;
+        padding: 1px 1px 1px 4px;
+        font-size: 24px;
       }
 
       .commentIcon {
@@ -200,10 +210,13 @@ Polymer component to show your favourite subreddits feed
       .play {
         position: absolute;
         z-index: 1;
-        left: 43px;
-        top: 49px;
+        left: 45px;
+        top: 35px;
         background: none;
-        fill: var(--paper-grey-400);
+        color: #bdbdbd;
+        border: 1px solid #bdbdbd;
+        border-radius: 100%;
+        padding: 1px 1px 1px 2px;
       }
 
       .postContent {
@@ -303,7 +316,7 @@ Polymer component to show your favourite subreddits feed
       }
 
       .dropdown-content {
-        background: -webkit-linear-gradient(top, #64B5F6, #2196F3);
+        background: #333;
         width: 100px;
         max-width: 100px;
         text-align: center;
@@ -325,14 +338,23 @@ Polymer component to show your favourite subreddits feed
         transition: .5s ease;
       }
 
+      .refresh {
+        margin: 0;
+        font-size: 24px;
+        margin-right: 10px;
+      }
+
       .cursors {
         padding: 0;
         margin: 8px;
-        --paper-icon-button: {
-          width: 18px;
-          height: 18px;
-          color: white;
-        }
+        font-weight: bold;
+      }
+
+      .cursors:hover,
+      .refresh:hover,
+      .menu:hover {
+        color: #FF5722;
+        cursor: pointer;
       }
       /* LOADING */
 
@@ -549,22 +571,23 @@ Polymer component to show your favourite subreddits feed
     <!-- HEADER -->
     <paper-header-panel mode="seamed" class="header">
       <paper-toolbar class="paper-header">
-        <paper-icon-button class="cursors" icon="icons:arrow-back" on-click="back" hidden="{{!view_detail}}"></paper-icon-button>
-        <paper-icon-button icon="menu" class="menu" on-click="toggle" hidden="{{view_detail}}"></paper-icon-button>
-        <iron-icon src="reddit-icon.png" class="icon"></iron-icon>
+        <p class="cursors" on-click="back" hidden="{{!view_detail}}">🡠</p>
+        <p class="menu" on-click="toggle" hidden="{{view_detail}}">☰</p>
+        <img alt="logo" src="reddit-icon.png" class="icon"></img>
         <span class="title flex">{{words.title}}</span>
-        <paper-icon-button icon="refresh" on-click="refresh" hidden="{{view_detail}}"></paper-icon-button>
-        <paper-icon-button class="cursors" icon="icons:arrow-back" on-click="before" hidden="{{view_detail}}"></paper-icon-button>
+        <p class="refresh" on-click="refresh" hidden="{{view_detail}}">⟳</p>
+        <p class="cursors" on-click="before" hidden="{{view_detail}}">🡠</p>
         <span hidden="{{view_detail}}">{{cursor}}</span>
-        <paper-icon-button class="cursors" icon="icons:arrow-forward" on-click="next" hidden="{{view_detail}}"></paper-icon-button>
+        <p class="cursors" on-click="next" hidden="{{view_detail}}">🡢</p>
       </paper-toolbar>
     </paper-header-panel>
-    <paper-menu id="dropdown-content" class="dropdown-content" role="listbox" hidden="{{view_detail}}">
+    <paper-menu id="dropdown-content" class="dropdown-content" hidden="{{view_detail}}">
       <paper-button raised class="item" on-click="hot">{{words.hot}}</paper-button>
       <div class="divisor"></div>
       <paper-button raised class="item" on-click="new">{{words.new}}</paper-button>
       <div class="divisor"></div>
       <paper-button raised class="item" on-click="top">{{words.top}}</paper-button>
+
     </paper-menu>
     <div class="content">
       <template id="feed_template" is="dom-repeat" items="{{feed}}">
@@ -572,20 +595,19 @@ Polymer component to show your favourite subreddits feed
 
           <template is="dom-if" if="{{hasMedia(item, index)}}">
             <a target="_blank" href="{{item.media}}">
-              <img class="preview" src="{{item.detail}}">
-              <iron-icon class="play" icon="av:play-circle-outline">
-              </iron-icon>
+              <img  alt="preview" class="preview" src="{{item.detail}}">
+              <p class="play" >►</p>
             </a>
           </template>
 
           <template is="dom-if" if="{{!hasMedia(item, index)}}">
             <template is="dom-if" if="{{hasPreview(item,index)}}">
               <a target="_blank" href="{{item.url}}">
-                <img class="preview" src="{{item.image}}">
+                <img  alt="preview" class="preview" src="{{item.image}}">
               </a>
             </template>
-            <template is="dom-if" if="{{!hasPreview(item, index)}}">
-              <img class="commentIcon" src="reddit-comment.png">
+            <template is="dom-if" if="{{!hasPreview(item)}}">
+              <img alt="comment" class="commentIcon" src="reddit-comment.png">
             </template>
           </template>
 
@@ -635,17 +657,16 @@ Polymer component to show your favourite subreddits feed
             </google-youtube>
           </template>
           <template is="dom-if" if="{{!item.hasVideo}}">
-            <a target="_blank" href="{{item.media}}">
-              <img class="previewBig" src="{{item.detail}}">
-              <iron-icon class="playBig" icon="av:play-circle-outline">
-              </iron-icon>
+            <a target="_blank" href="{{item.media}}" style="position:relative">
+              <img alt="preview" class="previewBig" src="{{item.detail}}">
+              <p class="playBig" >►</p>
             </a>
           </template>
         </template>
         <template is="dom-if" if="{{!hasMedia(item)}}">
           <template is="dom-if" if="{{hasPreview(item)}}">
             <a target="_blank" href="{{item.url}}">
-              <img class="previewBig" src="{{item.image}}">
+              <img alt="preview" class="previewBig" src="{{item.image}}">
             </a>
           </template>
         </template>
@@ -751,7 +772,7 @@ Polymer component to show your favourite subreddits feed
           value: function () {
             return []
           },
-          notify: true
+          notify:true
         },
         refresh_time: {
           type: Number,
@@ -807,7 +828,7 @@ Polymer component to show your favourite subreddits feed
         };
       },
 
-      /* Request access token*/
+      /* Request acces token*/
       _token_received: function (event, detail) {
         this.token = detail.response.access_token;
         this.fire('reddit-timeline-token', {
@@ -1006,7 +1027,7 @@ Polymer component to show your favourite subreddits feed
       /* COMPONENT BEHAVIOUR*/
 
       _logged: function () {
-          this.$.get_subreddits.generateRequest();
+        this.$.get_subreddits.generateRequest();
       },
 
       attached: function () {

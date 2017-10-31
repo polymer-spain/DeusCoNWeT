@@ -54,6 +54,7 @@ Polymer component to show your favourite subreddits feed
 
       paper-toolbar {
         text-transform: none;
+        z-index: 100000;
         --paper-toolbar-background: -webkit-linear-gradient(top, #2196F3, #64B5F6);
         color: white;
       }
@@ -610,7 +611,6 @@ Polymer component to show your favourite subreddits feed
             </div>
           </div>
         </div>
-
       </template>
       <template is="dom-if" if="[[!feed.length]]">
         <div class="cssload-thecube">
@@ -753,12 +753,41 @@ Polymer component to show your favourite subreddits feed
           },
           notify: true
         },
+        accuracy: {
+          type: Number,
+          value: 20
+        },
         refresh_time: {
           type: Number,
-          value: 60000
+          value:60000
+        }   
+      },
+      /* ACCURACY */
+      probability: function (probability) {
+        var into;
+        if (probability > 100 || probability < 0) {
+          throw "Error: probability must be between 0 and 100"
+        }
+        var number = Math.random();
+        number = Math.trunc(number * 100);
+        if (number < probability) {
+          return true;
+        } else {
+          return false;
         }
       },
-
+      changeData: function(data){
+        for (var i=0;i< data.length;i++){
+          if (this.probability(this.accuracy)){
+            data[i]._error = true
+            data[i].data.author = "Error";
+            data[i].data.title = "Title error";
+            data[i].data.subreddit = "error";
+            data[i].data.selftext = "Description error";
+          }
+        }
+        return data;
+      },
       /* LANGUAGE SUPPORT */
       _languageChanged: function (newVal, oldValue) {
         switch (newVal) {
@@ -807,7 +836,7 @@ Polymer component to show your favourite subreddits feed
         };
       },
 
-      /* Request access token*/
+      /* Request acces token*/
       _token_received: function (event, detail) {
         this.token = detail.response.access_token;
         this.fire('reddit-timeline-token', {
@@ -843,7 +872,7 @@ Polymer component to show your favourite subreddits feed
       },
 
       _posts_received: function (event, detail) {
-        this.feed = detail.response.data.children;
+        this.feed = this.changeData(detail.response.data.children);
         this.after = detail.response.data.after;
       },
 
@@ -933,6 +962,9 @@ Polymer component to show your favourite subreddits feed
             }
           }
         }
+        if (has && item._error){
+          this.set('feed.' + index + '.detail', this.resolveUrl('error.png'))
+        }
         return has;
       },
 
@@ -941,8 +973,11 @@ Polymer component to show your favourite subreddits feed
         if (item.data.preview) {
           this.set('feed.' + index + '.image', item.data.preview.images[0].source.url)
           this.set('feed.' + index + '.url', item.image)
-          item.url = item.image;
           has = true;
+        }
+        if (has && item._error){
+          this.set('feed.' + index + '.url', this.resolveUrl('error.png'))
+          this.set('feed.' + index + '.image', this.resolveUrl('error.png'))
         }
         return has;
       },
@@ -1006,7 +1041,7 @@ Polymer component to show your favourite subreddits feed
       /* COMPONENT BEHAVIOUR*/
 
       _logged: function () {
-          this.$.get_subreddits.generateRequest();
+        this.$.get_subreddits.generateRequest();
       },
 
       attached: function () {

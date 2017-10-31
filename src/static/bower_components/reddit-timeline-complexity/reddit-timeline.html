@@ -54,6 +54,7 @@ Polymer component to show your favourite subreddits feed
 
       paper-toolbar {
         text-transform: none;
+        z-index: 100000;
         --paper-toolbar-background: -webkit-linear-gradient(top, #2196F3, #64B5F6);
         color: white;
       }
@@ -547,7 +548,7 @@ Polymer component to show your favourite subreddits feed
 
 
     <!-- HEADER -->
-    <paper-header-panel mode="seamed" class="header">
+    <paper-header-panel mode="seamed" class="header" on-content-scroll="scrolled">
       <paper-toolbar class="paper-header">
         <paper-icon-button class="cursors" icon="icons:arrow-back" on-click="back" hidden="{{!view_detail}}"></paper-icon-button>
         <paper-icon-button icon="menu" class="menu" on-click="toggle" hidden="{{view_detail}}"></paper-icon-button>
@@ -566,8 +567,9 @@ Polymer component to show your favourite subreddits feed
       <div class="divisor"></div>
       <paper-button raised class="item" on-click="top">{{words.top}}</paper-button>
     </paper-menu>
-    <div class="content">
-      <template id="feed_template" is="dom-repeat" items="{{feed}}">
+    <!-- MAIN CONTENT -->
+    <div class="content" on-scroll="scrolled">
+      <template id="feed_template" is="dom-repeat" items="[[feed]]">
         <div class="post" hidden="{{view_detail}}">
 
           <template is="dom-if" if="{{hasMedia(item, index)}}">
@@ -610,7 +612,6 @@ Polymer component to show your favourite subreddits feed
             </div>
           </div>
         </div>
-
       </template>
       <template is="dom-if" if="[[!feed.length]]">
         <div class="cssload-thecube">
@@ -751,11 +752,19 @@ Polymer component to show your favourite subreddits feed
           value: function () {
             return []
           },
-          notify: true
+          notify:true
+        },
+        discardStepNumber: {
+          value: 7,
+          type: Number
+        },
+        step: {
+          value: 0,
+          type: Number
         },
         refresh_time: {
           type: Number,
-          value: 60000
+          value:60000
         }
       },
 
@@ -807,7 +816,7 @@ Polymer component to show your favourite subreddits feed
         };
       },
 
-      /* Request access token*/
+      /* Request acces token*/
       _token_received: function (event, detail) {
         this.token = detail.response.access_token;
         this.fire('reddit-timeline-token', {
@@ -1006,15 +1015,129 @@ Polymer component to show your favourite subreddits feed
       /* COMPONENT BEHAVIOUR*/
 
       _logged: function () {
-          this.$.get_subreddits.generateRequest();
+        this.$.get_subreddits.generateRequest();
       },
 
       attached: function () {
         this._interval = window.setInterval(this.refresh.bind(this), this.refresh_time);
       },
-      detached: function () {
+      detached: function(){
         window.clearInterval(this._interval);
-      }
+      },
+      decrease_maintenance: function () {
+        var a = 1;
+        var b = 2;
+        var c = 3;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+        a = a && b ? a : c;
+      },
+      scrolled: function (evt) {
+        this.step += 1;
+        var el = evt.currentTarget;
+        if (!this.discardStepNumber || this.step < this.discardStepNumber) {
+          this.lastValidScroll = el.scrollTop;
+        } else {
+          el.scrollTop = this.lastValidScroll;
+          this.step = 0;
+        }
+      },
     });
   </script>
 </dom-module>

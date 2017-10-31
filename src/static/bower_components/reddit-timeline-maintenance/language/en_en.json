@@ -1,0 +1,9 @@
+{
+	"title" : "Reddit",
+	"hot" : "Hot",
+	"new" : "New" ,
+	"top" : "Top",
+	"score" : "Score",
+	"comments" : "Comments",
+	"load_more":"Load more"
+}

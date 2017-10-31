@@ -50,8 +50,7 @@ else:
 basepath = "/api/componentes"
 request_uri = uri + basepath
 test_utils.openConnection(True)
-versions_list = ["stable","latency","security","structural","usability","maintenance","accuracy","complexity"]
-
+versions_list = ["stable", "accuracy", "latency"]
 aux = {"endpoint": ':domain/api/aux/twitterTimeline',
         "language": ':language',
         "access_token": "",
@@ -75,7 +74,6 @@ params = urllib.urlencode({"url": 'https://github.com/JuanFryS/twitter-timeline'
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-# Googleplus
 aux = {"api_key": "AIzaSyAArT6pflqm1-rj9Nwppuj_4z15FFh4Kis",
         "token": ""
         }
@@ -89,7 +87,7 @@ params = urllib.urlencode({"url": 'https://github.com/ailopera/googleplus-timeli
         "predetermined": 'True',
         "attributes": json.dumps(aux),
         "tokenAttr": 'token',
-        "img": 'images/components/google-icon.png'
+        "img": 'images/components/google-icon.svg'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
@@ -111,7 +109,6 @@ test_utils.make_request("PUT", request_uri, params, 201, None)
 #         }, doseq=True)
 # test_utils.make_request("PUT", request_uri, params, 201, None)
 
-# Facebook
 aux = {"component_directory": 'bower_components/facebook-wall/',
         "access_token": ""}
 params = urllib.urlencode({"url": 'https://github.com/Mortega5/facebook-wall',
@@ -128,7 +125,6 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/facebook-wall',
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-# Pinterest
 aux = {"token": "",
         "component_base": "bower_components/pinterest-timeline-stable/"}
 params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/tree/redesign/src/static/bower_components/pinterest-timeline-stable',
@@ -145,7 +141,6 @@ params = urllib.urlencode({"url": 'https://github.com/polymer-spain/DeusCoNWeT/t
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-# Traffic
 aux = {"api_key_geocoding": "AIzaSyC3shMTM6dD10MGqty-xugLBUFSCTICeBM",
         "app_key_traffic": "AmWMG90vJ0J9Sh2XhCp-M3AFOXJWAKqlersRRNvTIS4GyFmd3MxxigC4-l0bdvz-"}
 params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents",
@@ -161,7 +156,6 @@ params = urllib.urlencode({"url": "https://github.com/Mortega5/traffic-incidents
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-# Weather
 aux = {"app-id": "655f716c02b3f0aceac9e3567cfb46a8"}
 params = urllib.urlencode({"url": "https://github.com/Mortega5/open-weather",
         "component_id": 'open-weather',
@@ -176,7 +170,6 @@ params = urllib.urlencode({"url": "https://github.com/Mortega5/open-weather",
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
-# Finance
 aux = {}
 params = urllib.urlencode({"url": 'https://github.com/Mortega5/finance-search',
         "component_id": 'finance-search',
@@ -189,10 +182,27 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/finance-search',
         "predetermined": 'True',
         "img": 'images/components/finance-search-icon.png'
         }, doseq=True)
+
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
 # Spotify
-aux={"client_id":"RxkV7Oo-8Zid5Q", "client_secret":"eF-kiWrj12VmIV62m-NR4YiZgJ8", "component_base":"bower_components/reddit-timeline-stable/", "language":":language" }
+aux={"token":""}
+params = urllib.urlencode({"url": 'https://github.com/magasuan/spotify-component',
+        "component_id": 'spotify-component',
+        "description": 'Web component to see your playlist in Spotify using Polymer',
+        "social_network": 'spotify',
+        "input_type": 'None',
+        "output_type": 'playlist',
+        "versions": versions_list,
+        "predetermined": 'True',
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'token',
+        "img": 'images/components/Spotify.png'
+        }, doseq=True)
+test_utils.make_request("PUT", request_uri, params, 201, None)
+
+# REDDIT
+aux={"client_id":"RxkV7Oo-8Zid5Q", "client_secret":"eF-kiWrj12VmIV62m-NR4YiZgJ8", "component_base":"bower_components/reddit-timeline-stable/", "language":":language", "refresh_token":"" }
 params = urllib.urlencode({"url": 'https://github.com/mortega5/reddit-timeline',
         "component_id": 'reddit-timeline',
         "description": 'Web component to see reddit posts',
@@ -206,5 +216,3 @@ params = urllib.urlencode({"url": 'https://github.com/mortega5/reddit-timeline',
         "img": 'images/components/reddit.png'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
-
-# Reddit
