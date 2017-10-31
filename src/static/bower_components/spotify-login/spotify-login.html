@@ -76,13 +76,18 @@
                 headers: {
                     type:Object,
                     computed: '_getHeaders(token)'
+                },
+                redirect_uri: {
+                    type: String,
+                    value: "",
+                    refrectToAttrbiute: true
                 }
             },
             _login: function(event, detail, sender){
                 var url = "https://accounts.spotify.com/authorize?&response_type=token"
                 url += '&scope='+this.scope;
                 url+='&client_id='+this.client_id;
-                url+='&redirect_uri=http://localhost:8080';
+                url+='&redirect_uri='+this.redirect_uri;
                 var back = this;
                 var win = window.open(url, "Autentícate", 'width=800, height=600');
                 var pollTimer = window.setInterval(function() {

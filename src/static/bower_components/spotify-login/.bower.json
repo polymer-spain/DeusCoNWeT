@@ -29,6 +29,5 @@
   },
   "_source": "https://github.com/magasuan/spotify-login.git",
   "_target": "^1.0.0",
-  "_originalSource": "spotify-login",
-  "_direct": true
+  "_originalSource": "spotify-login"
 }
