@@ -1,8 +1,9 @@
 {
-	"title" : "Welcome to PicBit",
+	"title" : "Reddit",
 	"hot" : "Hot",
 	"new" : "New" ,
 	"top" : "Top",
 	"score" : "Score",
-	"comments" : "Comments"
+	"comments" : "Comments",
+	"load_more":"Load more"
 }

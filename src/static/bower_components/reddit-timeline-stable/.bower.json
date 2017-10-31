@@ -19,5 +19,17 @@
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
     "web-component-tester": "^4.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
-  }
+  },
+  "homepage": "https://github.com/Mortega5/reddit-timeline",
+  "version": "1.0.1-stable",
+  "_release": "1.0.1-stable",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.1-stable",
+    "commit": "2b36fa83e327d2ccc78c761e9b41974e9d000d25"
+  },
+  "_source": "https://github.com/Mortega5/reddit-timeline.git",
+  "_target": "1.0.1-stable",
+  "_originalSource": "reddit-timeline",
+  "_direct": true
 }

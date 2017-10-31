@@ -428,6 +428,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           //   break;
           case 'spotify':
             break;
+          case 'reddit':
+            break;
           default:
             $backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
             break;
@@ -441,5 +443,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $('#login-modal login-facebook').bind('facebook-logged', loginCallback);
     $('#login-modal pinterest-login').bind('pinterest-logged', loginCallback);
     $('#login-modal spotify-login').bind('spotify-logged', loginCallback);
+    $('#login-modal reddit-login').bind('reddit-logged', loginCallback);
   })();
 }]);

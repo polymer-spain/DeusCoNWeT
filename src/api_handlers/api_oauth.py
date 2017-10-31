@@ -121,6 +121,9 @@ class OauthSignUpHandler(SessionHandler):
             token_id = self.request.POST["token_id"]
             user_identifier = self.request.POST["user_identifier"]
 
+            print "access_token", access_token
+            print "token_id", token_id
+            print "user_identifier", user_identifier
             # Checks if the username was stored previously
             stored_credentials = mongoDB.searchToken(token_id, social_network)
             if stored_credentials == None: # Not found
@@ -131,11 +134,12 @@ class OauthSignUpHandler(SessionHandler):
                     # Generate a valid username for a new user
                     user_key = mongoDB.insertUser(social_network,
                             token_id, access_token, user_data)
+                    print "Inserta el usuario correctamente"
                     mongoDB.assignComponents(user_key)
-                    
+                    print "asigna los componentes"
                     # Creates the session
                     session_id = self.login(str(user_key.id))
-                    
+                    print "la funcion login funciona"
                     # Returns the session, user_id and social_network cookie
                     self.response.set_cookie("session", session_id,
                             path="/", domain=domain, secure=True)
@@ -1226,3 +1230,4 @@ class SpotifyCredentialHandler(OAuthCredentialsContainerHandler):
 
     def post(self, token_id):
         self.update_credentials("spotify", token_id)
+        

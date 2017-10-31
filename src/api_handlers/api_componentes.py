@@ -44,7 +44,7 @@ else:
     domain = cfg["domain"]
 
 
-social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest", "spotify"]
+social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest", "spotify", "reddit"]
 
 class ComponentRatingHandler(SessionHandler):
     """

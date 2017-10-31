@@ -45,6 +45,8 @@ social_list = [
     'linkedin',
     'googleplus',
     'github',
+    'spotify',
+    'reddit'
     ]
 
 
@@ -740,7 +742,7 @@ def assignComponents(user):
   versions = bva.getNewVersions()
   comps = Component.objects()
   version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
-                  "finance-search": 5, "open-weather": 6, "spotify-component": 7}
+                  "finance-search": 5, "open-weather": 6, "spotify-component": 7, "reddit-timeline": 8}
   user.components = []
   for comp in comps:
     version = versions[version_order[comp.component_id]]
