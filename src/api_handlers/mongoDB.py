@@ -35,8 +35,6 @@ import BVA
 import dateutil.parser
 import pdb
 
-bva = BVA.BVA(["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather", "spotify-component"],
-              ["stable", "latency", "accuracy", "maintenance", "complexity", "structural", "usability", "security"])
 #import pdb; pdb.set_trace(); # comando para depurar 
 # Definimos la lista de redes sociales con las que trabajamos
 social_list = [
@@ -80,6 +78,7 @@ else:
 
 connect(database, port=mongoCfg['port'], host=mongoCfg['host'], username=username,password=password)
 
+bva = BVA.BVA(cfg['components'], cfg['versions'])
 
 
 
@@ -413,6 +412,7 @@ def getToken(id_rs, social_net):
     user = User.objects(tokens=token.id)
     if user.count() > 0:
       user = user[0]
+      print "se intenta descifrar con ", token.id, id_rs, social_net
       cipher = getCipher(str(token.id))
       ans = {"token": decodeAES(cipher, token.token),
             "user_id": user.user_id,
@@ -635,7 +635,7 @@ def insertToken(document_id, social_name, access_token, user_id, secret=None):
   user = User.objects(id=document_id)
   if user.count() > 0:
     user = user[0]
-  tok_aux = Token(identifier=user_id, token="", social_name=social_name)
+  tok_aux = Token(identifier=user_id, token="", social_name=social_name).save()
   # Ciphers access token that will be stored in the datastore
   cipher = getCipher(str(tok_aux.id))
   access_token = encodeAES(cipher, access_token)
