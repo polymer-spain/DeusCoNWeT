@@ -20,9 +20,14 @@
     "paper-button": "PolymerElements/paper-button",
     "web-component-tester": "Polymer/web-component-tester#~4.2.1",
     "test-fixture": "PolymerElements/test-fixture#^1.0.0",
+<<<<<<< HEAD
     "finance-search": "^1.0.2-stable",
     "search-company": "*",
     "paper-spinner": "^1.2.1"
+=======
+    "moment": "^2.18.1",
+    "polymer": "1.2"
+>>>>>>> master
   },
   "devDependencies": {
     "polymer-test-tools": "Polymer/polymer-test-tools#master",
@@ -30,7 +35,8 @@
     "sinon": "http://sinonjs.org/releases/sinon-1.10.2.js"
   },
   "resolutions": {
-    "mocha": "^2.3.0"
+    "mocha": "^2.3.0",
+    "polymer": "^1.0.0"
   },
   "authors": [
     "Miguel Ortega Moreno <miguel.ortega.moreno5@gmail.com>"

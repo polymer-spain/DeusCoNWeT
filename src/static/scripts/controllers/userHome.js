@@ -407,7 +407,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           case 'googleplus':
             var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
             $http.get(uri).success(function (responseData) {
-              $backend.setNewNetwork(token, responseData.id, social_network).then(function(){$rootScope.user.renew[social_network] = true;},registerTokenError);
+              $rootScope.user.renew[social_network] = true;
+              //$backend.setNewNetwork(token, responseData.id, social_network).then(function(){},registerTokenError);
             });
             break;
           case 'twitter':
@@ -431,7 +432,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           case 'reddit':
             break;
           default:
-            $backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
+            //$backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
             break;
         }
       });

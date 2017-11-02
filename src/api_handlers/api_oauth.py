@@ -510,30 +510,34 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     # Checks if the username was stored previously
                     stored_credentials = mongoDB.getToken(token_id,
                             social_network)
-                    if stored_credentials == None:
-                        # Adds the token to the user credentials list
-                        secret = None
-                        if social_network== 'twitter':
-                            oauth_verifier = self.request.POST['oauth_verifier']
-                            twitter_data = memcache.get(oauth_verifier)
-                            secret = twitter_data['oauth_token_secret']
-                            access_token = twitter_data['oauth_token']
-                            
-                        #Builds the response
-                        mongoDB.insertToken(user, social_network, access_token, token_id, secret=secret)
-                        user_id = mongoDB.getUserId(user)
-                        response = {"user_id": user_id, "token": access_token}
-                        self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(201)
-                        print "Responde 201"
-                    else:
-                        response = \
-                        {"error": "This set of credentials already exists in the system"}
-                        self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(400)
-                        print "Responde 400 credentials"
+                    
+                    # DESCOMENTAR
+                    #if stored_credentials == None:  
+                    # Adds the token to the user credentials list
+                    secret = None
+                    if social_network== 'twitter':
+                        oauth_verifier = self.request.POST['oauth_verifier']
+                        twitter_data = memcache.get(oauth_verifier)
+                        secret = twitter_data['oauth_token_secret']
+                        access_token = twitter_data['oauth_token']
+                        
+                    #Builds the response
+                    mongoDB.insertToken(user, social_network, access_token, token_id, secret=secret)
+                    user_id = mongoDB.getUserId(user)
+                    response = {"user_id": user_id, "token": access_token}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(201)
+                    print "Responde 201"
+                    # DESCOMENTAR
+                    # else:
+                    #     response = \
+                    #     {"error": "This set of credentials already exists in the system"}
+                    #     self.response.content_type = "application/json"
+                    #     self.response.write(json.dumps(response))
+                    #     self.response.set_status(400)
+                    #     print "Responde 400 credentials"
+
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
