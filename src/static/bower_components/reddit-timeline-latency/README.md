@@ -1,38 +1,13 @@
 # \<reddit-timeline\>
 
-Polymer component to show your favourite subreddits feed
+Componente de polymer que muestra los post de redit mas comentados, mas nuevos o los mas activos actualmente. Realiza peticiones para obtener los foros a los que está subscrito el usuario. Por cada foro
+al que se siga (junto los "hot", "new" and "top" post) pide los posts cada vez que se le indique.
 
-## Install the Polymer-CLI
+Cuando se pide la siguiente página se realiza una peticion para obtener los posts de esa pagina.
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
+## Version Latencia
 
-## Viewing Your Application
+Version con retardos en las peticiones. El valor por defecto es de 2000ms cada una de las peticiones
+que se realzian.
 
-```
-$ polymer serve
-```
 
-## Building Your Application
-
-```
-$ polymer build
-```
-
-This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
-containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
-CSS, and JS optimizers.
-
-You can serve the built versions by giving `polymer serve` a folder to serve
-from:
-
-```
-$ polymer serve build/bundled
-```
-
-## Running Tests
-
-```
-$ polymer test
-```
-
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.

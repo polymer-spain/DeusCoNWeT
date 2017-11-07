@@ -35,7 +35,9 @@
     "paper-radio-group": "PolymerElements/paper-radio-group#~1.0.9",
     "iron-form": "PolymerElements/iron-form#~1.0.16",
     "chart.js": "^2.4.0",
-    "octicons": "6.0.1"
+    "octicons": "6.0.1",
+    "spotify-login": "^1.0.0",
+    "paper-styles": "PolymerElements/paper-styles#v1.1.5"
   },
   "devDependencies": {},
   "resolutions": {

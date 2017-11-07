@@ -106,5 +106,5 @@
   "noTokenDescription":"Click to log in this social network before use it",
   "loginTitle": "Log in before use  ",
   "loginRequest": "The component requires  permission for works correctly. In order to use it, log in",
-  "add_token_error": "There are already an user with this account. Please use other account"
+  "add_token_error": "There are already an user with this account. Please consider login in the platform using this account"
 }

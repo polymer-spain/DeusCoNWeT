@@ -1,5 +1,5 @@
 /*global angular, document*/
-angular.module("picbit").controller("ContactController", ["$scope", "$backend", function ($scope, $backend) {
+angular.module("picbit").controller("ContactCtrl", ["$scope", "$backend", function ($scope, $backend) {
   "use strict";
 
   $scope.sendEmail = function () {

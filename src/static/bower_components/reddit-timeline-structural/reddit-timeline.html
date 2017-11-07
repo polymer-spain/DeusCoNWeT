@@ -1,0 +1,1022 @@
+<!--
+@license
+@author Javier Caballero Abenza. All rights reserved.
+
+`reddit-timeline`
+Polymer component to show your favourite subreddits feed
+
+@demo demo/index.html 
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/av-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../google-youtube/google-youtube.html">
+<link rel="import" href="../finance-chart/finance-chart.html">
+
+<dom-module id="reddit-timeline">
+  <template>
+    <style>
+       :host {
+        display: block;
+        min-height: 400px;
+        min-width: 470px;
+        width: 470px;
+        height: 400px;
+        background: #EEE;
+        --title-color: #24a0ed;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 2px 2px 10px rgba(51, 51, 51, 0.5);
+        border: 1px solidr #d2d2d2;
+      }
+
+      .header {
+        min-height: 60px;
+        max-height: 60px;
+      }
+
+      paper-header-panel .header {
+        position: relative;
+        width: 100%;
+        min-height: 60px;
+        max-height: 60px;
+      }
+
+      paper-header-panel .title {
+        font-size: 18px;
+      }
+
+      paper-toolbar {
+        text-transform: none;
+        z-index: 100000;
+        --paper-toolbar-background: -webkit-linear-gradient(top, #2196F3, #64B5F6);
+        color: white;
+      }
+
+      .menu {
+        margin-right: 0px !important;
+      }
+
+      .content {
+        overflow-y: auto;
+        height: calc( 100% - 70px);
+        width: 100%;
+        position: relative;
+        margin-top: 10px;
+      }
+
+      .icon {
+        width: 50px;
+        height: 45px;
+      }
+
+      .post {
+        margin-left: auto;
+        margin-right: auto;
+        background-color: white;
+        border: 1px solid;
+        border-color: var(--paper-grey-400);
+        border-radius: 2px;
+        display: block;
+        width: 90%;
+        position: relative;
+        margin-bottom: 5px;
+        min-height: 80px;
+        box-shadow: 2px 2px 8px rgba(107, 100, 100, 0.5);
+      }
+
+      .preview {
+        border-radius: 10px;
+        max-height: 68px;
+        min-height: 68px;
+        max-width: 62px;
+        min-width: 62px;
+        float: left;
+        margin: 5px;
+        margin-top: 7px;
+        margin-bottom: 7px;
+        position: absolute;
+      }
+
+      .detail {
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .detail .title {
+        font-size: 13.5pt;
+        font-family: arial, sans-serif;
+        color: var(--title-color);
+        cursor: pointer;
+      }
+
+      .detail .title:hover {
+        color: #FF5722;
+      }
+
+      .detail .author {
+        font-size: 12px;
+        padding-top: 8px;
+        font-family: arial, sans-serif;
+        font-weight: 700;
+        color: var(--title-color);
+      }
+
+      .detail .comments {
+        font-size: 13px;
+        font-family: arial, sans-serif;
+        font-weight: 700;
+        padding: 8px 0;
+        box-sizing: border-box;
+      }
+
+      .detail .description {
+        font-size: 14px;
+        font-family: arial, sans-serif;
+        color: black;
+        flex: 1;
+        margin-top: 12px;
+        border: 1px solid #d2d2d2;
+        padding: 8px 12px;
+        background-color: #fefefe;
+        box-shadow: 2px 2px 8px #d2d2d2;
+      }
+
+      .detail hr {
+        width: 100%;
+      }
+
+      .detail a {
+        margin-top: 5px;
+        color: var(--title-color) !important;
+        text-decoration: none !important;
+      }
+
+      .statsBig {
+        padding: 12px;
+      }
+
+      .statsBig a:hover {
+        border-radius: 3px;
+        color: #FF5722 !important;
+      }
+
+      .previewBig {
+        max-width: 100%;
+        min-width: 100%;
+      }
+
+      .playBig {
+        position: absolute;
+        z-index: 1;
+        right: 5px;
+        bottom: 25px;
+        background: none;
+        fill: var(--paper-grey-400);
+      }
+
+      .commentIcon {
+        max-height: 50px;
+        min-height: 50px;
+        max-width: 50px;
+        min-width: 50px;
+        float: left;
+        margin: 11px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        position: absolute;
+      }
+
+      .play {
+        position: absolute;
+        z-index: 1;
+        left: 43px;
+        top: 49px;
+        background: none;
+        fill: var(--paper-grey-400);
+      }
+
+      .postContent {
+        position: relative;
+        padding: 8px 12px;
+        left: 67px;
+        width: calc(100% - 67px - 10px);
+        min-height: 70px;
+        box-sizing: border-box;
+      }
+
+      .postContent .title {
+        font-size: 14px;
+        font-family: arial, sans-serif;
+        color: var(--title-color);
+        margin-bottom: 35px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .postContent .stats,
+      .postContent .subreddit {
+        font-size: 12px;
+        font-family: arial, sans-serif;
+        color: var(--title-color);
+      }
+
+      .stats {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        padding: 5px 12px;
+        box-sizing: border-box;
+      }
+
+      .stats a {
+        color: var(--title-color) !important;
+        text-decoration: none !important;
+      }
+
+      .stats a:hover {
+        border-radius: 3px;
+        color: #FF5722 !important;
+      }
+
+      .subreddit {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        padding: 5px;
+      }
+
+      .subreddit a {
+        color: var(--title-color) !important;
+        text-decoration: none !important;
+      }
+
+      .subreddit a:hover {
+        border-radius: 3px;
+        color: #FF5722 !important;
+      }
+
+      paper-button {
+        max-height: 30px;
+        min-height: 30px;
+        min-width: 30px;
+        padding: 2px;
+        position: relative;
+        background: none;
+      }
+
+      paper-icon-button:hover {
+        color: #FF5722 !important;
+      }
+
+      .item {
+        text-transform: none;
+        background: none;
+        padding-top: 1px;
+        margin-bottom: 5px;
+        min-height: 30px;
+        width: 100%;
+        box-shadow: none;
+        font-size: 12px !important;
+        margin: 0;
+      }
+
+      div.divisor {
+        margin: 2px 12px;
+        box-sizing: border-box;
+        border-bottom: 1px solid #d2d2d2;
+        height: 0;
+      }
+
+      .item:hover {
+        background: -webkit-linear-gradient(top, #FF5722, #FF7043);
+      }
+
+      .dropdown-content {
+        background: -webkit-linear-gradient(top, #64B5F6, #2196F3);
+        width: 100px;
+        max-width: 100px;
+        text-align: center;
+        font-family: arial;
+        font-size: 14px;
+        padding: 2px;
+        color: white;
+        height: 100%;
+        position: absolute;
+        z-index: 10000;
+        float: left;
+        left: -155px;
+        transition: .5s ease;
+        box-shadow: 2px 2px 10px rgba(51, 51, 51, 0.8);
+      }
+
+      .dropdown-content.active {
+        left: 0;
+        transition: .5s ease;
+      }
+
+      .cursors {
+        padding: 0;
+        margin: 8px;
+        --paper-icon-button: {
+          width: 18px;
+          height: 18px;
+          color: white;
+        }
+      }
+      /* LOADING */
+
+      .cssload-thecube {
+        width: 69px;
+        height: 69px;
+        margin: 0 auto;
+        margin-top: 60px;
+        position: relative;
+        transform: rotateZ(45deg);
+        -o-transform: rotateZ(45deg);
+        -ms-transform: rotateZ(45deg);
+        -webkit-transform: rotateZ(45deg);
+        -moz-transform: rotateZ(45deg);
+      }
+
+      .cssload-thecube .cssload-cube {
+        position: relative;
+        transform: rotateZ(45deg);
+        -o-transform: rotateZ(45deg);
+        -ms-transform: rotateZ(45deg);
+        -webkit-transform: rotateZ(45deg);
+        -moz-transform: rotateZ(45deg);
+      }
+
+      .cssload-thecube .cssload-cube {
+        float: left;
+        width: 50%;
+        height: 50%;
+        position: relative;
+        transform: scale(1.1);
+        -o-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        -webkit-transform: scale(1.1);
+        -moz-transform: scale(1.1);
+      }
+
+      .cssload-thecube .cssload-cube:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--title-color);
+        animation: cssload-fold-thecube 2.76s infinite linear both;
+        -o-animation: cssload-fold-thecube 2.76s infinite linear both;
+        -ms-animation: cssload-fold-thecube 2.76s infinite linear both;
+        -webkit-animation: cssload-fold-thecube 2.76s infinite linear both;
+        -moz-animation: cssload-fold-thecube 2.76s infinite linear both;
+        transform-origin: 100% 100%;
+        -o-transform-origin: 100% 100%;
+        -ms-transform-origin: 100% 100%;
+        -webkit-transform-origin: 100% 100%;
+        -moz-transform-origin: 100% 100%;
+      }
+
+      .cssload-thecube .cssload-c2 {
+        transform: scale(1.1) rotateZ(90deg);
+        -o-transform: scale(1.1) rotateZ(90deg);
+        -ms-transform: scale(1.1) rotateZ(90deg);
+        -webkit-transform: scale(1.1) rotateZ(90deg);
+        -moz-transform: scale(1.1) rotateZ(90deg);
+      }
+
+      .cssload-thecube .cssload-c3 {
+        transform: scale(1.1) rotateZ(180deg);
+        -o-transform: scale(1.1) rotateZ(180deg);
+        -ms-transform: scale(1.1) rotateZ(180deg);
+        -webkit-transform: scale(1.1) rotateZ(180deg);
+        -moz-transform: scale(1.1) rotateZ(180deg);
+      }
+
+      .cssload-thecube .cssload-c4 {
+        transform: scale(1.1) rotateZ(270deg);
+        -o-transform: scale(1.1) rotateZ(270deg);
+        -ms-transform: scale(1.1) rotateZ(270deg);
+        -webkit-transform: scale(1.1) rotateZ(270deg);
+        -moz-transform: scale(1.1) rotateZ(270deg);
+      }
+
+      .cssload-thecube .cssload-c2:before {
+        animation-delay: 0.35s;
+        -o-animation-delay: 0.35s;
+        -ms-animation-delay: 0.35s;
+        -webkit-animation-delay: 0.35s;
+        -moz-animation-delay: 0.35s;
+      }
+
+      .cssload-thecube .cssload-c3:before {
+        animation-delay: 0.69s;
+        -o-animation-delay: 0.69s;
+        -ms-animation-delay: 0.69s;
+        -webkit-animation-delay: 0.69s;
+        -moz-animation-delay: 0.69s;
+      }
+
+      .cssload-thecube .cssload-c4:before {
+        animation-delay: 1.04s;
+        -o-animation-delay: 1.04s;
+        -ms-animation-delay: 1.04s;
+        -webkit-animation-delay: 1.04s;
+        -moz-animation-delay: 1.04s;
+      }
+
+
+
+      @keyframes cssload-fold-thecube {
+        0%,
+        10% {
+          transform: perspective(129px) rotateX(-180deg);
+          opacity: 0;
+        }
+        25%,
+        75% {
+          transform: perspective(129px) rotateX(0deg);
+          opacity: 1;
+        }
+        90%,
+        100% {
+          transform: perspective(129px) rotateY(180deg);
+          opacity: 0;
+        }
+      }
+
+      @-o-keyframes cssload-fold-thecube {
+        0%,
+        10% {
+          -o-transform: perspective(129px) rotateX(-180deg);
+          opacity: 0;
+        }
+        25%,
+        75% {
+          -o-transform: perspective(129px) rotateX(0deg);
+          opacity: 1;
+        }
+        90%,
+        100% {
+          -o-transform: perspective(129px) rotateY(180deg);
+          opacity: 0;
+        }
+      }
+
+      @-ms-keyframes cssload-fold-thecube {
+        0%,
+        10% {
+          -ms-transform: perspective(129px) rotateX(-180deg);
+          opacity: 0;
+        }
+        25%,
+        75% {
+          -ms-transform: perspective(129px) rotateX(0deg);
+          opacity: 1;
+        }
+        90%,
+        100% {
+          -ms-transform: perspective(129px) rotateY(180deg);
+          opacity: 0;
+        }
+      }
+
+      @-webkit-keyframes cssload-fold-thecube {
+        0%,
+        10% {
+          -webkit-transform: perspective(129px) rotateX(-180deg);
+          opacity: 0;
+        }
+        25%,
+        75% {
+          -webkit-transform: perspective(129px) rotateX(0deg);
+          opacity: 1;
+        }
+        90%,
+        100% {
+          -webkit-transform: perspective(129px) rotateY(180deg);
+          opacity: 0;
+        }
+      }
+
+      @-moz-keyframes cssload-fold-thecube {
+        0%,
+        10% {
+          -moz-transform: perspective(129px) rotateX(-180deg);
+          opacity: 0;
+        }
+        25%,
+        75% {
+          -moz-transform: perspective(129px) rotateX(0deg);
+          opacity: 1;
+        }
+        90%,
+        100% {
+          -moz-transform: perspective(129px) rotateY(180deg);
+          opacity: 0;
+        }
+      }
+    </style>
+    <iron-ajax id="refresh_token" url="https://www.reddit.com/api/v1/access_token" method="POST" headers="{{_token_headers}}"
+      params="{{_token_params}}" handle-as='json' on-response="_token_received">
+    </iron-ajax>
+
+    <iron-ajax id="get_subreddits" url="https://oauth.reddit.com/subreddits/mine/subscriber" method="GET" headers="{{_api_headers}}"
+      handle-as='json' on-response="_subreddits_received" on-error="_subreddit_error">
+    </iron-ajax>
+
+    <iron-ajax id="get_posts" url="https://oauth.reddit.com/r/{{subreddit}}/{{list}}" headers="{{_api_headers}}" params="{{_posts_params}}"
+      handle-as='json' on-response="_posts_received" on-error="_posts_error">
+    </iron-ajax>
+
+    <iron-ajax id="requestLanguage" url="{{languageUrl}}" method="GET" handleAs="json" on-response="_language_response">
+    </iron-ajax>
+
+
+    <!-- HEADER -->
+    <paper-header-panel mode="seamed" class="header">
+      <paper-toolbar class="paper-header">
+        <paper-icon-button class="cursors" icon="icons:arrow-back" on-click="back" hidden="{{!view_detail}}"></paper-icon-button>
+        <paper-icon-button icon="menu" class="menu" on-click="toggle" hidden="{{view_detail}}"></paper-icon-button>
+        <iron-icon src="reddit-icon.png" class="icon"></iron-icon>
+        <span class="title flex">{{words.title}}</span>
+        <paper-icon-button icon="refresh" on-click="refresh" hidden="{{view_detail}}"></paper-icon-button>
+        <paper-icon-button class="cursors" icon="icons:arrow-back" on-click="before" hidden="{{view_detail}}"></paper-icon-button>
+        <span hidden="{{view_detail}}">{{cursor}}</span>
+        <paper-icon-button class="cursors" icon="icons:arrow-forward" on-click="next" hidden="{{view_detail}}"></paper-icon-button>
+      </paper-toolbar>
+    </paper-header-panel>
+    <paper-menu id="dropdown-content" class="dropdown-content" role="listbox" hidden="{{view_detail}}">
+      <paper-button raised class="item" on-click="hot">{{words.hot}}</paper-button>
+      <div class="divisor"></div>
+      <paper-button raised class="item" on-click="new">{{words.new}}</paper-button>
+      <div class="divisor"></div>
+      <paper-button raised class="item" on-click="top">{{words.top}}</paper-button>
+    </paper-menu>
+    <!-- MAIN CONTENT -->
+    <div class="content" >
+      <template id="feed_template" is="dom-repeat" items="[[feed]]">
+        <div class="post" hidden="{{view_detail}}">
+
+          <template is="dom-if" if="{{hasMedia(item, index)}}">
+            <a target="_blank" href="{{item.media}}">
+              <img class="preview" src="{{item.detail}}">
+              <iron-icon class="play" icon="av:play-circle-outline">
+              </iron-icon>
+            </a>
+          </template>
+
+          <template is="dom-if" if="{{!hasMedia(item, index)}}">
+            <template is="dom-if" if="{{hasPreview(item,index)}}">
+              <a target="_blank" href="{{item.url}}">
+                <img class="preview" src="{{item.image}}">
+              </a>
+            </template>
+            <template is="dom-if" if="{{!hasPreview(item, index)}}">
+              <img class="commentIcon" src="reddit-comment.png">
+            </template>
+          </template>
+
+          <div class="postContent">
+            <div class="title" on-click="detail">
+              <template is="dom-if" if="{{adultContent(item)}}">
+                <span>[NSFW]</span>
+              </template>
+              {{item.data.title}}
+            </div>
+            <div class="stats">
+              {{words.score}}: {{item.data.score}}
+              <br>
+              <a target="_blank" href="{{getLink(item)}}">
+                {{words.comments}}: {{item.data.num_comments}}
+              </a>
+            </div>
+            <div class="subreddit">
+              <a target="_blank" href="{{getRLink(item)}}">
+                r/{{item.data.subreddit}}
+              </a>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template is="dom-if" if="[[!feed.length]]">
+        <div class="cssload-thecube">
+          <div class="cssload-cube cssload-c1"></div>
+          <div class="cssload-cube cssload-c2"></div>
+          <div class="cssload-cube cssload-c4"></div>
+          <div class="cssload-cube cssload-c3"></div>
+        </div>
+      </template>
+      <div class="detail vertical layout" hidden="{{!view_detail}}">
+
+        <a target="_blank" href="{{getLink(item)}}">
+          <span class="title">{{item.data.title}}</span>
+        </a>
+        <span class="author">{{item.data.author}}</span>
+        <hr>
+        <div hidden="{{!item.data.selftext}}" class="description flex">{{item.data.selftext}}</div>
+
+        <template id="media_template" is="dom-if" if="{{hasMedia(item)}}">
+          <template is="dom-if" if="{{item.hasVideo}}" restamp>
+            <google-youtube class="previewBig" video-id="{{item.video}}">
+            </google-youtube>
+          </template>
+          <template is="dom-if" if="{{!item.hasVideo}}">
+            <a target="_blank" href="{{item.media}}">
+              <img class="previewBig" src="{{item.detail}}">
+              <iron-icon class="playBig" icon="av:play-circle-outline">
+              </iron-icon>
+            </a>
+          </template>
+        </template>
+        <template is="dom-if" if="{{!hasMedia(item)}}">
+          <template is="dom-if" if="{{hasPreview(item)}}">
+            <a target="_blank" href="{{item.url}}">
+              <img class="previewBig" src="{{item.image}}">
+            </a>
+          </template>
+        </template>
+
+        <br>
+        <div class="statsBig">
+          <a id="comments" target="_blank" href="{{getLink(item)}}">
+            <span class="comments">{{words.comments}}: {{item.data.num_comments}}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'reddit-timeline',
+
+      properties: {
+
+        /* Component parameters */
+
+        refresh_token: String,
+
+        token: {
+          type: String,
+          observer: "_logged"
+        },
+
+        client_id: String,
+
+        client_secret: String,
+
+        /* Language */
+
+        lan_file: String,
+
+        language: {
+          type: String,
+          value: "en",
+          reflectToAttribute: true,
+          observer: "_languageChanged"
+        },
+
+        /* Configuration */
+
+        view_detail: {
+          type: Boolean,
+          value: false
+        },
+
+        POSTS_LIMIT: {
+          type: Number,
+          value: 25
+        },
+
+        subreddit: {
+          type: String,
+          value: "all"
+        },
+
+        list: {
+          type: String,
+          value: "hot"
+        },
+
+        cursor: {
+          type: Number,
+          value: 0,
+        },
+
+        cache: {
+          type: Object,
+          value: [],
+        },
+
+        _api_headers: {
+          type: String,
+          computed: "_get_api_headers(token)"
+        },
+
+        _token_headers: {
+          type: String,
+          computed: "_get_token_headers(client_id, client_secret)"
+        },
+
+        _posts_params: {
+          type: Object,
+          computed: "_get_posts_params(POSTS_LIMIT, after)"
+        },
+
+        _token_params: {
+          type: String,
+          computed: "_get_token_params(refresh_token)"
+        },
+        languageUrl: {
+          type: String,
+          computed: "_getLanguageUrl(lan_file)"
+        },
+        feed: {
+          type: Array,
+          value: function () {
+            return []
+          },
+          notify: true
+        },
+        refresh_time: {
+          type: Number,
+          value: 60000
+        }
+      },
+
+      /* LANGUAGE SUPPORT */
+      _languageChanged: function (newVal, oldValue) {
+        switch (newVal) {
+          case "es":
+            this.language = "es";
+            this.lan_file = "es_es.json"
+            break;
+          default:
+            this.language = "en";
+            this.lan_file = "en_en.json"
+        }
+        this.$.requestLanguage.generateRequest();
+      },
+      _getLanguageUrl: function (lan_file) {
+        return this.resolveUrl("language/" + lan_file);
+      },
+      _language_response: function (event, detail) {
+        this.words = detail.response;
+      },
+      /* END LANGUAGE SUPPORT */
+
+      /* COMPUTED PROPERTIES*/
+      _get_api_headers: function (token) {
+        return {
+          Authorization: 'Bearer ' + token
+        };
+      },
+
+      _get_token_headers: function (client_id, client_secret) {
+        return {
+          Authorization: "Basic " + btoa(client_id + ":" + client_secret)
+        };
+      },
+
+      _get_posts_params: function (POSTS_LIMIT, after) {
+        return {
+          limit: POSTS_LIMIT,
+          after: after
+        };
+      },
+
+      _get_token_params: function (refresh_token) {
+        return {
+          grant_type: "refresh_token",
+          refresh_token: refresh_token
+        };
+      },
+
+      /* Request acces token*/
+      _token_received: function (event, detail) {
+        this.token = detail.response.access_token;
+        this.fire('reddit-timeline-token', {
+          access_token: this.token
+        });
+        if (this.recall_subreddits) {
+          this.$.get_subreddits.generateRequest();
+          this.recall_subreddits = false;
+        }
+        if (this.recall_posts) {
+          this.$.get_posts.generateRequest();
+          this.recall_posts = false;
+        }
+      },
+
+      _subreddits_received: function (event, detail) {
+        var subreddits = detail.response.data.children;
+        if (subreddits.length > 0) {
+          for (var i = 0; i < subreddits.length; i++) {
+            if (i == 0) this.subreddits = subreddits[i].data.display_name;
+            else this.subreddits += "+" + subreddits[i].data.display_name;
+          }
+          this.subreddit = this.subreddits;
+        }
+        this.$.get_posts.generateRequest();
+      },
+
+      _subreddit_error: function (event, detail) {
+        if (detail.request.xhr.status == 401) {
+          this.recall_subreddits = true;
+          this._refresh_token();
+        }
+      },
+
+      _posts_received: function (event, detail) {
+        this.feed = detail.response.data.children;
+        this.after = detail.response.data.after;
+      },
+
+      _posts_error: function (event, detail) {
+        if (detail.request.xhr.status == 401) {
+          this.recall_posts = true;
+          this._refresh_token();
+        }
+      },
+
+      _refresh_token: function () {
+        this.$.refresh_token.generateRequest();
+      },
+
+      refresh: function () {
+        this.cache = {};
+        this.cursor = 0;
+        this.after = "";
+        this.feed = null;
+        this.$.feed_template.render();
+        this.$.get_subreddits.generateRequest();
+      },
+
+      hot: function () {
+        this.cache = {};
+        this.cursor = 0;
+        this.after = "";
+        this.feed = null;
+        this.$.feed_template.render();
+        this.list = "hot";
+        this.$.get_posts.generateRequest();
+        this.toggle();
+      },
+
+      top: function () {
+        this.cache = {};
+        this.cursor = 0;
+        this.after = "";
+        this.feed = null;
+        this.$.feed_template.render();
+        this.list = "top";
+        this.$.get_posts.generateRequest();
+        this.toggle();
+      },
+
+      new: function () {
+        this.cache = {};
+        this.cursor = 0;
+        this.after = "";
+        this.feed = null;
+        this.$.feed_template.render();
+        this.list = "new";
+        this.$.get_posts.generateRequest();
+        this.toggle();
+      },
+
+      hasMedia: function (item, index) {
+        var has = false
+        if (item.data.media != null) {
+          if (index !== undefined) {
+            this.set('feed.' + index + '.media', item.data.url);
+            if (item.data.media.oembed){
+              this.set('feed.' + index + '.detail', item.data.media.oembed.thumbnail_url);
+            }
+            if (item.data.media.oembed && item.data.media.oembed.provider_url == "https://www.youtube.com/") {
+              this.set('feed.' + index + '.hasVideo', true);
+              var splitted = item.data.media.oembed.thumbnail_url.split('/');
+              this.set('feed.' + index + '.video', splitted[splitted.length - 2]);
+            } else {
+              this.set('feed.' + index + '.detail', item.data.thumbnail);
+              if (item.detail == 'default') {
+                this.set('feed.' + index + '.detail', this.resolveUrl("default_gif.png"));
+              }
+              this.set('feed.' + index + '.hasVideo', false);
+            }
+          }
+          has = true;
+        } else if (item.data.preview) {
+          if (item.data.preview.images[0].variants.gif) {
+            if (index !== undefined) {
+              this.set('feed.' + index + '.media', item.data.preview.images[0].variants.gif.source.url);
+              this.set('feed.' + index + '.detail', item.data.thumbnail);
+              if (item.detail == 'default') {
+                this.set('feed.' + index + '.detail', this.resolveUrl("default_gif.png"));
+              }
+              has = true;
+            }
+          }
+        }
+        return has;
+      },
+
+      hasPreview: function (item, index) {
+        var has = false
+        if (item.data.preview) {
+          this.set('feed.' + index + '.image', item.data.preview.images[0].source.url)
+          this.set('feed.' + index + '.url', item.image)
+          item.url = item.image;
+          has = true;
+        }
+        return has;
+      },
+      adultContent: function(item){
+        return item.data.whitelist_status === "promo_adult_nsfw"
+      },
+      getLink: function (item) {
+        return "https://www.reddit.com" + item.data.permalink;
+      },
+
+      getRLink: function (item) {
+        return "https://www.reddit.com/r/" + item.data.subreddit;
+      },
+
+      next: function () {
+        if (this.cache[this.cursor + 1]) {
+          this.feed = null;
+          this.$.feed_template.render();
+          this.after = this.cache[this.cursor + 1].after;
+          this.feed = this.cache[this.cursor + 1].feed;
+        } else {
+          this.cache[this.cursor] = {};
+          this.cache[this.cursor].after = this.after;
+          this.cache[this.cursor].feed = this.feed;
+          this.feed = null;
+          this.$.feed_template.render();
+          this.$.get_posts.generateRequest();
+        }
+        this.cursor++;
+      },
+      
+
+      before: function () {
+        if (this.cursor > 0) {
+          if (!this.cache[this.cursor]) {
+            this.cache[this.cursor] = {};
+            this.cache[this.cursor].after = this.after;
+            this.cache[this.cursor].feed = this.feed;
+          }
+          this.cursor--;
+          this.feed = null;
+          this.$.feed_template.render();
+          this.after = this.cache[this.cursor].after;
+          this.feed = this.cache[this.cursor].feed;
+        }
+      },
+
+      toggle: function () {
+        this.$$('.dropdown-content').classList.toggle('active');
+      },
+
+      detail: function (e) {
+        this.item = e.model.item;
+        this.view_detail = true;
+      },
+
+      back: function () {
+        this.view_detail = false;
+      },
+
+      /* COMPONENT BEHAVIOUR*/
+
+      _logged: function () {
+        this.$.get_subreddits.generateRequest();
+      },
+
+      attached: function () {
+        this._interval = window.setInterval(this.refresh.bind(this), this.refresh_time);
+      },
+      detached: function () {
+        window.clearInterval(this._interval);
+      }
+    });
+  </script>
+</dom-module>

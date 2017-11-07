@@ -44,7 +44,7 @@ else:
     domain = cfg["domain"]
 
 
-social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest", "spotify"]
+social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest", "spotify", "reddit", ""]
 
 class ComponentRatingHandler(SessionHandler):
     """
@@ -220,7 +220,7 @@ class ComponentListHandler(SessionHandler):
                     predetermined = False
             else:
                 predetermined = False
-            # We check if the social network param has a proper value
+            # We check if the social network params has a proper value
             if social_network in social_list:
                 # We check if the request has provided at least the version "stable" for the version_list param
                 if "stable" in version_list:

@@ -1,0 +1,281 @@
+<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+<link href="https://www.piliapp.com/assets/us2/v2/e9asa8aw2y/1lafj.css" rel="stylesheet">
+<link rel="import" href="../paper-styles/paper-styles-classes.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-material/paper-material.html">
+
+<dom-module id="facebook-style">
+  <template>
+    <style include="iron-flex">
+      paper-header-panel {
+        @apply(--shadow-elevation-3dp);
+        border-radius: 8px;
+        background: #E9EAED;
+      }
+
+      div.paper-header {
+        height: 60px;
+        font-size: 16px;
+        width: var(--facebook-wall-width);
+        line-height: 60px;
+        padding: 0 10px;
+        color: white;
+        transition: height 0.2s;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+
+      div.paper-header {
+        background: rgb(77, 105, 162);
+        background: linear-gradient(to bottom, rgba(77, 105, 162, 1) 0%, rgba(28, 50, 108, 1) 100%);
+      }
+
+      div.paper-header iron-icon {
+        background-color: white;
+        border-radius: 5px;
+      }
+
+      paper-material {
+        margin: 15px 8px;
+      }
+
+      .post {
+        min-height: 100px;
+        padding: 8px;
+        border-radius: 3px;
+        background-color: white;
+      }
+
+      #logo {
+        margin: 8px;
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+
+      .postInfo {
+        font-size: 10px;
+        margin: 8px;
+      }
+
+      #username {
+        font-size: 14px;
+      }
+
+      #username a {
+
+        color: #3b5998;
+        font-weight: bold;
+      }
+
+      #username a:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      .postContent {
+        border-top: 1px solid #e6e6e6;
+        padding-top: 8px;
+        font-size: 13px;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .reactedTo {
+        font-size: 12px;
+        border-bottom: 1px solid #e6e6e6;
+        padding-bottom: 8px;
+      }
+
+      .photo-source {
+        width: 80%;
+        margin: 0 auto;
+        display: block
+        /*max-height: 30px;*/
+      }
+
+      .postLikes>p {
+        font-size: 12px;
+        margin: auto 8px auto 1px;
+      }
+
+      .postLikes>iron-icon {
+        width: 18px;
+        height: 18px;
+        margin: auto 2px;
+      }
+
+      .borderPost {
+        border: 1px solid #e6e6e6;
+        margin: 5px auto;
+      }
+
+      .tittlePostNested {
+        font-size: 12px;
+        font-weight: bold;
+        margin: 10px 5px;
+      }
+
+      .descriptionPostNested {
+        font-size: 10px;
+        margin: 10px 8px;
+      }
+
+      .authorPostNested {
+        text-transform: uppercase;
+        margin: 10px 8px;
+        font-size: 8px;
+        color: #9197a3;
+      }
+
+      .pageStyle {
+        padding-bottom: 1px;
+        margin-bottom: 5px;
+        border-left: 2px solid #ccc;
+      }
+
+      .sharedStory {
+        margin: 10px 5px;
+        font-size: 10px;
+      }
+
+      .sharedDescription {
+        border-left: 2px dotted #ccc;
+        padding-left: 12px;
+        margin-left: 10px;
+      }
+
+      p {
+        margin: 8px 3px;
+      }
+
+      .singleSharedDescription {
+        margin: 10px 5px;
+      }
+
+      .loading {
+        width: 50%;
+        height: 50%;
+        margin: auto;
+      }
+
+      .photo {
+        max-width: 100%;
+        margin: 15px auto;
+        max-height: 100%;
+        display: block;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, .15) inset, 0 1px 4px rgba(0, 0, 0, .1);
+      }
+
+      .emoji {
+        background-image: url("https://assets-us2.piliapp.com/s3pxy/emoji/sprite/fbv7-20170217.min.png");
+        display: inline-block;
+        margin: 0 -4px;
+        position: relative;
+        top: 5px;
+        transform: scale(0.65);
+        width: 24px;
+        height: 24px;
+      }
+
+      .postLikes {
+        margin-top: 15px;
+      }
+
+      .link {
+        color: rgb(59, 89, 152);
+        text-decoration: none;
+        overflow-wrap: break-word
+      }
+
+      .link:hover {
+        text-decoration: underline;
+      }
+
+      .link.bold {
+        font-weight: bold;
+      }
+
+      .video-content {
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, .15) inset, 0 1px 4px rgba(0, 0, 0, .1);
+        height: 100px;
+      }
+
+      .video-photo {
+        position: relative;
+      }
+
+      .video-photo>img {
+        width: auto;
+
+      }
+
+      .video-photo>.video-icon {
+        background-image: url(https://static.xx.fbcdn.net/rsrc.php/v3/yb/r/mDQqsBGgeYM.png);
+        background-repeat: no-repeat;
+        background-size: auto;
+        background-position: 0 0;
+        height: 54px;
+        width: 54px;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      .video-photo:hover>.video-icon {
+        background-position: 0 -55px;
+        cursor: pointer;
+      }
+
+      .text {
+        padding: 4px 12px;
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+        text-align: justify;
+      }
+
+      .text.video {
+        width: calc(100% - 100px);
+      }
+
+      .title,
+      .description {
+        margin: 0;
+        font-family: Helvetica, Arial, sans-serif;
+      }
+
+      .title {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 22px;
+        margin-bottom: 5px;
+        max-width: 100%;
+        word-wrap: break-word;
+        text-overflow: ellipsis;
+      }
+
+      .title:hover {
+        text-decoration: underline;
+      }
+
+      .description {
+        font-size: 12px;
+        color: #1d2129;
+        padding-bottom:10px;
+      }
+
+      .link-post {
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, .15) inset, 0 1px 4px rgba(0, 0, 0, .1);
+        padding: 4px 8px;
+      }
+
+    </style>
+  </template>
+</dom-module>

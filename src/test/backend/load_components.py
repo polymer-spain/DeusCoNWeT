@@ -87,7 +87,7 @@ params = urllib.urlencode({"url": 'https://github.com/ailopera/googleplus-timeli
         "predetermined": 'True',
         "attributes": json.dumps(aux),
         "tokenAttr": 'token',
-        "img": 'images/components/google-icon.png'
+        "img": 'images/components/google-icon.svg'
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
@@ -184,6 +184,8 @@ params = urllib.urlencode({"url": 'https://github.com/Mortega5/finance-search',
         }, doseq=True)
 
 test_utils.make_request("PUT", request_uri, params, 201, None)
+
+# Spotify
 aux={"token":""}
 params = urllib.urlencode({"url": 'https://github.com/magasuan/spotify-component',
         "component_id": 'spotify-component',
@@ -199,3 +201,18 @@ params = urllib.urlencode({"url": 'https://github.com/magasuan/spotify-component
         }, doseq=True)
 test_utils.make_request("PUT", request_uri, params, 201, None)
 
+# REDDIT
+aux={"client_id":"RxkV7Oo-8Zid5Q", "client_secret":"eF-kiWrj12VmIV62m-NR4YiZgJ8", "component_base":"bower_components/reddit-timeline-stable/", "language":":language", "refresh_token":"" }
+params = urllib.urlencode({"url": 'https://github.com/mortega5/reddit-timeline',
+        "component_id": 'reddit-timeline',
+        "description": 'Web component to see reddit posts',
+        "social_network": 'reddit',
+        "input_type": 'None',
+        "output_type": 'posts',
+        "versions": versions_list,
+        "predetermined": 'True',
+        "attributes": json.dumps(aux),
+        "tokenAttr": 'token',
+        "img": 'images/components/reddit.png'
+        }, doseq=True)
+test_utils.make_request("PUT", request_uri, params, 201, None)

@@ -2,52 +2,16 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $backend, $http) {
   'use strict';
 
-<<<<<<< HEAD
-  /* Network infomation */
-  $scope.toggleHelp = false;
-  $scope.twitterData = {};
-  $scope.githubData = {};
-  $scope.instagramData = {};
-  $scope.facebookData = {};
-
-  $scope.instagramData.token = '2062815740.34af286.169a9c42e1404ae58591d066c00cb979';
-  $scope.twitterData.token = '3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf';
-  $scope.githubData.username = 'mortega5';
-  $rootScope.user.tokens.twitter = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
-  $scope.listComponents = [
-    {
-      name: 'facebook-wall',
-      attributes: {
-        language: '{{idioma}}',
-        component_directory: 'bower_components/facebook-wall/',
-        access_token: $rootScope.user.tokens.facebook
-      }
-    },
-    {
-      name: 'twitter-timeline',
-      attributes: {
-        'access-token': $scope.twitterData.token,
-        'secret-token': 'OBPFI8deR6420txM1kCJP9eW59Xnbpe5NCbPgOlSJRock',
-        'consumer-key': 'J4bjMZmJ6hh7r0wlG9H90cgEe',
-        'consumer-secret': '8HIPpQgL6d3WWQMDN5DPTHefjb5qfvTFg78j1RdZbR19uEPZMf',
-        'endpoint': $scope.domain + '/api/aux/twitterTimeline',
-        'language': '{{idioma}}',
-        'count': 200,
-        'component_base': 'bower_components/twitter-timeline/static/'
-=======
-  // Se harcodea twitter por motivos de error en el tokenAttr
-  //$rootScope.user.tokens.twitter = "3072043347-T00ESRJtzlqHnGRNJZxrBP3IDV0S8c1uGIn1vWf";
   // Lista de componentes añadidos
-  // TODO se deberan coger de la lista que se registra en usuario
   $scope.listComponentAdded = [];
   $scope.componentsRated = [];
-
+  $scope.catalogList = [];
+  
   // loads references for this
   (function () {
     if ($scope.user.references) {
       $scope.user.references.forEach(function (ref, index) {
         var $jq = window.$;
-          // ref = ref.replace("stable","maintenance");
         var $link = $('<link rel="import">').attr('href', ref);
         $('body').append($link);
         window.setTimeout(function () {
@@ -67,7 +31,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $target.parent().children().removeClass('active');
       $target.addClass('active');
     }
->>>>>>> mongoDB
 
   };
   $backend.getComponentInfo().then(function (res) {
@@ -177,6 +140,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         element.attributes[element.tokenAttr] = value;
       }
     }
+    $rootScope.user.renew[social_network] = true;
   };
   $scope.closeModal = function (selector, reset) {
     $(selector).modal('toggle');
@@ -209,9 +173,12 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     var interval = $interval(function () {
 
       if (document.visibilityState === "visible" && $scope.listComponentAdded.length > 0 && $scope.diffArray($scope.listComponentAdded, $scope.componentsRated).length > 0 && !$scope._rating) {
-        $scope.platformUsedTime += $scope.intervalTime;
+        $scope.$apply(function(){
+          $scope.platformUsedTime += $scope.intervalTime;
+        })
+        
       }
-    }, $scope.intervalTime);
+    }, $scope.intervalTime,0, false);
     return interval;
   }.bind(this);
   var platformTimeHandler = platformTimeFunction();
@@ -420,9 +387,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         var social_network = e.detail.redSocial;
         var token = e.detail.token;
         var registerTokenError = function () {
-          $scope.showToastr('error', $scope.language.add_token_error);
-          $rootScope.user.tokens[social_network] = '';
-          $scope.setToken(social_network, '');
+          $scope.showToastr('warning', $scope.language.add_token_error);
+          $rootScope.user.renew[social_network] = true;
+          //$rootScope.user.tokens[social_network] = '';
+          //$scope.setToken(social_network, '');
         };
         $rootScope.user = $rootScope.user || {
           tokens: {}
@@ -439,7 +407,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           case 'googleplus':
             var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
             $http.get(uri).success(function (responseData) {
-              $backend.setNewNetwork(token, responseData.id, social_network).error(registerTokenError);
+              $rootScope.user.renew[social_network] = true;
+              //$backend.setNewNetwork(token, responseData.id, social_network).then(function(){},registerTokenError);
             });
             break;
           case 'twitter':
@@ -460,8 +429,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
           //   break;
           case 'spotify':
             break;
+          case 'reddit':
+            break;
           default:
-            $backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
+            //$backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
             break;
         }
       });
@@ -473,5 +444,6 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $('#login-modal login-facebook').bind('facebook-logged', loginCallback);
     $('#login-modal pinterest-login').bind('pinterest-logged', loginCallback);
     $('#login-modal spotify-login').bind('spotify-logged', loginCallback);
+    $('#login-modal reddit-login').bind('reddit-logged', loginCallback);
   })();
 }]);

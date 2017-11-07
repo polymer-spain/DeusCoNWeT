@@ -121,6 +121,9 @@ class OauthSignUpHandler(SessionHandler):
             token_id = self.request.POST["token_id"]
             user_identifier = self.request.POST["user_identifier"]
 
+            print "access_token", access_token
+            print "token_id", token_id
+            print "user_identifier", user_identifier
             # Checks if the username was stored previously
             stored_credentials = mongoDB.searchToken(token_id, social_network)
             if stored_credentials == None: # Not found
@@ -131,11 +134,12 @@ class OauthSignUpHandler(SessionHandler):
                     # Generate a valid username for a new user
                     user_key = mongoDB.insertUser(social_network,
                             token_id, access_token, user_data)
+                    print "Inserta el usuario correctamente"
                     mongoDB.assignComponents(user_key)
-                    
+                    print "asigna los componentes"
                     # Creates the session
                     session_id = self.login(str(user_key.id))
-                    
+                    print "la funcion login funciona"
                     # Returns the session, user_id and social_network cookie
                     self.response.set_cookie("session", session_id,
                             path="/", domain=domain, secure=True)
@@ -289,6 +293,7 @@ class OauthCredentialsHandler(SessionHandler):
                 logged_user_id = mongoDB.getUserId(logged_user)
 
                 # Obtains user credentials
+                print "Se intenta obtener el token con: ", token_id, social_network
                 user_credentials = mongoDB.getToken(token_id, social_network)
 
                 if not user_credentials == None:
@@ -505,30 +510,34 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     # Checks if the username was stored previously
                     stored_credentials = mongoDB.getToken(token_id,
                             social_network)
-                    if stored_credentials == None:
-                        # Adds the token to the user credentials list
-                        secret = None
-                        if social_network== 'twitter':
-                            oauth_verifier = self.request.POST['oauth_verifier']
-                            twitter_data = memcache.get(oauth_verifier)
-                            secret = twitter_data['oauth_token_secret']
-                            access_token = twitter_data['oauth_token']
-                            
-                        #Builds the response
-                        mongoDB.insertToken(user, social_network, access_token, token_id, secret=secret)
-                        user_id = mongoDB.getUserId(user)
-                        response = {"user_id": user_id, "token": access_token}
-                        self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(201)
-                        print "Responde 201"
-                    else:
-                        response = \
-                        {"error": "This set of credentials already exists in the system"}
-                        self.response.content_type = "application/json"
-                        self.response.write(json.dumps(response))
-                        self.response.set_status(400)
-                        print "Responde 400 credentials"
+                    
+                    # DESCOMENTAR
+                    #if stored_credentials == None:  
+                    # Adds the token to the user credentials list
+                    secret = None
+                    if social_network== 'twitter':
+                        oauth_verifier = self.request.POST['oauth_verifier']
+                        twitter_data = memcache.get(oauth_verifier)
+                        secret = twitter_data['oauth_token_secret']
+                        access_token = twitter_data['oauth_token']
+                        
+                    #Builds the response
+                    mongoDB.insertToken(user, social_network, access_token, token_id, secret=secret)
+                    user_id = mongoDB.getUserId(user)
+                    response = {"user_id": user_id, "token": access_token}
+                    self.response.content_type = "application/json"
+                    self.response.write(json.dumps(response))
+                    self.response.set_status(201)
+                    print "Responde 201"
+                    # DESCOMENTAR
+                    # else:
+                    #     response = \
+                    #     {"error": "This set of credentials already exists in the system"}
+                    #     self.response.content_type = "application/json"
+                    #     self.response.write(json.dumps(response))
+                    #     self.response.set_status(400)
+                    #     print "Responde 400 credentials"
+
                 except KeyError:
                     response = \
                         {"error": "You must provide a valid pair of access_token and token_id in the request"}
@@ -1225,3 +1234,4 @@ class SpotifyCredentialHandler(OAuthCredentialsContainerHandler):
 
     def post(self, token_id):
         self.update_credentials("spotify", token_id)
+        

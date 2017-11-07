@@ -19,22 +19,7 @@ Antes de desplegar el portal es necesario configurar los dominios en los que se 
 
 #### Config.yaml
 
-Es la configuración general del portal. Por ejemplo:
-
-```yaml
-domain: centauro.ls.fi.upm.es
-domainTest: test.centauro.ls.fi.upm.es
-#domain: localhost
-component_versioning: dynamic
-APP_ID: <app id de facebook>
-APP_SECRET: <app secrect de facebook>
-FACEBOOK_CONFIG:
-  url: https://graph.facebook.com/v2.10/me/feed
-  fields: "name,updated_time,attachments,story_tags,place,from,icon,message,object_id,likes,source,story,type, message_tags"
-  url_id: https://graph.facebook.com/v2.10/me?fields=id
-  url_friends: https://graph.facebook.com/v2.10/me/friends
-  locale: es_es
-```
+Es la configuración general del portal. Mirar fichero exampleConfig.yaml:
 
 #### mongo.yaml
 
