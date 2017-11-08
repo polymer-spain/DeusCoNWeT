@@ -12,8 +12,9 @@
     display: none !important;
   }
 </style>
-<div id="userHome" ng-container>
-  <!-- Left bar -->
+<div id="userHome">
+  <div class="container" ng-container></div>
+  <!-- Right bar -->
   <div class="left-bar">
     <div class="nav-buttons vertical layout menu-buttons" data-button role="group">
       <div class="btn btn-default" data-button ng-click="toggleCatalog()" data-keyboard="false" title="Añadir un nuevo componente">
@@ -108,8 +109,7 @@
           </div>
           <div id="listCatalog" class="flex" ng-controller="CatalogCtrl">
             <div class="col-md-3 vertical layout catalogItem" ng-create-element id-element="{{item.component_id}}" data-index="{{$index}}"
-              imagesrc="{{item.img}}" list-attributes="{{item.attributes}}" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter"
-              data-item="{{item}}">
+             item="item" ng-repeat="item in catalogList | catalogFilter:textFilter:starFilter" data-item="{{item}}">
 
               <!-- token required-->
               <span class="label label-warning warning" ng-hide="checkToken(item, $index)">{{language.noToken}}</span>
@@ -168,12 +168,12 @@
     <!-- /.modal -->
   </div>
 
-  <div id="rate-modal" class="modal fade scrollbar-macosx scroll-content scroll-scrolly_visible" role="dialog" tabindex="-1">
+  <div id="rate-modal" ng-controller="FormCtrl" class="modal fade scrollbar-macosx scroll-content scroll-scrolly_visible" role="dialog" tabindex="-1">
     <div class="modal-dialog modal-md">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" ng-click="closeForm()" data-dismiss="modal">&times;</button>
+          <!-- <button type="button" class="close" ng-click="closeForm()" data-dismiss="modal">&times;</button> -->
           <h4 class="modal-title">{{language.questionary.about}} {{randomComponent}}</h4>
         </div>
         <div class="modal-body vertical layout">
@@ -275,7 +275,7 @@
           <p>{{language.questionary.emptyQuestions}}</p>
           <!--<button class="btn btn-danger" data-toggle="modal" data-target="#rate-modal" ng-click="submitRating()">{{language.close}}</button> -->
           <button class="btn btn-primary" ng-click="submitRating()">{{language.send}}</button>
-          <button class="btn btn-primary" id="closeRateModal" data-toggle="modal" ng-click="closerating()" data-target="#rate-modal"
+          <button class="btn btn-primary" id="closeRateModal" data-toggle="modal" ng-click="closeForm()" data-target="#rate-modal"
             style="display:none">OK</button>
         </div>
       </div>
