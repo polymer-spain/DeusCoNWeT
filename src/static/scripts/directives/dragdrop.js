@@ -24,7 +24,7 @@
       }
       /* Caracteristicas del estilo para arrastrarlo */
       /* Enlazamos el elemento al contenedor*/
-      var divContainer = $('<div data-container="' + name + '">').css('display', 'inline-block');
+      var divContainer = $('<div data-container="' + name + '">').css('display', 'inline-block').addClass("wrapContainer");
 
       /* Header */
       var header = $('<div class="header" data-id="' + name + '"><span class="componentName">' + name+ '</span><span class="deleteComponent" ng-click="removeComponent($event)">×</span></div>')
@@ -32,7 +32,13 @@
       divContainer.draggable({
         appendTo: '[ng-container]',
         containment: "parent",
-        handle: ".header"
+        handle: ".header",
+        start: function(e, ui){
+          ui.helper.addClass("dragging");
+        },
+        stop: function(e, ui){
+          ui.helper.removeClass("dragging");
+        }
       });
 
       divContainer.resizable({
@@ -66,9 +72,26 @@
         'height': height,
         'width': width
       });
+
       container.scope().$broadcast('componentAdded', {
         name: name,
         element: newTimeline
+      })
+
+      divContainer.scope().$on("componentSelected", function(e, data){
+        if ( !data.element.is(divContainer) ){
+          divContainer.removeClass("selected");
+        }
+      });
+
+      divContainer.mousedown(function(e){
+        if (!divContainer.hasClass("selected")) {
+          divContainer.addClass("selected")
+          divContainer.scope().$broadcast("componentSelected",{
+            element: divContainer,
+            name: name
+          })
+        }
       })
       /* Forzamos la fase de compile de angular para que cargue las directivas del
        * nuevo elemento
@@ -77,7 +100,6 @@
       injector = container.injector();
       $compile = injector.get("$compile");
       $compile(divContainer)(divContainer.scope());
-      // $compile(header.children())(divContainer.scope());
     }
     return divContainer
   }

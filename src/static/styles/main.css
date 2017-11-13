@@ -117,3 +117,10 @@ paper-button >a:hover{
 .toast.success {
 	opacity: 1 !important;
 }
+
+.modal {
+	z-index: 11000 !important;
+}
+.modal-backdrop {
+	z-index:10000;
+}

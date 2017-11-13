@@ -84,6 +84,7 @@ angular.module('picbit').controller('FormCtrl', ['$scope', '$timeout', '$rootSco
       if ($('#initialQuestion paper-radio-group')[0].selected) {
         $('#rate-modal .modal-footer p').hide();
         $scope._submitQuestionaire();
+        $('#rate-modal .close').hide();
         $('#initialQuestion').fadeOut("easing", function () {
           $('#aditionalForm').fadeIn('easing', function () { });
         });
