@@ -6,7 +6,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.listComponentAdded = [];
   $scope.componentsRated = [];
   $scope.catalogList = [];
-  
+
   // loads references for this
   (function () {
     if ($scope.user.references) {
@@ -93,12 +93,16 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
   $scope.blurList = function (e) {
     // del activated
-    var index = $(e.currentTarget).attr('data-index');
-    var id = $scope.listComponentAdded.splice(index, 1)[0];
-    $scope.showList = $scope.listComponentAdded;
-    var element = '[id-element="' + id.name + '"]';
-    $(element)[0].setAttribute('disabled', false);
-    $(id.name).parent().remove();
+    var component_id = $(e.target).attr('data-component');
+    //var id = $scope.listComponentAdded.splice(index, 1)[0];
+    $scope.removeElement(component_id);
+    $scope.$broadcast("removeComponent", {
+      name: component_id
+    });
+
+    
+    var element = '[data-container="' + component_id + '"]';
+    $(element).remove();
   };
 
   // Cierra las listas cuando se pulsa sobro cualquier otro lado del dashboard
@@ -148,12 +152,22 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $(selector).modal('toggle');
     if (reset) $scope.resetModal();
   };
-  
+  $scope.removeComponent = function (event) {
+    var parent = $(event.target).parent()
+    // Get id of the component we're deleting.
+    var component_id = parent.attr('data-id');
+    // remove main container
+    parent.parent().remove();
+    $scope.removeElement(component_id)
+    $scope.$broadcast("removeComponent", {
+      name: component_id
+    });
+  };
+
   $scope.login = function (name) {
     $scope.loginSelected = name.split('-')[0];
     $('#login-modal').modal('toggle');
   };
-
 
   // Callback when login finish
   (function () {
@@ -171,12 +185,12 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $rootScope.user = $rootScope.user || {
           tokens: {}
         };
-        if (social_network !== 'twitter'){
+        if (social_network !== 'twitter') {
           $rootScope.user.tokens[social_network] = token;
           $scope.setToken(social_network, token);
           $('#login-modal').modal('toggle');
-        } 
-          
+        }
+
 
 
         switch (social_network) {
@@ -192,7 +206,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             uri += '?oauth_token=' + e.detail.token;
             $http.get(uri).success(function (responseData) {
               e.detail.userId = responseData.token_id;
-              $backend.setNewNetwork(token, responseData.token_id, social_network, e.detail.oauth_verifier).then(function(res){
+              $backend.setNewNetwork(token, responseData.token_id, social_network, e.detail.oauth_verifier).then(function (res) {
                 $rootScope.user.tokens[social_network] = res.data.token;
                 $scope.setToken(social_network, res.data.token);
                 $('#login-modal').modal('toggle');
@@ -225,7 +239,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
 
 
   // Listen remove event
-  $scope.$on("removeComponent", function(event, data){
+  $scope.$on("removeComponent", function (event, data) {
     $scope.removeElement(data.name);
   })
-}]);
+}]);;

@@ -12,7 +12,6 @@
   var createComponent = function (name, attributes, config) {
     /* Si no esta repetido, lo añadimos al dashboard */
     var newTimeline, injector, $compile, key;
-    var created = false;
     $.extend(config, defaultConfig);
     if (name && document.getElementsByTagName(name).length === 0) {
 
@@ -25,10 +24,15 @@
       }
       /* Caracteristicas del estilo para arrastrarlo */
       /* Enlazamos el elemento al contenedor*/
-      var divContainer = $('<div>').css('display', 'inline-block');
+      var divContainer = $('<div data-container="' + name + '">').css('display', 'inline-block');
+
+      /* Header */
+      var header = $('<div class="header" data-id="' + name + '"><span class="componentName">' + name+ '</span><span class="deleteComponent" ng-click="removeComponent($event)">×</span></div>')
+      divContainer.append(header);
       divContainer.draggable({
         appendTo: '[ng-container]',
-        containment: "parent"
+        containment: "parent",
+        handle: ".header"
       });
 
       divContainer.resizable({
@@ -37,28 +41,11 @@
 
       newTimeline.addClass('context-menu');
       newTimeline.css(config.style);
-      $.contextMenu({
-        selector: '.context-menu',
-        callback: function (key, options) {
-          var elementId = options.$trigger[0].tagName.toLowerCase();
-          options.$trigger.parent().remove();
-          container.scope().$broadcast("removeComponent", {name: elementId});
-        }.bind(this),
-        items: {
-          "delete": { name: container.scope().language.delete, icon: "delete" },
-        }
-      });
       divContainer.append(newTimeline);
       container.append(divContainer);
-      container.scope().listComponentAdded.push({ name: name });
-      /* Forzamos la fase de compile de angular para que cargue las directivas del
-       * nuevo elemento
-       */
-
-      injector = container.injector();
-      $compile = injector.get("$compile");
-      $compile(divContainer)(divContainer.scope());
-
+      container.scope().listComponentAdded.push({
+        name: name
+      });
 
       var minHeight = newTimeline.css('minHeight');
       var minWidth = newTimeline.css('minWidth');
@@ -72,21 +59,32 @@
       divContainer.resizable('option', 'minWidth', minWidth + 10);
       divContainer.css({
         "position": "absolute",
-        "top": "0 px",
-        "left": "0 px",
+        "top": "25px",
+        "left": "0px",
         'minWidth': minWidth,
         'minHeight': minHeight,
         'height': height,
         'width': width
       });
-      container.scope().$broadcast('componentAdded', { name: name, element: newTimeline })
-      created =true;
+      container.scope().$broadcast('componentAdded', {
+        name: name,
+        element: newTimeline
+      })
+      /* Forzamos la fase de compile de angular para que cargue las directivas del
+       * nuevo elemento
+       */
+
+      injector = container.injector();
+      $compile = injector.get("$compile");
+      $compile(divContainer)(divContainer.scope());
+      // $compile(header.children())(divContainer.scope());
     }
-    return created
+    return divContainer
   }
 
   picbit.directive("ngContainer", function () {
     "use strict";
+
     function link(scope, element) {
       scope.calculatePosition = function (target, x, y) {
         var newPosition = {},
@@ -134,21 +132,31 @@
         /* Añadimos todos los attributos necesarios */
         attributes = JSON.parse(evento.originalEvent.dataTransfer.getData("attributes"));
         /* Si no esta repetido, lo añadimos al dashboard */
-        createComponent(id, attributes, {});
+        var parentContainer = createComponent(id, attributes, {});
+        var position = scope.calculatePosition(parentContainer[0], evento.pageX, evento.pageY - $('[ng-container]').offset().top);
+        parentContainer.css({
+          top: position.top + "px",
+          left: position.left + "px"
+        })
       };
       /* Funcion que evita la accion por defecto cuando entra un elemento */
-      scope.dragEntry = function (evento) { evento.preventDefault(); };
+      scope.dragEntry = function (evento) {
+        evento.preventDefault();
+      };
       /* Enlazamos las funciones con los eventos correspondientes */
       element.on("drop", scope.dropObject);
       element.on("dragover", scope.dragEntry);
 
     }
     /* enviamos el link y cogemos la lista de los atributos y la añadimos al scope*/
-    return { link: link };
+    return {
+      link: link
+    };
   });
 
   picbit.directive("ngCreateElement", function () {
     "use strict";
+
     function link(scope, element, attrs) {
       scope.comienzo = function (evento) {
 
@@ -159,7 +167,7 @@
         if (scope.item.attributes) {
           evento.originalEvent.dataTransfer.setData("attributes", JSON.stringify(scope.item.attributes));
         }
-        var removeListener = scope.$on("componentAdded", function(e, data){
+        var removeListener = scope.$on("componentAdded", function (e, data) {
           element.attr('disabled', true);
           removeListener();
         })
@@ -185,6 +193,12 @@
         }
       });
     }
-    return { scope: { idElement: "@idElement", item:'=' }, link: link };
+    return {
+      scope: {
+        idElement: "@idElement",
+        item: '='
+      },
+      link: link
+    };
   });
 })();

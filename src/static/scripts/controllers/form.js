@@ -6,6 +6,7 @@ angular.module('picbit').controller('FormCtrl', ['$scope', '$timeout', '$rootSco
   $scope.formLoadTime = 6000; // Indicates when we'll show to the user the form
   $scope.unRatedComponents = [];
   $scope.ratedComponents = [];
+  $scope.rating = false;
 
   var platformTimeFunction = function () {
     var interval = $interval(function () {
@@ -24,6 +25,7 @@ angular.module('picbit').controller('FormCtrl', ['$scope', '$timeout', '$rootSco
       $interval.cancel($scope.platformTimeHandler);
       $scope.platformTimeHandler = undefined;
       $scope.platformUsedTime = 0;
+      $scope.rating = true;
       // Get the component that will be rated
       var componentRating = $scope.getRandomComponent();
       if (componentRating) {
@@ -205,6 +207,7 @@ angular.module('picbit').controller('FormCtrl', ['$scope', '$timeout', '$rootSco
   };
   $scope.closeForm = function () {
       $scope.randomComponent = undefined;
+      $scope.rating = false;
       // Reset modal
       resetModal();
       // if there are components unrated, set interval
@@ -219,13 +222,15 @@ angular.module('picbit').controller('FormCtrl', ['$scope', '$timeout', '$rootSco
     var isNotInRated = $scope.ratedComponents.indexOf(data.name) === -1;
     // Check if new component is neither in unrated nor rated
     if (isNotInUnrated && isNotInRated) {
+      
       $scope.$apply(function () {
-        $scope.platformTimeHandler = $scope.platformTimeHandler || platformTimeFunction();
+        if (!$scope.rating && $scope.platformTimeHandler == undefined){
+          $scope.platformTimeHandler = platformTimeFunction();
+        }
+
         $scope.unRatedComponents.push(data.name)
 
       })
     }
   })
-
-  $scope.$on("formCompleted", console.log)
 }]);

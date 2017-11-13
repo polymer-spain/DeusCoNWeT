@@ -20,7 +20,7 @@ angular.module("picbit").controller("PermissionCtrl", ['$scope', '$rootScope', f
     var version;
     if (socialNetwork) {
       var index = $scope.catalogList.findIndex(function (component) {
-        return component.social_network === socialNetwork
+        return component.social_network === socialNetwork;
       });
       if (index > -1) {
         version = $scope.catalogList[index].version;
