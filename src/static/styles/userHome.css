@@ -353,6 +353,7 @@
   padding:0 5px;
   color:#333;
   font-family: 'Roboto';
+  cursor: move;
 }
 
 #userHome .wrapContainer.dragging .header {
