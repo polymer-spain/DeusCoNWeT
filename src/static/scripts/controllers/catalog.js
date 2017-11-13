@@ -5,6 +5,13 @@ angular.module("picbit").controller("CatalogCtrl", ['$scope', '$rootScope',  fun
     // if it's required, check if it exists
     return !item.social_network || ($rootScope.user.tokens[item.social_network] !== undefined && item.version !== "security") || $rootScope.user.renew[item.social_network];
   }
-
+  // borra los filtros del catálogo
+  $scope.removeStarFilter = function () {
+    $scope.starFilter = undefined;
+  };
+  $scope.removeTextFilter = function () {
+    $scope.textFilter = '';
+  };
+  
 }]);
   

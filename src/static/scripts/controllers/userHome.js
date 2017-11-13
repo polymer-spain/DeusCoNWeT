@@ -6,7 +6,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.listComponentAdded = [];
   $scope.componentsRated = [];
   $scope.catalogList = [];
-  
+
   // loads references for this
   (function () {
     if ($scope.user.references) {
@@ -20,6 +20,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       });
     }
   })();
+
   //  Logica que dice que botones del a barra lateral estan activos y cuales
   // han de desactivarse
   $scope.selectListButton = function (e) {
@@ -33,6 +34,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     }
 
   };
+
+  // Perdir información de los componentes al servidor
   $backend.getComponentInfo().then(function (res) {
     $scope.catalogList = res.data.data;
     var tokenAttr, social_network;
@@ -59,13 +62,8 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   }, function () {
     console.error('Error al pedir datos del componente');
   });
-  // borra los filtros
-  $scope.removeStarFilter = function () {
-    $scope.starFilter = undefined;
-  };
-  $scope.removeTextFilter = function () {
-    $scope.textFilter = '';
-  };
+
+
   // Activa la lista de componenes que se pueden borrar
   $scope.activeDelCmpList = function () {
     var $list = $('.component-list');
@@ -75,6 +73,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $list.removeClass('active');
     }
   };
+
   // Elimina un componente añadido
   $scope.removeElement = function (id) {
     var finded = false;
@@ -91,14 +90,19 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $(selector).attr('disabled', false);
   };
 
+
   $scope.blurList = function (e) {
     // del activated
-    var index = $(e.currentTarget).attr('data-index');
-    var id = $scope.listComponentAdded.splice(index, 1)[0];
-    $scope.showList = $scope.listComponentAdded;
-    var element = '[id-element="' + id.name + '"]';
-    $(element)[0].setAttribute('disabled', false);
-    $(id.name).parent().remove();
+    var component_id = $(e.target).attr('data-component');
+    //var id = $scope.listComponentAdded.splice(index, 1)[0];
+    $scope.removeElement(component_id);
+    $scope.$broadcast("removeComponent", {
+      name: component_id
+    });
+
+    
+    var element = '[data-container="' + component_id + '"]';
+    $(element).remove();
   };
 
   // Cierra las listas cuando se pulsa sobro cualquier otro lado del dashboard
@@ -125,6 +129,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
       $('#login-modal').modal('toggle');
     }
   });
+
   // Selecciona que modal tiene que cerrarse en cada momento
   $scope.toggleCatalog = function () {
     if ($('#login-modal').is(':visible')) {
@@ -142,241 +147,26 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     }
     $rootScope.user.renew[social_network] = true;
   };
+
   $scope.closeModal = function (selector, reset) {
     $(selector).modal('toggle');
     if (reset) $scope.resetModal();
   };
+  $scope.removeComponent = function (event) {
+    var parent = $(event.target).parent()
+    // Get id of the component we're deleting.
+    var component_id = parent.attr('data-id');
+    // remove main container
+    parent.parent().remove();
+    $scope.removeElement(component_id)
+    $scope.$broadcast("removeComponent", {
+      name: component_id
+    });
+  };
+
   $scope.login = function (name) {
     $scope.loginSelected = name.split('-')[0];
     $('#login-modal').modal('toggle');
-  };
-
-
-
-  /// FORMS FUNCTIONS
-
-  // Watcher that controls whether the form should be showed to the user or not
-  $scope.platformUsedTime = 0;
-  $scope.intervalTime = 1000; // We'll update the value of platformUsedTime each $scope.intervalTime milliseconds
-  $scope.formLoadTime = 6000; // Indicates when we'll show to the user the form
-
-  $scope.diffArray = function (arr1, arr2) {
-    var newArr = [];
-    var myArr = arr1.concat(arr2);
-
-    newArr = myArr.filter(function (item) {
-      return arr2.indexOf(item) < 0 || arr1.indexOf(item) < 0;
-    });
-    return newArr;
-  }
-  var platformTimeFunction = function () {
-    var interval = $interval(function () {
-
-      if (document.visibilityState === "visible" && $scope.listComponentAdded.length > 0 && $scope.diffArray($scope.listComponentAdded, $scope.componentsRated).length > 0 && !$scope._rating) {
-        $scope.$apply(function(){
-          $scope.platformUsedTime += $scope.intervalTime;
-        })
-        
-      }
-    }, $scope.intervalTime,0, false);
-    return interval;
-  }.bind(this);
-  var platformTimeHandler = platformTimeFunction();
-  $scope.closerating = function () {
-    $scope.randomComponent = undefined;
-    $scope._rating = false;
-    resetModal();
-    platformTimeFunction();
-  };
-
-  $scope.$watch("platformUsedTime", function (newValue, oldValue) {
-    if (newValue !== oldValue && newValue >= $scope.formLoadTime && $scope.listComponentAdded.length > 0) {
-      var result = $scope.getRandomComponent();
-      if (result) {
-
-        var text = $scope.language.survey + " " + result;
-        var options = {
-          "closeButton": true,
-          "showDuration": "0",
-          "hideDuration": "0",
-          "timeOut": "0",
-          "extendedTimeOut": "0",
-        }
-        $scope._rating = true;
-        $scope.showToastr('info', text, options, function () {
-          $scope._rating = true;
-          $('#rate-modal').modal({
-            backdrop: 'static',
-            keyboard: false
-          });
-        }, $scope.closerating);
-        $scope.platformUsedTime = 0;
-      }
-      $interval.cancel(platformTimeHandler);
-    }
-  });
-  $scope.getRandomComponent = function () {
-    // Deep copy
-    var unratedList = JSON.parse(JSON.stringify($scope.listComponentAdded));
-    var findElement = function (element, list) {
-      var find = -1;
-      for (var i = 0; i < list.length && find === -1; i++) {
-        if (element === list[i] || (list[i] && list[i].name === element)) {
-          find = i;
-        }
-      }
-      return find;
-    };
-    for (var i = 0; i < $scope.componentsRated.length; i++) {
-      var component = $scope.componentsRated[i];
-      if (findElement(component, unratedList) !== -1) {
-        var unrated_index = findElement(component, unratedList);
-        unratedList.splice(unrated_index, 1);
-      }
-    }
-    if (!$scope.randomComponent) {
-      var random = Math.round(Math.random() * 100);
-      if (unratedList.length > 0) {
-        var position = random % unratedList.length;
-        $scope.randomComponent = unratedList[position].name;
-      }
-    }
-    return $scope.randomComponent;
-  };
-  var resetModal = function () {
-    setTimeout(function () {
-      $('#thanksInfo').hide();
-      $('#initialQuestion').show();
-      $('#rate-modal .modal-footer button').show();
-      $('#rate-modal .modal-footer #closeRateModal').hide();
-      $('#rate-modal paper-radio-group').each(function (i, e) {
-        e.selected = '';
-      });
-      $('#rate-modal input').each(function (i, e) {
-        e.value = "";
-      });
-    }, 200);
-  };
-  $scope.submitRating = function () {
-    if (!$('#aditionalForm').is(':visible')) {
-      if ($('#initialQuestion paper-radio-group')[0].selected) {
-        $('#rate-modal .modal-footer p').hide();
-        $scope._submitQuestionaire();
-        $('#initialQuestion').fadeOut("easing", function () {
-          $('#aditionalForm').fadeIn('easing', function () {});
-        });
-      } else {
-        $('#rate-modal .modal-footer p').show();
-      }
-    } else {
-      var $aditionalQuestion = $('.aditionalQuestion');
-      $('#rate-modal .modal-footer p').hide();
-      var selected = $aditionalQuestion.children('.iron-selected');
-      var text = $('.aditionalQuestion.form-control');
-      var completed = 0;
-      text.each(function (index, element) {
-        if ($(element).val() !== '') {
-          completed += 1;
-        }
-      });
-      if ($aditionalQuestion.length === selected.length + completed) {
-        $('#rate-modal .modal-footer p').hide();
-        $('#rate-modal .modal-footer button').hide();
-        $scope._submitExtendedQuestionaire();
-        $scope.componentsRated.push($scope.randomComponent);
-        $scope._rating = false;
-        $('#aditionalForm').fadeOut('easing', function () {
-          $('#thanksInfo').show();
-          $('#rate-modal .modal-footer button').hide();
-          $('#rate-modal .modal-footer #closeRateModal').show();
-        });
-        console.log('TODO mandar mensaje de error a la base de datos');
-      } else {
-        $('#rate-modal .modal-footer p').show();
-      }
-    }
-  };
-
-  $scope._submitQuestionaire = function () {
-    var question_id = "initialQuestion";
-    var answer = $('#initialQuestion paper-radio-group')[0].selected;
-    var question_text = $('#initialQuestion paper-radio-group').children('.iron-selected').html() || "";
-    var version, i;
-    for (i = 0; i < $scope.catalogList.length && !version; i++) {
-      if ($scope.catalogList[i].component_id === $scope.randomComponent) {
-        version = $scope.catalogList[i].version;
-      }
-    }
-    if (!version) {
-      console.error('Componente: ', $scope.randomComponent,
-        ' no se encuentra en la lista y no tiene version');
-    }
-    if (answer !== undefined && question_text !== "") {
-      //We send an event to Mixpanel
-      var properties = {
-        "selection": answer,
-        "question_type": "obligatory",
-        "question": question_id,
-        "component": $scope.randomComponent,
-        "timestamp": Date.now(),
-        "version": version,
-        "user": $scope.user.user_id
-      };
-      mixpanel.track(question_id, properties);
-    }
-  };
-
-  $scope._submitExtendedQuestionaire = function () {
-    // We get the responses for every question
-
-    var aditional_questions = $('#aditionalForm paper-radio-group, #aditionalForm input');
-    var mixpanel_event_list = [];
-    var mixpanel_event = {};
-    var version;
-    var i;
-    for (i = 0; i < $scope.catalogList.length && !version; i++) {
-      if ($scope.catalogList[i].component_id === $scope.randomComponent) {
-        version = $scope.catalogList[i].version;
-      }
-    }
-    if (!version) {
-      console.error('Componente: ', $scope.randomComponent,
-        ' no se encuentra en la lista y no tiene version');
-    }
-    for (i = 0; i < aditional_questions.length; i++) {
-      var question = aditional_questions[i];
-      var answer = question.selected || question.value;
-      if (answer) {
-        mixpanel_event_list.push({
-          "event_name": question.id,
-          "selection": answer
-        }); // qué hace exactamente el push?
-      }
-    }
-    // We check if the user has anwered all questions
-    var mixpanel_properties = {};
-    if (mixpanel_event_list.length === aditional_questions.length) {
-      for (i = 0; i < mixpanel_event_list.length; i++) {
-        // We send the responses to Mixpanel
-        mixpanel_event = mixpanel_event_list[i];
-        mixpanel_properties = {
-          "selection": mixpanel_event.selection,
-          "question": mixpanel_event.event_name,
-          "question_type": "optional",
-          "component": $scope.randomComponent, // Se manda la versión?
-          "version": version,
-          "timestamp": Date.now(),
-          "user": $scope.user.user_id
-        };
-        mixpanel.track(mixpanel_event.event_name, mixpanel_properties);
-        // We hide the user form
-      }
-    }
-  };
-  $scope.closeForm = function(){
-    if ($('#initialQuestion').is(':visible')){
-      this.closerating();
-    }
   };
 
   // Callback when login finish
@@ -395,12 +185,12 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         $rootScope.user = $rootScope.user || {
           tokens: {}
         };
-        if (social_network !== 'twitter'){
+        if (social_network !== 'twitter') {
           $rootScope.user.tokens[social_network] = token;
           $scope.setToken(social_network, token);
           $('#login-modal').modal('toggle');
-        } 
-          
+        }
+
 
 
         switch (social_network) {
@@ -416,7 +206,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             uri += '?oauth_token=' + e.detail.token;
             $http.get(uri).success(function (responseData) {
               e.detail.userId = responseData.token_id;
-              $backend.setNewNetwork(token, responseData.token_id, social_network, e.detail.oauth_verifier).then(function(res){
+              $backend.setNewNetwork(token, responseData.token_id, social_network, e.detail.oauth_verifier).then(function (res) {
                 $rootScope.user.tokens[social_network] = res.data.token;
                 $scope.setToken(social_network, res.data.token);
                 $('#login-modal').modal('toggle');
@@ -446,4 +236,10 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     $('#login-modal spotify-login').bind('spotify-logged', loginCallback);
     $('#login-modal reddit-login').bind('reddit-logged', loginCallback);
   })();
-}]);
+
+
+  // Listen remove event
+  $scope.$on("removeComponent", function (event, data) {
+    $scope.removeElement(data.name);
+  })
+}]);;

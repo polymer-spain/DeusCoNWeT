@@ -7,9 +7,6 @@
   right:-10px !important;
   z-index: auto !important;
 }
-#userHome {
-  padding:0px 50px 20px 0px;
-}
 #userHome hr {
   margin:5px 0px
 }
@@ -40,10 +37,7 @@
   color: #f5f5f5;
   text-shadow: none;
 }
-#userHome .nav-buttons .btn:hover {
-  /*background-color: #5f0909;
-  border-color:#0c0202;*/
-}
+
 #userHome .nav-buttons .btn.active {
   color: #fff;
   background-color: #2970af;
@@ -98,6 +92,12 @@
   display:none;
 }
 
+#userHome .container{
+  width: calc(100% - 50px);
+  position: absolute;
+  height: 100%;
+  padding: 25px 0 0 0;
+}
 .context-menu-list {
   background-color:#fefefe !important;
   border-radius: 5px !important;
@@ -183,10 +183,10 @@
 #userHome #searchCatalog input[type="radio"]{
   cursor:pointer;
 }
-#userHome #listCatalog .catalogItem[disabled="true"] {
+#userHome #listCatalog .catalogItem[disabled="disabled"] {
   cursor:not-allowed;
 }
-#userHome #listCatalog .catalogItem[disabled="true"]:after {
+#userHome #listCatalog .catalogItem[disabled="disabled"]:after {
   content:'';
   z-index: 1000;
   background-color:rgba(198, 198, 198, 0.76);
@@ -327,4 +327,55 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: #aaa;
+}
+
+#userHome .header{
+  width: 100%;
+  height: 25px;
+  display: flex;
+  background: #eeeeee;
+  background: -moz-linear-gradient(top,  #eeeeee 0%, #eeeeee 100%);
+  background: -webkit-linear-gradient(top,  #eeeeee 0%,#eeeeee 100%);
+  background: linear-gradient(to bottom,  #eeeeee 0%,#eeeeee 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );  
+  top: -25px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border: 1px solid rgba(160, 159, 159, 0.98);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  padding:0 5px;
+  color:#333;
+  font-family: 'Roboto';
+}
+
+#userHome .header .componentName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  display: flex;
+
+}
+#userHome .header .deleteComponent {
+  width: 18px;
+  height: 18px;
+  padding: 4px;
+  box-sizing: border-box;
+  background-color: #F44336;
+  border: 1px solid #9e0b00;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  color: white;
+  text-shadow: 0 0 5px #333;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+#userHome .header .deleteComponent:hover{
+  background-color:red;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
 }
