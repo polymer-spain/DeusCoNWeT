@@ -112,8 +112,22 @@ paper-button >a:hover{
 }
 /* USERHOME */
 .toast-error,
-.toast-info,
 .toast-warn,
+.toast-info:hover,
 .toast.success {
 	opacity: 1 !important;
+}
+/* .toast-top-right{ 
+	width: 200px;
+    height: 100px;
+    background-color: red;
+}
+*/
+.toast-info{
+	background-color: #1868f8 !important;
+	font-weight: bold;
+	color: white;	
+}
+#toast-container > div.toast{
+	opacity: 0.9;
 }
