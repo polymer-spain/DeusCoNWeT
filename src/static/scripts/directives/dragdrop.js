@@ -78,6 +78,13 @@
         element: newTimeline
       })
 
+      divContainer.addClass("selected");
+
+      divContainer.scope().$on("componentAdded", function(e,data){
+        if ( !data.element.is(divContainer) ){
+          divContainer.removeClass("selected");
+        }
+      })
       divContainer.scope().$on("componentSelected", function(e, data){
         if ( !data.element.is(divContainer) ){
           divContainer.removeClass("selected");
@@ -92,7 +99,9 @@
             name: name
           })
         }
-      })
+      });
+
+      
       /* Forzamos la fase de compile de angular para que cargue las directivas del
        * nuevo elemento
        */
