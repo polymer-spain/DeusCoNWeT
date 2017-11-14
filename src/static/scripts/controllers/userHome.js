@@ -164,8 +164,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
     });
   };
 
-  $scope.login = function (name) {
-    $scope.loginSelected = name.split('-')[0];
+  $scope.login = function (social_network, element, component_id) {
+    $scope.loginSelected = social_network;
+    $scope.targetComponent= component_id;
     $('#login-modal').modal('toggle');
   };
 
@@ -198,6 +199,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             var uri = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + token;
             $http.get(uri).success(function (responseData) {
               $rootScope.user.renew[social_network] = true;
+              $("[id-element='" + $scope.targetComponent + "']").dblclick();
+              $scope.loginSelected = undefined;
+              $scope.targetComponent= undefined;
               //$backend.setNewNetwork(token, responseData.id, social_network).then(function(){},registerTokenError);
             });
             break;
@@ -210,6 +214,9 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
                 $rootScope.user.tokens[social_network] = res.data.token;
                 $scope.setToken(social_network, res.data.token);
                 $('#login-modal').modal('toggle');
+                $("[id-element='" + $scope.targetComponent + "']").dblclick();
+                $scope.loginSelected = undefined;
+                $scope.targetComponent= undefined;
               }, registerTokenError);
             }).error(function () {
               console.log('Problemas al intentar obtener el token_id de un usuario');
@@ -217,14 +224,19 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
             break;
           // case 'pinterest':
           //   break;
-          case 'spotify':
-            break;
-          case 'reddit':
-            break;
+          // case 'spotify':
+          //   break;
+          // case 'reddit':
+          //   break;
           default:
+            $("[id-element='" + $scope.targetComponent + "']").dblclick();
+            $scope.loginSelected = undefined;
+            $scope.targetComponent= undefined;
             //$backend.setNewNetwork(token, e.detail.userId, social_network).error(registerTokenError);
             break;
         }
+        
+
       });
     }
     $('#login-modal google-login').bind('google-logged', loginCallback);

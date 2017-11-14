@@ -207,14 +207,14 @@ angular.module('picbit').controller('FormCtrl', ['$scope', '$timeout', '$rootSco
     $scope.ratedComponents.push($scope.randomComponent);
   };
   $scope.closeForm = function () {
-      $scope.randomComponent = undefined;
-      $scope.rating = false;
-      // Reset modal
-      resetModal();
-      // if there are components unrated, set interval
-      if ($scope.unRatedComponents.length > 0) {
-        $scope.platformTimeHandler = platformTimeFunction();
-      }
+    $scope.randomComponent = undefined;
+    $scope.rating = false;
+    // Reset modal
+    resetModal();
+    // if there are components unrated, set interval
+    if ($scope.unRatedComponents.length > 0) {
+      $scope.platformTimeHandler = platformTimeFunction();
+    }
   };
 
   $scope.$on("componentAdded", function (e, data) {
@@ -223,15 +223,21 @@ angular.module('picbit').controller('FormCtrl', ['$scope', '$timeout', '$rootSco
     var isNotInRated = $scope.ratedComponents.indexOf(data.name) === -1;
     // Check if new component is neither in unrated nor rated
     if (isNotInUnrated && isNotInRated) {
-      
-      $scope.$apply(function () {
-        if (!$scope.rating && $scope.platformTimeHandler == undefined){
+
+      var checkForm = function () {
+        if (!$scope.rating && $scope.platformTimeHandler == undefined) {
           $scope.platformTimeHandler = platformTimeFunction();
         }
 
         $scope.unRatedComponents.push(data.name)
+      };
+      
+      if (!$scope.$$phase) {
+        $scope.$apply(checkForm)
+      } else {
+        checkForm();
+      }
 
-      })
     }
   })
 }]);

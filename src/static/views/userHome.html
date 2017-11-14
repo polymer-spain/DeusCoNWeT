@@ -113,7 +113,7 @@
 
               <!-- token required-->
               <span class="label label-warning warning" ng-hide="checkToken(item, $index)">{{language.noToken}}</span>
-              <button ng-hide="checkToken(item, $index)" ng-click="login(item.component_id, $event)" class="tokenDisabled">
+              <button ng-hide="checkToken(item, $index)" ng-click="login(item.social_network, item.component_id,  item.component_id)" class="tokenDisabled">
                 {{language.noTokenDescription}}
               </button>
 
