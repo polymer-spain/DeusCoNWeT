@@ -17,9 +17,14 @@ Los miembros de este grupo son:
 
 Antes de desplegar el portal es necesario configurar los dominios en los que se va a ejecutar, es decir, hay que especificar la direccion sobre la que la vamos a ejecutar. Para ello es necesario cambiar los siguientes ficheros:
 
-#### Config.yaml
+#### secret.yaml
 
-Es la configuración general del portal. Mirar fichero exampleConfig.yaml:
+Es la configuración de las credenciales privadas de las redes sociales. La configuración actual es la siguiente:
+
+```yaml
+FACEBOOK_APP_ID: 123747765045661
+FACEBOOK_APP_SECRET: 62f8896c4428d87f0c60c014d2cc2df1
+```
 
 #### mongo.yaml
 
@@ -34,7 +39,7 @@ database: picbit
 pwdTest: test
 userTest: deus
 databaseTest: picbitTes
-
+se
 ```
 
 #### [App.yaml](https://github.com/polymer-spain/DeusCoNWeT/blob/develop/src/app.yaml)
@@ -53,10 +58,13 @@ se tiene que modificar el fichero .bowerrc para que consulte también el servido
 
 ***.bowerrc***
 ```json
-  {
-    "directory": "src/static/bower_components",
-    "registry": "http://centauro.ls.fi.upm.es:5555"
-  }
+{
+   "directory": "src/static/bower_components",
+   "registry": {
+        "search":["http://centauro.ls.fi.upm.es:5555", "https://bower.herokuapp.com"],
+        "register":"http://centauro.ls.fi.upm.es:5555"
+    }
+}
 ```
 ## [facebook](https://github.com/Mortega5/facebook-wall)
  

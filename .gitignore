@@ -11,4 +11,4 @@ readlog.sh
 database
 .vscode
 mongo.yaml
-config.yaml
+secret.yaml

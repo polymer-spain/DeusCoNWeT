@@ -34,8 +34,13 @@ import datetime
 
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+secretFile = os.path.abspath(os.path.join(basepath, "secret.yaml"))
+
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
+
+with open(secretFile, "r") as ymlfile:
+    secret = yaml.load(ymlfile)
 
 
 class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
@@ -102,7 +107,7 @@ class OAuthFacebookAccessToken(webapp2.RequestHandler):
       self.response.set_status(404)
     
     else:
-      url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s" % (cfg['APP_ID'], cfg['APP_SECRET'], access_token)
+      url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s" % (secret['FACEBOOK_APP_ID'], secret['FACEBOOK_APP_SECRET'], access_token)
       print url
       response = urllib2.urlopen(url).read()
       self.response.headers.add_header('Access-Control-Allow-Origin', '*')
