@@ -38,8 +38,7 @@ user: deusConwet
 database: picbit
 pwdTest: test
 userTest: deus
-databaseTest: picbitTes
-se
+databaseTest: picbitTest
 ```
 
 #### [App.yaml](https://github.com/polymer-spain/DeusCoNWeT/blob/develop/src/app.yaml)
