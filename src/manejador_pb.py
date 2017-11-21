@@ -110,8 +110,6 @@ with open(configFile, "r") as ymlfile:
 # Handler for static files. config={static_folder:"STATIC_DIR"} set static folder. Default static
 class staticFiles(webapp2.RequestHandler):
   def get(self, path):
-    print "HOlaAAA"
-    print path
     
     # If url is base (/) load index.html. (Depecrated?)
     if not path:
@@ -157,7 +155,6 @@ static_url = [(r'/(.*)', staticFiles), (r'/\.well-known/(.*)', staticFiles)]
 
 # api_urls + app.yaml urls + static_folder
 full_url = api_url + defined_url + static_url
-print full_url
 app = webapp2.WSGIApplication(full_url, debug=True)
 
 
