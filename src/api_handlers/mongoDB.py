@@ -31,23 +31,11 @@ import base64
 sys.path.insert(1, 'lib')
 from mongoengine import *
 from pprint import pprint
-import BVA
+from lib import BVA
 import dateutil.parser
 import pdb
 
 #import pdb; pdb.set_trace(); # comando para depurar 
-# Definimos la lista de redes sociales con las que trabajamos
-social_list = [
-    'twitter',
-    'facebook',
-    'stackoverflow',
-    'instagram',
-    'linkedin',
-    'googleplus',
-    'github',
-    'spotify',
-    'reddit'
-    ]
 
 
 # We read the relevant fields in the config.yaml file (config params for PicBit Backend)
@@ -60,6 +48,8 @@ mongoOptions = os.path.abspath(os.path.join(basepath, "mongo.yaml"))
 with open(mongoOptions, "r") as ymlfile:
     mongoCfg = yaml.load(ymlfile)
 
+# Definimos la lista de redes sociales con las que trabajamos
+social_list = cfg['social_list']
 # If the param is set wrong, we configure component versioning as static
 component_versioning = cfg["component_versioning"] if cfg["component_versioning"] in ["static", "dynamic"] else "static"
 
@@ -67,7 +57,6 @@ component_versioning = cfg["component_versioning"] if cfg["component_versioning"
 # Connect mongoCfg
 MODE = os.getenv('VERSION', 'test')
 
-print "Modo en el que se utiliza: ", MODE
 if MODE == 'proc':
     database = mongoCfg["database"]
     username = mongoCfg['user']

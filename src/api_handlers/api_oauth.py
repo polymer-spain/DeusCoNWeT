@@ -43,37 +43,37 @@ import oauth
 # Import config vars
 basepath = os.path.dirname(__file__)
 configFile = os.path.abspath(os.path.join(basepath, "config.yaml"))
+secretFile = os.path.abspath(os.path.join(basepath, "secret.yaml"))
+
 with open(configFile, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
+with open(secretFile, "r") as ymlfile:
+    secret = yaml.load(ymlfile)
 
 MODE = os.getenv("VERSION", "test")
-if MODE == "proc":
-    domain = cfg["domain"]
+if MODE == 'proc':
+    domain = os.getenv("HTTP_PATH", "") or cfg["domain"]
 else:
-    domain = cfg["domainTest"]
+    domain = os.getenv("HTTP_PATH_TEST", "") or cfg['domainTest']
 
 client = None
 
 # Configuration params in order to perform the request to Twitter
-consumer_key = "BOySBn8XHlyYDQiGiqZ1tzllx"
-consumer_secret = \
-    "xeSw5utUJmNOt5vdZZy8cllLegg91vqlzRitJEMt5zT7DtRcHE"
-request_token_url = \
-    "https://api.twitter.com/oauth/request_token"
-base_authorization_url = \
-    "https://api.twitter.com/oauth/authorize"
-callback_uri = "https://" + domain \
-    + "/api/oauth/twitter/authorization"
+consumer_key = secret["TWITTER_CONSUMER_KEY"]
+consumer_secret = secret["TWITTER_CONSUMER_SECRET"]
+request_token_url = "https://api.twitter.com/oauth/request_token"
+base_authorization_url = "https://api.twitter.com/oauth/authorize"
+callback_uri = "https://%s/api/oauth/twitter/authorization" % domain
+
 # Request to Twitter the request_token and authorization URL
-
 twitter = Twython(consumer_key, consumer_secret)
-
-client = oauth.TwitterClient(consumer_key, consumer_secret,
-        callback_uri)
+client = oauth.TwitterClient(consumer_key, consumer_secret, callback_uri)
 
 # Generic handlers for the session management, login, logout and actions
 # related to user credentials
+
+
 class SessionHandler(webapp2.RequestHandler):
     """
     Class that handles the session of the application
@@ -114,6 +114,7 @@ class OauthSignUpHandler(SessionHandler):
             token_in and access_token in the system, and generates the
             cookie for the session.
     """
+
     def post_signup(self, social_network):
         try:
             # We get the params from the POST data
@@ -126,14 +127,15 @@ class OauthSignUpHandler(SessionHandler):
             print "user_identifier", user_identifier
             # Checks if the username was stored previously
             stored_credentials = mongoDB.searchToken(token_id, social_network)
-            if stored_credentials == None: # Not found
+            if stored_credentials == None:  # Not found
                 user_data = {}
-                user_id_repeated = True if not mongoDB.getUser(user_identifier) == None else False
+                user_id_repeated = True if not mongoDB.getUser(
+                    user_identifier) == None else False
                 if not user_id_repeated:
                     user_data["user_id"] = user_identifier
                     # Generate a valid username for a new user
                     user_key = mongoDB.insertUser(social_network,
-                            token_id, access_token, user_data)
+                                                  token_id, access_token, user_data)
                     print "Inserta el usuario correctamente"
                     mongoDB.assignComponents(user_key)
                     print "asigna los componentes"
@@ -142,25 +144,27 @@ class OauthSignUpHandler(SessionHandler):
                     print "la funcion login funciona"
                     # Returns the session, user_id and social_network cookie
                     self.response.set_cookie("session", session_id,
-                            path="/", domain=domain, secure=True)
+                                             path="/", domain=domain, secure=True)
                     self.response.set_cookie("social_network", social_network,
-                            path="/", domain=domain, secure=True)
+                                             path="/", domain=domain, secure=True)
                     self.response.set_cookie("user", user_identifier,
-                            path="/", domain=domain, secure=True)
+                                             path="/", domain=domain, secure=True)
 
                     # Builds the response
-                    response = {"status": "User logged successfully", "user_id": user_identifier}
+                    response = {"status": "User logged successfully",
+                                "user_id": user_identifier}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(201)
                 else:
-                    response = {"error": "The user_identifier provided for the sign up has been already taken"}
+                    response = {
+                        "error": "The user_identifier provided for the sign up has been already taken"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
             else:
                 response = \
-                {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
+                    {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
@@ -181,6 +185,7 @@ class OauthLoginHandler(SessionHandler):
             access_token for a given user in the system, and generates the
             cookie for the session.
     """
+
     def post_login(self, social_network):
         try:
             # We get the params from the POST data
@@ -189,29 +194,33 @@ class OauthLoginHandler(SessionHandler):
 
             # Checks if the username was stored previously
             stored_credentials = mongoDB.searchToken(token_id,
-                    social_network)
+                                                     social_network)
             if not stored_credentials == None:
                 # We store the new set of credentials
                 user_key = mongoDB.modifyToken(token_id,
-                        access_token, social_network)
+                                               access_token, social_network)
                 user_id = mongoDB.getUserId(user_key)
                 session_id = self.login(user_key)
 
                 # Gets the user_id to generate the user cookie
                 user_id = mongoDB.getUserId(user_key)
                 # Returns the session cookie
-                self.response.set_cookie("session", session_id, path="/", domain=domain, secure=True)
-                self.response.set_cookie("social_network", social_network, path="/", domain=domain, secure=True)
-                self.response.set_cookie("user", user_id, path="/", domain=domain, secure=True)
+                self.response.set_cookie(
+                    "session", session_id, path="/", domain=domain, secure=True)
+                self.response.set_cookie(
+                    "social_network", social_network, path="/", domain=domain, secure=True)
+                self.response.set_cookie(
+                    "user", user_id, path="/", domain=domain, secure=True)
 
                 # Builds the response
-                response = {"status": "User logged successfully", "user_id": user_id}
+                response = {"status": "User logged successfully",
+                            "user_id": user_id}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
             else:
                 response = \
-                {"error": "The token_id provided does not belong to any user in the system. Consider perform a signup request instead"}
+                    {"error": "The token_id provided does not belong to any user in the system. Consider perform a signup request instead"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(401)
@@ -231,6 +240,7 @@ class OauthLogoutHandler(SessionHandler):
             post_logout - Implements the logout action. Invalidates the
             cookie for the session.
     """
+
     def post_logout(self, social_network):
         cookie_value = self.request.cookies.get("session")
         if not cookie_value == None:
@@ -240,35 +250,35 @@ class OauthLogoutHandler(SessionHandler):
                 # Logout
                 logout_status = self.logout(cookie_value)
                 # We invalidate the session cookies received
-                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                expire_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
                 self.response.set_cookie("session", "",
-                    path="/", domain=domain, secure=True, expires=expire_date)
+                                         path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
                 if not self.request.cookies.get("social_network") == None:
                     self.response.set_cookie("social_network", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
 
             else:
                 # We invalidate the session cookies received
-                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                expire_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
                 self.response.set_cookie("session", "",
-                    path="/", domain=domain, secure=True, expires=expire_date)
+                                         path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
                 if not self.request.cookies.get("social_network") == None:
                     self.response.set_cookie("social_network", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
 
                 # Builds the response
                 response = \
-                {"error": "The cookie session provided does not belongs to any active user. The logout action was not performed"}
+                    {"error": "The cookie session provided does not belongs to any active user. The logout action was not performed"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
@@ -300,9 +310,10 @@ class OauthCredentialsHandler(SessionHandler):
                     if user_credentials["user_id"] == logged_user_id:
                         response = \
                             {"user_id": user_credentials["user_id"],
-                            "access_token": user_credentials["token"],
-                            "token_id": user_credentials["token_id"]}
-                        logging.info('Se intenta responde: ya existe el usuario')
+                             "access_token": user_credentials["token"],
+                             "token_id": user_credentials["token_id"]}
+                        logging.info(
+                            'Se intenta responde: ya existe el usuario')
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
@@ -310,14 +321,15 @@ class OauthCredentialsHandler(SessionHandler):
 
                     else:
                         response = {"user_id": user_credentials["user_id"]}
-                        logging.info('Se intenta responde: ya existe el usuario: el usuario de las credencialeses igual al recibido: 200')
+                        logging.info(
+                            'Se intenta responde: ya existe el usuario: el usuario de las credencialeses igual al recibido: 200')
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(200)
                         logging.info('Se ha respondido: 200')
                 else:
                     response = \
-                        {"error": "The active user does not have a pair of token_id" \
+                        {"error": "The active user does not have a pair of token_id"
                          + " and access_token in " + social_network + " stored in the system"}
                     self.response.content_type = "application/json"
                     logging.info('Se responde que no existe en el sistema')
@@ -326,40 +338,40 @@ class OauthCredentialsHandler(SessionHandler):
                     logging.info('Se ha respondido: 400')
             else:
                 # We invalidate the session cookies received
-                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                expire_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
                 self.response.set_cookie("session", "",
-                    path="/", domain=domain, secure=True, expires=expire_date)
+                                         path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
                 if not self.request.cookies.get("social_network") == None:
                     self.response.set_cookie("social_network", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
 
                 # Builds the response
                 response = \
-                {"error": "The cookie session provided does not belongs to any active user"}
+                    {"error": "The cookie session provided does not belongs to any active user"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
 
         # If we don't provide a cookie in the request, we search for the token in the system
-        # and return a 200 o 404 status. It is a request included in the login flow of the system
+        # and return a 200 o 404 status. It is a request included in the login
+        # flow of the system
         else:
-            user_credentials = mongoDB.getToken(token_id,social_network)
+            user_credentials = mongoDB.getToken(token_id, social_network)
             if not user_credentials == None:
                 response = {"user_id": user_credentials["user_id"]}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(200)
             else:
-                response =  {"error": "Token not found in the system"}
+                response = {"error": "Token not found in the system"}
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(404)
-
 
     def delete_credentials(self, social_network, token_id):
         cookie_value = self.request.cookies.get("session")
@@ -373,7 +385,8 @@ class OauthCredentialsHandler(SessionHandler):
                     token_owner_id = token['user_id']
                     if logged_user_id == token_owner_id:
                         # Deletes the token from the user
-                        token_deleted = mongoDB.deleteCredentials(logged_user_key, social_network, token_id)
+                        token_deleted = mongoDB.deleteCredentials(
+                            logged_user_key, social_network, token_id)
                         if token_deleted:
                             response = \
                                 {"status": "Credentials deleted successfully"}
@@ -382,7 +395,7 @@ class OauthCredentialsHandler(SessionHandler):
                             self.response.set_status(204)
                         else:
                             response = \
-                                {"error": "This token cannot be deleted, because it is being used as the only token " + \
+                                {"error": "This token cannot be deleted, because it is being used as the only token " +
                                  "to perform the login action in the system"}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
@@ -395,23 +408,23 @@ class OauthCredentialsHandler(SessionHandler):
                         self.response.set_status(401)
                 else:
                     response = \
-                            {"error": "Token not found in the system"}
+                        {"error": "Token not found in the system"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(404)
             else:
                 # We invalidate the session cookies received
-                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                expire_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
                 self.response.set_cookie("session", "",
-                    path="/", domain=domain, secure=True, expires=expire_date)
+                                         path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
                 if not self.request.cookies.get("social_network") == None:
                     self.response.set_cookie("social_network", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
 
                 # Builds the response
                 response = \
@@ -424,6 +437,7 @@ class OauthCredentialsHandler(SessionHandler):
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(401)
+
 
 class OAuthCredentialProviderHandler(OauthCredentialsHandler):
 
@@ -439,27 +453,28 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
 
                     # Checks if the username was stored previously
                     stored_credentials = mongoDB.getToken(token_id,
-                            social_network)
+                                                          social_network)
                     if not stored_credentials == None:
                         token_owner_id = stored_credentials['user_id']
                         if token_owner_id == logged_user_id:
                             # We update the user credentials
                             user_id = mongoDB.modifyToken(token_id, access_token,
-                                    social_network)
+                                                          social_network)
                             # Builds the response
-                            response = {"user_id": stored_credentials["user_id"]}
+                            response = {
+                                "user_id": stored_credentials["user_id"]}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
                             self.response.set_status(200)
                         else:
                             response = \
-                            {"error": "You don't have the proper rights to perform this action"}
+                                {"error": "You don't have the proper rights to perform this action"}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
                             self.response.set_status(403)
                     else:
                         response = \
-                        {"error": "Credentials not found in the system"}
+                            {"error": "Credentials not found in the system"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(404)
@@ -471,17 +486,17 @@ class OAuthCredentialProviderHandler(OauthCredentialsHandler):
                     self.response.set_status(400)
             else:
                 # We invalidate the session cookies received
-                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                expire_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
                 self.response.set_cookie("session", "",
-                    path="/", domain=domain, secure=True, expires=expire_date)
+                                         path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
                 if not self.request.cookies.get("social_network") == None:
                     self.response.set_cookie("social_network", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
 
                 # Builds the response
                 response = \
@@ -509,20 +524,21 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     token_id = self.request.POST["token_id"]
                     # Checks if the username was stored previously
                     stored_credentials = mongoDB.getToken(token_id,
-                            social_network)
-                    
+                                                          social_network)
+
                     # DESCOMENTAR
-                    #if stored_credentials == None:  
+                    #if stored_credentials == None:
                     # Adds the token to the user credentials list
                     secret = None
-                    if social_network== 'twitter':
+                    if social_network == 'twitter':
                         oauth_verifier = self.request.POST['oauth_verifier']
                         twitter_data = memcache.get(oauth_verifier)
                         secret = twitter_data['oauth_token_secret']
                         access_token = twitter_data['oauth_token']
-                        
+
                     #Builds the response
-                    mongoDB.insertToken(user, social_network, access_token, token_id, secret=secret)
+                    mongoDB.insertToken(
+                        user, social_network, access_token, token_id, secret=secret)
                     user_id = mongoDB.getUserId(user)
                     response = {"user_id": user_id, "token": access_token}
                     self.response.content_type = "application/json"
@@ -547,17 +563,17 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     print "Responde 400 valid pair"
             else:
                 # We invalidate the session cookies received
-                expire_date = datetime.datetime(1970,1,1,0,0,0)
+                expire_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
                 self.response.set_cookie("session", "",
-                    path="/", domain=domain, secure=True, expires=expire_date)
+                                         path="/", domain=domain, secure=True, expires=expire_date)
                 # We delete and invalidate other cookies received, like the user logged nickname
                 # and social network in which the user performed the login
                 if not self.request.cookies.get("social_network") == None:
                     self.response.set_cookie("social_network", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
                 if not self.request.cookies.get("user") == None:
                     self.response.set_cookie("user", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
 
                 # Builds the response
                 response = \
@@ -575,10 +591,9 @@ class OAuthCredentialsContainerHandler(SessionHandler):
             print "Responde 401"
 
 
-
-##################################################################################
+##########################################################################
 # HANDLERS MAPPERS / IMPLEMENTATIONS FOR EACH SOCIAL NETWORK SUPPORTED IN PICBIT
-##################################################################################
+##########################################################################
 
 # HANDLERS FOR RESOURCES RELATED TO FACEBOOK
 class FacebookHandler(OauthCredentialsHandler):
@@ -590,32 +605,40 @@ class FacebookHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in Facebook for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("facebook", token_id)
 
     def delete(self, token_id):
         self.delete_credentials("facebook", token_id)
 
+
 class FacebookLoginHandler(OauthLoginHandler):
     """ This class is a resource that represents the login
     action using the Facebook credentials to autenticate in PicBit
     """
+
     def post(self):
         self.post_login("facebook")
+
 
 class FacebookSignUpHandler(OauthSignUpHandler):
     """ This class is a resource that represents the sign-up
     action using the Facebook credentials to autenticate in PicBit
     """
+
     def post(self):
         self.post_signup("facebook")
+
 
 class FacebookLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout
     action using the Facebook credentials to autenticate in PicBit
     """
+
     def post(self):
         self.post_logout("facebook")
+
 
 class FacebookCredentialsHandler(OAuthCredentialsContainerHandler):
     """
@@ -623,10 +646,13 @@ class FacebookCredentialsHandler(OAuthCredentialsContainerHandler):
     Methods:
         put -- Adds a new set of credentials (token_id and access_token in Facebook)
     """
+
     def put(self):
         self.put_credentials("facebook")
 
 # HANDLERS FOR RESOURCES RELATED TO GITHUB
+
+
 class GitHubCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the GitHub token resource.
@@ -638,14 +664,16 @@ class GitHubCredentialHandler(OAuthCredentialProviderHandler):
         post -- Updates the pair of token_id and access_token in
                 GitHub for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("github", token_id)
 
     def delete(self, token_id):
         self.delete_credentials("github", token_id)
 
-    def post(self,token_id):
+    def post(self, token_id):
         self.update_credentials("github", token_id)
+
 
 class GitHubContainerHandler(SessionHandler):
     """
@@ -653,6 +681,7 @@ class GitHubContainerHandler(SessionHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in GitHub)
     """
+
     def post(self):
         url = "github.com"
         # authorize_url = \
@@ -670,14 +699,16 @@ class GitHubContainerHandler(SessionHandler):
             # print "Valor de code: " + code
             # print "===================================="
             params_token = urllib.urlencode({"client_id": client_id,
-                    "client_secret": client_secret, "code": code})
+                                             "client_secret": client_secret, "code": code})
             # Realizamos la peticion en la conexion
             connection.request("POST", access_token_url, params_token)
             # Cogemos la respuesta de la peticion y realizamos un split
             # para coger el valor del token
             response_token = connection.getresponse()
             data_token = response_token.read()
-            # print "===========================================================" + data_token
+            # print
+            # "===========================================================" +
+            # data_token
             access_token = data_token.split("&")
             access_token = access_token[0].split("=")[1]
             # logging.info('Ya tiene codigo: ' + access_token)
@@ -698,9 +729,10 @@ class GitHubContainerHandler(SessionHandler):
                     # Obtenemos los detalles del usuario autenticado
                     connectionAPI = httplib.HTTPSConnection("api.github.com")
                     headers = {"Accept": "application/vnd.github.v3+json",
-                                "User-Agent": "PicBit-App",
-                                "Authorization": "token " + mongoDB.getGitHubAPIKey()}
-                    connectionAPI.request("GET", "/user", urllib.urlencode({}), headers)
+                               "User-Agent": "PicBit-App",
+                               "Authorization": "token " + mongoDB.getGitHubAPIKey()}
+                    connectionAPI.request(
+                        "GET", "/user", urllib.urlencode({}), headers)
                     response = connectionAPI.getresponse()
                     response_content = response.read()
                     user_details = json.loads(response_content)
@@ -710,7 +742,7 @@ class GitHubContainerHandler(SessionHandler):
                     self.response.write(json.dumps(response))
                     # Buscamos el par id usuario/token autenticado en la base
                     stored_credentials = mongoDB.searchToken(str(user_details["login"
-                            ]), "github")
+                                                                              ]), "github")
                     print "================================="
                     print user_details["login"]
                     print "================================="
@@ -720,7 +752,7 @@ class GitHubContainerHandler(SessionHandler):
                         print "============================="
                         # Almacena las credenciales en una entidad Token
                         user_credentials = mongoDB.insertToken(user, "github", access_token,
-                                            user_details["login"])
+                                                               user_details["login"])
                         self.response.set_status(201)
                     else:
                         print "=========================="
@@ -728,21 +760,21 @@ class GitHubContainerHandler(SessionHandler):
                         print "=========================="
                         # Almacenamos el access token recibido
                         user_id = mongoDB.modifyToken(str(user_details["login"]),
-                                access_token, "github")
+                                                      access_token, "github")
                         self.response.set_status(200)
                 else:
                     # We invalidate the session cookies received
-                    expire_date = datetime.datetime(1970,1,1,0,0,0)
+                    expire_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
                     self.response.set_cookie("session", "",
-                        path="/", domain=domain, secure=True, expires=expire_date)
+                                             path="/", domain=domain, secure=True, expires=expire_date)
                     # We delete and invalidate other cookies received, like the user logged nickname
                     # and social network in which the user performed the login
                     if not self.request.cookies.get("social_network") == None:
                         self.response.set_cookie("social_network", "",
-                            path="/", domain=domain, secure=True, expires=expire_date)
+                                                 path="/", domain=domain, secure=True, expires=expire_date)
                     if not self.request.cookies.get("user") == None:
                         self.response.set_cookie("user", "",
-                            path="/", domain=domain, secure=True, expires=expire_date)
+                                                 path="/", domain=domain, secure=True, expires=expire_date)
 
                     # Builds the response
                     response = \
@@ -764,6 +796,8 @@ class GitHubContainerHandler(SessionHandler):
             self.response.set_status(400)
 
 # HANDLERS FOR RESOURCES RELATED TO GOOGLEPLUS
+
+
 class GooglePlusHandler(OauthCredentialsHandler):
     """
     Class that represents the GooglePlus token resource.
@@ -773,32 +807,40 @@ class GooglePlusHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in GooglePlus for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("googleplus", token_id)
 
     def delete(self, token_id):
         self.delete_credentials("googleplus", token_id)
 
+
 class GooglePlusLoginHandler(OauthLoginHandler):
     """ This class is a resource that represents the login
     action using the GooglePlus credentials to autenticate in PicBit
     """
+
     def post(self):
         self.post_login("googleplus")
+
 
 class GooglePlusSignUpHandler(OauthSignUpHandler):
     """ This class is a resource that represents the sign-up
     action using the GooglePlus credentials to autenticate in PicBit
     """
+
     def post(self):
         self.post_signup("googleplus")
+
 
 class GooglePlusLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout
     action using the GooglePlus credentials to autenticate in PicBit
     """
+
     def post(self):
         self.post_logout("googleplus")
+
 
 class GooglePlusCredentialsHandler(OAuthCredentialsContainerHandler):
     """
@@ -806,10 +848,13 @@ class GooglePlusCredentialsHandler(OAuthCredentialsContainerHandler):
     Methods:
         put -- Adds a new set of credentials (token_id and access_token in Googleplus)
     """
+
     def put(self):
         self.put_credentials("googleplus")
 
 # HANDLERS FOR RESOURCES RELATED TO INSTAGRAM
+
+
 class InstagramCredentialHandler(OAuthCredentialProviderHandler):
     """
     Class that represents the Instagram token resource.
@@ -821,6 +866,7 @@ class InstagramCredentialHandler(OAuthCredentialProviderHandler):
         post -- Updates the pair of token_id and access_token in
                 Instagram for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("instagram", token_id)
 
@@ -830,12 +876,14 @@ class InstagramCredentialHandler(OAuthCredentialProviderHandler):
     def post(self, token_id):
         self.update_credentials("instagram", token_id)
 
+
 class InstagramContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Instagram credentials resource.
     Methods:
         put -- Adds a new set of credentials (token_id and access_token in Instagram)
     """
+
     def put(self):
         self.put_credentials("instagram")
 
@@ -852,6 +900,7 @@ class LinkedinCredentialHandler(OAuthCredentialProviderHandler):
         post -- Updates the pair of token_id and access_token in
                 Linkedin for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("linkedin", token_id)
 
@@ -861,12 +910,14 @@ class LinkedinCredentialHandler(OAuthCredentialProviderHandler):
     def post(self, token_id):
         self.update_credentials("linkedin", token_id)
 
+
 class LinkedinContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Linkedin credentials resource.
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in Linkedin)
     """
+
     def put(self):
         self.put_credentials("linkedin")
 
@@ -883,14 +934,16 @@ class StackOverflowCredentialHandler(OAuthCredentialProviderHandler):
         post -- Updates the pair of token_id and access_token in
                 StackOverflow for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("stackoverflow", token_id)
 
     def delete(self, token_id):
         self.delete_credentials("stackoverflow", token_id)
 
-    def post(self,token_id):
+    def post(self, token_id):
         self.update_credentials("stackoverflow", token_id)
+
 
 class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     """
@@ -898,12 +951,15 @@ class StackOverflowContainerHandler(OAuthCredentialsContainerHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in Stackoverflow)
     """
+
     def put(self):
         self.put_credentials("stackoverflow")
 
 # HANDLERS FOR RESOURCES RELATED TO TWITTER
 # Handler that manages the first step in the Twitter login flow
 # (obtain the request token and request url to initiate the login in client)
+
+
 class TwitterRequestLoginHandler(webapp2.RequestHandler):
     """ This resource represents the first step in the Twitter
         login flow, in which the server must request to Twitter a
@@ -914,6 +970,7 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         The second step is performed in frontend and the third step is a
         callback received from Twitter endpoint.
     """
+
     def get(self):
         global client
         """ Handles the first step in the Twitter login flow
@@ -922,15 +979,18 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         """
         # Return the authorization URL
         self.response.content_type = "application/json"
-        callback_url = self.request.get("callback", default_value="https://" + domain)
+        callback_url = self.request.get(
+            "callback", default_value="https://" + domain)
         auth = twitter.get_authentication_tokens(callback_url=callback_url)
         print "Datos a añadir", auth
-        memcache.add(auth['oauth_token'], auth['oauth_token_secret'], time=20*60)
+        memcache.add(auth['oauth_token'],
+                     auth['oauth_token_secret'], time=20 * 60)
         response = {"oauth_url": auth['auth_url']}
         self.response.write(json.dumps(response))
 
 
-# Handler that manages the callback from Twitter as a final step of the oauth flow
+# Handler that manages the callback from Twitter as a final step of the
+# oauth flow
 class TwitterAuthorizationHandler(SessionHandler):
     """ This class is a resource that represents the authorization
         step in the Twitter Login flow, in which the Twitter Endpoint returns
@@ -949,7 +1009,8 @@ class TwitterAuthorizationHandler(SessionHandler):
         oauth_token = self.request.get("oauth_token")
         oauth_verifier = self.request.get("oauth_verifier")
         oauth_token_secret = memcache.get(oauth_token)
-        tw = Twython(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
+        tw = Twython(consumer_key, consumer_secret,
+                     oauth_token, oauth_token_secret)
 
         # Retrieves user info
         user_info = tw.get_authorized_tokens(oauth_verifier)
@@ -960,10 +1021,11 @@ class TwitterAuthorizationHandler(SessionHandler):
         data = {"token_id": user_info["screen_name"],
                 "access_token": user_info["oauth_token"]
                 }
-        memcache.add(key_verifier, data, time=20*60)
+        memcache.add(key_verifier, data, time=20 * 60)
 
         # Set the status for the response
         self.response.set_status(200)
+
 
 class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
     def get(self, oauth_verifier):
@@ -974,7 +1036,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
         """
         global consumer_key
         global consumer_secret
-        
+
         # Get oauth_token from request
         oauth_token = self.request.get('oauth_token')
 
@@ -986,7 +1048,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
         # Get oauth token secret from memcache. Stored in the first step
         print "Intentando coger el secret de la memcache: ", oauth_token
         oauth_token_secret = memcache.get(oauth_token)
-        
+
         if not oauth_token:
             reponse = {'error', "The oauth token is not valid"}
             self.response.content_type = "application/json"
@@ -994,10 +1056,11 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
             self.response.set_status(404)
 
         memcache.delete(oauth_token)
-        tw = Twython(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
+        tw = Twython(consumer_key, consumer_secret,
+                     oauth_token, oauth_token_secret)
         twitter_user_data = tw.get_authorized_tokens(oauth_verifier)
         print "Metiendo los datos completos: ", twitter_user_data, oauth_verifier
-        memcache.add(oauth_verifier, twitter_user_data, time=20*60)
+        memcache.add(oauth_verifier, twitter_user_data, time=20 * 60)
         print "Recuperando datos: ", memcache.get(oauth_verifier)
         # Return the user's token id that authorized the application
         if not twitter_user_data == None:
@@ -1006,10 +1069,12 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(200)
         else:
-            response = {"error": "The oauth_verifier provided does not correspond to an active authorization flow"}
+            response = {
+                "error": "The oauth_verifier provided does not correspond to an active authorization flow"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(404)
+
 
 class TwitterHandler(OauthCredentialsHandler):
     """
@@ -1020,11 +1085,13 @@ class TwitterHandler(OauthCredentialsHandler):
         delete -- Deletes the pair of token_id and access_token
                   in Twitter for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("twitter", token_id)
 
     def delete(self, token_id):
         self.delete_credentials("twitter", token_id)
+
 
 class TwitterCredentialsHandler(OAuthCredentialsContainerHandler):
     """
@@ -1032,8 +1099,10 @@ class TwitterCredentialsHandler(OAuthCredentialsContainerHandler):
     Methods:
         post -- Adds a new set of credentials (token_id and access_token in Twitter)
     """
+
     def put(self):
         self.put_credentials("twitter")
+
 
 class TwitterSignUpHandler(SessionHandler):
     """ This class is a resource that represents the sign-up
@@ -1042,8 +1111,10 @@ class TwitterSignUpHandler(SessionHandler):
     Methods:
         post -- Signs ups a user in the system
     """
+
     def post(self):
-        oauth_verifier = self.request.get("oauth_verifier", default_value="None")
+        oauth_verifier = self.request.get(
+            "oauth_verifier", default_value="None")
         user_identifier = self.request.get("user_identifier", default_value="")
 
         if not oauth_verifier == "":
@@ -1051,50 +1122,57 @@ class TwitterSignUpHandler(SessionHandler):
             twitter_user_data = memcache.get(oauth_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = mongoDB.searchToken(twitter_user_data["screen_name"], "twitter")
+                stored_credentials = mongoDB.searchToken(
+                    twitter_user_data["screen_name"], "twitter")
                 if stored_credentials == None:
                     user_info = {}
                     if not user_identifier == "":
                         # Checks if the user_id taken exists in the system
-                        user_id_repeated = True if not mongoDB.getUser(user_identifier) == None else False
+                        user_id_repeated = True if not mongoDB.getUser(
+                            user_identifier) == None else False
                         if not user_id_repeated:
                             user_info["user_id"] = user_identifier
                             user_key = mongoDB.insertUser("twitter",
-                            twitter_user_data["screen_name"], twitter_user_data["oauth_token"], user_info, secret=twitter_user_data['oauth_token_secret'])
+                                                          twitter_user_data["screen_name"], twitter_user_data["oauth_token"], user_info, secret=twitter_user_data['oauth_token_secret'])
                             mongoDB.assignComponents(user_key)
-                            # Deletes the key-value for the pair oauth_verifier-session_id stored in memcache
+                            # Deletes the key-value for the pair
+                            # oauth_verifier-session_id stored in memcache
                             memcache.delete(oauth_verifier)
 
-                            # Returns the session, user_id and social_network cookie
+                            # Returns the session, user_id and social_network
+                            # cookie
                             session_id = self.login(str(user_key.id))
                             self.response.set_cookie("session",
-                                    value=session_id, path="/", domain=domain,
-                                    secure=True)
+                                                     value=session_id, path="/", domain=domain,
+                                                     secure=True)
                             self.response.set_cookie("social_network",
-                                    value="twitter", path="/", domain=domain,
-                                    secure=True)
+                                                     value="twitter", path="/", domain=domain,
+                                                     secure=True)
                             self.response.set_cookie("user",
-                                    value=user_identifier, path="/", domain=domain,
-                                    secure=True)
+                                                     value=user_identifier, path="/", domain=domain,
+                                                     secure=True)
 
                             # Builds the response
-                            response = {"status": "User logged successfully", "user_id": user_identifier}
+                            response = {
+                                "status": "User logged successfully", "user_id": user_identifier}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
                             self.response.set_status(201)
                         else:
-                            response = {"error": "The user_identifier provided for the sign up has been already taken"}
+                            response = {
+                                "error": "The user_identifier provided for the sign up has been already taken"}
                             self.response.content_type = "application/json"
                             self.response.write(json.dumps(response))
                             self.response.set_status(400)
                     else:
-                        response = {"error": "You must provide a valid user_identifier in the request"}
+                        response = {
+                            "error": "You must provide a valid user_identifier in the request"}
                         self.response.content_type = "application/json"
                         self.response.write(json.dumps(response))
                         self.response.set_status(400)
                 else:
                     response = \
-                    {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
+                        {"error": "The token_id provided belong to a registered user in the system. Consider perform a login request instead"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
@@ -1116,41 +1194,44 @@ class TwitterLoginHandler(SessionHandler):
     """ This class is a resource that represents the login
     action using the Twitter credentials to autenticate in PicBit
     """
+
     def post(self):
         oauth_verifier = self.request.get("oauth_verifier",
-                default_value="None")
+                                          default_value="None")
         user_identifier = self.request.get("user_identifier", default_value="")
 
         if not oauth_verifier == "":
             twitter_user_data = memcache.get(oauth_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously
-                stored_credentials = mongoDB.searchToken(twitter_user_data["screen_name"], "twitter")
+                stored_credentials = mongoDB.searchToken(
+                    twitter_user_data["screen_name"], "twitter")
                 if not stored_credentials == None:
                     # We store the new set of credentials
                     user_key = mongoDB.modifyToken(twitter_user_data["screen_name"],
-                            twitter_user_data["oauth_token"], "twitter")
+                                                   twitter_user_data["oauth_token"], "twitter")
                     user_id = mongoDB.getUserId(user_key)
                     session_id = self.login(str(user_key))
 
                     # Returns the session, social_network and user cookie
                     self.response.set_cookie("session", session_id,
-                            path="/", domain=domain, secure=True)
+                                             path="/", domain=domain, secure=True)
                     self.response.set_cookie("social_network",
-                            value="twitter", path="/", domain=domain,
-                            secure=True)
+                                             value="twitter", path="/", domain=domain,
+                                             secure=True)
                     self.response.set_cookie("user",
-                            value=user_id, path="/", domain=domain,
-                            secure=True)
+                                             value=user_id, path="/", domain=domain,
+                                             secure=True)
 
                     # Builds the response
-                    response = {"status": "User logged successfully", "user_id": user_id}
+                    response = {
+                        "status": "User logged successfully", "user_id": user_id}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(200)
                 else:
                     response = \
-                    {"error": "The token_id provided does not belong to a registered user in the system. Consider perform a signup request instead"}
+                        {"error": "The token_id provided does not belong to a registered user in the system. Consider perform a signup request instead"}
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
@@ -1167,10 +1248,12 @@ class TwitterLoginHandler(SessionHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(400)
 
+
 class TwitterLogoutHandler(OauthLogoutHandler):
     """ This class is a resource that represents the logout
     action using the Twitter credentials to autenticate in PicBit
     """
+
     def post(self):
         self.post_logout("twitter")
 
@@ -1187,6 +1270,7 @@ class PinterestCredentialHandler(OAuthCredentialProviderHandler):
         post -- Updates the pair of token_id and access_token in
                 Pinterest for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("pinterest", token_id)
 
@@ -1196,24 +1280,28 @@ class PinterestCredentialHandler(OAuthCredentialProviderHandler):
     def post(self, token_id):
         self.update_credentials("pinterest", token_id)
 
+
 class PinterestContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Instagram credentials resource.
     Methods:
         put -- Adds a new set of credentials (token_id and access_token in Instagram)
     """
+
     def put(self):
         self.put_credentials("pinterest")
 
 
-class SpotifyContainerHandler(OAuthCredentialsContainerHandler): 
+class SpotifyContainerHandler(OAuthCredentialsContainerHandler):
     """
     Class that represents the List of Spotify credentials resource.
     Methods:
         put -- Adds a new set of credentials (token_id and access_token in Spotify)
     """
+
     def put(self):
         self.put_credentials("spotify")
+
 
 class SpotifyCredentialHandler(OAuthCredentialsContainerHandler):
     """
@@ -1226,6 +1314,7 @@ class SpotifyCredentialHandler(OAuthCredentialsContainerHandler):
         post -- Updates the pair of token_id and access_token in
                 Spotify for the user authenticated
     """
+
     def get(self, token_id):
         self.get_credentials("spotify", token_id)
 
@@ -1234,4 +1323,3 @@ class SpotifyCredentialHandler(OAuthCredentialsContainerHandler):
 
     def post(self, token_id):
         self.update_credentials("spotify", token_id)
-        

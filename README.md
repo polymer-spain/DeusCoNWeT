@@ -15,15 +15,22 @@ Los miembros de este grupo son:
 
 ## Configuración
 
+
 Antes de desplegar el portal es necesario configurar los dominios en los que se va a ejecutar, es decir, hay que especificar la direccion sobre la que la vamos a ejecutar. Para ello es necesario cambiar los siguientes ficheros:
 
+### variable del entorno
+HTTP_PATH --> Dominio principal
+HTTP_PATH --> Dominio de prueba
+VERSIOn --> proc or test  (default test)
 #### secret.yaml
 
 Es la configuración de las credenciales privadas de las redes sociales. La configuración actual es la siguiente:
 
 ```yaml
-FACEBOOK_APP_ID: 123747765045661
-FACEBOOK_APP_SECRET: 62f8896c4428d87f0c60c014d2cc2df1
+FACEBOOK_APP_ID: <app_id facebook>
+FACEBOOK_APP_SECRET: <app_secret de facebook>
+TWITTER_CONSUMER_KEY: <consumer key de twitter>
+TWITTER_CONSUMER_SECRET: <consumer secret en twitter>
 ```
 
 #### mongo.yaml
@@ -33,12 +40,12 @@ Fichero de configuración de la conexión con la base de datos. Por ejemplo:
 ```yaml
 host: 10.10.1.88
 port: 27017
-pwd: euser:7394
-user: deusConwet
-database: picbit
-pwdTest: test
-userTest: deus
-databaseTest: picbitTest
+pwd: pwdProduccion
+user: userProduccion
+database: dbProduccion
+userTest: userTest
+pwdTest: pwdTest
+databaseTest: databaseTest
 ```
 
 #### [App.yaml](https://github.com/polymer-spain/DeusCoNWeT/blob/develop/src/app.yaml)

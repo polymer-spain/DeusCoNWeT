@@ -1,8 +1,8 @@
 import sys
 import os
 import yaml
-sys.path.insert(0, '/var/www/src/api_handlers')
-sys.path.insert(0, '/var/www/src/api_handlers/lib')
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__), "../api_handlers"))
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__), "../api_handlers/lib"))
 import mongoDB
 from mongoDB import FacebookPosts, Token
 import datetime

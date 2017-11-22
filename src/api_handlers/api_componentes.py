@@ -38,13 +38,12 @@ with open(configFile, "r") as ymlfile:
 # CONFIGURE TEST AND PRODUCCION VERSION
 MODE = os.getenv('VERSION', 'test')
 
-if MODE == 'test':
-    domain = cfg['domainTest']
+if MODE == 'proc':
+    domain = os.getenv("HTTP_PATH", "") or cfg["domain"]
 else:
-    domain = cfg["domain"]
+    domain = os.getenv("HTTP_PATH_TEST", "") or cfg['domainTest']
 
-
-social_list = ["twitter", "facebook", "stackoverflow", "instagram", "linkedin", "googleplus", "github", "pinterest", "spotify", "reddit", ""]
+social_list = cfg["social_list"]
 
 class ComponentRatingHandler(SessionHandler):
     """

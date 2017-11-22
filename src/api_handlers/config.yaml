@@ -44,3 +44,15 @@ components:
   - open-weather
   - spotify-component
   - reddit-timeline
+social_list:
+  - twitter
+  - facebook
+  - stackoverflow
+  - instagram
+  - linkedin
+  - googleplus
+  - github
+  - pinterest
+  - spotify
+  - reddit
+  - ""
