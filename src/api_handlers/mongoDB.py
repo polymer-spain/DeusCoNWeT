@@ -53,7 +53,6 @@ social_list = cfg['social_list']
 # If the param is set wrong, we configure component versioning as static
 component_versioning = cfg["component_versioning"] if cfg["component_versioning"] in ["static", "dynamic"] else "static"
 
-
 # Connect mongoCfg
 MODE = os.getenv('VERSION', 'test')
 
@@ -403,7 +402,6 @@ def getToken(id_rs, social_net):
     user = User.objects(tokens=token.id)
     if user.count() > 0:
       user = user[0]
-      print "se intenta descifrar con ", token.id, id_rs, social_net
       cipher = getCipher(str(token.id))
       ans = {"token": decodeAES(cipher, token.token),
             "user_id": user.user_id,
@@ -728,20 +726,22 @@ def searchNetwork(user):
 def assignComponents(user):
 
   # Setting up the versions for the components
-  versions = bva.getNewVersions()
+  
+  versions = bva.getSceneario()
+  
   comps = Component.objects()
+  
   version_order = {"twitter-timeline": 0, "facebook-wall": 1, "pinterest-timeline": 2, "googleplus-timeline": 3, "traffic-incidents": 4,
                   "finance-search": 5, "open-weather": 6, "spotify-component": 7, "reddit-timeline": 8}
   user.components = []
+  components = []
   for comp in comps:
     version = versions[version_order[comp.component_id]]
     uc = UserComponent(component_id=comp.component_id, x=0, y=0, height="0", width="0", version=version)
-    user.components.append(uc)
-    comp.version = version
-    comp.save()
-    uc.save()
+    components.append(uc)
   # Updates the user entity
-  user.save()
+  user.update(components=UserComponent.objects.insert(components))
+
 
 def insertComponent(name, url="", description="", rs="", input_t=None, output_t=None, version_list=None, predetermined=False, attributes="", tokenAttr="", img=""):
   # Generates a random initial value that represents the version of the component that will be

@@ -1,28 +1,61 @@
 import random
-import copy
-from itertools import permutations, combinations
+from itertools import permutations, combinations, tee, chain
 
 class BVA(object):
     def __init__(self, components, versions, times_called=0):
+        
         # List of components
         self.components = components
         # List of versiones
         self.versions = versions
+        
         # Times that a new scenario is required 
         self.times_called = times_called
         self.good_version = versions[0]
         self.bad_versions = versions[1:]
-        # List of versions for each component (Deprecated?)
-        self._permutationList = []*(len(self.components) +1)
+
+        # Puntero al inicio
+        self.init = 0
+        self.end = len(self.components)
+
+        # Already created
+        self.list_assigned = {}
+        self._generateRepeted = [False] * (len(self.components) +1)
+        # Iterador de las versiones
+        self._versionIterator = []
+        # Iterador inicial para resetear los iteradores
+        self._initialIterator = []
+
         self._permutationsUsed = [[]]*(len(self.components) + 1)
 
+        # iterador real de cada version mala
+        self.iterators = []
+        self.nextVersion = []
+        # Cogemos los iteradores necesarios para generar las versiones
+        # desde 0 versiones malas a todas
         for idx in range(len(components)+1):
-            self._permutationList.append(self.generatePermutation(idx))
-        
-        self._scenarioList = [False]*(len(self.components) +1)
-        # Predefined scenarios
-        self._endPredefined = 0
-        self.scenarios = self.generateScenarios()
+          if idx == 0:
+            self.iterators.append([self.good_version]* len(self.versions))
+            self._versionIterator.append([])
+            self._initialIterator.append([])
+            self.nextVersion.append([])
+          else:
+            permutations = self.generatePermutation(idx)
+            ## Inicializamos los punteros
+            its_initial = []
+            its_version = []
+            for perm in permutations:
+              first_it, second_it = tee(perm)
+              its_initial.append(first_it)
+              its_version.append(second_it)
+            self._versionIterator.append(its_initial)
+            self._initialIterator.append(its_version)
+            
+            # Cogemos el primer vector de versiones --> [ [[x,y,z],[y,z]],...]
+            self.nextVersion.append(self.getInitialVersion(idx))
+
+            # Cogemos un iterador a esa version
+            self.iterators.append(self.getVersionIterator(idx))
 
     # Reset the times called without reset list of scenarios generated
     def restartValues(self):
@@ -46,105 +79,106 @@ class BVA(object):
                 _combinations.append(combinations(_versions, next_value))
                 remaining -= next_value
                 next_value = min([_versions_len, remaining])
-
         return _combinations
 
+    def getInitialVersion(self, nBad):
+      listVersions = [ iterator.next() for iterator in self._versionIterator[nBad]]
 
-    def generateNextScenario(self, nBadVersions):
-        scenario = []
+      return listVersions
+    
+    def getNextVersion(self, nBad):
+      next = None
+      pos = len(self._versionIterator[nBad])-1
+      # Buscamos hasta encontrar uno nuevo
+
+      while not next:
+        # Intentamos coger uno del ultimo iterador
         try:
-            for iterator in self._permutationList[nBadVersions]:
-                scenario += list(iterator.next())
-
-            stable_list = [self.good_version] * (len(self.components) - nBadVersions)
-            total_versions = scenario + stable_list
-            self._scenarioList[nBadVersions] = permutations(list(total_versions), len(self.components))
-
-        # Si no hay mas permutaciones se vuelven a generar
+          next = self._versionIterator[nBad][pos].next()
+          self.nextVersion[nBad][pos] = next
         except StopIteration:
-            self._permutationList[nBadVersions] = self.generatePermutation(nBadVersions)
-            for iterator in self._permutationList[nBadVersions]:
-                scenario += list(iterator.next())
-            
-            stable_list = [self.good_version] * (len(self.components) - nBadVersions)
-            total_versions = scenario + stable_list
-            self._permutationsUsed[nBadVersions] = []
-            # El iterador de versiones con n malas se guarda en _scenarioList
-            self._scenarioList[nBadVersions] = permutations(list(total_versions), len(self.components))
+          # Si no tiene, lo reiniciamos y lo ponemos al primer elemento
+          first_it, second_it = tee(self._initialIterator[nBad][pos])
+          self._initialIterator[nBad][pos] = first_it
+          self._versionIterator[nBad][pos] = second_it
+          self._generateRepeted[nBad] = True
+          # Avanzamos el puntero para comprobar el segundo iterador
+          pos-=1
+          # Si era el ultimo, volvemos al principio
+          if pos < 0:
+            pos = len(self._versionIterator[nBad])-1
 
-
-    def getCompleteScenario(self, nBadVersions):
-        if (not self._scenarioList[nBadVersions]):
-            self.generateNextScenario(nBadVersions)
-        scenario = None
-        while scenario == None or scenario in self._permutationsUsed[nBadVersions]:
-            try:
-                scenario = self._scenarioList[nBadVersions].next()
+    def getVersionIterator(self, nBad):
+      # Si es 0 no creamos iterador
+      # Cogemos el resto de versiones a buenas
+      vectorGood = [self.good_version] * (len(self.components) - nBad)
+      # unimos las versiones malas en un array (tendremos [["a"],["b"],..])
+      badVersion = [version for version in reduce(lambda x,y: x+y, self.nextVersion[nBad])]
+      
+      
         
-            except StopIteration:
-                self.generateNextScenario(nBadVersions)
+      # avanzamos el puntero de las versiones malas
+      self.getNextVersion(nBad)
 
-        self._permutationsUsed[nBadVersions].append(scenario)            
-        return scenario
-    # Generate a new scenerarios
-    def generateScenarios(self):
-        scenarios = []
-        nComponents = len(self.components)
+      return permutations(vectorGood + badVersion, len(self.components))
 
-        # times iterated
-        times_iterated = 0
-        while nComponents > times_iterated:
-            # number of the bad/good versions required (n componentes - n times iterated)
-            # 7 good 0 bad #### 7 bad 0 good
-            # 6 good 1 bad #### 6 bad 1 good
-            # 5 good 2 bad #### 5 bad 2 good
-            # ....
-            count = nComponents - times_iterated
+    def getVersion(self, nBad):
+      version = None
+      name = None
+      if nBad == 0:
+        version= [self.good_version] * len(self.components)
+      else:
+        while not version:
+          try:
+            version = self.iterators[nBad].next()
+            name = str(version)
+            if name in self.list_assigned and not self._generateRepeted[nBad]:
+              version = None
+          except StopIteration:
+            self.iterators[nBad] = self.getVersionIterator(nBad)
+      self.list_assigned[name] = True
+      return version
 
-            # Good scenarios
-            good_versions = [None]*nComponents
-            bad_versions = [None]*nComponents
-            
-            good_versions = self.getCompleteScenario(times_iterated)
-            bad_versions = self.getCompleteScenario(count)
 
-            scenarios.append(good_versions)
-            scenarios.append(bad_versions)
+    def getSceneario(self):
+      versions = []
+      
+      # Las versiones pares por un lado y las impares por otro
+      if self.times_called % 2 ==0:
+        # Cogemos la version correspondiente al puntero
+        versions = self.getVersion(self.init)
+        # Si el puntero inicial llega a su fin, volvemos al principio
+        self.init+=1
+        if self.init > len(self.versions):
+          self.init = 0
+      else:
+        versions = self.getVersion(self.end)
+        self.end-=1
+        # Si el puntero llega al inicio, volvemos al fin
+        if self.end < 0:
+          self.end = len(self.versions)
+      
+      self.times_called+=1
 
-            times_iterated += 1
-          
-        return scenarios
-
-    def getNewVersions(self):
-        lng = len(self.scenarios)
-        versions = None
-        if (self.times_called < lng):
-            versions = self.scenarios[self.times_called]
-        else:
-            self.scenarios += self.generateScenarios()
-            versions = self.scenarios[self.times_called]
-
-        self.times_called += 1
-
-        return versions
+      return versions
+      
 if __name__ == "__main__":
-    components = ["twitter-timeline", "facebook-wall", "pinterest-timeline", "googleplus-timeline", "traffic-incidents", "finance-search", "open-weather"]
-    versions = ["stable", "latency", "accuracy", "maintenance", "complexity", "structural"]
-
+    components = ["twitter-timeline","facebook-wall","pinterest-timeline","googleplus-timeline","traffic-incidents","finance-search","open-weather","spotify-component","reddit-timeline"]
+    versions = ["stable","latency","security","structural","usability","maintenance","accuracy","complexity"]
+    times = 100
+    import sys
+    if len(sys.argv) > 1:
+      times = int(sys.argv[1])
+    
     bva = BVA(components, versions)
     scenarios = []
-    
-    for i in range(3500):
-        scenarios.append(bva.getNewVersions())
-    #     scenario = bva.getNewVersions()
-    #     good = list(scenario).count('stable')
-    #     if good == 6:
-    #         print scenario
-
-    for idx, scenario in enumerate(scenarios):
-        repetidos = 0
-        if scenario.count('stable') != 7 and scenario.count('stable') != 6:
-            repetidos = (scenarios.count(scenario))
-
-        if repetidos > 1:
-            print idx, scenario
+    for i in range(times):
+        scenario = bva.getSceneario()
+        scenarios.append(scenario)
+    # print len(scenarios)
+    repetidos = 0
+    # for idx, sc in enumerate(scenarios):
+    #     if sc.count('stable') < 5:
+    #       if scenarios.count(sc) > 1:
+    #         repetidos += 1
+    #         print idx, sc

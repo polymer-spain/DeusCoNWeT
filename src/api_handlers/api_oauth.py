@@ -118,30 +118,31 @@ class OauthSignUpHandler(SessionHandler):
     def post_signup(self, social_network):
         try:
             # We get the params from the POST data
+            
             access_token = self.request.POST["access_token"]
             token_id = self.request.POST["token_id"]
             user_identifier = self.request.POST["user_identifier"]
 
-            print "access_token", access_token
-            print "token_id", token_id
-            print "user_identifier", user_identifier
             # Checks if the username was stored previously
             stored_credentials = mongoDB.searchToken(token_id, social_network)
             if stored_credentials == None:  # Not found
                 user_data = {}
                 user_id_repeated = True if not mongoDB.getUser(
                     user_identifier) == None else False
+
+
                 if not user_id_repeated:
                     user_data["user_id"] = user_identifier
                     # Generate a valid username for a new user
                     user_key = mongoDB.insertUser(social_network,
                                                   token_id, access_token, user_data)
-                    print "Inserta el usuario correctamente"
+                    
+                    
                     mongoDB.assignComponents(user_key)
-                    print "asigna los componentes"
+                    
+                    
                     # Creates the session
                     session_id = self.login(str(user_key.id))
-                    print "la funcion login funciona"
                     # Returns the session, user_id and social_network cookie
                     self.response.set_cookie("session", session_id,
                                              path="/", domain=domain, secure=True)
@@ -303,7 +304,6 @@ class OauthCredentialsHandler(SessionHandler):
                 logged_user_id = mongoDB.getUserId(logged_user)
 
                 # Obtains user credentials
-                print "Se intenta obtener el token con: ", token_id, social_network
                 user_credentials = mongoDB.getToken(token_id, social_network)
 
                 if not user_credentials == None:
@@ -544,7 +544,6 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(201)
-                    print "Responde 201"
                     # DESCOMENTAR
                     # else:
                     #     response = \
@@ -560,7 +559,6 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                     self.response.content_type = "application/json"
                     self.response.write(json.dumps(response))
                     self.response.set_status(400)
-                    print "Responde 400 valid pair"
             else:
                 # We invalidate the session cookies received
                 expire_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
@@ -581,14 +579,12 @@ class OAuthCredentialsContainerHandler(SessionHandler):
                 self.response.content_type = "application/json"
                 self.response.write(json.dumps(response))
                 self.response.set_status(400)
-                print "Responde 400 cookie"
         else:
             response = \
                 {"error": "You must provide a session cookie"}
             self.response.content_type = "application/json"
             self.response.write(json.dumps(response))
             self.response.set_status(401)
-            print "Responde 401"
 
 
 ##########################################################################
@@ -695,9 +691,7 @@ class GitHubContainerHandler(SessionHandler):
         try:
             body = json.loads(self.request.body)
             code = body["code"]
-            # print "===================================="
-            # print "Valor de code: " + code
-            # print "===================================="
+
             params_token = urllib.urlencode({"client_id": client_id,
                                              "client_secret": client_secret, "code": code})
             # Realizamos la peticion en la conexion
@@ -706,18 +700,8 @@ class GitHubContainerHandler(SessionHandler):
             # para coger el valor del token
             response_token = connection.getresponse()
             data_token = response_token.read()
-            # print
-            # "===========================================================" +
-            # data_token
             access_token = data_token.split("&")
             access_token = access_token[0].split("=")[1]
-            # logging.info('Ya tiene codigo: ' + access_token)
-            # Gestion de la respuesta de webapp
-            # self.response.content_type = "application/json"
-            # response = {"token": "" + access_token + ""}
-            # self.response.write(json.dumps(response))
-            # connection.close()
-            # self.response.set_status(200)
 
             # Obtenemos la informacion del usuario registrado para
             # almacenar correctamente la informacion
@@ -743,21 +727,13 @@ class GitHubContainerHandler(SessionHandler):
                     # Buscamos el par id usuario/token autenticado en la base
                     stored_credentials = mongoDB.searchToken(str(user_details["login"
                                                                               ]), "github")
-                    print "================================="
-                    print user_details["login"]
-                    print "================================="
+
                     if stored_credentials == None:
-                        print "============================="
-                        print "Voy a hacer el insertToken"
-                        print "============================="
                         # Almacena las credenciales en una entidad Token
                         user_credentials = mongoDB.insertToken(user, "github", access_token,
                                                                user_details["login"])
                         self.response.set_status(201)
                     else:
-                        print "=========================="
-                        print "Se llama a modifyToken"
-                        print "=========================="
                         # Almacenamos el access token recibido
                         user_id = mongoDB.modifyToken(str(user_details["login"]),
                                                       access_token, "github")
@@ -982,7 +958,6 @@ class TwitterRequestLoginHandler(webapp2.RequestHandler):
         callback_url = self.request.get(
             "callback", default_value="https://" + domain)
         auth = twitter.get_authentication_tokens(callback_url=callback_url)
-        print "Datos a añadir", auth
         memcache.add(auth['oauth_token'],
                      auth['oauth_token_secret'], time=20 * 60)
         response = {"oauth_url": auth['auth_url']}
@@ -1014,7 +989,6 @@ class TwitterAuthorizationHandler(SessionHandler):
 
         # Retrieves user info
         user_info = tw.get_authorized_tokens(oauth_verifier)
-        print "Datos", oauth_token, oauth_token_secret, oauth_verifier, user_info['oauth_token']
         # Stores in memcache the session id associated with the oauth_verifier
         #and data associated to the logged user
         key_verifier = oauth_verifier
@@ -1046,7 +1020,6 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
             self.response.write(json.dumps(response))
             self.response.set_status(404)
         # Get oauth token secret from memcache. Stored in the first step
-        print "Intentando coger el secret de la memcache: ", oauth_token
         oauth_token_secret = memcache.get(oauth_token)
 
         if not oauth_token:
@@ -1059,9 +1032,7 @@ class TwitterAuthorizationDetailsHandler(webapp2.RequestHandler):
         tw = Twython(consumer_key, consumer_secret,
                      oauth_token, oauth_token_secret)
         twitter_user_data = tw.get_authorized_tokens(oauth_verifier)
-        print "Metiendo los datos completos: ", twitter_user_data, oauth_verifier
         memcache.add(oauth_verifier, twitter_user_data, time=20 * 60)
-        print "Recuperando datos: ", memcache.get(oauth_verifier)
         # Return the user's token id that authorized the application
         if not twitter_user_data == None:
             response = {"token_id": twitter_user_data["screen_name"]}
@@ -1118,7 +1089,6 @@ class TwitterSignUpHandler(SessionHandler):
         user_identifier = self.request.get("user_identifier", default_value="")
 
         if not oauth_verifier == "":
-            print "oauth verifier para postear datos:", oauth_verifier
             twitter_user_data = memcache.get(oauth_verifier)
             if not twitter_user_data == None:
                 # Checks if the username was stored previously

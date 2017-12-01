@@ -73,7 +73,6 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
             for token in tokens:
                 if token['social_name'] == 'twitter':
                     twitter_token = token
-            print "Token encontrado", twitter_token
             if not twitter_token:
                 self.response.content_type = "application/json"
                 response = {'error':'Access token is not valid'}
@@ -82,7 +81,6 @@ class OAuthTwitterTimelineHandler(webapp2.RequestHandler):
                 count = self.request.get('count', default_value='20')
             else:
                 secret = mongoDB.getSecret(twitter_token)
-                print access_token, secret, consumer_key, consumer_secret
                 tw = Twython(consumer_key, consumer_secret, access_token, secret)
                 try:
                     response = tw.get_home_timeline()
@@ -108,7 +106,6 @@ class OAuthFacebookAccessToken(webapp2.RequestHandler):
     
     else:
       url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s" % (secret['FACEBOOK_APP_ID'], secret['FACEBOOK_APP_SECRET'], access_token)
-      print url
       response = urllib2.urlopen(url).read()
       self.response.headers.add_header('Access-Control-Allow-Origin', '*')
       self.response.headers['Content-Type'] = 'application/json'
@@ -157,12 +154,10 @@ class OAuthFacebookTimeline(webapp2.RequestHandler):
           
           # Get all post of your friends
           user_list = [ str(user['id']) for user in responseFriends['data'] ]
-          print user_list
 
           # Get all post of your friends (based on cache)                 
           friends_posts = FacebookPosts.objects(user_id__in=user_list)
           friends_posts = [ json.loads(str(post['post'])) for post in friends_posts]
-          print len(friends_posts)
           post_json = json.loads(posts)
           
           # sort by date
