@@ -1,5 +1,5 @@
-domain: centauro.ls.fi.upm.es
-domainTest: test.centauro.ls.fi.upm.es
+domain: centauro.ls.etsiinf.upm.es
+domainTest: test.centauro.ls.etsiinf.upm.es
 component_versioning: dynamic
 FACEBOOK_CONFIG:
   url: https://graph.facebook.com/v2.10/me/feed

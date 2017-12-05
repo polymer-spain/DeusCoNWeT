@@ -9,3 +9,7 @@ COPY ./server_config/website.conf /etc/apache2/sites-enabled
 COPY ./server_config/apache2.conf /etc/apache2/
 
 COPY . /var/www/
+RUN echo "Europe/Madrid" > /etc/timezone    
+RUN dpkg-reconfigure -f noninteractive tzdata
+
+RUN rm /etc/apache2/sites-enabled/000-default.conf
