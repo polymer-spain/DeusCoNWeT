@@ -1,0 +1,30 @@
+{
+  "name": "star-rate",
+  "version": "1.0.0",
+  "private": false,
+  "keywords": [
+    "web-components",
+    "star",
+    "rating",
+    "rate"
+  ],
+  "authors": [
+    "Miguel Ortega Moreno"
+  ],
+  "description": "Polymer Web Component to deal with star rating",
+  "license": "Apache",
+  "dependencies": {
+    "polymer": "Polymer#^1.2.1",
+    "iron-icons": "PolymerElements/iron-icons#1.2.1"
+  },
+  "homepage": "https://github.com/Mortega5/star-rate",
+  "_release": "1.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.0",
+    "commit": "d3867c077a027c763769b58089b97f1f10f44bcf"
+  },
+  "_source": "https://github.com/Mortega5/star-rate.git",
+  "_target": "^1.0.0",
+  "_originalSource": "star-rate"
+}

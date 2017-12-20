@@ -1,6 +1,6 @@
 {
   "name": "twitter-timeline",
-  "version": "1.0.2-structural",
+  "version": "1.0.3-structural",
   "authors": [
     "Juan Francisco Salamanca Carmona <jfsalca@gmail.com>"
   ],
@@ -25,9 +25,8 @@
     "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.4",
     "paper-material": "PolymerElements/paper-material#~1.0.2",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4",
-    "web-component-tester": "Polymer/web-component-tester#~4.2.1",
-    "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-    "finance-search": "^1.0.2-stable"
+    "google-drive": "GoogleWebComponents/google-drive#^1.0.2",
+    "streaming-list": "klarkc/streaming-list#^4.0.0"
   },
   "devDependencies": {
     "polymer-test-tools": "Polymer/polymer-test-tools#master",
@@ -35,16 +34,20 @@
     "sinon": "http://sinonjs.org/releases/sinon-1.10.2.js"
   },
   "resolutions": {
-    "mocha": "^2.3.0"
+    "mocha": "^3.1.2",
+    "iron-flex-layout": "^1.3.0",
+    "iron-ajax": "^1.4.0",
+    "iron-icons": "^1.1.3",
+    "web-component-tester": "^5.0.0"
   },
-  "_release": "1.0.2-structural",
+  "_release": "1.0.3-structural",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.2-structural",
-    "commit": "5298e2e9a7731b4ccb152b09b33d3ddf2b81613e"
+    "tag": "v1.0.3-structural",
+    "commit": "dfe1c8492696fcb9d75f63fbaa629568a69e1073"
   },
   "_source": "https://github.com/JuanFryS/twitter-timeline.git",
-  "_target": "v1.0.2-structural",
+  "_target": "v1.0.3-structural",
   "_originalSource": "twitter-timeline",
   "_direct": true
 }

@@ -14,13 +14,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../iron-icons/iron-icons.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../paper-material/paper-material.html">
-<link rel="import" href="../../iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../../finance-search/finance-search.html">
-
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../google-drive/google-drive.html">
+<link rel="import" href="../../streaming-list/streaming-list.html">
 
 
 <dom-module id="twitter-timeline">
-  <style is="custom-style">
+  <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
     @font-face {
       font-family: HelveticaNeue;
       src: url('font/HelveticaNeueLTStd-Ex.otf');
@@ -460,7 +460,7 @@ Polymer({
       /* Años*/
       if ((current_date.getFullYear() - date.getFullYear()) != 0) {
         var dif = current_date.getFullYear() - date.getFullYear()
-        time = dif==1 ? dif + " " + this.language_data.year : dif + " " + this.language_data.years;
+        time = dif==1 ? dif + " " + this.data.year : dif + " " + this.language_data.years;
         /* Meses */
       } else if ((current_date.getMonth() - date.getMonth()) != 0) {
         var dif = current_date.getMonth() - date.getMonth();

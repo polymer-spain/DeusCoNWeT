@@ -13,7 +13,7 @@ html {
   resize: both;
   box-shadow: 0 0 0 5px #EEF5F7 inset;
 }
-#email /deep/ paper-input-decorator /deep/ .unfocused-underline {
+/* #email /deep/ paper-input-decorator /deep/ .unfocused-underline {
   background-color: #ea5050; 
 }
 #email /deep/ paper-input-decorator[focused] /deep/ .focused-underline {
@@ -25,7 +25,7 @@ html {
 .contacto paper-input-decorator,
 .contacto paper-input {
   width: 294px; 
-}
+} */
 
 
 #send {

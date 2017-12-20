@@ -34,13 +34,14 @@ Example:
 
 <dom-module id="finance-search">
   <template>
-    <style include="iron-flex iron-flex-alignment">
+    <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
        :host {
         display: inline-block;
         box-sizing: content-box;
         width: var(--finance-search-width, 400px);
         height: var(--finance-search-width, 260px);
         min-height: 260px;
+        min-width: 400px;
         background-color: #3F51B5;
         border-radius: 2px;
         box-sizing: content-box;

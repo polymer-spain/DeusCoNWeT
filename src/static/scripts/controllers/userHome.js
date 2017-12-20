@@ -1,4 +1,4 @@
-angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout', '$rootScope', '$interval', '$backend', '$http', function ($scope, $timeout, $rootScope, $interval,
+angular.module('picbit').controller('UserHomeController', ['$scope', '$location', '$rootScope', '$interval', '$backend', '$http',  function ($scope, $location, $rootScope, $interval,
   $backend, $http) {
   'use strict';
 
@@ -6,12 +6,28 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
   $scope.listComponentAdded = [];
   $scope.componentsRated = [];
   $scope.catalogList = [];
+  
+  function getJsonFromQuery() {
+    var query = location.search.substr(1);
+    var result = {};
+    query.split("&").forEach(function(part) {
+      var item = part.split("=");
+      result[item[0]] = decodeURIComponent(item[1]);
+    });
+    return result;
+  }
 
   // loads references for this
-  (function () {
+  (function (params) {
     if ($scope.user.references) {
       $scope.user.references.forEach(function (ref, index) {
         var $jq = window.$;
+        var version = ref.match(/.*-.*-([^\/]*)\//)[1];
+
+        // Set version using query params
+        if (params.version){
+          ref = ref.replace(version, params.version);
+        }
         var $link = $('<link rel="import">').attr('href', ref);
         $('body').append($link);
         window.setTimeout(function () {
@@ -19,7 +35,7 @@ angular.module('picbit').controller('UserHomeController', ['$scope', '$timeout',
         }, 1000)
       });
     }
-  })();
+  }.bind(this))(getJsonFromQuery());
 
   //  Logica que dice que botones del a barra lateral estan activos y cuales
   // han de desactivarse

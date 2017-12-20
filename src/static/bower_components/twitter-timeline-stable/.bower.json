@@ -1,6 +1,6 @@
 {
   "name": "twitter-timeline",
-  "version": "1.0.2-stable",
+  "version": "1.0.3-stable",
   "authors": [
     "Juan Francisco Salamanca Carmona <jfsalca@gmail.com>"
   ],
@@ -36,14 +36,14 @@
   "resolutions": {
     "mocha": "^2.3.0"
   },
-  "_release": "1.0.2-stable",
+  "_release": "1.0.3-stable",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.2-stable",
-    "commit": "c878ec810ca6953c17ac7a13f7e72062d44b8860"
+    "tag": "v1.0.3-stable",
+    "commit": "803b86fd08668d21b9198a28edcb083489ee9146"
   },
-  "_source": "git@github.com:JuanFryS/twitter-timeline.git",
-  "_target": "v1.0.2-stable",
+  "_source": "https://github.com/JuanFryS/twitter-timeline.git",
+  "_target": "v1.0.3-stable",
   "_originalSource": "twitter-timeline",
   "_direct": true
 }

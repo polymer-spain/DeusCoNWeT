@@ -153,6 +153,6 @@ div#userProfile {
 #userProfile [data-role="login"] {
 	margin-left:10px;
 }
-#userProfile [data-role="login"][sort] /deep/ paper-button {
+#userProfile [data-role="login"][sort] paper-button {
 	margin:0px;
 }
