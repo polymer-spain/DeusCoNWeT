@@ -1,21 +1,7 @@
-# traffic-incidents
-[Documentation and demo](https://mortega5.github.io/traffic-incidents)
+# finance-search
 
-Show a timeline of traffic issues. Its use two api:
+An element providing a starting point for your own reusable Polymer elements.
 
-- **Google Maps Geocoding API**: to convert any address to geographical coordinates.
-
-- **Bing Maps Traffic API**    : to get information about traffic issues in any city.
-
-Example:
-
-```html
-<traffic-incidents city="Madrid" api_key_geocoding="your_google_geocoding_key"
-app_key_traffic="yout_bing_maps_key" auto_refresh refresh_time="60000">
-```
-
-**NOTE** : Bing Maps API provide the traffic incident text in the primary language of the country
-where the incident occurs. For more information go to : https://msdn.microsoft.com/en-us/library/jj136866.aspx
 
 ## Dependencies
 
@@ -42,13 +28,13 @@ And you can run it via:
     polyserve
 
 Once running, you can preview your element at
-`http://localhost:8080/components/traffic-incidents/`, where `traffic-incidents` is the name of the directory containing it.
+`http://localhost:8080/components/finance-search/`, where `finance-search` is the name of the directory containing it.
 
 
 ## Testing Your Element
 
 Simply navigate to the `/test` directory of your element to run its tests. If
-you are using Polyserve: `http://localhost:8080/components/traffic-incidents/test/`
+you are using Polyserve: `http://localhost:8080/components/finance-search/test/`
 
 ### web-component-tester
 

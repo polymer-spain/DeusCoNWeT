@@ -50,7 +50,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="traffic-incidents-data.html">
 <link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
@@ -68,6 +68,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
     font-weight: normal;
     font-style: normal;
   }
+
   @media screen and (-webkit-min-device-pixel-ratio:0) {
     @font-face {
       font-family: "Flaticon";
@@ -79,510 +80,588 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 
 <dom-module id="traffic-incidents">
   <template>
-  <style>
-  :host {
-    display: inline-block;
-    box-sizing: border-box;
-    width: var(--ti-width, 400px);
-    height: var(--ti-height, 450px);
-    min-width:300px;
-    min-height:250px;
-  }
-  paper-header-panel {
-    width: 100%;
-    height: 100%;
-    background-color: #eee;
-    font-family: 'Dosis', sans-serif;
-    @apply(--shadow-elevation-3dp);
-  }
-  .paper-header {
-    height: var(--ti-header-height, 50px);
-    font-size: 16px;
-    line-height: 50px;
-    padding: 5px 10px;
-    color: white;
-    font-weight: bold;
-    transition: height 0.2s;
-    background-color:#B2002F;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    @apply(--ti-header);
-  }
-  paper-icon-button#search:hover{
-    background-color:rgba(0,0,0,0.3);
-    border-radius: 50%;
-  }
-  .paper-header paper-icon-button#search,
-  .paper-header[active] .input-container {
-    display: inline-block;
-  }
-  .paper-header .input-container,
-  .paper-header[active] paper-icon-button#search{
-    display:none;
-  }
-  .paper-header[active] .input-container{
-    flex:1;
-    @apply(--ti-input-container-active)
-  }
-  .paper-header .input-container{
-    flex: none;
-    margin:0 8px 0 16px;
-    position: relative;
-    top:-2px;
-    -webkit-animation: fadein 0.3s; /* Safari, Chrome and Opera > 12.1 */
-    -moz-animation: fadein 0.3s; /* Firefox < 16 */
-    -ms-animation: fadein 0.3s; /* Internet Explorer */
-    -o-animation: fadein 0.3s; /* Opera < 12.1 */
-    animation: fadein 0.3s;
-    @apply(--ti-input)
-  }
-  .paper-header .title {
-    flex:1;
-    cursor:pointer;
-  }
-  .paper-header[active] .title {
-    flex:none;
-  }
-  input {
-    background-color:transparent;
-    outline: none;
-    border:none;
-    border-bottom:2px solid #eee;
-    width: 100%;
-    font-size:16px;
-    font-family: 'Dosis', sans-serif;
-    color:white;
-    font-weight: bold;
-    @apply(--ti-searchBox)
-  }
-  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    color: white;
-    font-weight: normal;
-  }
-  ::-moz-placeholder { /* Firefox 19+ */
-    color: white;
-    font-weight: normal;
-  }
-  :-ms-input-placeholder { /* IE 10+ */
-    color: white;
-    font-weight: normal;
-  }
-  :-moz-placeholder { /* Firefox 18- */
-    color: white;
-    font-weight: normal;
-  }
-  .card {
-    padding:6px 18px 18px 18px;
-    margin:5px 0;
-    background-color:white;
-    @apply(--shadow-elevation-2dp);
-    @apply(--ti-card);
+    <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
+      :host {
+        display: inline-block;
+        box-sizing: border-box;
+        width: var(--ti-width, 400px);
+        height: var(--ti-height, 450px);
+        min-width: 300px;
+        min-height: 250px;
+      }
 
-  }
-  .content {
-    margin-top: -5px;
-    padding:12px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    position:relative;
-    @apply(--ti-content);
-  }
-  p {
-    margin:0;
-  }
-  paper-spinner{
-    display: none;
-  }
-  paper-spinner[active]{
-    display:inline-block;
-  }
-  @font-face {
-    font-family: "Flaticon";
-    src: url("./fonts/Flaticon.eot");
-    src: url("./fonts/Flaticon.eot?#iefix") format("embedded-opentype"),
-    url("./fonts/Flaticon.woff") format("woff"),
-    url("./fonts/Flaticon.ttf") format("truetype"),
-    url("./fonts/Flaticon.svg#Flaticon") format("svg");
-    font-weight: normal;
-    font-style: normal;
-  }
-  @media screen and (-webkit-min-device-pixel-ratio:0) {
-    @font-face {
-      font-family: "Flaticon";
-      src: url("./fonts/Flaticon.svg#Flaticon") format("svg");
-    }
-  }
-  [class^="flaticon"]:before, [class*=" flaticon"]:before,
-  [class^="flaticon"]:after, [class*=" flaticon"]:after {
-    font-family: Flaticon;
-    font-size: 25px;
-    font-style: normal;
-    margin-right:15px;
-    padding:4px;
-    font-weight: 600;
-  }
-  /* Congestion and mass transit*/
-  .flaticon[data-type="2"]:before,
-  .flaticon[data-type="4"]:before {
-    content: "\f105";
-    font-size: 24px;
-    border: 2px solid black;
-    background-color: #003e87;
-    border-radius: 2px;
-    text-shadow: 0px 0px 7px black;
-    padding: 3px;
-    color:white;
-  }
-  .flaticon[data-type="1"]:before {
-    content: "\f100";
-    border-radius: 50%;
-    border: 2px solid white;
-    background-color: #003e87;
-    color: white;
-    text-shadow: 0px 0px 4px black;
-    box-shadow: 0px 0px 2px black, 0px 0px 2px black;
-  }
-  /* Accident  and Disabled vehicle */
-  .flaticon[data-type="3"]:before {
-    content: "\f101";
-    border-radius: 50%;
-    border: 2px solid white;
-    background-color: #003e87;
-    color: white;
-    text-shadow: 0px 0px 4px black;
-    box-shadow: 0px 0px 2px black, 0px 0px 2px black;
-  }
-  /* Miscellaneous, other news, planned evnet*/
-  .flaticon[data-type="5"]:before,
-  .flaticon[data-type="6"]:before,
-  .flaticon[data-type="7"]:before{
-    content: "\f102";
-    background-color: #003e87;
-    color: white;
-    border-radius: 100%;
-    padding:0px;
-    font-size:28px;
-    text-shadow: 0px 0px 2px black;
-    box-shadow: 0px 0px 2px black, 0px 0px 2px black;
-  }
-  /* Working */
-  .flaticon[data-type="9"]:before {
-    content: "\f107";
-    background-color: white;
-    border: 2px solid red;
-    color: black;
-    border-radius: 50%;
-  }
-  /*  road hazard, Alert*/
-  .flaticon[data-type="8"]:before,
-  .flaticon[data-type="10"]:before {
-    content: "\f106";
-    background-color: white;
-    border: 2px solid red;
-    color: black;
-    border-radius: 50%;
-  }
-  /* Weather */
-  .flaticon[data-type="11"]:before {
-    content: "\f103";
-  }
-  .time {
-    text-align: right;
-    margin-bottom: 5px;
-    font-size: 13px;
-    position: relative;
-  }
-  .time .more_info{
-    opacity: 0;
-    background-color: #eee;
-    position: absolute;
-    right: 0;
-    top: -18px;
-    padding: 8px;
-    border: 1px solid #333;
-    border-radius: 8px;
-  }
-  .time:hover .more_info {
-    opacity: 1;
-    transition-delay:1s;
-    transition: 0s opacity line;
-    -webkit-transition-delay: 1s; /* Safari */
-    @apply(--shadow-elevation-4dp)
-  }
-  @keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  /* Firefox < 16 */
-  @-moz-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  /* Safari, Chrome and Opera > 12.1 */
-  @-webkit-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  /* Internet Explorer */
-  @-ms-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  /* Opera < 12.1 */
-  @-o-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-  </style>
-  
-  <traffic-incidents-data id="traffic" city="{{city}}" api_key_geocoding="{{api_key_geocoding}}"
-  app_key_traffic="{{app_key_traffic}}" auto_refresh="{{auto_refresh}}" refresh_time="{{refresh_time}}"
-  traffic_info="{{traffic_info}}" radio="{{radio}}" on-traffic_info-ready="_data_ready"
-  on-traffic-request_iniciated="_loading_data" on-geocoding-request-error="_empty"></traffic-incidents-data>
+      paper-header-panel {
+        width: 100%;
+        height: 100%;
+        background-color: #eee;
+        font-family: 'Dosis', sans-serif;
+        @apply(--shadow-elevation-3dp);
+      }
 
-  <paper-header-panel mode="waterfall-tall">
-    <div class="paper-header horizontal layout center" active$="{{active}}" >
-      <paper-icon-button icon="search" id="search" on-click="toggleInput"></paper-icon-button>
-      <div class="input-container" on-click="focusInput">
-        <input id="searchBox" placeholder="Buscar una ciudad" on-blur="blurInput" on-keyup="keyupInput"/>
-      </div>
-      <p class="title" id="name">
-        Traffic Incidents <span style="text-transform:capitalize">({{city}})</span>
-        </p>
-      <paper-icon-button id="refresh" on-click="refresh" icon="refresh"></paper-icon-button>
-    </div>
+      .paper-header {
+        height: var(--ti-header-height, 50px);
+        font-size: 16px;
+        line-height: 50px;
+        padding: 5px 10px;
+        color: white;
+        font-weight: bold;
+        transition: height 0.2s;
+        background-color: #B2002F;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        @apply(--ti-header);
+      }
 
-    <div class="content">
-      <template is="dom-repeat" items="{{traffic_info}}">
-        <div class="card vertical layout" severity$="{{item.severity}}">
-          <div class="time">
-            <span>{{getDate(item.lastModified)}}</span>
-            <div class="more_info">
-              {{_text.end}}: {{getDate(item.end)}}
-            </div>
-          </div>
-          <div class="information horizontal layout center-center">
-            <span class="flaticon" data-type$="{{item.type}}"></span>
-            <p class="flex">{{item.description}}</p>
-          </div>
-        </div>
-      </template>
-      <div class="horizontal layout center-center">
-        <paper-spinner active="{{_loading}}"></paper-spinner>
-      </div>
-      <template is="dom-if" if="{{_isEmpty}}">
-        <template is="dom-if" if="{{city}}">
-          <div class="card">
-            {{no_incidents}}
-          </div>
-        </template>
-      </template>
-      <template is="dom-if" if="{{!city}}">
-        <div class="card">
-          <p>Busca usa ciudad usando la caja de busqueda</p>
-        </div>
-      </template>
-    </div>
-  </paper-header-panel>
+      paper-icon-button#search:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 50%;
+      }
 
-</template>
+      .paper-header paper-icon-button#search,
+      .paper-header[active] .input-container {
+        display: inline-block;
+      }
 
-<script>
-Polymer({
-  is: 'traffic-incidents',
+      .paper-header .input-container,
+      .paper-header[active] paper-icon-button#search {
+        display: none;
+      }
 
-  properties: {
-    /*
-    * Google geoencody api_key.
-    * Go to https://developers.google.com/maps/documentation/geocoding/get-api-key
-    * to get your key
-    **/
-    api_key_geocoding: {
-      type: String,
-      reflectToAttribute: true
-    },
-    /*
-    * Bing maps key.
-    * Go to https://msdn.microsoft.com/en-us/library/ff428642.aspx
-    * to get your key
-    *
-    */
-    app_key_traffic: {
-      type: String,
-      reflectToAttribute: true
-    },
+      .paper-header[active] .input-container {
+        flex: 1;
+        @apply(--ti-input-container-active)
+      }
 
-    /*
-    * `City` where you want to obtain traffic information
-    */
-    city: {
-      type: String,
-      reflectToAttribute: true,
-      notify:true
-    },
+      .paper-header .input-container {
+        flex: none;
+        margin: 0 8px 0 16px;
+        position: relative;
+        top: -2px;
+        -webkit-animation: fadein 0.3s;
+        /* Safari, Chrome and Opera > 12.1 */
+        -moz-animation: fadein 0.3s;
+        /* Firefox < 16 */
+        -ms-animation: fadein 0.3s;
+        /* Internet Explorer */
+        -o-animation: fadein 0.3s;
+        /* Opera < 12.1 */
+        animation: fadein 0.3s;
+        @apply(--ti-input)
+      }
 
-    /*
-    * Radio (Km value) around city location where traffic information will be searched.
-    */
-    radio: {
-      type: Number,
-      reflectToAttribute: true,
-      notify: true
-    },
-    /*
-    * Traffic information obtained from Bing Maps Traffic API
-    */
-    traffic_info: {
-      value: function(){return []},
-      type: Array,
-      notify: true
-    },
-    /*
-    * `auto_refresh` is true when we want to refresh automatically each any (`refresh_time`) seconds
-    */
-    auto_refresh: {
-      value: false,
-      type: Boolean,
-      reflectToAttribute: true,
-      notify: true
-    },
-    /*
-    * How often traffic information is requested if `auto_refresh` is true (in seconds).
-    */
-    refresh_time: {
-      value: 120000,
-      type: Number,
-      reflectToAttribute: true
-    },
-  /**
-    * Indicate if there are or not traffic incidents
-    **/
-    no_incidents: {
-      type:String,
-      computed: '_emptyIncidents(language, city)'
-    },
-  /**
-    * Set the language of the component to spanish (es) or english (en)
-    */
-    language: {
-      type: String,
-      value: 'es',
-      reflectToAttribute: true,
-      notify:true
-    },
-    _loading: {
-      type: Boolean,
-      value: true,
-      notify: true
-    },
-    _isEmpty: {
-      type:Boolean,
-      computed: '_checkEmpty(traffic_info.length, _loading)'
-    },
-  /**
-    * Is true when search box is active
-    */
-    active: {
-      type: Boolean,
-      value: false
-    },
-    _lang: {
-      type: Object,
-      value: {
-        'es': {
-          'end': 'Termina'
-        },
-        'en': {
-          'end': 'End'
+      .paper-header .title {
+        flex: 1;
+        cursor: pointer;
+      }
+
+      .paper-header[active] .title {
+        flex: none;
+      }
+
+      input {
+        background-color: transparent;
+        outline: none;
+        border: none;
+        border-bottom: 2px solid #eee;
+        width: 100%;
+        font-size: 16px;
+        font-family: 'Dosis', sans-serif;
+        color: white;
+        font-weight: bold;
+        @apply(--ti-searchBox)
+      }
+
+      ::-webkit-input-placeholder {
+        /* Chrome/Opera/Safari */
+        color: white;
+        font-weight: normal;
+      }
+
+      ::-moz-placeholder {
+        /* Firefox 19+ */
+        color: white;
+        font-weight: normal;
+      }
+
+      :-ms-input-placeholder {
+        /* IE 10+ */
+        color: white;
+        font-weight: normal;
+      }
+
+      :-moz-placeholder {
+        /* Firefox 18- */
+        color: white;
+        font-weight: normal;
+      }
+
+      .card {
+        padding: 6px 18px 18px 18px;
+        margin: 5px 0;
+        background-color: white;
+        @apply(--shadow-elevation-2dp);
+        @apply(--ti-card);
+
+      }
+
+      .content {
+        margin-top: -5px;
+        padding: 12px;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        position: relative;
+        @apply(--ti-content);
+      }
+
+      p {
+        margin: 0;
+      }
+
+      paper-spinner {
+        display: none;
+      }
+
+      paper-spinner[active] {
+        display: inline-block;
+      }
+
+      @font-face {
+        font-family: "Flaticon";
+        src: url("./fonts/Flaticon.eot");
+        src: url("./fonts/Flaticon.eot?#iefix") format("embedded-opentype"),
+        url("./fonts/Flaticon.woff") format("woff"),
+        url("./fonts/Flaticon.ttf") format("truetype"),
+        url("./fonts/Flaticon.svg#Flaticon") format("svg");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      @media screen and (-webkit-min-device-pixel-ratio:0) {
+        @font-face {
+          font-family: "Flaticon";
+          src: url("./fonts/Flaticon.svg#Flaticon") format("svg");
         }
       }
-    },
-    _text: {
-      type: Object,
-      computed: '_setLanguage(language,_lang)'
-    }
-  },
-  _setLanguage: function(lang,_lang){
-    if (_lang){
-      return this._lang[lang];
-    }
-  },
-  _emptyIncidents: function(language, city){
-    if (language == 'es'){
-      return 'No hemos encontrado incidentes en ' + city
-    } else {
-      return 'There are not incidents in ' + city;
-    }
-  },
-  _checkEmpty: function(length, loading){
-    return length == 0 && !loading;
-  },
-  /** Transform dates recived from Bing Traffic Api to correct date format
-  * @method getDate
-  * @param {String} Date Date returned by Bing Traffic Api with format "/Date(timestamp)/"
-  * @return {Date} a data object
-  */
-  getDate: function(stringDate){
-    var timestamp = stringDate.match(/\/Date\(([^\)]*)\)\//);
-    var date;
-    if (timestamp.length > 1 ) {
-      date = new Date(parseInt(timestamp[1]));
-    }
-    var day = date.getDate();
-    var monthIndex = date.getMonth() + 1;
-    monthIndex = monthIndex > 9? monthIndex : '0' + monthIndex;
-    var year = date.getFullYear();
-    var prettyDate = day + '/'+ monthIndex + '/' + year + '  ';
-    prettyDate += date.getHours() > 9? date.getHours() : '0' + date.getHours();
-    prettyDate += ':';
-    prettyDate += date.getMinutes() > 9? date.getMinutes() : '0' + date.getMinutes();
-    return prettyDate;
-  },
-  _data_ready: function(){
-    this._loading = false;
-  },
-  _loading_data: function(){
-    this._loading = true;
-  },
-  toggleInput: function(e){
-    this.active = !this.active;
-    if (this.active){
-      this.$.searchBox.focus();
-      this.$.name.hidden = true;
-    }
-  },
-  blurInput: function(e){
-    var target = e.currentTarget;
-    if (!target.value && this.city){
-      this.$.name.hidden = false;
-      this.toggleInput();
-      target.blur();
-    }
-  },
-  keyupInput: function(e){
-    if (e.keyCode === 13){
-      this.$.name.hidden = false;
-      this.city = this.$.searchBox.value;
-      this.$.traffic.requestTraffic();
-      this.$.searchBox.value = "";
-      this.toggleInput();
-    }
-  },
-  focusInput: function(){
-    this.$.searchBox.focus();
-  },
-  refresh: function(){
-    this.$.traffic.requestTraffic();
-  },
-  _empty: function(){
-    this.set('traffic_info', []);
-  },
-  attached: function(){
-    if (!this.city) {
-      this._loading = false;
-      this.$.search.click();
-    }
-  }
-});
-</script>
+
+      [class^="flaticon"]:before,
+      [class*=" flaticon"]:before,
+      [class^="flaticon"]:after,
+      [class*=" flaticon"]:after {
+        font-family: Flaticon;
+        font-size: 25px;
+        font-style: normal;
+        margin-right: 15px;
+        padding: 4px;
+        font-weight: 600;
+      }
+
+      /* Congestion and mass transit*/
+
+      .flaticon[data-type="2"]:before,
+      .flaticon[data-type="4"]:before {
+        content: "\f105";
+        font-size: 24px;
+        border: 2px solid black;
+        background-color: #003e87;
+        border-radius: 2px;
+        text-shadow: 0px 0px 7px black;
+        padding: 3px;
+        color: white;
+      }
+
+      .flaticon[data-type="1"]:before {
+        content: "\f100";
+        border-radius: 50%;
+        border: 2px solid white;
+        background-color: #003e87;
+        color: white;
+        text-shadow: 0px 0px 4px black;
+        box-shadow: 0px 0px 2px black, 0px 0px 2px black;
+      }
+
+      /* Accident  and Disabled vehicle */
+
+      .flaticon[data-type="3"]:before {
+        content: "\f101";
+        border-radius: 50%;
+        border: 2px solid white;
+        background-color: #003e87;
+        color: white;
+        text-shadow: 0px 0px 4px black;
+        box-shadow: 0px 0px 2px black, 0px 0px 2px black;
+      }
+
+      /* Miscellaneous, other news, planned evnet*/
+
+      .flaticon[data-type="5"]:before,
+      .flaticon[data-type="6"]:before,
+      .flaticon[data-type="7"]:before {
+        content: "\f102";
+        background-color: #003e87;
+        color: white;
+        border-radius: 100%;
+        padding: 0px;
+        font-size: 28px;
+        text-shadow: 0px 0px 2px black;
+        box-shadow: 0px 0px 2px black, 0px 0px 2px black;
+      }
+
+      /* Working */
+
+      .flaticon[data-type="9"]:before {
+        content: "\f107";
+        background-color: white;
+        border: 2px solid red;
+        color: black;
+        border-radius: 50%;
+      }
+
+      /*  road hazard, Alert*/
+
+      .flaticon[data-type="8"]:before,
+      .flaticon[data-type="10"]:before {
+        content: "\f106";
+        background-color: white;
+        border: 2px solid red;
+        color: black;
+        border-radius: 50%;
+      }
+
+      /* Weather */
+
+      .flaticon[data-type="11"]:before {
+        content: "\f103";
+      }
+
+      .time {
+        text-align: right;
+        margin-bottom: 5px;
+        font-size: 13px;
+        position: relative;
+      }
+
+      .time .more_info {
+        opacity: 0;
+        background-color: #eee;
+        position: absolute;
+        right: 0;
+        top: -18px;
+        padding: 8px;
+        border: 1px solid #333;
+        border-radius: 8px;
+      }
+
+      .time:hover .more_info {
+        opacity: 1;
+        transition-delay: 1s;
+        transition: 0s opacity line;
+        -webkit-transition-delay: 1s;
+        /* Safari */
+        @apply(--shadow-elevation-4dp)
+      }
+
+      @keyframes fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Firefox < 16 */
+
+      @-moz-keyframes fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Safari, Chrome and Opera > 12.1 */
+
+      @-webkit-keyframes fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Internet Explorer */
+
+      @-ms-keyframes fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Opera < 12.1 */
+
+      @-o-keyframes fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+
+    <traffic-incidents-data id="traffic" city="{{city}}" api_key_geocoding="{{api_key_geocoding}}" app_key_traffic="{{app_key_traffic}}"
+      auto_refresh="{{auto_refresh}}" refresh_time="{{refresh_time}}" traffic_info="{{traffic_info}}" radio="{{radio}}" on-traffic_info-ready="_data_ready"
+      on-traffic-request_iniciated="_loading_data" on-geocoding-request-error="_empty"></traffic-incidents-data>
+
+    <paper-header-panel mode="waterfall-tall">
+      <div class="paper-header horizontal layout center" active$="{{active}}">
+        <paper-icon-button icon="search" id="search" on-click="toggleInput"></paper-icon-button>
+        <div class="input-container" on-click="focusInput">
+          <input id="searchBox" placeholder="Buscar una ciudad" on-blur="blurInput" on-keyup="keyupInput" />
+        </div>
+        <p class="title" id="name">
+          Traffic Incidents
+          <span style="text-transform:capitalize">({{city}})</span>
+        </p>
+        <paper-icon-button id="refresh" on-click="refresh" icon="refresh"></paper-icon-button>
+      </div>
+
+      <div class="content">
+        <template is="dom-repeat" items="{{traffic_info}}">
+          <div class="card vertical layout" severity$="{{item.severity}}">
+            <div class="time">
+              <span>{{getDate(item.lastModified)}}</span>
+              <div class="more_info">
+                {{_text.end}}: {{getDate(item.end)}}
+              </div>
+            </div>
+            <div class="information horizontal layout center-center">
+              <span class="flaticon" data-type$="{{item.type}}"></span>
+              <p class="flex">{{item.description}}</p>
+            </div>
+          </div>
+        </template>
+        <div class="horizontal layout center-center">
+          <paper-spinner active="{{_loading}}"></paper-spinner>
+        </div>
+        <template is="dom-if" if="{{_isEmpty}}">
+          <template is="dom-if" if="{{city}}">
+            <div class="card">
+              {{no_incidents}}
+            </div>
+          </template>
+        </template>
+        <template is="dom-if" if="{{!city}}">
+          <div class="card">
+            <p>Busca usa ciudad usando la caja de busqueda</p>
+          </div>
+        </template>
+      </div>
+    </paper-header-panel>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'traffic-incidents',
+
+      properties: {
+        /*
+        * Google geoencody api_key.
+        * Go to https://developers.google.com/maps/documentation/geocoding/get-api-key
+        * to get your key
+        **/
+        api_key_geocoding: {
+          type: String,
+          reflectToAttribute: true
+        },
+        /*
+        * Bing maps key.
+        * Go to https://msdn.microsoft.com/en-us/library/ff428642.aspx
+        * to get your key
+        *
+        */
+        app_key_traffic: {
+          type: String,
+          reflectToAttribute: true
+        },
+
+        /*
+        * `City` where you want to obtain traffic information
+        */
+        city: {
+          type: String,
+          reflectToAttribute: true,
+          notify: true
+        },
+
+        /*
+        * Radio (Km value) around city location where traffic information will be searched.
+        */
+        radio: {
+          type: Number,
+          reflectToAttribute: true,
+          notify: true
+        },
+        /*
+        * Traffic information obtained from Bing Maps Traffic API
+        */
+        traffic_info: {
+          value: function () { return [] },
+          type: Array,
+          notify: true
+        },
+        /*
+        * `auto_refresh` is true when we want to refresh automatically each any (`refresh_time`) seconds
+        */
+        auto_refresh: {
+          value: false,
+          type: Boolean,
+          reflectToAttribute: true,
+          notify: true
+        },
+        /*
+        * How often traffic information is requested if `auto_refresh` is true (in seconds).
+        */
+        refresh_time: {
+          value: 120000,
+          type: Number,
+          reflectToAttribute: true
+        },
+        /**
+          * Indicate if there are or not traffic incidents
+          **/
+        no_incidents: {
+          type: String,
+          computed: '_emptyIncidents(language, city)'
+        },
+        /**
+          * Set the language of the component to spanish (es) or english (en)
+          */
+        language: {
+          type: String,
+          value: 'es',
+          reflectToAttribute: true,
+          notify: true
+        },
+        _loading: {
+          type: Boolean,
+          value: true,
+          notify: true
+        },
+        _isEmpty: {
+          type: Boolean,
+          computed: '_checkEmpty(traffic_info.length, _loading)'
+        },
+        /**
+          * Is true when search box is active
+          */
+        active: {
+          type: Boolean,
+          value: false
+        },
+        _lang: {
+          type: Object,
+          value: {
+            'es': {
+              'end': 'Termina'
+            },
+            'en': {
+              'end': 'End'
+            }
+          }
+        },
+        _text: {
+          type: Object,
+          computed: '_setLanguage(language,_lang)'
+        }
+      },
+      _setLanguage: function (lang, _lang) {
+        if (_lang) {
+          return this._lang[lang];
+        }
+      },
+      _emptyIncidents: function (language, city) {
+        if (language == 'es') {
+          return 'No hemos encontrado incidentes en ' + city
+        } else {
+          return 'There are not incidents in ' + city;
+        }
+      },
+      _checkEmpty: function (length, loading) {
+        return length == 0 && !loading;
+      },
+      /** Transform dates recived from Bing Traffic Api to correct date format
+      * @method getDate
+      * @param {String} Date Date returned by Bing Traffic Api with format "/Date(timestamp)/"
+      * @return {Date} a data object
+      */
+      getDate: function (stringDate) {
+        var timestamp = stringDate.match(/\/Date\(([^\)]*)\)\//);
+        var date;
+        if (timestamp.length > 1) {
+          date = new Date(parseInt(timestamp[1]));
+        }
+        var day = date.getDate();
+        var monthIndex = date.getMonth() + 1;
+        monthIndex = monthIndex > 9 ? monthIndex : '0' + monthIndex;
+        var year = date.getFullYear();
+        var prettyDate = day + '/' + monthIndex + '/' + year + '  ';
+        prettyDate += date.getHours() > 9 ? date.getHours() : '0' + date.getHours();
+        prettyDate += ':';
+        prettyDate += date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes();
+        return prettyDate;
+      },
+      _data_ready: function () {
+        this._loading = false;
+      },
+      _loading_data: function () {
+        this._loading = true;
+      },
+      toggleInput: function (e) {
+        this.active = !this.active;
+        if (this.active) {
+          this.$.searchBox.focus();
+          this.$.name.hidden = true;
+        }
+      },
+      blurInput: function (e) {
+        var target = e.currentTarget;
+        if (!target.value && this.city) {
+          this.$.name.hidden = false;
+          this.toggleInput();
+          target.blur();
+        }
+      },
+      keyupInput: function (e) {
+        if (e.keyCode === 13) {
+          this.$.name.hidden = false;
+          this.city = this.$.searchBox.value;
+          this.$.traffic.requestTraffic();
+          this.$.searchBox.value = "";
+          this.toggleInput();
+        }
+      },
+      focusInput: function () {
+        this.$.searchBox.focus();
+      },
+      refresh: function () {
+        this.$.traffic.requestTraffic();
+      },
+      _empty: function () {
+        this.set('traffic_info', []);
+      },
+      attached: function () {
+        if (!this.city) {
+          this._loading = false;
+          this.$.search.click();
+        }
+      }
+    });
+  </script>
 </dom-module>

@@ -1,6 +1,6 @@
 {
   "name": "traffic-incidents",
-  "version": "1.0.3-complexity",
+  "version": "1.0.4-complexity",
   "authors": [
     "Miguel Ortega Moreno <mortega@conwet.com>"
   ],
@@ -31,14 +31,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "1.0.3-complexity",
+  "_release": "1.0.4-complexity",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.3-complexity",
-    "commit": "c2c7f4ecf05d076755bab5e7396017c7b75612b2"
+    "tag": "v1.0.4-complexity",
+    "commit": "0be592001b3b4aeb6c70ba9481ae6d781c86e7a9"
   },
   "_source": "https://github.com/Mortega5/traffic-incidents.git",
-  "_target": "v1.0.3-complexity",
+  "_target": "v1.0.4-complexity",
   "_originalSource": "traffic-incidents",
   "_direct": true
 }
