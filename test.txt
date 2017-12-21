@@ -1,8 +1,0 @@
-twitter-timeline#v1.0.3-stable
-twitter-timeline#v1.0.3-latency
-twitter-timeline#v1.0.3-accuracy
-twitter-timeline#v1.0.3-maintenance
-twitter-timeline#v1.0.3-complexity
-twitter-timeline#v1.0.3-structural
-twitter-timeline#v1.0.3-usability
-
