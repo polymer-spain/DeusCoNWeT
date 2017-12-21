@@ -1,6 +1,6 @@
 {
   "name": "open-weather",
-  "version": "0.9.0-latency",
+  "version": "0.9.3-latency",
   "authors": [
     "miguel ortega moreno <mortega@conwet.com"
   ],
@@ -29,14 +29,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "0.9.0-latency",
+  "_release": "0.9.3-latency",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.0-latency",
-    "commit": "6df081c4848dbeaf31f6f8bb59c17143e1130187"
+    "tag": "v0.9.3-latency",
+    "commit": "4f36fe0dd5cac9394a3619e482559c3d47a6789f"
   },
-  "_source": "https://github.com/Mortega5/open-weather.git",
-  "_target": "v0.9.0-latency",
+  "_source": "git@github.com:Mortega5/open-weather.git",
+  "_target": "v0.9.3-latency",
   "_originalSource": "open-weather",
   "_direct": true
 }

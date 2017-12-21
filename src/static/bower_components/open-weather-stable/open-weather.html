@@ -27,6 +27,8 @@ If lat and lon are no defined. it will try to get your location
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+
+
 <link rel="stylesheet" type="text/css" href="../weather-icons/css/weather-icons.min.css">
 <dom-module id="open-weather">
   
@@ -172,7 +174,7 @@ If lat and lon are no defined. it will try to get your location
     display: inline-flex !important;
   }
   </style>
-  <iron-ajax id="ajax"  url="https://centauro.ls.fi.upm.es:4444/weather"
+  <iron-ajax id="ajax"  url="https://centauro.ls.etsiinf.upm.es:4444/weather"
   params="{{weather_params}}"
   handle-as="json"
   on-response="_weatherApiResponse">
@@ -349,16 +351,19 @@ Polymer({
       level = level > 6 ? 6 : level;
       return level
     }
-    var getMinMax = function(list_temp){
+    var getMinMax = function(day,list){
       var minmax = {min:100,max:-100};
-      for (var i=0;i<list_temp.length;i++){
-        if (list_temp[i].main.temp_min < minmax.min){
-          minmax.min = Math.round(list_temp[i].main.temp_min);
+      list.forEach(function(el){
+        el_dt = new Date(el.dt*1000);
+        if (dt.getDay() == el_dt.getDay() && dt.getMonth() == el_dt.getMonth() && dt.getYear() == el_dt.getYear()){
+          if (el.main.temp_min < minmax.min){
+            minmax.min = Math.round(el.main.temp_min);
+          }
+          if (el.main.temp_max > minmax.max){
+            minmax.max = Math.round(el.main.temp_max);
+          }
         }
-        if (list_temp[i].main.temp_max > minmax.max){
-          minmax.max = Math.round(list_temp[i].main.temp_max);
-        }
-      }
+      });
       return minmax;
     }
     this.set('next_days',[]);
@@ -370,9 +375,8 @@ Polymer({
       current_time += now.getMinutes() > 9? ':' + now.getMinutes(): ':0' + now.getMinutes();
       var day = dt.getUTCDate();
       var month = dt.getMonth() +1;
-      var year = dt.getFullYear();
-      var init = Math.floor(i/8)*8;
-      var minmax = getMinMax(list.slice(init,8+init));
+      var year = dt.getYear();
+      var minmax = getMinMax(dt,list);
       var weather = {
         icon: this._iconMapping[list[i].weather[0].icon],
         conditiontext: list[i].weather[0].description,

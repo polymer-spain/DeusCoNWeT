@@ -174,7 +174,7 @@ If lat and lon are no defined. it will try to get your location
     display: inline-flex !important;
   }
   </style>
-<iron-ajax id="ajax" url="https://centauro.ls.fi.upm.es:4444/weather" params="{{weather_params}}" handle-as="json" on-response="_weatherApiResponse">
+<iron-ajax id="ajax" url="https://centauro.ls.etsiinf.upm.es:4444/weather" params="{{weather_params}}" handle-as="json" on-response="_weatherApiResponse">
 </iron-ajax>
 
 
@@ -211,9 +211,9 @@ If lat and lon are no defined. it will try to get your location
   </div>
 
 </template>
- <div active$="{{_loading}}" class="loading vertical layout center-center">
-    <paper-spinner active></paper-spinner>
-  </div>
+<div active$="{{_loading}}" class="loading vertical layout center-center">
+  <paper-spinner active></paper-spinner>
+</div>
 </template>
 <script>
   Polymer({
@@ -255,14 +255,14 @@ If lat and lon are no defined. it will try to get your location
       _loading: {
         type: Boolean,
         value: true,
-        notify:true
+        notify: true
       },
       latency: {
         type: Number,
         value: 2000,
         reflectToAttribute: true
       },
-      refresh_time:{type:Number,value:60000}
+      refresh_time: { type: Number, value: 60000 }
     },
     _iconMapping: {
       "01d": "wi-day-sunny",
@@ -325,7 +325,7 @@ If lat and lon are no defined. it will try to get your location
     _weatherApiResponse: function (e) {
       var that = this;
       this.sleep(function () {
-      that._loading = false;
+        that._loading = false;
         var res = e.detail.response;
         if (res.cod && res.cod === "404") {
           console.log('error!');
@@ -360,16 +360,19 @@ If lat and lon are no defined. it will try to get your location
           level = level > 6 ? 6 : level;
           return level
         }
-        var getMinMax = function (list_temp) {
+        var getMinMax = function (day, list) {
           var minmax = { min: 100, max: -100 };
-          for (var i = 0; i < list_temp.length; i++) {
-            if (list_temp[i].main.temp_min < minmax.min) {
-              minmax.min = Math.round(list_temp[i].main.temp_min);
+          list.forEach(function (el) {
+            el_dt = new Date(el.dt * 1000);
+            if (dt.getDay() == el_dt.getDay() && dt.getMonth() == el_dt.getMonth() && dt.getYear() == el_dt.getYear()) {
+              if (el.main.temp_min < minmax.min) {
+                minmax.min = Math.round(el.main.temp_min);
+              }
+              if (el.main.temp_max > minmax.max) {
+                minmax.max = Math.round(el.main.temp_max);
+              }
             }
-            if (list_temp[i].main.temp_max > minmax.max) {
-              minmax.max = Math.round(list_temp[i].main.temp_max);
-            }
-          }
+          });
           return minmax;
         }
         that.set('next_days', []);
@@ -383,7 +386,7 @@ If lat and lon are no defined. it will try to get your location
           var month = dt.getMonth() + 1;
           var year = dt.getFullYear();
           var init = Math.floor(i / 8) * 8;
-          var minmax = getMinMax(list.slice(init, 8 + init));
+          var minmax = getMinMax(dt,list);
           var weather = {
             icon: that._iconMapping[list[i].weather[0].icon],
             conditiontext: list[i].weather[0].description,
@@ -423,18 +426,18 @@ If lat and lon are no defined. it will try to get your location
       this._loading = true;
       this.$.ajax.generateRequest();
     },
-    attached: function() {
-      this._interval = window.setInterval(this.refresh.bind(this),this.refresh_time);
-      var getCurrentLocation= function(position) {
+    attached: function () {
+      this._interval = window.setInterval(this.refresh.bind(this), this.refresh_time);
+      var getCurrentLocation = function (position) {
         this.lat = position.coords.latitude;
         this.lon = position.coords.longitude;
       }
-      if (typeof(this.lat) == "undefined" && typeof(this.lon) == "undefined") {
+      if (typeof (this.lat) == "undefined" && typeof (this.lon) == "undefined") {
         navigator.geolocation.getCurrentPosition(getCurrentLocation.bind(this));
       }
     },
-    detached: function(){
-      if(this._interval) window.clearInterval(this._interval)
+    detached: function () {
+      if (this._interval) window.clearInterval(this._interval)
     }
   });
 </script>

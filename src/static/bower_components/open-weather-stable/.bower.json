@@ -1,6 +1,6 @@
 {
   "name": "open-weather",
-  "version": "0.9.0-stable",
+  "version": "0.9.3-stable",
   "authors": [
     "miguel ortega moreno <mortega@conwet.com"
   ],
@@ -29,14 +29,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "0.9.0-stable",
+  "_release": "0.9.3-stable",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.0-stable",
-    "commit": "6eb02863dacf8026907037757c2383981ff93dd7"
+    "tag": "v0.9.3-stable",
+    "commit": "3d598a0e4c5d4be4da53ae4509b6a61af3355bfb"
   },
-  "_source": "https://github.com/Mortega5/open-weather.git",
-  "_target": "v0.9.0-stable",
+  "_source": "git@github.com:Mortega5/open-weather.git",
+  "_target": "v0.9.3-stable",
   "_originalSource": "open-weather",
   "_direct": true
 }

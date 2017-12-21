@@ -13,7 +13,8 @@
     "paper-icon-button": "PolymerElements/paper-icon-button#^1.0.0",
     "paper-menu": "PolymerElements/paper-menu#^1.0.0",
     "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.0",
-    "finance-chart": "^0.9.1"
+    "google-drive": "GoogleWebComponents/google-drive#^1.0.2",
+    "streaming-list": "klarkc/streaming-list#^4.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

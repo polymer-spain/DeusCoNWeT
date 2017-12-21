@@ -17,11 +17,12 @@ Polymer component to show your favourite subreddits feed
 <link rel="import" href="../paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../paper-menu/paper-menu.html">
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../google-youtube/google-youtube.html">
 
 <dom-module id="reddit-timeline">
   <template>
-    <style>
+    <style is="custom-style" include="iron-positioning">
        :host {
         display: block;
         min-height: 400px;
@@ -54,6 +55,7 @@ Polymer component to show your favourite subreddits feed
 
       paper-toolbar {
         text-transform: none;
+        z-index: 100000;
         --paper-toolbar-background: -webkit-linear-gradient(top, #2196F3, #64B5F6);
         color: white;
       }
@@ -807,7 +809,7 @@ Polymer component to show your favourite subreddits feed
         };
       },
 
-      /* Request access token*/
+      /* Request acces token*/
       _token_received: function (event, detail) {
         this.token = detail.response.access_token;
         this.fire('reddit-timeline-token', {
@@ -1006,7 +1008,7 @@ Polymer component to show your favourite subreddits feed
       /* COMPONENT BEHAVIOUR*/
 
       _logged: function () {
-          this.$.get_subreddits.generateRequest();
+        this.$.get_subreddits.generateRequest();
       },
 
       attached: function () {
