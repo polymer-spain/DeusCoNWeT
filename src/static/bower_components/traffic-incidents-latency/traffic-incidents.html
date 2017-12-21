@@ -50,7 +50,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="traffic-incidents-data.html">
 <link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
@@ -79,7 +79,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 
 <dom-module id="traffic-incidents">
   <template>
-  <style>
+    <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
   :host {
     display: inline-block;
     box-sizing: border-box;

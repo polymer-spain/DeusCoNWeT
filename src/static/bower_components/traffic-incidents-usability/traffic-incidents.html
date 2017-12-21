@@ -50,7 +50,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="traffic-incidents-data.html">
 <link rel="import" href="../paper-material/paper-material.html">
-<link rel="import" href="../iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
@@ -79,7 +79,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 
 <dom-module id="traffic-incidents">
   <template>
-  <style>
+    <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
   :host {
     display: inline-block;
     box-sizing: border-box;
@@ -309,6 +309,9 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
     -webkit-transition-delay: 1s; /* Safari */
     @apply(--shadow-elevation-4dp)
   }
+  i[name="search"] {
+    cursor:pointer;
+  }
   @keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
@@ -342,7 +345,7 @@ where the incident occurs. For more information go to : https://msdn.microsoft.c
 
   <paper-header-panel mode="waterfall-tall">
     <div class="paper-header horizontal layout center" active$="{{active}}"  role="button">
-      <i name="search" icon="search" aria-label="open a search box" id="search" on-click="toggleInput" role="button">Prueba</i>
+      <paper-icon-button on-click="toggleInput" icon="search"></paper-icon-button>
       <div class="input-container" on-click="focusInput">
         <input id="searchBox" title="Type city or country" placeholder="Buscar una ciudad" on-blur="blurInput" on-keyup="keyupInput"/>
       </div>

@@ -1,6 +1,6 @@
 {
   "name": "open-weather",
-  "version": "0.9.0-accuracy",
+  "version": "0.9.3-accuracy",
   "authors": [
     "miguel ortega moreno <mortega@conwet.com"
   ],
@@ -29,14 +29,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "0.9.0-accuracy",
+  "_release": "0.9.3-accuracy",
   "_resolution": {
     "type": "version",
-    "tag": "v0.9.0-accuracy",
-    "commit": "cedea42b35b9e6148455b4297580a1f609301c2e"
+    "tag": "v0.9.3-accuracy",
+    "commit": "f1754dede9f289f7cc57574dd3666e5f6cf5f1ce"
   },
-  "_source": "https://github.com/Mortega5/open-weather.git",
-  "_target": "v0.9.0-accuracy",
+  "_source": "git@github.com:Mortega5/open-weather.git",
+  "_target": "v0.9.3-accuracy",
   "_originalSource": "open-weather",
   "_direct": true
 }

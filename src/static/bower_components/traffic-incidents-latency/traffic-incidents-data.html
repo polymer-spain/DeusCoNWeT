@@ -38,7 +38,7 @@ app_key_traffic="yout_bing_maps_key" auto_refresh refresh_time="60000">
   <iron-ajax id="requestGeoencode" method="GET" url="https://maps.googleapis.com/maps/api/geocode/json" params="{{geo_params}}"
     handleAs="json" on-response="_geocodingResponse">
   </iron-ajax>
-  <iron-ajax id="requestData" method="GET" url="https://centauro.ls.fi.upm.es:4444/traffic" params="{{traffic_params}}" handleAs="json"
+  <iron-ajax id="requestData" method="GET" url="https://centauro.ls.etsiinf.upm.es:4444/traffic" params="{{traffic_params}}" handleAs="json"
     on-response="_trafficCallback">
   </iron-ajax>
 </template>

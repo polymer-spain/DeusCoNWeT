@@ -1,6 +1,6 @@
 {
   "name": "finance-search",
-  "version": "1.0.2-maintenance",
+  "version": "1.0.3-maintenance",
   "authors": [
     "Anonymous <anonymous@example.com>"
   ],
@@ -26,14 +26,14 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "1.0.2-maintenance",
+  "_release": "1.0.3-maintenance",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.2-maintenance",
-    "commit": "6f05fe02d8edae287ec48e3b985abb8566a28b8c"
+    "tag": "v1.0.3-maintenance",
+    "commit": "3832f24c7b552aa996fa4654869b718a371967fe"
   },
   "_source": "https://github.com/Mortega5/finance-search.git",
-  "_target": "v1.0.2-maintenance",
+  "_target": "v1.0.3-maintenance",
   "_originalSource": "finance-search",
   "_direct": true
 }

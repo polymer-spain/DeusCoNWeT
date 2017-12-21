@@ -199,13 +199,8 @@
 #userHome #store-modal #listCatalog star-rate {
   text-align: center;
 }
-#userHome #store-modal #listCatalog  star-rate /deep/ iron-icon {
-  width:16px;
-  color:firebrick;
-}
-#userHome #store-modal #searchCatalog  star-rate /deep/ iron-icon {
-  width:16px;
-}
+
+
 #userHome #listCatalog > div .description {
   width: 100%;
   height:100%;

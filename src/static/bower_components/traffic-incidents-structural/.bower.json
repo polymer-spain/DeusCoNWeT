@@ -1,6 +1,6 @@
 {
   "name": "traffic-incidents",
-  "version": "1.0.3-structural",
+  "version": "1.0.4-structural",
   "authors": [
     "Miguel Ortega Moreno <mortega@conwet.com>"
   ],
@@ -27,19 +27,20 @@
     "paper-spinner": "PolymerElements/paper-spinner#^1.2.0",
     "paper-icon-button": "PolymerElements/paper-icon-button#^1.1.2",
     "paper-input": "PolymerElements/paper-input#^1.1.19",
-    "finance-search": "^1.0.2-stable"
+    "google-drive": "GoogleWebComponents/google-drive#^1.0.2",
+    "streaming-list": "klarkc/streaming-list#^4.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   },
-  "_release": "1.0.3-structural",
+  "_release": "1.0.4-structural",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.3-structural",
-    "commit": "35ccde31e23a698eb328ad98f004facfb88ef6a8"
+    "tag": "v1.0.4-structural",
+    "commit": "0fade1b1cff7b4b2c5e5b61cf3c85fa9e6e3d33f"
   },
   "_source": "https://github.com/Mortega5/traffic-incidents.git",
-  "_target": "v1.0.3-structural",
+  "_target": "v1.0.4-structural",
   "_originalSource": "traffic-incidents",
   "_direct": true
 }

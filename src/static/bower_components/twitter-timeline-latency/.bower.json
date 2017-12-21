@@ -1,6 +1,6 @@
 {
   "name": "twitter-timeline",
-  "version": "1.0.2-latency",
+  "version": "1.0.3-latency",
   "authors": [
     "Juan Francisco Salamanca Carmona <jfsalca@gmail.com>"
   ],
@@ -26,14 +26,14 @@
     "paper-material": "PolymerElements/paper-material#~1.0.2",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.4"
   },
-  "_release": "1.0.2-latency",
+  "_release": "1.0.3-latency",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.2-latency",
-    "commit": "591a846eb69421db7d27e33e9b3745a8206b905f"
+    "tag": "v1.0.3-latency",
+    "commit": "aefa899ac067b74742feec65a8f17237c164669b"
   },
-  "_source": "git@github.com:JuanFryS/twitter-timeline.git",
-  "_target": "v1.0.2-latency",
+  "_source": "https://github.com/JuanFryS/twitter-timeline.git",
+  "_target": "v1.0.3-latency",
   "_originalSource": "twitter-timeline",
   "_direct": true
 }

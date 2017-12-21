@@ -21,15 +21,15 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
   "homepage": "https://github.com/Mortega5/reddit-timeline",
-  "version": "1.0.3-accuracy",
-  "_release": "1.0.3-accuracy",
+  "version": "1.0.4-accuracy",
+  "_release": "1.0.4-accuracy",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.3-accuracy",
-    "commit": "9c543a7be402162fa9b57016d9cf80f9ae191a07"
+    "tag": "v1.0.4-accuracy",
+    "commit": "fa16dfea335e73102b9c79314bcab39cb0432fcc"
   },
-  "_source": "https://github.com/Mortega5/reddit-timeline.git",
-  "_target": "v1.0.3-accuracy",
+  "_source": "git@github.com:Mortega5/reddit-timeline.git",
+  "_target": "v1.0.4-accuracy",
   "_originalSource": "reddit-timeline",
   "_direct": true
 }
