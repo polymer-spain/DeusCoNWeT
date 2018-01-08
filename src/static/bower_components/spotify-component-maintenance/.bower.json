@@ -9,7 +9,7 @@
     "Msuanzes"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/magasuan/spotify-component",
   "private": false,
   "dependencies": {
     "polymer": "Polymer/polymer#1.2",
@@ -25,5 +25,16 @@
     "paper-header-panel": "PolymerElements/paper-header-panel/paper-header-panel#1.1.7",
     "paper-item": "PolymerElements/paper-item/paper-item#1.2.2",
     "iron-icons": "PolymerElements/iron-icons/iron-icons#1.2.1"
-  }
+  },
+  "version": "1.0.10-maintenance",
+  "_release": "1.0.10-maintenance",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.10-maintenance",
+    "commit": "c412b3de9e1eee84aeeddfebe7e3b9ab9d9d6d7f"
+  },
+  "_source": "https://github.com/magasuan/spotify-component.git",
+  "_target": "v1.0.10-maintenance",
+  "_originalSource": "spotify-component",
+  "_direct": true
 }

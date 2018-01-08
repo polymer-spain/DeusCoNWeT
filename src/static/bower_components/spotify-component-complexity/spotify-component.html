@@ -7,11 +7,13 @@
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
 <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Work+Sans:100" rel="stylesheet">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
 
 <dom-module id="spotify-component">
   <template>
-    <style is="custom-style" include="iron-flex iron-flex-alignment">
-      /* Globales */
+      <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">     
+       /* Globales */
 
        :host {
         display: inline-block;
@@ -122,7 +124,7 @@
         margin: 10px 0;
       }
 
-      #headmusica > p {
+      #headmusica>p {
         width: 50%;
         font-weight: bold;
         font-family: 'Work Sans', sans-serif;
@@ -131,8 +133,8 @@
         font-size: 15px;
       }
 
-      #musica > a,
-      #musica > p {
+      #musica>a,
+      #musica>p {
         width: 50%;
         font-family: 'Roboto', sans-serif;
         padding: 0 5px;
@@ -275,11 +277,8 @@
       respuestaSPFY: function (evt) {
         this.loading = false;
         this._interval = this._interval || window.setInterval(this._refresh.bind(this), this.refresh_time);
-<<<<<<< HEAD
 
         console.log(evt.detail.response);
-=======
->>>>>>> 857721fd075130f232c37722802b0d0d8e9e08e8
         var response = evt.detail.response;
         this.set('res', []);
         window.setTimeout(function () {

@@ -7,11 +7,13 @@
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
 <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Work+Sans:100" rel="stylesheet">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
 
 <dom-module id="spotify-component">
   <template>
-    <style is="custom-style" include="iron-flex iron-flex-alignment">
-      /* Globales */
+      <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">      /* Globales */
+
       :host {
         display: inline-block;
         width: var(--googleplus-timeline-width, 350px);
@@ -32,6 +34,10 @@
         color: #eee;
       }
 
+      .created{
+        color: grey !important;
+      }
+
       a {
         text-transform: none;
         color: inherit;
@@ -42,10 +48,7 @@
       a:hover>span {
         color: #2ebd59;
       }
-<<<<<<< HEAD
-=======
 
->>>>>>> d2d174e37ce3ad903f2c53d8c64dad751dd459ae
       /* Toolbar */
       .paper-header{
         /* width: 10px; */
@@ -65,19 +68,17 @@
 
       .refresh_button {
         position: absolute;
-        top: 18px;
+        top: 13px;
         right: 18px;
         margin: 0;
-        background: url(https://icon-icons.com/icons2/1102/PNG/512/1485969921-5-refresh_78908.png);
+        /* background: url(https://icon-icons.com/icons2/1102/PNG/512/1485969921-5-refresh_78908.png); */
+        color: grey;
         background-size: 100% 100%;
         border: none;
-        width: 30px;
-        height: 30px;
+        width: 50px;
+        height: 50px;
       }
-<<<<<<< HEAD
 
-=======
->>>>>>> 857721fd075130f232c37722802b0d0d8e9e08e8
       /* Header dom repeat */
 
       .cab {
@@ -93,7 +94,7 @@
 
       #nombreLista {
         font-size: 18px;
-        color: white;
+        color: grey;
       }
 
       .playtit {
@@ -111,6 +112,7 @@
         font-size: 11px;
         letter-spacing: 1px;
       }
+
       /* Desplegable */
 
       #musica {
@@ -202,9 +204,9 @@
                   <p id='nombreLista'>{{item.name}}</p>
 
                   <div class='horizontal layout'>
-                    <span>Created by:</span>
+                    <span class="created">Created by:</span>
                     <a href="{{item.owner.external_urls.spotify}}" target='_blank'>
-                      <span id='owner'>{{item.owner.id}}</span>
+                      <span id='owner' class="created" >{{item.owner.id}}</span>
                     </a>
                   </div>
                 </div>
@@ -213,7 +215,6 @@
 
             </div>
 
-<<<<<<< HEAD
             <div>
               <iron-ajax auto id="cons" url="{{item.tracks.href}}" headers="{{headers}}" handle-as="json" on-response="respuestaPistas"></iron-ajax>
             </div>
@@ -229,10 +230,6 @@
                   <a href="{{item.track.external_urls.spotify}}" target='_blank'>
                     <p id='track'> {{item.track.name}}</p>
                   </a>
-=======
-          </div>
-        </div>
->>>>>>> 857721fd075130f232c37722802b0d0d8e9e08e8
 
                   <p id='artista'>{{item.track.artists.0.name}}</p>
                   <!-- <p id='album'>{{item.track.album.name}}</p> -->
@@ -250,6 +247,8 @@
 
     <iron-ajax auto id="cons" url="https://api.spotify.com/v1/me/playlists?limit=20&after=0aV6DOiouImYTqrR5YlIqx" headers="{{headers}}"
       handle-as="json" on-response="respuestaSPFY"></iron-ajax>
+
+    <!-- d -->
 
   </template>
   <script>
